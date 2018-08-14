@@ -1,0 +1,32 @@
+{block head}{/block}
+
+{block title}{_users.admin.groups_admin.admin_group} {$group->name}{/block}
+
+{block #content}
+
+<div class="row">
+  <div class="col-md-12">
+  <a n:href="default"><i class="fa fa-angle-left"></i> {_users.admin.groups_admin.back_to_list}</a>
+    <div class="page-header">
+      <h1>
+        <small>[{$group->id}]</small>
+        {_users.admin.groups_admin.admin_group} {$group->name}
+      	<a n:href="Edit $group->id" class="btn btn-primary btn-lg pull-right"><i class="fa fa-pencil"></i> {_users.admin.groups_admin.edit_group}</a>
+      </h1>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-12">
+    {_users.admin.groups_admin.total_users}:
+    <a n:href="UsersAdmin:default group => $group->id">{$group->related('user_groups')->count('*')}</a>
+    <a n:href="UsersAdmin:default group => $group->id" class="btn btn-xs btn-default">{_users.admin.groups_admin.view}</a>
+    <br>
+    <hr>
+    <p>
+      {_users.admin.groups_admin.created_at}: {$group->created_at|userDate}
+    </p>
+  </div>
+</div>

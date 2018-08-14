@@ -1,0 +1,91 @@
+{block #title}{_users.admin.login_attempts.title}{/block}
+
+{block #content}
+
+  <div class="row">
+
+    <div class="col-md-12">
+      <h1>
+          {_users.admin.login_attempts.title}
+        <small>
+          / {_users.admin.login_attempts.total} {$totalLoginAttempts}
+          {if $totalLoginAttempts != $filteredCount}
+            , {_users.admin.login_attempts.filtered} {$filteredCount}
+          {/if}
+        </small>
+      </h1>
+    </div>
+
+    <div class="col-md-12">
+      {control loginAttemptsForm}
+      <hr>
+    </div>
+
+
+    <div class="col-md-12">
+      {if $filteredCount > 0}
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>{_users.admin.login_attempts.email}</th>
+              <th>{_users.admin.login_attempts.status}</th>
+              <th>{_users.admin.login_attempts.source}</th>
+              <th>{_users.admin.login_attempts.attempt_time}</th>
+              <th>{_users.admin.login_attempts.user_agent}</th>
+              <th>{_users.admin.login_attempts.message}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr n:foreach="$loginAttempts as $loginAttempt">
+              <td>{$loginAttempt->email}</td>
+              <td>
+                {if in_array($loginAttempt->status, [
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_API_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_TOKEN_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_ACCESS_TOKEN_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_LOGIN_AFTER_SIGN_UP
+              ])}
+                  <span class="label label-success">{$loginAttempt->status}</span>
+                {elseif $loginAttempt->status == \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_NOT_FOUND_EMAIL}
+                  <span class="label label-warning">{$loginAttempt->status}</span>
+                {elseif $loginAttempt->status == \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_WRONG_PASS}
+                  <span class="label label-danger">{$loginAttempt->status}</span>
+                {elseif $loginAttempt->status == \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_INACTIVE_USER}
+                  <span class="label label-default">{$loginAttempt->status}</span>
+                {else}
+                  <span class="label label-default">{$loginAttempt->status}</span>
+                {/if}
+              </td>
+              <td>{$loginAttempt->source}</td>
+              <td>{$loginAttempt->created_at|userDate}</td>
+              <td>{$loginAttempt->user_agent}</td>
+              <td>{$loginAttempt->message}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      {control vp}
+      {else}
+        <p>{_users.admin.login_attempts.no_records}</p>
+      {/if}
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+      $(function () {
+          $('#frm-loginAttemptsForm-created_at_from').datetimepicker({
+              format: 'YYYY-MM-DD HH:mm',
+              defaultDate: {$createdAtFrom},
+              sideBySide: true
+          });
+          $('#frm-loginAttemptsForm-created_at_to').datetimepicker({
+              format: 'YYYY-MM-DD HH:mm',
+              defaultDate: {$createdAtTo},
+              sideBySide: true
+          });
+      });
+  </script>
+
+{/block}

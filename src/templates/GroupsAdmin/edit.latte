@@ -1,0 +1,21 @@
+{block #title}{_users.admin.groups_admin.edit} {$group->name}{/block}
+
+{block #content}
+
+<div class="row">
+  <div class="col-md-12">
+    <a n:href="default"><i class="fa fa-angle-left"></i> {_users.admin.groups_admin.back_to_list}</a>
+    <div class="page-header">
+      <h1>
+        <small>{_users.admin.groups_admin.editing_group}:</small>
+      	{$group->name}
+      </h1>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    {control groupForm}
+  </div>
+</div>

@@ -1,0 +1,174 @@
+{block #title}{_users.admin.abusive.title}{/block}
+
+{block #content}
+
+{var $filteredCount = count($abusers)}
+
+<div class="row">
+  <div class="col-md-12">
+    <h1>
+      {_users.admin.abusive.title}
+    </h1>
+    <em>{_users.admin.abusive.subtitle}</em>
+    <hr/>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="date-from">{_users.admin.abusive.date_from}</label>
+          <div class='input-group date' id='datetimepicker6'>
+            <input type='text' name="date-from" class="form-control" />
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="date-to">{_users.admin.abusive.date_to}</label>
+          <div class='input-group date' id='datetimepicker7'>
+            <input name="date-to" type='text' class="form-control" />
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label for="date-to">{_users.admin.abusive.number_of_logins}</label>
+        <div class="form-group">
+          <select name="login_count" id="login_count" class="form-control">
+            <option n:foreach="$loginCountRanges as $lcr" value="{$lcr}" {if $loginCount == $lcr}selected="selected"{/if}>{$lcr}+</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label for="date-to">{_users.admin.abusive.number_of_devices}</label>
+        <div class="form-group">
+            <select name="device_count" id="device_count" class="form-control">
+                <option n:foreach="$deviceCountRanges as $dcr" value="{$dcr}" {if $deviceCount == $dcr}selected="selected"{/if}>{$dcr}+</option>
+            </select>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label>&nbsp;</label>
+        <div class="form-group">
+          <button onclick="setDates();" type="button" class="btn btn-default"><i class="fa fa-filter"></i> {_users.admin.abusive.submit}</button>
+        </div>
+      </div>
+      <script type="text/javascript">
+          function setDates()
+          {
+            var start = $('#datetimepicker6').data("DateTimePicker").date().format('YYYY-MM-DD');
+            var end = $('#datetimepicker7').data("DateTimePicker").date().format('YYYY-MM-DD');
+            var login_count = $('#login_count :selected').val();
+            var device_count = $('#device_count :selected').val();
+            window.location.href = '/users/users-admin/abusive?start_time=' + start + '&end_time=' + end + '&login_count=' + login_count + '&device_count=' + device_count;
+          }
+          function setParams()
+          {
+              setGetParameter('')
+          }
+          $(function () {
+              $('#datetimepicker6').datetimepicker({
+                  format: 'YYYY-MM-DD',
+                  defaultDate: {$startTime}
+              });
+              $('#datetimepicker7').datetimepicker({
+                  useCurrent: false, //Important! See issue #1075
+                  format: 'YYYY-MM-DD',
+                  maxDate: moment(),
+                  defaultDate: {$endTime}
+              });
+              $("#datetimepicker6").on("dp.change", function (e) {
+                  $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+              });
+              $("#datetimepicker7").on("dp.change", function (e) {
+                  $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+              });
+          });
+
+          function setGetParameter(paramName, paramValue)
+          {
+              var url = window.location.href;
+              if (url.indexOf(paramName + "=") >= 0)
+              {
+                  var prefix = url.substring(0, url.indexOf(paramName));
+                  var suffix = url.substring(url.indexOf(paramName));
+                  suffix = suffix.substring(suffix.indexOf("=") + 1);
+                  suffix = (suffix.indexOf("&") >= 0) ? suffix.substring(suffix.indexOf("&")) : "";
+                  url = prefix + paramName + "=" + paramValue + suffix;
+              }
+              else
+              {
+              if (url.indexOf("?") < 0)
+                  url += "?" + paramName + "=" + paramValue;
+              else
+                  url += "&" + paramName + "=" + paramValue;
+              }
+              window.location.href = url;
+          }
+      </script>
+    </div>
+    <hr>
+    {if $filteredCount > 0}
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>#ID</th>
+            <th>{_users.admin.abusive.email}</th>
+            <th>{_users.admin.abusive.name}</th>
+            <th>{_users.admin.abusive.active_logins}</th>
+            <th>{_users.admin.abusive.active_devices}</th>
+            <th>{_users.admin.abusive.time_ip_last_login}</th>
+            <th>{_users.admin.abusive.actions}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr n:foreach="$abusers as $abuser">
+            <td><small class="text-muted">{$abuser->id}</small></td>
+            <td>
+              <a n:href="show $abuser->id">
+                  {$abuser->email|gravatar|noescape}
+                  {$abuser->email}
+              </a>
+            </td>
+            <td>{$abuser->first_name} {$abuser->last_name}</td>
+            <td>
+              <b>{$abuser->token_count}</b>
+            </td>
+            <td>
+              <b>{$abuser->device_count}</b>
+            </td>
+            <td>
+              {$abuser->current_sign_in_at|userDate}
+              <small n:if="$abuser->current_sign_in_ip">/ {$abuser->current_sign_in_ip}</small>
+            </td>
+            <td>
+              <p class="text-nowrap">
+                <a n:href="show $abuser->id" class="btn btn-sm btn-info" title="{_users.admin.actions.show}"><i class="fa fa-eye"></i> </a>
+                <a n:href="edit $abuser->id" class="btn btn-sm btn-primary" title="{_users.admin.actions.edit}"><i class="fa fa-pencil"></i> </a>
+                {if $abuser->active}
+                  <a n:href="ChangeActivation! $abuser->id" class="btn btn-sm btn-warning" title="{_users.admin.actions.deactivate}"><i class="fa fa-close"></i> </a>
+                {else}
+                  <a n:href="ChangeActivation! $abuser->id" class="btn btn-sm btn-success" title="{_users.admin.actions.activate}"><i class="fa fa-check-circle"></i> </a>
+                {/if}
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    {else}
+     <p>{_users.admin.abusive.no_records}</p>
+    {/if}
+  </div>
+
+</div>
+
+{/block}

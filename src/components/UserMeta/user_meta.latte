@@ -1,0 +1,30 @@
+{if count($meta) == 0}
+ <div class="bs-callout bs-callout-info">
+   <h4>Žiaden záznam</h4>
+   <p class="lead">K tomuto používateľovi neexistujú žiadne vlastné nastavenia.</p>
+ </div>
+{else}
+  <table class="table table-striped table-hover">
+    <thead>
+      <th>Kľúč</th>
+      <th>Hodnota</th>
+      <th>Vytvorené</th>
+      <th>Akcie</th>
+    </thead>
+    <tbody>
+      <tr n:foreach="$meta as $row">
+        <td>
+          {$row->key}
+          <span n:if="$row->is_public" class="label label-primary">Public</span>
+        </td>
+        <td>{$row->value}</td>
+        <td class="text-muted">{$row->created_at}</td>
+        <td><a n:href="delete! $id, $row->key" onclick="return confirm('Naozaj chcete vymazať záznam?');" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
+      </tr>
+    </tbody>
+  </table>
+{/if}
+
+<hr>
+
+{control metaForm}

@@ -1,0 +1,92 @@
+{if $totalSignInAttempts == 0}
+  <div class="bs-callout bs-callout-info">
+    <h4>Žiaden záznam</h4>
+    <p class="lead">Vyzerá to tak, že tento používateľ sa zatiaľ nepokúšal do systému prihlásiť.</p>
+  </div>
+{else}
+
+  <div class="row" style="margin-top:30px">
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">Celkové štatistiky</div>
+        <ul class="list-group">
+          <li class="list-group-item">Počet IP: <span class="badge">{$totalUserIps}</span></li>
+          <li class="list-group-item">Počet prehliadačov: <span class="badge">{$totalUserAgents}</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">Prilhásenia cez web</div>
+        <ul class="list-group">
+          <li class="list-group-item">Počet IP: <span class="badge">{$webUserIps}</span></li>
+          <li class="list-group-item">Počet prehliadačov: <span class="badge">{$webUserAgents}</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">Mobilné prihlásenia (aplikácie)</div>
+        <ul class="list-group">
+          <li class="list-group-item">Počet IP: <span class="badge">{$mobileUserIps}</span></li>
+          <li class="list-group-item">Počet prehliadačov: <span class="badge">{$mobileUserAgents}</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">Posledný prístup podľa zdroja</div>
+        <ul class="list-group">
+          <li n:foreach="$userSourceAccesses as $userSourceAccess" class="list-group-item">
+            <span class="badge">{$userSourceAccess->source}</span> {$userSourceAccess->last_accessed_at}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped table-hover">
+        <thead>
+          <th>Stav</th>
+          <th>Čas príhlasenia</th>
+          <th>Zdroj</th>
+          <th>Popis</th>
+          <th>IP</th>
+          <th>Prehliadač / Referer</th>
+        </thead>
+        <tbody>
+          <tr n:foreach="$lastSignInAttempts as $attempt">
+            <td>
+              {if in_array($attempt->status, [
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_API_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_TOKEN_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_ACCESS_TOKEN_OK,
+                 \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_LOGIN_AFTER_SIGN_UP
+              ])}
+                <span class="label label-success">{$attempt->status}</span>
+              {elseif $attempt->status == \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_NOT_FOUND_EMAIL}
+                <span class="label label-warning">{$attempt->status}</span>
+              {elseif $attempt->status == \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_WRONG_PASS}
+                <span class="label label-danger">{$attempt->status}</span>
+              {elseif $attempt->status == \Crm\UsersModule\Repository\LoginAttemptsRepository::STATUS_INACTIVE_USER}
+                <span class="label label-default">{$attempt->status}</span>
+              {else}
+                <span class="label label-default">{$attempt->status}</span>
+              {/if}
+            </td>
+            <td><span class="text text-muted">{$attempt->created_at|userDate}</span></td>
+            <td><span class="label label-default">{$attempt->source}</span></td>
+            <td>{$attempt->message}</td>
+            <td>
+              <small>{$attempt->ip}</small>
+            </td>
+            <td class="text text-muted">{$attempt->user_agent}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{/if}

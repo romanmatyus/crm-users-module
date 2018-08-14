@@ -1,0 +1,396 @@
+menu:
+	stats: Používatelia
+	change_password: Zmena hesla
+	settings: Nastavenia
+	sign_out: Odhlásiť
+	people: Ľudia
+	users: Používatelia
+	groups: Skupiny
+	login_attempts: Prihlásenia
+	events: Udalosti
+	cheaters: Podvádzači
+	admin_rights: Admin práva
+	actions_log: Záznamy akcií
+forms:
+	invoice:
+		label:
+			company_name: Názov firmy
+			address: Adresa
+			number: Číslo
+			city: Mesto
+			zip: PSČ
+			ico: IČO
+			dic: DIČ
+			icdph: IČDPH
+			invoice_country_id: Krajina
+			send: Uložiť
+			save: Uložiť údaje
+		placeholder:
+			company_name: názov firmy na faktúre
+			address: fakturačná adresa
+			number: napíšte číslo domu
+			city: napíšte mesto
+			zip: napíšte PSČ
+			ico: ak nemáte zadajte 0
+			dic: ak nemáte zadajte 0
+			icdph: ak nemáte zadajte 0
+		required:
+			company_name: Názov firmy musí byť vyplnený
+			address: Adresa firmy musí byť vyplnená
+			number: Číslo domu musí byť vyplnené
+			city: Mesto musí byť vyplnené
+			zip: PSČ musí byť vyplnené
+			ico: IČO musí byť vyplnené
+			dic: DIČ musí byť vyplnené
+			icdph: IČDPH musí byť vyplnené
+		options:
+			foreign_country: "Pre informácie o doručení do zahraničia nás, prosím, kontaktujte na %contactEmail%"
+	printAddress:
+		label:
+			name: Meno
+			last_name: Priezvisko
+			phone_number: Tel. číslo
+			address: Ulica
+			number: Číšlo domu
+			zip: PSČ
+			city: Mesto
+			save: Uložiť údaje
+		required:
+			name: Musíte vyplniť Vaše meno
+			last_name: Musíte vyplniť Vaše priezvisko
+			address: Musíte zadať ulicu
+			number: Musíte zadať číslo domu
+			zip: Musíte zadať PSČ
+			city: Musíte zadať mesto
+
+frontend:
+	sign_in:
+		title: Prihlásenie
+		username:
+			label: 'E-mail:'
+			required: Prosím zadajte Váš email
+			placeholder: Napríklad moj@email.sk
+		password:
+			label: 'Heslo:'
+			required: Prosím zadajte Vaše heslo.
+			placeholder: Vaše heslo
+		remember: Zapamätaj si ma
+		submit: Prihlásiť
+		signed_out: Boli ste odhlásený.
+	change_password:
+		title: Zmena hesla
+		submit: Zmeň heslo
+		actual_password:
+			label: 'Aktuálne heslo:'
+			required: Zadajte prosím Vaše aktuálne heslo
+			placeholder: aktuálne heslo
+		new_password:
+			label: 'Nové heslo:'
+			required: Zadajte prosím Vaše nové heslo
+			placeholder: nové heslo
+			minlength: Heslo musí byť dlhé aspoň %d znakov
+		new_password_confirm:
+			label: 'Nové heslo znovu:'
+			required: Zadajte prosím Vaše nové heslo znovu
+			placeholder: nové heslo znovu
+			description: Pre kontrolu zadajte Vaše nové heslo ešte raz
+			not_matching: Hesla sa nezhodujú
+		errors:
+			could_not_authenticate: Nepodarilo sa overiť Vaše prihlásenie.
+			invalid_credentials: Nesprávne heslo.
+	address:
+		type:
+			label: Typ adresy
+		first_name:
+			label: 'Krstné meno:'
+			placeholder: krstné meno
+		last_name:
+			label: 'Priezvisko:'
+			placeholder: priezvisko
+		phone_number:
+			label: 'Telefón:'
+			placeholder: napríklad 0915 123 456
+		address:
+			label: 'Ulica:'
+			placeholder: napíšte ulicu
+		number:
+			label: 'Číslo domu:'
+			placeholder: napríklad 14/A
+		zip:
+			label: 'PSC:'
+			placeholder: napríklad 08102
+		city:
+			label: 'Mesto:'
+			placeholder: napríklad Trnava
+		country:
+			label: 'Krajina:'
+		company_name:
+			label: 'Meno spoločnosti:'
+			placeholder: 'napríklad Firma s.r.o.'
+		company_id:
+			label: 'IČO:'
+			placeholder: napríklad 9238598283
+		company_tax_id:
+			label: 'DIČ:'
+			placeholder: napríklad 2359023591
+		company_vat_id:
+			label: 'IČDPH:'
+			placeholder: napríklad SK2359023591
+		submit: Ulož
+	request_password:
+		title: Problém s prihlásením
+		info: "Ak si nepamätáte Vaše heslo, na e-mail ktorým ste sa registrovali Vám pošleme postup ako si ho môžete zmeniť."
+		email:
+			label: 'Váš email:'
+			required: Zadajte prosím Váš email
+			placeholder: email na ktorý ste sa registrovali
+		submit: Pošli nové heslo
+		invalid_email: Nesprávny email
+	reset_password:
+		title: Zmena hesla
+		info: Na tejto stránke si môžte zmeniť heslo.
+		errors:
+			invalid_password_reset_token: Odkaz na vytvorenie nového hesla vypršal. Požiadajte prosím o nový odkaz.
+		new_password:
+			label: 'Nové heslo:'
+			required: Zadajte prosím Vaše nové heslo
+			placeholder: nové heslo
+			min_length: Heslo musí byť dlhé aspoň %count% znakov
+		new_password_confirm:
+			label: 'Nové heslo znovu:'
+			required: Zadajte prosím Vaše nové heslo znovu
+			not_matching: Hesla sa nezhodujú
+			placeholder: nové heslo znovu
+			description: Pre kontrolu zadajte Vaše nové heslo ešte raz
+		submit: Zmeň heslo
+		could_not_set: Nepodarilo sa nastaviť nové heslo
+	settings:
+		title: Systémové nastavenia konta
+		personal_data:
+			title: Osobné dáta
+			info: "Tu si môžete stiahnuť a prezrieť osobné dáta, ktoré o Vás systém uchováva."
+			download: Stiahnuť
+		account_delete:
+			title: Zrušenie konta
+			info: 'Ak si želáte nenávratne zmazať používateľské konto, zadajte Vaše heslo a stlačte "Odstrániť účet". <strong>Táto akcia je nezvratná.</strong>'
+			password:
+				label: 'Heslo:'
+				required: Heslo musí byť zadané
+			submit: Odstrániť účet
+			invalid_password: Nesprávne heslo
+			cannot_delete: Používateľa nie je možné zmazať. Kontaktuje prosím zákaznícku podporu.
+			confirm: Zmazanie používateľského účtu je nevratná akcia. Pokračovať?
+
+admin:
+	actions:
+		deactivate: Deaktivuj
+		activate: Aktivuj
+		show: Zobraz
+		edit: Uprav
+
+	default:
+		title: Používatelia
+		total: Celkovo
+		filtered: vyfiltrovaných
+		new_user: Nový používateľ
+		email: Email
+		addresses: Adresy
+		source: Zdroj
+		status: Stav
+		created_at: Vytvorený
+		actions: Akcie
+		invoice: Faktúra
+		institution: Inštitúcia
+		admin: admin
+		no_results: 'Nenašli sa žiadne záznamy, ktoré by zodpovedali filtru'
+
+	edit:
+		edit_user: Úprava používateľa
+		back_to_detail: späť na záznam
+
+	admin_filter_form:
+		text:
+			label: Filter
+			placeholder: Email / Meno / Adresa
+		group: Skupina
+		source: Zdroj
+		submit: Filter
+		cancel_filter: Zruš filter
+		export: Export
+
+	user_form:
+		title: Nový používateľ
+		back_to_list: späť na záznamy
+		credentials: Prihlasovanie
+		email:
+			label: 'E-mail*:'
+			required: E-mail musí byť zadaný
+			placeholder: napíšte email
+		password:
+			label: 'Heslo:'
+			placeholder: heslo musí mať aspoň 6 znakov
+			required: Heslo musí byť zadané
+			description: Nechať prázdne ak nechceme meniť heslo
+		personal_information: Osobné informácie
+		first_name:
+			label: 'Krstné meno:'
+			placeholder: krstné meno
+		last_name:
+			label: 'Priezvisko:'
+			placeholder: priezvisko
+		institution: Inštitúcia
+		is_institution: Je inštitúcia
+		institution_name:
+			label: 'Názov inštitúcie:'
+			placeholder: napríklad Knižnica Martina Bella
+			required: 'Ak je to inštitúcia, musíte zadať aj meno inštitúcie'
+		other: Ostatné
+		invoice: Faktúra na firmu
+		disable_autoinvoice: Vypni automatické vystavovanie faktúr
+		external_id:
+			label: 'Externé ID:'
+			placeholder: číselné externé ID
+			integer: Musí byť číslo
+		role:
+			label: 'Rola:'
+			user: Bežný používateľ
+			admin: Admin
+		active: Aktivovaný
+		submit: Ulož
+		user_created: Používateľ bol vytvorený.
+		user_updated: Používateľ bol aktualizovaný.
+
+	user_groups_form:
+		user_added: Používateľ bol pridaný do skupiny
+		user_removed: Používateľ bol odstránený zo skupiny
+
+	change_activation:
+		activated: Používateľ bol aktualizovaný
+
+	delete_user:
+		deleted: Používateľ bol zmazaný.
+
+	user_note_form:
+		note_updated: Poznámka bola zmenená
+
+	groups_admin:
+		title: Admin Skupiny
+		groups: Skupiny
+		total: Celkovo
+		new_group: Nová skupina
+		name: Názov
+		user_count: Používateľov
+		sorting: Poradie
+		created_at: Vytvorený
+		actions: Akcie
+		no_groups: Nenašli sa žiadne skupiny
+		edit: Uprav
+		back_to_list: späť na zoznam
+		editing_group: Úprava admin skupiny
+		admin_group: Admin skupina
+		edit_group: Upraviť skupinu
+		total_users: Celkovo používateľov
+		view: zobraz
+
+	group_form:
+		name:
+			label: Názov skupiny
+			placeholder: názov skupiny
+		sorting:
+			label: Poradie
+			placeholder: poradie
+		submit: Ulož
+
+	login_attempts:
+		title: Pokusy o prihlásenie
+		total: celkovo
+		filtered: vyfiltrovaných
+		email: E-mail
+		status: Stav prihlásenia
+		source: Zdroj
+		attempt_time: Čas pokusu
+		user_agent: Prehliadač
+		message: Správa
+		no_records: 'Nenašli sa žiadne záznamy, ktoré by zodpovedali filtru'
+
+	login_attempts_form:
+		email:
+			label: E-mail
+			placeholder: E-mail
+		status:
+			label: Stav prihlásenia
+		source:
+			label: Zdroj
+		created_at_from:
+			label: Čas od
+			placeholder: napr. 2016-02-29 12:34
+		created_at_to:
+			label: Čas do
+			placeholder: napr. 2020-02-29 12:34
+		user_agent:
+			label: User agent
+			placeholder: napr. Chrome
+		submit: Filtrovať
+
+	user_actions_log:
+		title: Používateľské udalosti
+		total: celkovo
+		back_to_list: späť na záznamy
+		logaction:
+			label: Udalosť
+		submit: Filtrovať
+		user: Používateľ
+		created_at: Vytvorený
+		action: Udalosť
+		data: Dáta
+		no_records: Nenašli sa žiadne udalosti
+
+	admin_group_admin:
+		title: Admin práva
+		groups: Admin skupiny
+		total: celkovo
+		new_group: Nová admin skupina
+		name: Názov
+		user_count: Používateľov
+		rights: Práva
+		created_at: Vytvorený
+		actions: Akcie
+		no_records: Nenašli sa žiadne admin skupiny
+		edit: Upraviť
+		back_to_list: Spať na zoznam
+		editing_group: Úprava skupiny
+		empty_group: V skupine nie sú žiadni používatelia
+		group_created: Skupina bola vytvorená.
+		group_updated: Skupina bola aktualizovaná.
+		rights_updated: Práva pre skupinu boli nastavené.
+		submit: Ulož
+
+	admin_group_form:
+		name:
+			label: Názov skupiny
+			placeholder: názov skupiny
+		sorting:
+			label: Poradie
+			placeholder: poradie
+		submit: Ulož
+
+	abusive:
+		title: Používatelia s nadmerným počtom prihlásení
+		subtitle: Tabuľka zobrazuje počet rôznych tokenov vytvorených pri prihlásení a použitých vo období ohraničenom podľa zvolených dátumov.
+		date_from: Od
+		date_to: Do
+		number_of_logins: Počet prihlásení
+		number_of_devices: Počet zariadení
+		submit: Zobraziť
+		no_records: 'Nenašli sa žiadne záznamy, ktoré by zodpovedali filtru'
+		email: E-mail
+		name: Meno
+		active_logins: Počet aktívnych prihlásení
+		active_devices: Počet aktívnych zariadení
+		time_ip_last_login: Čas / IP adresa posledného prihlásenia
+		actions: Akcie
+
+authenticator:
+	identity_not_found: Nesprávne meno.
+	invalid_credentials: Heslo je nesprávne.
+	inactive_account: Konto je neaktívne.

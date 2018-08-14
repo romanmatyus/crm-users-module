@@ -1,0 +1,22 @@
+{block #title}Uprava adresy pre {$user->email}{/block}
+
+{block #content}
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="{link UsersAdmin:Show $user->id}"><i class="fa fa-angle-left"></i> späť na záznam</a>
+        <div class="page-header">
+            <h1>
+                Úprava adresy:
+                <small>[{$address->id}]</small>
+                {$user->email}
+            </h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        {control addressForm}
+    </div>
+</div>

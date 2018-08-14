@@ -1,0 +1,27 @@
+{if $totalLogs > 0}
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+            <th>{_users.admin.user_actions_log.user}</th>
+            <th>{_users.admin.user_actions_log.created_at}</th>
+            <th>{_users.admin.user_actions_log.action}</th>
+            <th>{_users.admin.user_actions_log.data}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr n:foreach="$logs as $log">
+            <td>
+                <a href="{plink :Users:UsersAdmin:show $log->user_id}">{$log->user->email}</a>
+            </td>
+            <td class="text-muted">{$log->created_at|userDate}</td>
+            <td><code><a href="{plink :Users:UserActionsLogAdmin:show $log->action}">{$log->action}</a></code></td>
+            <td>
+                {var $data = json_decode($log->params, true)}
+                <pre>{$log->params}</pre>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{else}
+    <p>{_users.admin.user_actions_log.no_records}</p>
+{/if}

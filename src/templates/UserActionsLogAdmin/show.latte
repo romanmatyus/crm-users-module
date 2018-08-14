@@ -1,0 +1,32 @@
+{block #title}{_users.admin.user_actions_log.title}: {$logAction}{/block}
+
+{block #content}
+
+{var $totalLogs = $logs->count('*')}
+
+<div class="row">
+
+    <div class="col-md-12">
+        <a n:href="default"><i class="fa fa-angle-left"></i> {_users.admin.user_actions_log.back_to_list}</a>
+
+        <h1>
+            {_users.admin.user_actions_log.title}: {$logAction}
+            <small>
+                / {_users.admin.user_actions_log.total} {$totalLogs}
+            </small>
+        </h1>
+        <hr>
+    </div>
+
+    <div class="col-md-12">
+        {control logGraph}
+    </div>
+
+
+    <div class="col-md-12">
+        {control userActionsLog}
+    </div>
+
+</div>
+
+

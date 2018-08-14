@@ -1,0 +1,2 @@
+{_dashboard.users.new.title} <i class="fa fa-question-circle" data-toggle="tooltip" data-original-title="{_dashboard.users.new.tooltip, ['start' => date('d.m.Y H:i:s', strtotime('today 00:00')), 'end' => date('d.m.Y H:i:s')]}"></i>
+{$todayUsers|diff:$yesterdayUsers|noescape}

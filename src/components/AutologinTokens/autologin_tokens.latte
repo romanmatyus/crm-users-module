@@ -1,0 +1,29 @@
+{if $totalAutologinTokens == 0}
+  <div class="bs-callout bs-callout-info">
+    <h4>Žiaden záznam</h4>
+    <p class="lead">Tento používateľ nemá aktuálne žiadne prihlasovacie kódy.</p>
+  </div>
+{else}
+  <table class="table table-striped table-hover">
+    <thead>
+      <th>Vytvorené</th>
+      <th>Platný od</th>
+      <th>Platný do</th>
+      <th>Kód</th>
+      <th>Použitý</th>
+      <th>Maximálny počet</th>
+    </thead>
+    <tbody>
+      {foreach $autologinTokens as $token}
+        <tr>
+          <td>{$token->created_at|userDate}</td>
+          <td>{$token->valid_from}</td>
+          <td>{$token->valid_to}</td>
+          <td><code>{$token->token}</code></td>
+          <td>{$token->used_count}</td>
+          <td>{$token->max_count}</td>
+        </tr>
+      {/foreach}
+    </tbody>
+  </table>
+{/if}

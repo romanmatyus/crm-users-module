@@ -1,0 +1,91 @@
+services:
+	moduleManager:
+		setup:
+			- addModule(Crm\UsersModule\UsersModule())
+	accessTokenStorage: Crm\UsersModule\Auth\Access\DummyStorage
+	emailValidator:
+		class: Crm\UsersModule\Email\EmailValidator
+		setup:
+			- addValidator(Crm\UsersModule\Email\RegexpValidator())
+			- addValidator(Crm\UsersModule\Email\StaticDomainFileValidator())
+	filterLoader:
+		setup:
+			- register('gravatar', [Crm\UsersModule\Helpers\GravatarHelper(), process])
+			- register('userLabel', [Crm\UsersModule\Helpers\UserLabelHelper(), process])
+
+	- Crm\UsersModule\Auth\Access\AccessToken
+	- Crm\UsersModule\Auth\LoggedUserTokenAuthorization
+	- Crm\UsersModule\Repository\AccessTokensRepository
+	- Crm\UsersModule\Forms\ChangePasswordFormFactory
+	- Crm\UsersModule\Forms\RequestPasswordFormFactory
+	- Crm\UsersModule\Forms\ResetPasswordFormFactory
+	- Crm\UsersModule\Forms\UserFormFactory
+	- Crm\UsersModule\Forms\UserGroupsFormFactory
+	- Crm\UsersModule\Forms\UserNoteFormFactory
+	- Crm\UsersModule\Forms\GroupFormFactory
+	- Crm\UsersModule\Forms\AdminGroupFormFactory
+	- Crm\UsersModule\Forms\AdminUserGroupFormFactory
+	- Crm\UsersModule\Forms\AddressFormFactory
+	- Crm\UsersModule\Forms\UserDeleteFormFactory
+	- Crm\UsersModule\Repository\UsersRepository
+	- Crm\UsersModule\Repository\GroupsRepository
+	- Crm\UsersModule\Repository\UserGroupsRepository
+	- Crm\UsersModule\Repository\LoginAttemptsRepository
+	- Crm\UsersModule\Repository\ChangePasswordsLogsRepository
+	- Crm\UsersModule\Repository\UserMetaRepository
+	- Crm\UsersModule\Repository\AddressesRepository
+	- Crm\UsersModule\Repository\UserActionsLogRepository
+	- Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
+	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
+	- Crm\UsersModule\Auth\UserManager
+	- Crm\UsersModule\Auth\UserAuthenticator
+	- Crm\UsersModule\Auth\PasswordGenerator
+	- Crm\UsersModule\Auth\Authorizator
+	- Crm\UsersModule\Auth\Permissions
+	- Crm\UsersModule\Auth\Repository\AdminGroupsRepository
+	- Crm\UsersModule\Auth\Repository\AdminAccessRepository
+	- Crm\UsersModule\Builder\UserBuilder
+	- Crm\UsersModule\Repository\CountriesRepository(%countries.default%)
+	- Crm\UsersModule\Commands\AddUserCommand
+	- Crm\UsersModule\Commands\GenerateAccessCommand
+	- Crm\UsersModule\Commands\CheckEmailsCommand
+	- Crm\UsersModule\Components\UserLoginAttempts
+	- Crm\UsersModule\Components\UserPasswordChanges
+	- Crm\UsersModule\Components\AutologinTokens
+	- Crm\UsersModule\Components\UserMeta
+	- Crm\UsersModule\Components\RegisteredUsersStatWidget
+	- Crm\UsersModule\Components\TodayUsersStatWidget
+	- Crm\UsersModule\Components\MonthUsersStatWidget
+	- Crm\UsersModule\Components\MonthToDateUsersStatWidget
+	- Crm\UsersModule\Components\MonthUsersSmallBarGraphWidget
+	- Crm\UsersModule\Events\UserCookieEmailSignHandler
+	- Crm\UsersModule\Events\UserLastAccessHandler
+	- Crm\UsersModule\Events\UserMailHandler
+	- Crm\UsersModule\Events\UpdateUserNameFromAddress
+	- Crm\UsersModule\Api\UsersEmailHandler
+	- Crm\UsersModule\Api\UsersLoginHandler
+	- Crm\UsersModule\Api\ListUsersHandler
+	- Crm\UsersModule\Api\UsersCreateHandler
+	- Crm\UsersModule\Api\UserGroupApiHandler
+	- Crm\UsersModule\Api\UserInfoHandler
+	- Crm\UsersModule\Api\AddressesHandler
+	- Crm\UsersModule\Api\CreateAddressHandler
+	- Crm\UsersModule\Api\UsersConfirmApiHandler
+	- Crm\UsersModule\Events\LoginAttemptHandler
+	- Crm\UsersModule\Repository\AddressTypesRepository
+	- Crm\UsersModule\Repository\PasswordResetTokensRepository
+	- Crm\UsersModule\Commands\UpdateLoginAttemptsCommand
+	- Crm\UsersModule\Components\UserActionLogAdminFactoryInterface
+	- Crm\UsersModule\User\BasicUserDataProvider
+	- Crm\UsersModule\User\AddressesUserDataProvider
+	- Crm\UsersModule\User\AutoLoginTokensUserDataProvider
+	- Crm\UsersModule\User\UserMetaUserDataProvider
+	- Crm\UsersModule\User\ZipBuilder('%tempDir%')
+	- Crm\UsersModule\Segment\SourceCriteria
+	- Crm\UsersModule\Segment\ActiveCriteria
+	- Crm\UsersModule\Segment\EmailCriteria
+	- Crm\UsersModule\Segment\CreatedCriteria
+	- Crm\UsersModule\Seeders\ConfigsSeeder
+	- Crm\UsersModule\Seeders\UsersSeeder
+	- Crm\UsersModule\Components\UserSourcesAccess
+	- Crm\UsersModule\Components\UserTokens

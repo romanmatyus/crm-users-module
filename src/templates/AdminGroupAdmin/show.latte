@@ -1,0 +1,47 @@
+{block head}{/block}
+
+{block title}{$group->name}{/block}
+
+{block #content}
+
+<div class="row">
+  <div class="col-md-12">
+  <a n:href="default"><i class="fa fa-angle-left"></i> {_users.admin.admin_group_admin.back_to_list}</a>
+    <div class="page-header">
+      <h1>
+        <small>[{$group->id}]</small>
+        {$group->name}
+      	<a n:href="Edit $group->id" class="btn btn-primary btn-lg pull-right"><i class="fa fa-pencil"></i> {_users.admin.admin_group_admin.editing_group}</a>
+      </h1>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <p>
+      {_users.admin.admin_group_admin.created_at}: <span class="text-muted">{$group->created_at|userDate}</span>
+    </p>
+
+    {var $usersCount = $group->related('user_groups')->count('*')}
+    <h3>{_users.admin.admin_group_admin.user_count}: <b>{$usersCount}</b></h3>
+    {if $usersCount}
+      {foreach $group->related('user_groups') as $userGroup}
+         <a n:href="UsersAdmin:show $userGroup->user_id">{$userGroup->user->email}</a><br>
+      {/foreach}
+    {else}
+        <p class="text-center text-muted well">{_users.admin.admin_group_admin.empty_group}</p>
+    {/if}
+
+    <hr>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>{_users.admin.admin_group_admin.rights} {$group->related('admin_groups_access')->count('*')} <small>/ {$accesses->count('*')}</small></h3>
+
+    {control accessForm}
+  </div>
+</div>
+

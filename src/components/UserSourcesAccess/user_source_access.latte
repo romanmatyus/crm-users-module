@@ -1,0 +1,14 @@
+<div n:if="$accesses" class="panel panel-default">
+    <div class="panel-heading">{_content.frontend.last_accesses_widget.title}</div>
+    <div class="panel-body">
+        {if $accesses->count('*') === 0}
+            <p class="bg-warning">{_content.frontend.last_accesses_widget.no_data}</p>
+        {/if}
+        {foreach $accesses as $access}
+            <div n:foreach="$accesses as $access">
+                <span class="label label-default">{$access->source}</span><br/>
+                <span class="text text-muted">{$access->last_accessed_at|userDate}</span>
+            </div>
+        {/foreach}
+    </div>
+</div>
