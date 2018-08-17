@@ -10,6 +10,7 @@ use Crm\UsersModule\Repository\CountriesRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Application\UI\Form;
+use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
@@ -126,9 +127,10 @@ class AddressFormFactory
         if (isset($values->id)) {
             $address = $this->addressesRepository->find($values->id);
             $this->addressesRepository->update($address, $values);
-            $this->emitter->emit(new AddressChangedEvent($address));
+            $this->emitter->emit(new AddressChangedEvent($address, true));
             $this->onUpdate->__invoke($form, $address);
         } else {
+            /** @var ActiveRow $address */
             $address = $this->addressesRepository->add(
                 $user,
                 $values->type,
@@ -145,7 +147,7 @@ class AddressFormFactory
                 $values->icdph,
                 $values->company_name
             );
-            $this->emitter->emit(new NewAddressEvent($address));
+            $this->emitter->emit(new NewAddressEvent($address, true));
             $this->onSave->__invoke($form, $address);
         }
     }

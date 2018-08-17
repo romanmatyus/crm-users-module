@@ -9,13 +9,21 @@ class AddressChangedEvent extends AbstractEvent implements IAddressEvent
 {
     private $address;
 
-    public function __construct(ActiveRow $address)
+    private $admin;
+
+    public function __construct(ActiveRow $address, bool $admin = false)
     {
         $this->address = $address;
+        $this->admin = $admin;
     }
 
     public function getAddress(): ActiveRow
     {
         return $this->address;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->admin;
     }
 }
