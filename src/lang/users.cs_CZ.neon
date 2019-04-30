@@ -26,6 +26,22 @@ frontend:
 		remember: Zapamatuj si mě
 		submit: Přihlásit se
 		signed_out: Byli jste odhlášeni.
+	sign_up:
+		title: Registrace
+		username:
+			label: 'E-mail:'
+			required: Prosím zadejte Váš e-mail
+			placeholder: Například jan@novak.cz
+		password:
+			label: 'Heslo:'
+			required: Prosím zadejte Vaše heslo.
+			placeholder: Vaše heslo
+		toc:
+		    required: Musíte souhlasit s podmínkami používání
+		submit: Vytvořit účet
+		error:
+		    already_registered: 'E-mail je již registrován. Prosím přihlašte se zadáním hesla nebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>'
+		    invalid_email: E-mail není platný. Prosím zkontroluje zadaný email.
 	change_password:
 		title: Změna hesla
 		submit: Změnit heslo

@@ -311,6 +311,7 @@ class UsersModule extends CrmModule
     public function registerRoutes(RouteList $router)
     {
         $router[] = new Route('sign/in/', 'Users:Sign:in');
+        $router[] = new Route('sign/up/', 'Users:Sign:up');
     }
 
     public function registerSeeders(SeederManager $seederManager)

@@ -26,6 +26,22 @@ frontend:
 		remember: Zapamätaj si ma
 		submit: Prihlásiť
 		signed_out: Boli ste odhlásený.
+	sign_up:
+		title: Registrácia
+		username:
+			label: 'E-mail:'
+			required: Prosím zadajte Váš email cez ktorý sa budete prihlasovať
+			placeholder: Napríklad moj@email.sk
+		password:
+			label: 'Heslo:'
+			required: Prosím zadajte Vaše heslo pomocou ktorého sa budete prihlasovať.
+			placeholder: Vaše heslo
+		toc:
+		    required: Pre registráciu musíte súhlasiť s podmienkami používania.
+		submit: Vytvoriť účet
+		error:
+		    already_registered: 'Email je už registrovaný. Prosím prihláste sa zadaním hesla alebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>'
+		    invalid_email: Zadaný email je neplatný
 	change_password:
 		title: Zmena hesla
 		submit: Zmeň heslo

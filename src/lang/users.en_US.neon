@@ -26,6 +26,22 @@ frontend:
 		remember: Remember me
 		submit: Sign in
 		signed_out: You've been signed out.
+	sign_up:
+		title: Registration
+		username:
+			label: 'E-mail:'
+			required: Please enter your email
+			placeholder: E.g. moj@email.sk
+		password:
+			label: Password
+			required: Please enter your password
+			placeholder: Your password
+		toc:
+		    required: You have to agree with terms of use
+		submit: Create account
+		error:
+		    already_registered: 'E-mail is already registered. Please sign in by entering your password or reset your password <a href="/users/users/reset-password" style="text-decoration:underline">here</a>'
+		    invalid_email: E-mail is not valid. Please check the email you entered.
 	change_password:
 		title: Change password
 		submit: Change password

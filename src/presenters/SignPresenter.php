@@ -3,29 +3,59 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
+use Crm\ApplicationModule\Snippet\SnippetRenderer;
 use Crm\UsersModule\Auth\Authorizator;
+use Crm\UsersModule\Auth\InvalidEmailException;
+use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\UserSignOutEvent;
 use League\Event\Emitter;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
+use Nette\Utils\Html;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class SignPresenter extends FrontendPresenter
 {
-    /** @var Emitter */
     private $emitter;
 
-    /** @var  Authorizator */
     private $authorizator;
+
+    private $userManager;
+
+    private $snippetRenderer;
+
+    private $referer;
 
     /** @persistent */
     public $back;
 
-    public function __construct(Emitter $emitter, Authorizator $authorizator)
-    {
+    public function __construct(
+        Emitter $emitter,
+        Authorizator $authorizator,
+        UserManager $userManager,
+        SnippetRenderer $snippetRenderer
+    ) {
         parent::__construct();
         $this->emitter = $emitter;
         $this->authorizator = $authorizator;
+        $this->userManager = $userManager;
+        $this->snippetRenderer = $snippetRenderer;
+    }
+
+    public function startup()
+    {
+        parent::startup();
+
+        $refererUrl = $this->request->getReferer();
+        $this->referer = '';
+
+        if ($refererUrl) {
+            $this->referer = $refererUrl->__toString();
+        }
+
+        if ($this->request->getQuery('referer')) {
+            $this->referer = $this->request->getQuery('referer');
+        }
     }
 
     /**
@@ -99,5 +129,87 @@ class SignPresenter extends FrontendPresenter
         $this->restoreRequest($this->getParameter('back'));
 
         $this->redirect('in');
+    }
+
+    public function renderUp()
+    {
+        if ($this->getUser()->isLoggedIn()) {
+            $this->redirect($this->homeRoute);
+        }
+    }
+
+    protected function createComponentSignUpForm()
+    {
+        $form = new Form();
+        $form->setRenderer(new BootstrapRenderer());
+        $form->setTranslator($this->translator);
+
+        $form->addText('username', 'users.frontend.sign_up.username.label')
+            ->setType('email')
+            ->setAttribute('autofocus')
+            ->setRequired('users.frontend.sign_up.username.required')
+            ->setAttribute('placeholder', 'users.frontend.sign_up.username.placeholder');
+
+        $password = $form->addPassword('password', 'users.frontend.sign_up.password.label')
+            ->setAttribute('placeholder', 'users.frontend.sign_up.password.placeholder');
+        $exists = false;
+        if ($this->request->getPost('username')) {
+            $exists = $this->userManager->loadUserByEmail($this->request->getPost('username'));
+        }
+        if (!$exists) {
+            $password->setOption('class', 'hidden');
+        }
+
+
+        $snippet = $this->snippetRenderer->render('terms-of-use-form');
+        if ($snippet) {
+            $form->addCheckbox('toc', Html::el()->setHtml($snippet))
+                ->setRequired('users.frontend.sign_up.toc.required');
+        }
+
+        $form->addHidden('redirect', $this->referer);
+
+        $form->addSubmit('send', 'users.frontend.sign_up.submit');
+
+        $form->onSuccess[] = [$this, 'signUpFormSucceeded'];
+        return $form;
+    }
+
+    public function signUpFormSucceeded($form, $values)
+    {
+        if ($this->userManager->loadUserByEmail($values->username) && !$values->password) {
+            $form->addError('users.frontend.sign_up.error.already_registered');
+            return;
+        }
+
+        $referer = null;
+        if (isset($values->redirect) && $values->redirect) {
+            $referer = $values->redirect;
+        }
+
+        if ($values->password) {
+            try {
+                $this->getUser()->login(['username' => $values->username, 'password' => $values->password]);
+            } catch (AuthenticationException $exp) {
+                $form->addError($exp->getMessage());
+                return;
+            }
+
+            $this->userManager->loadUserByEmail($values->username);
+        } else {
+            try {
+                $this->userManager->addNewUser($values->username, true, 'signup-form', $referer);
+            } catch (InvalidEmailException $e) {
+                $form->addError('users.frontend.sign_up.error.invalid_email');
+                return;
+            }
+            $this->getUser()->login(['username' => $values->username, 'alwaysLogin' => true]);
+        }
+
+        if ($referer) {
+            $this->redirectUrl($referer);
+        } else {
+            $this->redirect($this->homeRoute);
+        }
     }
 }
