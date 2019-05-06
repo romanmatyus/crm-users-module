@@ -4,6 +4,12 @@ namespace Crm\UsersModule\Components\Widgets;
 
 use Crm\ApplicationModule\Widget\BaseWidget;
 
+/**
+ * This widget fetches all widgets for specific widget namespace
+ * and render bootstrap styled tab for each widget.
+ *
+ * @package Crm\UsersModule\Components\Widgets
+ */
 class DetailWidget extends BaseWidget
 {
     private $templateName = 'detail_widget.latte';

@@ -7,6 +7,12 @@ use Crm\ApplicationModule\Widget\WidgetManager;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Utils\DateTime;
 
+/**
+ * This widget fetches new users from start of the month to current date
+ * and renders simple stat widget + last months value in comparison.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class MonthToDateUsersStatWidget extends BaseWidget
 {
     private $templateName = 'month_to_date_users_stat_widget.latte';

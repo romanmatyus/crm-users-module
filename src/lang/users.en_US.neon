@@ -501,6 +501,28 @@ component:
 		delete_all: Delete all
 		delete_single: Delete token
 
+	autologin_tokens:
+		created: Created at
+		from: Valid from
+		to: Valid to
+		code: Code
+		used: Used
+		max: Max count
+		empty_title: No entry
+		empty_text: This user currently has no login codes.
+
+	user_password_changes:
+		title: Changes
+		title_requests: Requests for changes
+		empty_title: No entry
+		empty_entry_text: "This user hasn't changed their password yet."
+		empty_request_text: This user has not yet requested a change.
+		type: Type
+		when: When
+		expire_at: Expire at
+		state: State
+		token: Token
+
 config:
 	category: Users
 	not_logged_in_route:

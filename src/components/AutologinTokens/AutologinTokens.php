@@ -6,6 +6,12 @@ use Crm\ApplicationModule\Widget\WidgetInterface;
 use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Nette\Application\UI\Control;
 
+/**
+ * This widget fetches autologin tokens for specific user
+ * and renders bootstrap table listing.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class AutologinTokens extends Control implements WidgetInterface
 {
     private $templateName = 'autologin_tokens.latte';

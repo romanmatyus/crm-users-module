@@ -6,6 +6,11 @@ use Crm\ApplicationModule\Widget\BaseWidget;
 use Crm\ApplicationModule\Widget\WidgetManager;
 use Crm\UsersModule\Repository\UsersRepository;
 
+/**
+ * This widget renders simple single stat widget with total users count.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class RegisteredUsersStatWidget extends BaseWidget
 {
     private $templateName = 'registered_users_stat_widget.latte';

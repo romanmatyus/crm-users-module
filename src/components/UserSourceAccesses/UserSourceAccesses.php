@@ -6,6 +6,12 @@ use Crm\ApiModule\Repository\UserSourceAccessesRepository;
 use Crm\ApplicationModule\Widget\BaseWidget;
 use Crm\ApplicationModule\Widget\WidgetManager;
 
+/**
+ * This widget fetches last user accesses from access repository
+ * and renders bootstrap panel with last access date for each access type.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class UserSourceAccesses extends BaseWidget
 {
     private $templateName = 'user_source_accesses.latte';

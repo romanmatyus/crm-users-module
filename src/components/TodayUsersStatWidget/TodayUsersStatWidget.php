@@ -7,6 +7,11 @@ use Crm\ApplicationModule\Widget\WidgetManager;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Utils\DateTime;
 
+/**
+ * This widget renders simple single stat widget with count of users registered today.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class TodayUsersStatWidget extends BaseWidget
 {
     private $templateName = 'today_users_stat_widget.latte';

@@ -10,6 +10,12 @@ use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 
+/**
+ * This widget fetches user meta data and renders
+ * bootstrap styles table.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class UserMeta extends Control implements WidgetInterface
 {
     private $templateName = 'user_meta.latte';

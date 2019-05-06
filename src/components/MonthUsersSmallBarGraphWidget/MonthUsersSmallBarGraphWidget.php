@@ -10,6 +10,12 @@ use Crm\ApplicationModule\Widget\BaseWidget;
 use Crm\ApplicationModule\Widget\WidgetManager;
 use Nette\Localization\ITranslator;
 
+/**
+ * This widget fetches data of new created users for each day
+ * of the last month and renders simple google graph.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class MonthUsersSmallBarGraphWidget extends BaseWidget
 {
     private $templateName = 'month_users_small_bar_graph_widget.latte';
