@@ -220,8 +220,12 @@ When the user is registered, he/she is automatically logged in and user token is
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
 | email | *String* | yes | - |
+| first_name | *String* | no | - |
+| last_name | *String* | no | - |
+| ext_id | *Integer* | no | User identificator from external system |
 | source | *String* | no | Source of user registration - string label groupping users registered via the same source. |
 | referer | *String* | no | Referer URL to indicate where user got registered. |
+| note | *String* | no | Note visible only to administrators |
 | send_email | *String* | no | Flag whether to send welcome email after the registration. If not provided, the system will send an email. |
 | disable_email_validation | *Boolean* | no | Flag whether to bypass email address validation. If not provided, the system will validate email address. |
 

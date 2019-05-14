@@ -51,8 +51,12 @@ class UsersCreateHandler extends ApiHandler
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),
+            new InputParam(InputParam::TYPE_POST, 'first_name', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'last_name', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'ext_id', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'source', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'referer', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'note', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'send_email', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'disable_email_validation', InputParam::OPTIONAL),
         ];
@@ -122,6 +126,25 @@ class UsersCreateHandler extends ApiHandler
             return $response;
         }
 
+        $userData = [];
+        if (!empty($params['first_name'])) {
+            $userData['first_name'] = $params['first_name'];
+        }
+
+        if (!empty($params['last_name'])) {
+            $userData['last_name'] = $params['last_name'];
+        }
+
+        if (!empty($params['ext_id'])) {
+            $userData['ext_id'] = (int) $params['ext_id'];
+        }
+
+        if (!empty($params['note'])) {
+            $userData['note'] = $params['note'];
+        }
+
+        $user->update($userData);
+
         if ($source == 'newsletter') {
             $group = $this->groupsRepository->find($this->newsletterGroupId);
             if ($group) {
@@ -153,6 +176,10 @@ class UsersCreateHandler extends ApiHandler
                 'last_name' => $user->last_name,
             ],
         ];
+
+        if ($user->ext_id) {
+            $result['user']['ext_id'] = $user->ext_id;
+        }
 
         $lastToken = $this->accessTokensRepository->allUserTokens($user->id)->limit(1)->fetch();
 
