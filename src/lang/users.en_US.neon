@@ -190,6 +190,8 @@ admin:
 		last_market_at: Last market at
 		basic_info: Basic info
 		email: E-mail
+		first_name: First name
+		last_name: Last name
 		unconfirmed: Unconfirmed
 		created_at: Created at
 		modified_at: Updated at

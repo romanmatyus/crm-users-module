@@ -190,6 +190,8 @@ admin:
 		last_market_at: Naposledy kontaktován
 		basic_info: Základní info
 		email: E-mail
+		first_name: Křestní jméno
+		last_name: Příjmení
 		unconfirmed: Nepotvrzený
 		created_at: Vytvořený
 		modified_at: Upravený
