@@ -154,6 +154,78 @@ frontend:
 			success: Vaše konto bylo smazáno.
 
 admin:
+	actions:
+		deactivate: Deaktivuj
+		activate: Aktivuj
+		show: Zobraz
+		edit: Uprav
+
+	default:
+		title: Uživatelé
+		total: Celkově
+		filtered: vyfiltrovaných
+		new_user: Nový uživatel
+		email: Email
+		addresses: Adresy
+		source: Zdroj
+		status: Stav
+		created_at: Vytvořený
+		actions: Akce
+		invoice: Faktura
+		institution: Instituce
+		admin: admin
+		no_results: 'Nebyly nalezeny žádné záznamy, které by odpovídaly filtru'
+
+	show:
+		back_to_list: zpět na seznam
+		edit: Upravit uživatele
+		groups: Skupiny
+		note: Poznámka
+		admin_groups: "Admin skupiny (práva)"
+		user_actions: Akce nad uživatelem
+		log_out_devices: Odhlásit na všech zařízeních
+		suspicious: Podezřelé konto
+		last_market_at: Naposledy kontaktován
+		basic_info: Základní info
+		email: E-mail
+		unconfirmed: Nepotvrzený
+		created_at: Vytvořený
+		modified_at: Upravený
+		active: Aktivní
+		deactivate: Deaktivuj
+		activate: Aktivuj
+		external_id: Externí ID
+		source: Zdroj
+		funnel: Funnel při registraci
+		referer: Referer při registraci
+		no_print_address: Žádná adresa pro doručování
+		invoice_address: Fakturační adresa
+		add_address: Přidej adresu
+		disabled_auto_invoice: Vypnuté automatické generování faktury
+		last_login: Poslední přihlášení
+		no_login: Zatím nebyl přihlášen
+		personal_info: Osobní údaje
+		anonymize_alert: "Anonymizace uživatelského účtu je nevratná akce, po níž se uživatel nebude moci znovu přihlásit a všechny osobní data budou smazány. Opravdu pokračovat?"
+		anonymize: Anonymizace uživatele
+		company_id: IČO
+		company_tax_id: DIČ
+		company_vat_id: IČDPH
+		address: Adresa
+
+	edit:
+		edit_user: Úprava uživatele
+		back_to_detail: zpět na záznam
+
+	admin_filter_form:
+		text:
+			label: Filtr
+			placeholder: Email / jméno / Adresa
+		group: Skupina
+		source: Zdroj
+		submit: Filtr
+		cancel_filter: Zruš filtr
+		export: Export
+
 	user_form:
 		title: Nový uživatel
 		back_to_list: zpět na záznamy
@@ -197,6 +269,52 @@ admin:
 		user_created:  Uživatel byl vytvořen.
 		user_updated: Uživatel byl aktualizován.
 
+	user_groups_form:
+		user_added: Uživatel byl přidán do skupiny
+		user_removed: Uživatel byl odstraněn ze skupiny
+
+	change_activation:
+		activated: Uživatel byl aktualizován
+
+	delete_user:
+		deleted: Uživatel byl smazán.
+
+	logout_user:
+		all_devices: 'Uživatel byl odhlášen na všech zařízeních'
+
+	user_note_form:
+		note_updated: Poznámka byla změněna
+		note:
+			placeholder: Sem můžete napsat poznámku
+
+	groups_admin:
+		title: Admin skupiny
+		groups: Skupiny
+		total: Celkově
+		new_group: Nová skupina
+		name: Název
+		user_count: Uživatelů
+		sorting: Pořadí
+		created_at: Vytvořený
+		actions: Akce
+		no_groups: Nebyly nalezeny žádné skupiny
+		edit: Uprav
+		back_to_list: zpět na seznam
+		editing_group: Úprava admin skupiny
+		admin_group: Admin skupina
+		edit_group: Upravit skupinu
+		total_users: Celkově uživatelů
+		view: zobraz
+
+	group_form:
+		name:
+			label: Název skupiny
+			placeholder: název skupiny
+		sorting:
+			label: Pořadí
+			placeholder: pořadí
+		submit: Ulož
+
 	login_attempts:
 		title: Pokusy o přihlášení
 		total: celkově
@@ -210,49 +328,82 @@ admin:
 		no_records: 'Nebyly nalezeny žádné záznamy, které by odpovídaly filtru'
 		today: Dnes
 
-	show:
-		back_to_list: zpět na seznam
-		edit: Upravit uživatele
-		groups: Skupiny
-		note: Poznámka
-		admin_groups: "Admin skupiny (práva)"
-		user_actions: Akce nad uživatelem
-		log_out_devices: Odhlásit na všech zařízeních
-		suspicious: Podezřelé konto
-		last_market_at: Naposledy kontaktován
-		basic_info: Základní info
-		email: E-mail
-		unconfirmed: Nepotvrzený
+	login_attempts_form:
+		email:
+			label: E-mail
+			placeholder: E-mail
+		status:
+			label: Stav přihlášení
+		source:
+			label: Zdroj
+		created_at_from:
+			label: Čas od
+			placeholder: např. 2016-02-29 12:34
+		created_at_to:
+			label: Čas do
+			placeholder: např. 2020-02-29 12:34
+		user_agent:
+			label: User agent
+			placeholder: např. chrome
+		submit: Filtrovat
+
+	user_actions_log:
+		title: Uživatelské události
+		total: celkově
+		back_to_list: zpět na záznamy
+		logaction:
+			label: Událost
+		submit: Filtrovat
+		user: Uživatel
 		created_at: Vytvořený
-		modified_at: Upravený
-		active: Aktivní
-		deactivate: Deaktivuj
-		activate: Aktivuj
-		external_id: Externí ID
-		source: Zdroj
-		funnel: Funnel při registraci
-		referer: Referer při registraci
-		no_print_address: Žádná adresa pro doručování
-		invoice_address: Fakturační adresa
-		add_address: Přidej adresu
-		disabled_auto_invoice: Vypnuté automatické generování faktury
-		last_login: Poslední přihlášení
-		no_login: Zatím nebyl přihlášen
-		personal_info: Osobní údaje
-		anonymize_alert: "Anonymizace uživatelského účtu je nevratná akce, po níž se uživatel nebude moci znovu přihlásit a všechny osobní data budou smazány. Opravdu pokračovat?"
-		anonymize: Anonymizace uživatele
-		company_id: IČO
-		company_tax_id: DIČ
-		company_vat_id: IČDPH
-		address: Adresa
+		action: Událost
+		data: Data
+		no_records: Nebyly nalezeny žádné události
 
-	user_note_form:
-		note_updated: Poznámka byla změněna
-		note:
-			placeholder: Sem můžete napsat poznámku
+	admin_group_admin:
+		title: Admin práva
+		groups: Admin skupiny
+		total: celkově
+		new_group: Nová admin skupina
+		name: Název
+		user_count: Uživatelů
+		rights: Práva
+		created_at: Vytvořený
+		actions: Akce
+		no_records: Nebyly nalezeny žádné admin skupiny
+		edit: Upravit
+		back_to_list: Spát na seznam
+		editing_group: Úprava skupiny
+		empty_group: Ve skupině nejsou žádní uživatelé
+		group_created: Skupina byla vytvořena.
+		group_updated: Skupina byla aktualizována.
+		rights_updated: Práva pro skupinu byly nastaveny.
+		submit: Ulož
 
-	logout_user:
-		all_devices: 'Uživatel byl odhlášen na všech zařízeních'
+	admin_group_form:
+		name:
+			label: Název skupiny
+			placeholder: název skupiny
+		sorting:
+			label: Pořadí
+			placeholder: pořadí
+		submit: Ulož
+
+	abusive:
+		title: Uživatelé s nadměrným počtem přihlášení
+		subtitle: Tabulka zobrazuje počet různých tokenů vytvořených při přihlášení a použitých ve období ohraničeném podle zvolených dat.
+		date_from: Od
+		date_to: Do
+		number_of_logins: Počet přihlášení
+		number_of_devices: Počet zařízení
+		submit: Zobrazit
+		no_records: 'Nebyly nalezeny žádné záznamy, které by odpovídaly filtru'
+		email: E-mail
+		name: Jméno
+		active_logins: Počet aktivních přihlášení
+		active_devices: Počet aktivních zařízení
+		time_ip_last_login: Čas / IP adresa posledního přihlášení
+		actions: Akce
 
 authenticator:
 	identity_not_found: Nesprávné jméno.

@@ -80,7 +80,7 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
         $form->setRenderer(new BootstrapInlineRenderer());
 
         $form->addText('email', $this->translator->translate('users.admin.login_attempts_form.email.label'))
-            ->setAttribute('placeholder', 'users.admin.login_attempts_form.email.placeholder')
+            ->setAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.email.placeholder'))
             ->setAttribute('autofocus');
 
         $statuses = $this->loginAttemptsRepository->getTable()->select("DISTINCT status")->fetchPairs("status", "status");

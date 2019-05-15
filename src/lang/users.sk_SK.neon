@@ -325,6 +325,7 @@ admin:
 		attempt_time: Čas pokusu
 		user_agent: Prehliadač
 		message: Správa
+		no_records: Nenašli sa žiadne pokusy o prihlásenie
 
 	login_attempts_form:
 		email:
