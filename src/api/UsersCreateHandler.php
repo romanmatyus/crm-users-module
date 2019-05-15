@@ -10,9 +10,7 @@ use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AccessTokensRepository;
-use Crm\UsersModule\Repository\GroupsRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
-use Crm\UsersModule\Repository\UserGroupsRepository;
 use Nette\Http\Response;
 use Nette\Utils\Validators;
 
@@ -22,29 +20,12 @@ class UsersCreateHandler extends ApiHandler
 
     private $accessTokensRepository;
 
-    private $userGroupsRepository;
-
-    private $groupsRepository;
-
-    /** @var int */
-    private $newsletterGroupId = 10;
-
-    /** @var int */
-    private $mofaAppUserGroupId = 11;
-
-    /** @var int */
-    private $freeClanokGroupId = 12;
-
     public function __construct(
         UserManager $userManager,
-        AccessTokensRepository $accessTokensRepository,
-        UserGroupsRepository $userGroupsRepository,
-        GroupsRepository $groupsRepository
+        AccessTokensRepository $accessTokensRepository
     ) {
         $this->userManager = $userManager;
         $this->accessTokensRepository = $accessTokensRepository;
-        $this->userGroupsRepository = $userGroupsRepository;
-        $this->groupsRepository = $groupsRepository;
     }
 
     public function params()
@@ -144,28 +125,6 @@ class UsersCreateHandler extends ApiHandler
         }
 
         $user->update($userData);
-
-        if ($source == 'newsletter') {
-            $group = $this->groupsRepository->find($this->newsletterGroupId);
-            if ($group) {
-                $this->userGroupsRepository->addToGroup($group, $user);
-            }
-        }
-
-        if ($source == 'freeclanok') {
-            $group = $this->groupsRepository->find($this->freeClanokGroupId);
-            if ($group) {
-                $this->userGroupsRepository->addToGroup($group, $user);
-            }
-        }
-
-        // pouzivatelov registrovanych cez appku priradime to samostatnej skupiny
-        if ($source == 'dennikn_mobile_app') {
-            $group = $this->groupsRepository->find($this->mofaAppUserGroupId);
-            if ($group) {
-                $this->userGroupsRepository->addToGroup($group, $user);
-            }
-        }
 
         $result = [
             'status' => 'ok',
