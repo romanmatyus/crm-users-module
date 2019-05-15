@@ -166,6 +166,8 @@ admin:
 		filtered: vyfiltrovaných
 		new_user: Nový uživatel
 		email: Email
+		first_name: Jméno
+		last_name: Příjmení
 		addresses: Adresy
 		source: Zdroj
 		status: Stav
