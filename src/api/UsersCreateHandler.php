@@ -76,10 +76,6 @@ class UsersCreateHandler extends ApiHandler
             $source = $params['source'];
         }
 
-        // specialny hack
-        if ($source == 'api') {
-            $source = 'freeclanok';
-        }
         $referer = null;
         if (isset($params['referer']) && $params['referer']) {
             $referer = $params['referer'];
