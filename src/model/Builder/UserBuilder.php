@@ -169,6 +169,7 @@ class UserBuilder extends Builder
 
         $this->hermesEmitter->emit(new HermesMessage('user-created', [
             'user_id' => $row->id,
+            'password' => $this->originalPassword
         ]));
         return $row;
     }
