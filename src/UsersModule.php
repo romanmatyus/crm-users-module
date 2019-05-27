@@ -166,6 +166,18 @@ class UsersModule extends CrmModule
             \Crm\UsersModule\Events\UserMetaEvent::class,
             $this->getInstance(\Crm\ApplicationModule\Events\RefreshUserDataTokenHandler::class)
         );
+        $emitter->addListener(
+            \Crm\UsersModule\Events\UserSignInEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\SignEventHandler::class)
+        );
+        $emitter->addListener(
+            \Crm\UsersModule\Events\UserSignOutEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\SignEventHandler::class)
+        );
+        $emitter->addListener(
+            \Crm\ApplicationModule\Events\AuthenticationEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\AuthenticationHandler::class)
+        );
     }
 
     public function registerCommands(CommandsContainerInterface $commandsContainer)
