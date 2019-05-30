@@ -58,6 +58,7 @@ class AuthenticationHandler extends AbstractListener
 
         $token = $this->accessToken->getToken($event->getRequest());
         if ($token && !$this->accessTokensRepository->loadToken($token)) {
+            $this->accessToken->deleteActualUserToken($user, $this->request, $this->response);
             throw new AuthenticationException($this->translator->translate('users.frontend.sign_in.signed_out'));
         }
     }
