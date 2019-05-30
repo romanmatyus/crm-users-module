@@ -8,7 +8,6 @@ use Crm\UsersModule\Auth\Authorizator;
 use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\UserSignOutEvent;
-use League\Event\Emitter;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\Html;
@@ -16,8 +15,6 @@ use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class SignPresenter extends FrontendPresenter
 {
-    private $emitter;
-
     private $authorizator;
 
     private $userManager;
@@ -30,13 +27,11 @@ class SignPresenter extends FrontendPresenter
     public $back;
 
     public function __construct(
-        Emitter $emitter,
         Authorizator $authorizator,
         UserManager $userManager,
         SnippetRenderer $snippetRenderer
     ) {
         parent::__construct();
-        $this->emitter = $emitter;
         $this->authorizator = $authorizator;
         $this->userManager = $userManager;
         $this->snippetRenderer = $snippetRenderer;

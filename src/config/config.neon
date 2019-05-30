@@ -72,6 +72,8 @@ services:
 	- Crm\UsersModule\Events\UserLastAccessHandler
 	- Crm\UsersModule\Events\UserMailHandler
 	- Crm\UsersModule\Events\UpdateUserNameFromAddress
+	- Crm\UsersModule\Events\SignEventHandler
+	- Crm\UsersModule\Events\AuthenticationHandler
 	- Crm\UsersModule\Api\UsersEmailHandler
 	- Crm\UsersModule\Api\UsersLoginHandler
 	- Crm\UsersModule\Api\ListUsersHandler

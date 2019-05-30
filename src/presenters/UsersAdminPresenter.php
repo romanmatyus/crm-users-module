@@ -19,7 +19,6 @@ use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\GroupsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
-use League\Event\Emitter;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Utils\DateTime;
@@ -58,8 +57,6 @@ class UsersAdminPresenter extends AdminPresenter
 
     private $changePasswordsLogsRepository;
 
-    private $emitter;
-
     public function __construct(
         UsersRepository $usersRepository,
         UserFormFactory $userFormFactory,
@@ -71,8 +68,7 @@ class UsersAdminPresenter extends AdminPresenter
         DeleteUserData $deleteUserData,
         DataProviderManager $dataProviderManager,
         UserManager $userManager,
-        ChangePasswordsLogsRepository $changePasswordsLogsRepository,
-        Emitter $emitter
+        ChangePasswordsLogsRepository $changePasswordsLogsRepository
     ) {
         parent::__construct();
         $this->usersRepository = $usersRepository;
@@ -86,7 +82,6 @@ class UsersAdminPresenter extends AdminPresenter
         $this->dataProviderManager = $dataProviderManager;
         $this->userManager = $userManager;
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
-        $this->emitter = $emitter;
     }
 
     public function startup()
