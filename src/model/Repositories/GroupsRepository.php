@@ -20,6 +20,11 @@ class GroupsRepository extends Repository
         ]);
     }
 
+    public function exists($name)
+    {
+        return $this->getTable()->where(['name' => $name])->count('*') > 0;
+    }
+
     /**
      * @return Selection
      */
