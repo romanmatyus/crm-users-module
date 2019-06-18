@@ -45,12 +45,6 @@ class UsersEmailHandler extends ApiHandler
             return $response;
         }
 
-        if (!Validators::isEmail($params['email']) || !$this->emailValidator->isValid($params['email'])) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email format', 'code' => 'invalid_email']);
-            $response->setHttpCode(Response::S200_OK);
-            return $response;
-        }
-
         $status = 'available';
         $passwordStatus = null;
         $user = $this->userManager->loadUserByEmail($params['email']);
@@ -62,6 +56,11 @@ class UsersEmailHandler extends ApiHandler
             if ($params['password']) {
                 $passwordStatus = Passwords::verify($params['password'], $user->password);
             }
+            // Validate email format only if user email does not exist in our DB, since external services may be slow
+        } elseif (!Validators::isEmail($params['email']) || !$this->emailValidator->isValid($params['email'])) {
+            $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email format', 'code' => 'invalid_email']);
+            $response->setHttpCode(Response::S200_OK);
+            return $response;
         }
 
         $result = [
