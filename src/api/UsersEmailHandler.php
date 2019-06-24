@@ -58,9 +58,7 @@ class UsersEmailHandler extends ApiHandler
             }
             // Validate email format only if user email does not exist in our DB, since external services may be slow
 
-        // TODO: temporarily disable external validation (too slow), see ticket remp/crm#742
-        } elseif (!Validators::isEmail($params['email'])) {
-        //} elseif (!Validators::isEmail($params['email']) || !$this->emailValidator->isValid($params['email'])) {
+        } elseif (!Validators::isEmail($params['email']) || !$this->emailValidator->isValid($params['email'])) {
             $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email format', 'code' => 'invalid_email']);
             $response->setHttpCode(Response::S200_OK);
             return $response;
