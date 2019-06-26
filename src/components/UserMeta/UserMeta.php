@@ -7,6 +7,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 
 class UserMeta extends Control implements WidgetInterface
@@ -17,20 +18,26 @@ class UserMeta extends Control implements WidgetInterface
 
     private $usersRepository;
 
+    private $translator;
+
     private $user;
 
     private $userId;
 
-    public function __construct(UserMetaRepository $userMetaRepository, UsersRepository $usersRepository)
-    {
+    public function __construct(
+        UserMetaRepository $userMetaRepository,
+        UsersRepository $usersRepository,
+        ITranslator $translator
+    ) {
         parent::__construct();
         $this->userMetaRepository = $userMetaRepository;
         $this->usersRepository = $usersRepository;
+        $this->translator = $translator;
     }
 
     public function header($id = '')
     {
-        $header = 'Vlastné nastavenia';
+        $header = $this->translator->translate('users.component.user_meta.header');
         if ($id) {
             $header .= ' <small>(' . $this->totalCount($id) . ')</small>';
         }
@@ -65,29 +72,36 @@ class UserMeta extends Control implements WidgetInterface
     public function handleDelete($id, $key)
     {
         $this->userMetaRepository->removeMeta($id, $key);
-        $this->presenter->flashMessage('Hodnota bola zmazaná');
+        $this->presenter->flashMessage($this->translator->translate('users.component.user_meta.value_removed'));
         $this->presenter->redirect('UsersAdmin:Show', $id);
     }
 
     protected function createComponentMetaForm()
     {
         $form = new Form();
+        $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapInlineRenderer());
-        $form->addText('key', 'Kľúč');
-        $form->addText('value', 'Hodnota');
-        $form->addCheckbox('is_public', 'Verejné');
+
+        $form->addText('key', 'users.component.user_meta.form.key.label')
+            ->setRequired('users.component.user_meta.form.key.required');
+
+        $form->addText('value', 'users.component.user_meta.form.value.label')
+            ->setRequired('users.component.user_meta.form.value.required');
+
+        $form->addCheckbox('is_public', 'users.component.user_meta.form.is_public.label');
         $form->addHidden('user_id', $this->userId);
-        $form->addSubmit('submit', 'Ulož');
-        $form->onSubmit[] = function ($form) {
-            $values = $form->getValues();
+        $form->addSubmit('submit', 'users.component.user_meta.form.submit');
+
+        $form->onSuccess[] = function ($form, $values) {
             $this->userMetaRepository->setMeta(
                 $this->getUser($values['user_id']),
                 [$values['key'] => $values['value']],
                 $values->is_public
             );
-            $this->presenter->flashMessage('Hodnota bola pridaná');
+            $this->presenter->flashMessage($this->translator->translate('users.component.user_meta.value_added'));
             $this->presenter->redirect('UsersAdmin:Show', $values['user_id']);
         };
+
         return $form;
     }
 

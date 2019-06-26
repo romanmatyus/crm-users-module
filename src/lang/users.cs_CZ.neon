@@ -458,3 +458,25 @@ component:
 		message: Popis
 		ip_address: IP
 		user_agent: Prohlížeč / Referer
+
+	user_meta:
+		header: Vlastní nastavení
+		value_removed: Hodnota byla smazána
+		value_added: Hodnota byla přidána
+		form:
+			key:
+				label: Klíč
+				required: Klíč je povinen
+			value:
+				label: Hodnota
+				required: Hodnota je povinná
+			is_public:
+				label: Veřejné
+			submit: Ulož
+		no_record: Žádný záznam
+		no_record_description: K tomuto uživateli neexistují žádné vlastní nastavení.
+		key: Klíč
+		value: Hodnota
+		created_at: Vytvořeno
+		actions: Akce
+		public: Veřejné

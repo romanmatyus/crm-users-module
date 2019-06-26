@@ -457,3 +457,25 @@ component:
 		message: Message
 		ip_address: IP
 		user_agent: Browser / Referer
+
+	user_meta:
+		header: Custom settings
+		value_removed: Value was removed
+		value_added: Value was added
+		form:
+			key:
+				label: Key
+				required: Key is required
+			value:
+				label: Value
+				required: Value is required
+			is_public:
+				label: Public
+			submit: Save
+		no_record: No record available
+		no_record_description: There is no record stored for this user.
+		key: Key
+		value: Value
+		created_at: Created at
+		actions: Actions
+		public: Public
