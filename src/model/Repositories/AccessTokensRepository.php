@@ -40,8 +40,7 @@ class AccessTokensRepository extends Repository
 
     public function add(IRow $user, int $version)
     {
-        $tokenGenerator = new TokenGenerator();
-        $token = $tokenGenerator->generate($user->email);
+        $token = TokenGenerator::generate();
 
         $row = $this->insert([
             'token' => $token,

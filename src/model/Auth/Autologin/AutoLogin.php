@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Auth\AutoLogin;
 
+use Crm\UsersModule\Auth\Access\TokenGenerator;
 use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Nette\Database\IRow;
 use Nette\Utils\DateTime;
@@ -38,7 +39,7 @@ class AutoLogin
 
     public function addUserToken(IRow $user, DateTime $validFrom, DateTime $validTo, $maxCount = 1)
     {
-        $token = $this->generateToken($user);
+        $token = TokenGenerator::generate();
         return $this->autoLoginTokensRepository->add(
             $token,
             $user,
@@ -46,10 +47,5 @@ class AutoLogin
             $validTo,
             $maxCount
         );
-    }
-
-    private function generateToken(IRow $user)
-    {
-        return md5(time() . $user->id . $user->email . rand(100, 100000) . rand(10000, 1000000));
     }
 }
