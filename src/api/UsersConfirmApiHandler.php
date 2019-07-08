@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
+use Crm\ApiModule\Api\IdempotentHandlerInterface;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Params\InputParam;
@@ -10,7 +11,7 @@ use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserManager;
 use Nette\Http\Response;
 
-class UsersConfirmApiHandler extends ApiHandler
+class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInterface
 {
     private $userManager;
 
@@ -47,6 +48,13 @@ class UsersConfirmApiHandler extends ApiHandler
 
         $this->userManager->confirmUser($user);
 
+        $response = new JsonResponse(['status' => 'ok']);
+        $response->setHttpCode(Response::S200_OK);
+        return $response;
+    }
+
+    public function idempotentHandle(ApiAuthorizationInterface $authorization)
+    {
         $response = new JsonResponse(['status' => 'ok']);
         $response->setHttpCode(Response::S200_OK);
         return $response;
