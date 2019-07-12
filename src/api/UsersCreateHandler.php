@@ -11,6 +11,7 @@ use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
+use Nette\Database\Table\IRow;
 use Nette\Http\Response;
 use Nette\Utils\Validators;
 
@@ -113,7 +114,7 @@ class UsersCreateHandler extends ApiHandler
         }
 
         if (!empty($params['ext_id'])) {
-            $userData['ext_id'] = (int) $params['ext_id'];
+            $userData['ext_id'] = (int)$params['ext_id'];
         }
 
         if (!empty($params['note'])) {
@@ -122,6 +123,15 @@ class UsersCreateHandler extends ApiHandler
 
         $user->update($userData);
 
+        $result = $this->formatResponse($user);
+
+        $response = new JsonResponse($result);
+        $response->setHttpCode(Response::S200_OK);
+        return $response;
+    }
+
+    private function formatResponse(IRow $user): array
+    {
         $result = [
             'status' => 'ok',
             'user' => [
@@ -141,9 +151,6 @@ class UsersCreateHandler extends ApiHandler
         if ($lastToken) {
             $result['access']['token'] = $lastToken->token;
         }
-
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
-        return $response;
+        return $result;
     }
 }
