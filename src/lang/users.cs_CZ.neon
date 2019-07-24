@@ -408,6 +408,8 @@ admin:
 		active_devices: Počet aktivních zařízení
 		time_ip_last_login: Čas / IP adresa posledního přihlášení
 		actions: Akce
+	stats:
+		title: Statistiky uživatelů
 
 authenticator:
 	identity_not_found: Nesprávné jméno.

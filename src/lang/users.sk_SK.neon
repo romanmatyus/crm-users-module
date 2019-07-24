@@ -407,6 +407,8 @@ admin:
 		active_devices: Počet aktívnych zariadení
 		time_ip_last_login: Čas / IP adresa posledného prihlásenia
 		actions: Akcie
+	stats:
+		title: Štatistiky používateľov
 
 authenticator:
 	identity_not_found: Nesprávne meno.
