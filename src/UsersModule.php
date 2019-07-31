@@ -282,6 +282,9 @@ class UsersModule extends CrmModule
             new ApiRoute(new ApiIdentifier('1', 'users', 'address'), \Crm\UsersModule\Api\CreateAddressHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
         );
         $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'users', 'change-address-request'), \Crm\UsersModule\Api\CreateAddressChangeRequestHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'list'), \Crm\UsersModule\Api\ListUsersHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
         );
         $apiRoutersContainer->attachRouter(

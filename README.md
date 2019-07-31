@@ -434,7 +434,7 @@ Response:
 
 ---
 
-#### GET `/api/v1/users/address`
+#### POST `/api/v1/users/address`
 
 Creates new address for given user.
 
@@ -485,6 +485,72 @@ Response:
     "address": {
         "id": 26929 // Integer; address ID
     }
+}
+```
+
+---
+
+#### POST `/api/v1/users/change-address-request`
+
+Creates new address change request for given type of address and user. Change request might still need to be approved.
+You should check if the address with given type exists before calling this - if not, create the address first
+via [`users/address`](#post-apiv1usersaddress) API call.
+
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | API token. |
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| email | *String* | yes | Email to remove from group. |
+| type | *String* | yes | Type of address - types of addresses are managed by modules (e.g. `InvoiceModule` adds support for `invoice` address type. |
+| first_name | *String* | no | First name. |
+| company_name | *String* | no | Name of the company (if it's corporate address) |
+| last_name | *String* | no | Last name. |
+| address | *String* | no | Street name. |
+| number | *String* | no | Street number. |
+| zip | *String* | no | ZIP code. |
+| city | *String* | no | City. |
+| country_id | *String* | no | Internal CRM of country. Default country is used if not provided. |
+| phone_number | *String* | no | Phone number. |
+| company_id | *String* | no | ID of company (if it's corporate address) |
+| company_tax_id | *String* | no | Tax ID of company (if it's corporate address) |
+| company_vat_id | *String* | no | VAT ID of company (if it's corporate address) |
+
+
+##### *Example:*
+
+```shell
+curl -X POST \
+  http://crm.press/api/v1/users/change-address-request \
+  -H 'Authorization: Bearer XXX' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'email=user%40user.sk&type=print&first_name=AdrName&last_name=AdrLastName&address=11th%20str.&number=112&zip=81105&city=Bratislava'
+```
+
+Response:
+
+```json5
+{
+    "status": "ok",
+    "address": {
+        "id": 26929 // Integer; address ID
+    }
+}
+```
+
+If the address with given type doesn't exist yet, HTTP 400 is returned with following message:
+
+```json5
+{
+    "status": "errror",
+    "message": "Parent address not found"
 }
 ```
 
