@@ -10,19 +10,27 @@ class NewAccessTokenEvent extends AbstractEvent
 
     private $token;
 
-    public function __construct($userId, $token)
+    private $types;
+
+    public function __construct(int $userId, string $token, array $types = [])
     {
         $this->userId = $userId;
         $this->token = $token;
+        $this->types = $types;
     }
 
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->userId;
     }
 
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
+    }
+
+    public function getTypes(): array
+    {
+        return $this->types;
     }
 }

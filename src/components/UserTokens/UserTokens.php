@@ -36,7 +36,7 @@ class UserTokens extends Control implements WidgetInterface
 
     public function header($id = '')
     {
-        $header = 'Paywall tokens';
+        $header = 'User tokens';
         if ($id) {
             $header .= ' <small>(' . $this->totalCount($id) . ')</small>';
         }
@@ -51,16 +51,8 @@ class UserTokens extends Control implements WidgetInterface
     public function render($id)
     {
         $accessTokens = $this->accessTokensRepository->allUserTokens($id);
-        $paywalTokens = [];
-        $registerTokens = [];
         $tokensArray = [];
         foreach ($accessTokens as $token) {
-            if ($this->accessTokensRepository->validCacheToken($token->token, 'access')) {
-                $paywalTokens[] = $token->token;
-            }
-            if ($this->accessTokensRepository->validCacheToken($token->token, 'register')) {
-                $registerTokens[] = $token->token;
-            }
             $tokensArray[] = $token->token;
         }
 
@@ -82,10 +74,7 @@ class UserTokens extends Control implements WidgetInterface
             }
         }
 
-
         $this->template->lastVersion = $this->accessToken->lastVersion();
-        $this->template->paywalTokens = $paywalTokens;
-        $this->template->registerTokens = $registerTokens;
         $this->template->totalAccessTokens = $accessTokens->count('*');
         $this->template->accessTokens = $accessTokens;
         $this->template->id = $id;

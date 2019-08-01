@@ -35,22 +35,11 @@
         </tr>
         </tfoot>
         <tbody>
-        {var $now = new \DateTime()}
         {foreach $accessTokens as $token}
             <tr>
                 <td class="text-muted">{$token->created_at|userDate}</td>
                 <td>
                     <code>{$token->token}</code>
-                    <br>
-
-                    {if in_array($token->token, $paywalTokens)}
-                        <span class="label label-success">paywall</span>
-                    {else}
-                        <span class="label label-danger">no access</span>
-                    {/if}
-                    {if in_array($token->token, $registerTokens)}
-                        <span class="label label-warning">register</span>
-                    {/if}
                 </td>
                 <td>
                     {if $lastVersion == $token->version}

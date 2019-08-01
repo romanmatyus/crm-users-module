@@ -2,7 +2,6 @@
 
 namespace Crm\UsersModule\Auth;
 
-use Crm\UsersModule\Auth\Access\StorageInterface;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Email\EmailValidator;
 use Crm\UsersModule\Events\UserChangePasswordEvent;
@@ -43,8 +42,6 @@ class UserManager
 
     private $passwordResetTokensRepository;
 
-    private $tokenStorage;
-
     public function __construct(
         UsersRepository $usersRepository,
         PasswordGenerator $passwordGenerator,
@@ -54,8 +51,7 @@ class UserManager
         EmailValidator $emailValidator,
         AddressesRepository $addressesRepository,
         PasswordResetTokensRepository $passwordResetTokensRepository,
-        AccessTokensRepository $accessTokensRepository,
-        StorageInterface $tokenStorage
+        AccessTokensRepository $accessTokensRepository
     ) {
         $this->usersRepository = $usersRepository;
         $this->passwordGenerator = $passwordGenerator;
@@ -66,7 +62,6 @@ class UserManager
         $this->addressesRepository = $addressesRepository;
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->accessTokensRepository = $accessTokensRepository;
-        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -115,14 +110,6 @@ class UserManager
         return $this->usersRepository->find($user->getIdentity()->getId());
     }
 
-    /**
-     * Zmena hesla
-     *
-     * @param $userId
-     * @param $actualPassword
-     * @param $newPassword
-     * @return bool
-     */
     public function setNewPassword($userId, $actualPassword, $newPassword)
     {
         $user = $this->usersRepository->find($userId);
@@ -241,13 +228,6 @@ class UserManager
                 'modified_at' => $date,
                 'confirmed_at' => $date,
             ]);
-
-            $tokens = $this->accessTokensRepository->allUserTokens($user->id);
-            foreach ($tokens as $token) {
-                if (!$this->accessTokensRepository->validCacheToken($token->token, 'register')) {
-                    $this->tokenStorage->addToken($token->token, 'register');
-                }
-            }
 
             $this->emitter->emit(new UserConfirmedEvent($user));
         }
