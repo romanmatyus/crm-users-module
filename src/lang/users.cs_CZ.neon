@@ -499,3 +499,9 @@ component:
 		actions: Akce
 		delete_all: Smazat všechny
 		delete_single: Smazat token
+
+config:
+	category: Uživatelé
+	not_logged_in_route:
+		name: Stránka pro nepřihlášených
+		description: 'Nette Routa, na kterou má být uživatel přesměrován při návštěvě URL, která je dostupná pouze pro přihlášené uživatele (napr. :Users:Sign:in)'

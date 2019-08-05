@@ -29,9 +29,10 @@ class ConfigsSeeder implements ISeeder
 
     public function seed(OutputInterface $output)
     {
-        $category = $this->configCategoriesRepository->loadByName('Všeobecne');
+        $categoryName = 'users.config.category';
+        $category = $this->configCategoriesRepository->loadByName($categoryName);
         if (!$category) {
-            $category = $this->configCategoriesRepository->add('Všeobecne', 'fa fa-globe', 100);
+            $category = $this->configCategoriesRepository->add($categoryName, 'fas fa-users', 100);
             $output->writeln('  <comment>* config category <info>Všeobecne</info> created</comment>');
         } else {
             $output->writeln('  * config category <info>Všeobecne</info> exists');
@@ -43,8 +44,8 @@ class ConfigsSeeder implements ISeeder
         if (!$config) {
             $this->configBuilder->createNew()
                 ->setName($name)
-                ->setDisplayName('Stránka pre neprihlásených')
-                ->setDescription('Nette routa, na ktorú má byť používateľ presmerovaný pri návšteve URL, ktorá je dostupná len pre prihlásených používateľov')
+                ->setDisplayName('users.config.not_logged_in_route.name')
+                ->setDescription('users.config.not_logged_in_route.description')
                 ->setValue($value)
                 ->setType(ApplicationConfig::TYPE_STRING)
                 ->setAutoload(false)
@@ -52,11 +53,20 @@ class ConfigsSeeder implements ISeeder
                 ->setSorting(262)
                 ->save();
             $output->writeln("  <comment>* config item <info>$name</info> created</comment>");
-        } elseif ($config->has_default_value && $config->value !== $value) {
-            $this->configsRepository->update($config, ['value' => $value, 'has_default_value' => true]);
-            $output->writeln("  <comment>* config item <info>$name</info> updated</comment>");
         } else {
             $output->writeln("  * config item <info>$name</info> exists");
+
+            if ($config->has_default_value && $config->value !== $value) {
+                $this->configsRepository->update($config, ['value' => $value, 'has_default_value' => true]);
+                $output->writeln("  <comment>* config item <info>$name</info> updated</comment>");
+            }
+
+            if ($config->category->name != $categoryName) {
+                $this->configsRepository->update($config, [
+                    'config_category_id' => $category->id
+                ]);
+                $output->writeln("  <comment>* config item <info>$name</info> updated</comment>");
+            }
         }
     }
 }

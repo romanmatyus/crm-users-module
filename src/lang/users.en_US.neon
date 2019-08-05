@@ -498,3 +498,9 @@ component:
 		actions: Actions
 		delete_all: Delete all
 		delete_single: Delete token
+
+config:
+	category: Users
+	not_logged_in_route:
+		name: 'Page for not logged in users'
+		description: 'Nette route, where to redirect user after hitting URL only for logged in users (e.g. :Users:Sign:in)'
