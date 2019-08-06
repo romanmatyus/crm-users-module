@@ -85,22 +85,6 @@ class AccessTokensRepository extends Repository
         return $removed;
     }
 
-//    public function grantUserAccess(IRow $user)
-//    {
-//        $tokens = $this->allUserTokens($user->id);
-//        foreach ($tokens as $token) {
-//            $this->backend->addToken($token->token);
-//        }
-//    }
-//
-//    public function denyUserAccess(IRow $user)
-//    {
-//        $tokens = $this->allUserTokens($user->id);
-//        foreach ($tokens as $token) {
-//            $this->backend->removeToken($token->token);
-//        }
-//    }
-
     public function removeNotUsedTokens(DateTime $usedBefore)
     {
         $tokens = $this->getTable()->where('last_used_at < ', $usedBefore);
