@@ -8,6 +8,7 @@ use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use League\Event\Emitter;
 use Nette\Application\UI\Control;
+use Nette\Localization\ITranslator;
 
 class UserTokens extends Control implements WidgetInterface
 {
@@ -21,22 +22,26 @@ class UserTokens extends Control implements WidgetInterface
 
     private $emitter;
 
+    private $translator;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
         AccessToken $accessToken,
         Emitter $emitter,
-        UserData $userData
+        UserData $userData,
+        ITranslator $translator
     ) {
         parent::__construct();
         $this->accessTokensRepository = $accessTokensRepository;
         $this->accessToken = $accessToken;
         $this->emitter = $emitter;
         $this->userData = $userData;
+        $this->translator = $translator;
     }
 
     public function header($id = '')
     {
-        $header = 'User tokens';
+        $header = $this->translator->translate('users.component.user_tokens.header');
         if ($id) {
             $header .= ' <small>(' . $this->totalCount($id) . ')</small>';
         }

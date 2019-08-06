@@ -482,3 +482,16 @@ component:
 		created_at: Vytvořeno
 		actions: Akce
 		public: Veřejné
+
+	user_tokens:
+		header: Uživatelské tokeny
+		no_tokens: Žiaden token
+		no_tokens_description: Tento názor nemá aktuálne žiadne prístupove kódy.
+		created: Vytvořené
+		code: Kód
+		version: Verzia
+		last_used: Naposledy použitý
+		ip_agent: IP / Prehliadač
+		actions: Akcie
+		delete_all: Zmazať všechny
+		delete_one: Zmazať token
