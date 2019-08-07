@@ -484,14 +484,14 @@ component:
 		public: Veřejné
 
 	user_tokens:
-		header: Uživatelské tokeny
-		no_tokens: Žiaden token
-		no_tokens_description: Tento názor nemá aktuálne žiadne prístupove kódy.
-		created: Vytvořené
+		header: Uživatelská tokeny
+		no_tokens: Žádný token
+		no_tokens_description: Tento uživatel nemá aktuálně žádné přístupové kódy.
+		created: Vytvořeno
 		code: Kód
-		version: Verzia
+		version: Verze
 		last_used: Naposledy použitý
-		ip_agent: IP / Prehliadač
-		actions: Akcie
-		delete_all: Zmazať všechny
-		delete_one: Zmazať token
+		ip_agent: IP / Prohlížeč
+		actions: Akce
+		delete_all: Smazat všechny
+		delete_single: Smazat token
