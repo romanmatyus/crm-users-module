@@ -10,13 +10,10 @@ class RemovedAccessTokenEvent extends AbstractEvent
 
     private $token;
 
-    private $types;
-
-    public function __construct(int $userId, string $token, array $types = [])
+    public function __construct(int $userId, string $token)
     {
         $this->userId = $userId;
         $this->token = $token;
-        $this->types = $types;
     }
 
     public function getUserId(): int
@@ -27,10 +24,5 @@ class RemovedAccessTokenEvent extends AbstractEvent
     public function getToken(): string
     {
         return $this->token;
-    }
-
-    public function getTypes(): array
-    {
-        return $this->types;
     }
 }

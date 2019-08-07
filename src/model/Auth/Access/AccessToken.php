@@ -75,11 +75,7 @@ class AccessToken
             );
         }
 
-        if ($this->accessManager->hasAccess($userRow->id, 'web')) {
-            foreach ($this->accessTokenRepository->allUserTokens($userRow->id) as $token) {
-                $this->emitter->emit(new NewAccessTokenEvent($userRow->id, $token->token, ['access']));
-            }
-        }
+        $this->emitter->emit(new NewAccessTokenEvent($userRow->id, $token->token));
 
         return $userRow;
     }

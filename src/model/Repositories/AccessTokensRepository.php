@@ -46,7 +46,7 @@ class AccessTokensRepository extends Repository
             'version' => $version,
         ]);
 
-        $this->emitter->emit(new NewAccessTokenEvent($user->id, $token, ['register']));
+        $this->emitter->emit(new NewAccessTokenEvent($user->id, $token));
 
         return $row;
     }
@@ -58,7 +58,7 @@ class AccessTokensRepository extends Repository
             return true;
         }
         $result = $this->delete($tokenRow);
-        $this->emitter->emit(new RemovedAccessTokenEvent($tokenRow->user_id, $token, ['access', 'register', 'economy_club', 'economy_standard']));
+        $this->emitter->emit(new RemovedAccessTokenEvent($tokenRow->user_id, $token));
         return $result;
     }
 
