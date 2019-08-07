@@ -35,6 +35,12 @@ class UsersAdminPresenter extends AdminPresenter
     /** @persistent */
     public $source;
 
+    /** @persistent */
+    public $subscription_type;
+
+    /** @persistent */
+    public $actual_subscription;
+
     private $usersRepository;
 
     private $factory;
