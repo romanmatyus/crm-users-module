@@ -75,8 +75,6 @@ class AccessToken
             );
         }
 
-        $this->emitter->emit(new NewAccessTokenEvent($userRow->id, $token->token));
-
         return $userRow;
     }
 
