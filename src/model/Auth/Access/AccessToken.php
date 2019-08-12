@@ -4,7 +4,6 @@ namespace Crm\UsersModule\Auth\Access;
 
 use Crm\ApplicationModule\Access\AccessManager;
 use Crm\ApplicationModule\Request as CrmRequest;
-use Crm\UsersModule\Events\NewAccessTokenEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
