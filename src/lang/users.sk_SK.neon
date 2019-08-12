@@ -485,9 +485,9 @@ component:
 	user_tokens:
 		header: Používateľske tokeny
 		no_tokens: Žiaden token
-		no_tokens_description: Tento používateľ nemá aktuálne žiadne prístupove kódy.
+		no_tokens_description: Tento používateľ nemá aktuálne žiadne prístupove tokeny.
 		created: Vytvorené
-		code: Kód
+		code: Token
 		version: Verzia
 		last_used: Naposledy použitý
 		ip_agent: IP / Prehliadač

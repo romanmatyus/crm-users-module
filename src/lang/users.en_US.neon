@@ -487,7 +487,7 @@ component:
 		no_tokens: No token
 		no_tokens_description: There is no token for this user.
 		created: Created
-		code: Code
+		code: Token
 		version: Version
 		last_used: Last used
 		ip_agent: IP / Browser
