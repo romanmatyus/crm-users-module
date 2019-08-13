@@ -194,7 +194,8 @@ class UsersAdminPresenter extends AdminPresenter
         $this->template->deviceCount = $deviceCount;
         $this->template->deviceCountRanges = [1,5,10,25,50];
 
-        $users = $this->usersRepository->getAbusiveUsers($startTime, $endTime, $loginCount, $deviceCount, $sortBy)->fetchAll();
+//        $users = $this->usersRepository->getAbusiveUsers($startTime, $endTime, $loginCount, $deviceCount, $sortBy)->fetchAll();
+        $users = $this->usersRepository->all()->group('users.id')->select('users.*, COUNT(:access_tokens.id) AS token_count, COUNT(DISTINCT :access_tokens.user_agent) AS device_count')->limit(100)->fetchAll();
         $this->template->abusers = $users;
     }
 
