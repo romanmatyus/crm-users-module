@@ -4,8 +4,10 @@ namespace Crm\UsersModule\Auth\Access;
 
 use Crm\ApplicationModule\Access\AccessManager;
 use Crm\ApplicationModule\Request as CrmRequest;
+use Crm\UsersModule\Events\NewAccessTokenEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use League\Event\Emitter;
 use Nette\Http\IRequest;
 use Nette\Http\Request;
 use Nette\Http\Response;
@@ -20,16 +22,20 @@ class AccessToken
 
     private $accessManager;
 
+    private $emitter;
+
     protected $cookieName = 'n_token';
 
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
         UsersRepository $usersRepository,
-        AccessManager $accessManager
+        AccessManager $accessManager,
+        Emitter $emitter
     ) {
         $this->accessTokenRepository = $accessTokensRepository;
         $this->usersRepository = $usersRepository;
         $this->accessManager = $accessManager;
+        $this->emitter = $emitter;
     }
 
     public function addUserToken($user, Request $request = null, Response $response = null)
@@ -67,10 +73,6 @@ class AccessToken
                 null,
                 false
             );
-        }
-
-        if ($this->accessManager->hasAccess($userRow->id, 'web')) {
-            $this->accessTokenRepository->grantUserAccess($userRow);
         }
 
         return $userRow;

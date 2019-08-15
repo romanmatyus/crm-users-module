@@ -1,28 +1,28 @@
 {if $totalAccessTokens == 0}
     <div class="bs-callout bs-callout-info">
-        <h4>Žiaden záznam</h4>
-        <p class="lead">Tento používateľ nemá aktuálne žiadne prístupove kódy.</p>
+        <h4>{_users.component.user_tokens.no_tokens}</h4>
+        <p class="lead">{_users.component.user_tokens.no_tokens_description}</p>
     </div>
 {else}
 
     <div n:ifset="$userDataErrorMessage" class="alert alert-danger">
-        <h5>Warning: {$userDataErrorMessage}!</h5>
+        <h5>{$userDataErrorMessage}!</h5>
     </div>
 
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th>Vytvorené</th>
-            <th>Kód</th>
-            <th>Verzia</th>
-            <th>Neposledy použité</th>
-            <th>Ip / Agent</th>
-            <th>Akcie</th>
+            <th>{_users.component.user_tokens.created}</th>
+            <th>{_users.component.user_tokens.code}</th>
+            <th>{_users.component.user_tokens.version}</th>
+            <th>{_users.component.user_tokens.last_used}</th>
+            <th>{_users.component.user_tokens.ip_agent}</th>
+            <th>{_users.component.user_tokens.actions}</th>
         </tr>
         <tr>
             <td colspan="5">&nbsp;</td>
             <td>
-                <a href="{link removeAllAccessToken! userId => $id}" title="Zmaž všetky" class="btn btn-danger"><i class="fa fa-trash"></i> Zmaž všetky</a>
+                <a href="{link removeAllAccessToken! userId => $id}" title="{_users.component.user_tokens.delete_all}" class="btn btn-danger"><i class="fa fa-trash"></i> {_users.component.user_tokens.delete_all}</a>
             </td>
         </tr>
         </thead>
@@ -30,27 +30,15 @@
         <tr>
             <td colspan="5">&nbsp;</td>
             <td>
-                <a href="{link removeAllAccessToken! userId => $id}" title="Zmaž všetky" class="btn btn-danger"><i class="fa fa-trash"></i> Zmaž všetky</a>
+                <a href="{link removeAllAccessToken! userId => $id}" title="{_users.component.user_tokens.delete_all}" class="btn btn-danger"><i class="fa fa-trash"></i> {_users.component.user_tokens.delete_all}</a>
             </td>
         </tr>
         </tfoot>
         <tbody>
-        {var $now = new \DateTime()}
-        {foreach $accessTokens as $token}
-            <tr>
+            <tr n:foreach="$accessTokens as $token">
                 <td class="text-muted">{$token->created_at|userDate}</td>
                 <td>
                     <code>{$token->token}</code>
-                    <br>
-
-                    {if in_array($token->token, $paywalTokens)}
-                        <span class="label label-success">paywall</span>
-                    {else}
-                        <span class="label label-danger">no access</span>
-                    {/if}
-                    {if in_array($token->token, $registerTokens)}
-                        <span class="label label-warning">register</span>
-                    {/if}
                 </td>
                 <td>
                     {if $lastVersion == $token->version}
@@ -64,10 +52,9 @@
                     <small>{$token->ip}</small>
                     <code>{$token->user_agent}</code>
                 <td>
-                    <a href="{link removeAccessToken! token => $token->token}" title="Zmaž" class="btn btn-danger"><i class="fa fa-trash"></i> Zmaž</a>
+                    <a href="{link removeAccessToken! token => $token->token}" title="{_users.component.user_tokens.delete_single}" class="btn btn-danger"><i class="fa fa-trash"></i> {_users.component.user_tokens.delete_single}</a>
                 </td>
             </tr>
-        {/foreach}
         </tbody>
     </table>
 {/if}
