@@ -48,12 +48,14 @@ class LoginAttemptHandler extends AbstractListener
 
         if ($this->loginAttemptsRepository->okStatus($event->getStatus())) {
             $user = $this->usersRepository->getByEmail($event->getEmail());
-            $this->emitter->emit(new UserLastAccessEvent(
-                $user,
-                $dateTime,
-                $event->getSource(),
-                Request::getUserAgent()
-            ));
+            if ($user) {
+                $this->emitter->emit(new UserLastAccessEvent(
+                    $user,
+                    $dateTime,
+                    $event->getSource(),
+                    Request::getUserAgent()
+                ));
+            }
         }
     }
 
