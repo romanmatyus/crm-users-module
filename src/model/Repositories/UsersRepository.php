@@ -190,9 +190,7 @@ class UsersRepository extends Repository
             'modified_at' => new \DateTime(),
         ]);
         if ($active == 0) {
-            $this->accessTokensRepository->denyUserAccess($user);
-            $this->accessTokensRepository->allUserTokens($user->id)->delete();
-
+            $this->accessTokensRepository->removeAllUserTokens($user->id);
             $this->emitter->emit(new UserDisabledEvent($user));
         }
         return $user;

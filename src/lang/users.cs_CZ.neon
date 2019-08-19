@@ -482,3 +482,16 @@ component:
 		created_at: Vytvořeno
 		actions: Akce
 		public: Veřejné
+
+	user_tokens:
+		header: Uživatelské tokeny
+		no_tokens: Žádný token
+		no_tokens_description: Tento uživatel nemá aktuálně žádné přístupové tokeny.
+		created: Vytvořeno
+		code: Token
+		version: Verze
+		last_used: Naposledy použitý
+		ip_agent: IP / Prohlížeč
+		actions: Akce
+		delete_all: Smazat všechny
+		delete_single: Smazat token

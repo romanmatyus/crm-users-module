@@ -481,3 +481,16 @@ component:
 		created_at: Created at
 		actions: Actions
 		public: Public
+
+	user_tokens:
+		header: User tokens
+		no_tokens: No token
+		no_tokens_description: There is no token for this user.
+		created: Created
+		code: Token
+		version: Version
+		last_used: Last used
+		ip_agent: IP / Browser
+		actions: Actions
+		delete_all: Delete all
+		delete_single: Delete token
