@@ -8,7 +8,6 @@ use Crm\ApplicationModule\Components\Graphs\GoogleBarGraphGroupControlFactoryInt
 use Crm\ApplicationModule\Components\Graphs\GoogleLineGraphGroupControlFactoryInterface;
 use Crm\ApplicationModule\Graphs\Criteria;
 use Crm\ApplicationModule\Graphs\GraphDataItem;
-use Crm\SubscriptionsModule\Repository\SubscriptionsRepository;
 use Nette\Utils\DateTime;
 
 class DashboardPresenter extends AdminPresenter
