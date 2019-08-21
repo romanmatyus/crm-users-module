@@ -9,6 +9,7 @@ use League\Event\Emitter;
 use Nette\Caching\IStorage;
 use Nette\Database\Context;
 use Nette\Database\Table\IRow;
+use Nette\Database\Table\Selection;
 
 class UserMetaRepository extends Repository
 {
@@ -87,7 +88,7 @@ class UserMetaRepository extends Repository
         return $this->getTable()->where(['user_id' => $user])->order('key ASC');
     }
 
-    public function usersWithKey($key, $value = null)
+    public function usersWithKey($key, $value = null): Selection
     {
         $users = $this->getTable()->where('key = ?', $key);
         if ($value) {
