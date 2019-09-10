@@ -9,6 +9,6 @@ class AddKeyIndexToUserMetaTable extends AbstractMigration
     {
         $this->table('user_meta')
             ->addIndex('key')
-            ->save();
+            ->update();
     }
 }

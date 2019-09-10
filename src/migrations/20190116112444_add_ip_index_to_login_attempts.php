@@ -10,6 +10,6 @@ class AddIpIndexToLoginAttempts extends AbstractMigration
         $this->table('login_attempts')
             ->addIndex('ip')
             ->removeIndex(['user_id', 'ip'])
-            ->save();
+            ->update();
     }
 }

@@ -8,6 +8,6 @@ class ChangeValueTypeToTextForSubscriptionsMetaTable extends AbstractMigration
     {
         $this->table('user_meta')
             ->changeColumn('value', 'text', ['null' => true])
-            ->save();
+            ->update();
     }
 }

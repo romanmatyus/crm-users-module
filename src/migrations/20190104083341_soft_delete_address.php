@@ -9,6 +9,6 @@ class SoftDeleteAddress extends AbstractMigration
     {
         $this->table('addresses')
             ->addColumn('deleted_at', 'datetime', ['null' => true, 'after' => 'updated_at'])
-            ->save();
+            ->update();
     }
 }

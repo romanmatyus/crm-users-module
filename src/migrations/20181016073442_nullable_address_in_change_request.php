@@ -9,13 +9,13 @@ class NullableAddressInChangeRequest extends AbstractMigration
     {
         $this->table('address_change_requests')
             ->changeColumn('address_id', 'integer', ['null' => true, 'after' => 'user_id'])
-            ->save();
+            ->update();
     }
 
     public function down()
     {
         $this->table('address_change_requests')
             ->changeColumn('address_id', 'integer', ['null' => false, 'after' => 'user_id'])
-            ->save();
+            ->update();
     }
 }

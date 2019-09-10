@@ -12,7 +12,7 @@ class AddressChangeRequestUnify extends AbstractMigration
             ->renameColumn('ico', 'company_id')
             ->renameColumn('dic', 'company_tax_id')
             ->renameColumn('icdph', 'company_vat_id')
-            ->save();
+            ->update();
 
         $this->table('address_change_requests')
             ->changeColumn('first_name', 'string', ['null' => true])
@@ -28,7 +28,7 @@ class AddressChangeRequestUnify extends AbstractMigration
             ->addColumn('old_company_tax_id', 'string', ['null' => true, 'after' => 'old_company_id'])
             ->addColumn('company_vat_id', 'string', ['null' => true, 'after' => 'company_tax_id'])
             ->addColumn('old_company_vat_id', 'string', ['null' => true, 'after' => 'old_company_tax_id'])
-            ->save();
+            ->update();
 
         // link existing change requests to their address
         $sql = <<<SQL
@@ -62,7 +62,7 @@ SQL;
             ->renameColumn('company_id', 'ico')
             ->renameColumn('company_tax_id', 'dic')
             ->renameColumn('company_vat_id', 'icdph')
-            ->save();
+            ->update();
 
         $this->execute("UPDATE address_change_requests SET first_name = '' WHERE first_name IS NULL");
         $this->execute("UPDATE address_change_requests SET last_name = '' WHERE last_name IS NULL");
@@ -82,6 +82,6 @@ SQL;
             ->removeColumn('old_company_tax_id')
             ->removeColumn('company_vat_id')
             ->removeColumn('old_company_vat_id')
-            ->save();
+            ->update();
     }
 }
