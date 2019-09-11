@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Cache\CacheRepository;
+use Crm\ApplicationModule\Hermes\HermesMessage;
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\AuditLogRepository;
 use Crm\UsersModule\Events\UserDisabledEvent;
@@ -13,7 +14,6 @@ use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Security\Passwords;
 use Nette\Utils\DateTime;
-use Tomaj\Hermes\Message;
 
 class UsersRepository extends Repository
 {
@@ -167,7 +167,7 @@ class UsersRepository extends Repository
         parent::update($row, $data);
 
         if (isset($originalEmail) && $originalEmail !== $data['email']) {
-            $this->hermesEmitter->emit(new Message(
+            $this->hermesEmitter->emit(new HermesMessage(
                 'email-changed',
                 [
                     'user_id' => $row->id,
