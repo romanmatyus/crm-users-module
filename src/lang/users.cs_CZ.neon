@@ -441,6 +441,10 @@ form:
 			insufficient_rights: Na úpravu admin skupin nemáte dostatečná práva
 			no_group: Vybraná skupina neexistuje
 			no_user: Vybraný uživatel neexistuje
+	user_group:
+		group_id:
+			prompt: Vyberte skupinu
+		send: Přidej
 
 component:
 	user_login_attempts:

@@ -8,17 +8,17 @@ use Crm\UsersModule\Repository\UserGroupsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 
 class UserGroupsFormFactory
 {
-    /** @var UsersRepository */
     protected $userRepository;
 
-    /** @var  GroupsRepository */
     protected $groupsRepository;
 
-    /** @var  UserGroupsRepository */
     protected $userGroupsRepository;
+
+    protected $translator;
 
     public $onAddedUserToGroup;
 
@@ -27,11 +27,13 @@ class UserGroupsFormFactory
     public function __construct(
         UsersRepository $userRepository,
         GroupsRepository $groupsRepository,
-        UserGroupsRepository $userGroupsRepository
+        UserGroupsRepository $userGroupsRepository,
+        ITranslator $translator
     ) {
         $this->userRepository = $userRepository;
         $this->groupsRepository = $groupsRepository;
         $this->userGroupsRepository = $userGroupsRepository;
+        $this->translator = $translator;
     }
 
     /**
@@ -50,6 +52,7 @@ class UserGroupsFormFactory
 
         $form = new Form;
 
+        $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapSmallInlineFormRenderer());
         $form->addProtection();
 
@@ -82,13 +85,13 @@ class UserGroupsFormFactory
 
         if (count($groupsArray) > 0) {
             $form->addSelect('group_id', '', $groupsArray)
-                ->setPrompt('Vyberte skupinu');
+                ->setPrompt('users.form.user_group.group_id.prompt');
 
-            $form->addSubmit('send', 'Ulož')
+            $form->addSubmit('send', 'users.form.user_group.send')
                 ->setAttribute('class', 'btn btn-primary')
                 ->getControlPrototype()
                 ->setName('button')
-                ->setHtml('<i class="fa fa-save"></i> Pridaj');
+                ->setHtml('<i class="fa fa-save"></i> ' . $this->translator->translate('users.form.user_group.send'));
         }
 
         $form->addHidden('user_id', $userId);

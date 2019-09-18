@@ -440,6 +440,10 @@ form:
 			insufficient_rights: Insufficient rights for group manipulation
 			no_group: Selected group doesn't exist
 			no_user: Selected user doesn't exist
+	user_group:
+		group_id:
+			prompt: Select group
+		send: Add
 
 component:
 	user_login_attempts:
