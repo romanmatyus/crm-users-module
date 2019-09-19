@@ -253,6 +253,11 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\UsersModule\Components\AddressWidget::class),
             100
         );
+        $widgetManager->registerWidget(
+            'frontend.user.address.partial',
+            $this->getInstance(\Crm\UsersModule\Components\AddressWidget::class),
+            100
+        );
     }
 
     public function registerApiCalls(ApiRoutersContainerInterface $apiRoutersContainer)
