@@ -17,17 +17,17 @@ class NotificationEvent extends AbstractEvent
 
     private $attachments;
 
-    private $delayed;
+    private $scheduleAt;
 
     /**
      * NotificationEvent constructor.
      *
-     * @param IRow   $user
-     * @param string $templateCode
-     * @param array  $params
-     * @param string $context
-     * @param array  $attachments
-     * @param bool   $delayed
+     * @param IRow      $user
+     * @param string    $templateCode
+     * @param array     $params
+     * @param string    $context
+     * @param array     $attachments
+     * @param \DateTime $scheduleAt
      */
     public function __construct(
         IRow $user,
@@ -35,14 +35,14 @@ class NotificationEvent extends AbstractEvent
         array $params = [],
         string $context = null,
         array $attachments = [],
-        bool $delayed = false
+        \DateTime $scheduleAt = null
     ) {
         $this->user         = $user;
         $this->templateCode = $templateCode;
         $this->params       = $params;
         $this->context      = $context;
         $this->attachments  = $attachments;
-        $this->delayed      = $delayed;
+        $this->scheduleAt   = $scheduleAt;
     }
 
     /**
@@ -85,11 +85,8 @@ class NotificationEvent extends AbstractEvent
         return $this->attachments;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDelayed()
+    public function getScheduleAt(): ?\DateTime
     {
-        return $this->delayed;
+        return $this->scheduleAt;
     }
 }
