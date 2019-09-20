@@ -17,7 +17,7 @@ class NotificationEvent extends AbstractEvent
 
     private $attachments;
 
-    private $delayed;
+    private $scheduleAt;
 
     /**
      * NotificationEvent constructor.
@@ -27,7 +27,7 @@ class NotificationEvent extends AbstractEvent
      * @param array  $params
      * @param string $context
      * @param array  $attachments
-     * @param bool   $delayed
+     * @param string $scheduleAt RFC3339-formatted timestamp with notification execution time
      */
     public function __construct(
         IRow $user,
@@ -35,14 +35,14 @@ class NotificationEvent extends AbstractEvent
         array $params = [],
         string $context = null,
         array $attachments = [],
-        bool $delayed = false
+        string $scheduleAt = null
     ) {
         $this->user         = $user;
         $this->templateCode = $templateCode;
         $this->params       = $params;
         $this->context      = $context;
         $this->attachments  = $attachments;
-        $this->delayed      = $delayed;
+        $this->scheduleAt   = $scheduleAt;
     }
 
     /**
@@ -88,8 +88,8 @@ class NotificationEvent extends AbstractEvent
     /**
      * @return mixed
      */
-    public function getDelayed()
+    public function getScheduleAt()
     {
-        return $this->delayed;
+        return $this->scheduleAt;
     }
 }

@@ -139,10 +139,6 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\UsersModule\Events\LoginAttemptHandler::class)
         );
         $emitter->addListener(
-            \Crm\MailModule\Events\UserMailEvent::class,
-            $this->getInstance(\Crm\UsersModule\Events\UserMailHandler::class)
-        );
-        $emitter->addListener(
             \Crm\UsersModule\Events\NewAddressEvent::class,
             $this->getInstance(\Crm\UsersModule\Events\UpdateUserNameFromAddress::class)
         );
