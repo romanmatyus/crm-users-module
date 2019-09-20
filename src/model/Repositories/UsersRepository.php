@@ -125,16 +125,24 @@ class UsersRepository extends Repository
         $table = $this->getTable()->where(['deleted_at' => null])->order('users.id DESC');
 
         if (!empty($text)) {
+            $companyIdText = str_replace(' ', '', $text);
+            $matchingUsersWithCompanyId = $this->addressesRepository->all()->select('DISTINCT(user_id)')
+                ->where("REPLACE(company_id, ' ', '') = ? OR REPLACE(company_tax_id, ' ', '') = ? OR REPLACE(company_vat_id, ' ', '') = ?", [
+                    "{$companyIdText}",
+                    "{$companyIdText}",
+                    "{$companyIdText}",
+                ])->fetchPairs('user_id', 'user_id');
+
             foreach (explode(" ", $text) as $word) {
                 $table
                     ->where(
-                        'users.id = ? OR users.email LIKE ? OR users.first_name LIKE ? OR users.last_name LIKE ? OR users.id IN (?)',
+                        'users.id = ? OR users.email LIKE ? OR users.first_name LIKE ? OR users.last_name LIKE ? OR users.id IN (?) OR users.id IN (?)',
                         [
                             $word,
                             "%{$word}%",
                             "%{$word}%",
                             "%{$word}%",
-                            $this->addressesRepository->all()->select('distinct(user_id)')
+                            $this->addressesRepository->all()->select('DISTINCT(user_id)')
                                 ->where(
                                     'address LIKE ? OR number LIKE ? OR city LIKE ? OR first_name LIKE ? OR last_name LIKE ?',
                                     [
@@ -144,7 +152,8 @@ class UsersRepository extends Repository
                                     "%{$word}%",
                                     "%{$word}%",
                                     ]
-                                )
+                                ),
+                            $matchingUsersWithCompanyId,
                         ]
                     )
                     ->group('users.id');
