@@ -32,6 +32,8 @@ services:
 	- Crm\UsersModule\Forms\AdminUserGroupFormFactory
 	- Crm\UsersModule\Forms\AddressFormFactory
 	- Crm\UsersModule\Forms\UserDeleteFormFactory
+	- Crm\UsersModule\Forms\RegisterFormFactory
+	- Crm\UsersModule\Forms\SignInFormFactory
 	- Crm\UsersModule\Repository\UsersRepository
 	- Crm\UsersModule\Repository\GroupsRepository
 	- Crm\UsersModule\Repository\UserGroupsRepository

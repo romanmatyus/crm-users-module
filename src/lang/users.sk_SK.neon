@@ -444,6 +444,13 @@ form:
 		group_id:
 			prompt: Vyberte skupinu
 		send: Pridaj
+	register:
+		email:
+			label: E-mail
+			required: Prosím zadajte Váš email
+			placeholder: Napríklad moj@email.sk
+		submit: Odoslať
+
 
 component:
 	user_login_attempts:
