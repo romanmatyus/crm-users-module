@@ -17,6 +17,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;
+use Nette\Database\UniqueConstraintViolationException;
 use Nette\Security\Passwords;
 use Nette\Security\User;
 use Nette\Utils\DateTime;
@@ -84,17 +85,26 @@ class UserManager
 
         $password = $this->passwordGenerator->generatePassword();
 
-        /** @var ActiveRow|bool $user */
-        $user = $this->userBuilder->createNew()
-            ->sendEmail($sendEmail)
-            ->setEmail($email)
-            ->setPassword($password)
-            ->setReferer($referer)
-            ->setSource($source)
-            ->save();
+        $user = $this->usersRepository->getByEmail($email);
+        if ($user) {
+            throw new UserAlreadyExistsException("Cannot create user, user with given email already exists: " . $email);
+        }
+
+        try {
+            /** @var ActiveRow|bool $user */
+            $user = $this->userBuilder->createNew()
+                ->sendEmail($sendEmail)
+                ->setEmail($email)
+                ->setPassword($password)
+                ->setReferer($referer)
+                ->setSource($source)
+                ->save();
+        } catch (UniqueConstraintViolationException $e) {
+            throw new UserAlreadyExistsException("Cannot create user, unique constraint triggered: " . $e->getMessage());
+        }
 
         if (!$user) {
-            throw new UserAlreadyExistsException('Fatalna chyba - nepodarilo sa vyrobit user v manageri: ' . Json::encode($this->userBuilder->getErrors()));
+            throw new \Exception("Cannot create user '{$email}' due to following errors: " . Json::encode($this->userBuilder->getErrors()));
         }
 
         return $user;
