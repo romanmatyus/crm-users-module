@@ -49,6 +49,7 @@ frontend:
 			label: 'Aktuální heslo:'
 			required: Zadejte prosím Vaše aktuální heslo
 			placeholder: aktuální heslo
+			description: 'Pokud si nepamatujete své staré heslo, <a href="%url%" class="link">klikněte sem</a>, vygenerujeme vám nové a zašleme vám ho emailem.'
 		new_password:
 			label: 'Nové heslo:'
 			required: Zadejte prosím Vaše nové heslo
@@ -64,6 +65,7 @@ frontend:
 			could_not_authenticate: Nepodařilo se ověřit Vaše přihlášení.
 			invalid_credentials: Nesprávné heslo.
 		success: Vaše heslo bylo úspěšně změněno.
+		reset_success: 'Heslo jsme změnili a odeslali na váš email %email%.'
 	address:
 		type:
 			label: Typ adresy

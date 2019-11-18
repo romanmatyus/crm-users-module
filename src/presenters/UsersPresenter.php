@@ -3,18 +3,19 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
-use Crm\ApplicationModule\Snippet\SnippetRenderer;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\ApplicationModule\User\DownloadUserData;
+use Crm\UsersModule\Auth\UserManager;
+use Crm\UsersModule\Events\NotificationEvent;
 use Crm\UsersModule\Forms\ChangePasswordFormFactory;
 use Crm\UsersModule\Forms\RequestPasswordFormFactory;
 use Crm\UsersModule\Forms\ResetPasswordFormFactory;
 use Crm\UsersModule\Forms\UserDeleteFormFactory;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
-use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\User\ZipBuilder;
 use Nette\Application\Responses\FileResponse;
 use Nette\Forms\Form;
+use Nette\Utils\Html;
 use Nette\Utils\Json;
 
 class UsersPresenter extends FrontendPresenter
@@ -31,13 +32,11 @@ class UsersPresenter extends FrontendPresenter
 
     private $passwordResetTokensRepository;
 
-    private $snippetRenderer;
-
     private $zipBuilder;
 
     private $userDeleteFormFactory;
 
-    private $userMetaRepository;
+    private $userManager;
 
     public function __construct(
         ChangePasswordFormFactory $changePasswordFormFactory,
@@ -46,10 +45,9 @@ class UsersPresenter extends FrontendPresenter
         RequestPasswordFormFactory $requestPasswordFormFactory,
         ResetPasswordFormFactory $resetPasswordFormFactory,
         PasswordResetTokensRepository $passwordResetTokensRepository,
-        SnippetRenderer $snippetRenderer,
         ZipBuilder $zipBuilder,
         UserDeleteFormFactory $userDeleteFormFactory,
-        UserMetaRepository $userMetaRepository
+        UserManager $userManager
     ) {
         parent::__construct();
         $this->changePasswordFormFactory = $changePasswordFormFactory;
@@ -58,10 +56,9 @@ class UsersPresenter extends FrontendPresenter
         $this->requestPasswordFormFactory= $requestPasswordFormFactory;
         $this->resetPasswordFormFactory = $resetPasswordFormFactory;
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
-        $this->snippetRenderer = $snippetRenderer;
         $this->zipBuilder = $zipBuilder;
         $this->userDeleteFormFactory = $userDeleteFormFactory;
-        $this->userMetaRepository = $userMetaRepository;
+        $this->userManager = $userManager;
     }
 
     public function renderProfile()
@@ -72,7 +69,9 @@ class UsersPresenter extends FrontendPresenter
 
     public function renderChangePassword()
     {
-        $this->onlyLoggedIn();
+        if (!$this->getUser()->isLoggedIn()) {
+            $this->redirect('request-password');
+        }
     }
 
     public function renderResetPassword($id)
@@ -104,6 +103,18 @@ class UsersPresenter extends FrontendPresenter
     public function createComponentChangePasswordForm()
     {
         $form = $this->changePasswordFormFactory->create($this->getUser());
+
+        $form['actual_password']
+            ->setOption(
+                'description',
+                Html::el('span', ['class' => 'help-block'])
+                    ->setHtml(
+                        $this->translator->translate(
+                            'users.frontend.change_password.actual_password.description',
+                            ['url' => $this->link('EmailReset!')]
+                        )
+                    )
+            );
         $this->changePasswordFormFactory->onSuccess = function () {
             $this->flashMessage($this->translator->translate('users.frontend.change_password.success'));
             $this->redirect($this->homeRoute);
@@ -177,5 +188,23 @@ class UsersPresenter extends FrontendPresenter
         };
 
         return $form;
+    }
+
+    public function handleEmailReset()
+    {
+        $user = $this->userManager->loadUser($this->getUser());
+        $newPassword = $this->userManager->resetPassword($user->email);
+
+        $this->emitter->emit(new NotificationEvent(
+            $user,
+            'reset_password_with_password',
+            [
+                'email' => $user->email,
+                'password' => $newPassword,
+            ]
+        ));
+
+        $this->flashMessage($this->translator->translate('users.frontend.change_password.reset_success', ['email' => $user->email]));
+        $this->redirect('this');
     }
 }
