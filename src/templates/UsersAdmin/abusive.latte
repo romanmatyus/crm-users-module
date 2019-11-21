@@ -126,6 +126,7 @@
             <th><a href="{$sortByTokenCountLink}">{_users.admin.abusive.active_logins}</a></th>
             <th><a href="{$sortByDeviceCountLink}">{_users.admin.abusive.active_devices}</a></th>
             <th>{_users.admin.abusive.time_ip_last_login}</th>
+            <th>{_users.admin.abusive.additional_info}</th>
             <th>{_users.admin.abusive.actions}</th>
           </tr>
         </thead>
@@ -149,6 +150,9 @@
             <td>
               {$abuser->current_sign_in_at|userDate}
               <small n:if="$abuser->current_sign_in_ip">/ {$abuser->current_sign_in_ip}</small>
+            </td>
+            <td>
+              {control simpleWidget 'admin.user.abusive.additional', $abuser}
             </td>
             <td>
               <p class="text-nowrap">

@@ -416,6 +416,7 @@ admin:
 		active_logins: Počet aktivních přihlášení
 		active_devices: Počet aktivních zařízení
 		time_ip_last_login: Čas / IP adresa posledního přihlášení
+		additional_info: Další informace
 		actions: Akce
 	stats:
 		title: Statistiky uživatelů

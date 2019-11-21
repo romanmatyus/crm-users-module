@@ -415,6 +415,7 @@ admin:
 		active_logins: Number of active logins
 		active_devices: Number of active devices
 		time_ip_last_login: Time / IP address of last login
+		additional_info: Additional information
 		actions: Actions
 	stats:
 		title: User stats
