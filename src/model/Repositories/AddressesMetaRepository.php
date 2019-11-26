@@ -98,4 +98,12 @@ class AddressesMetaRepository extends Repository
             'key' => $key,
         ])->delete();
     }
+
+    public function deleteByAddressChangeRequestId($addressChangeRequestId)
+    {
+        $records = $this->getTable()->where('address_change_request_id = ?', $addressChangeRequestId);
+        foreach ($records as $record) {
+            $this->delete($record);
+        }
+    }
 }

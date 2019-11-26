@@ -25,6 +25,8 @@ class AddressChangeRequestsRepository extends Repository
 
     private $countriesRepository;
 
+    private $addressesMetaRepository;
+
     private $emitter;
 
     public function __construct(
@@ -32,12 +34,14 @@ class AddressChangeRequestsRepository extends Repository
         UsersRepository $usersRepository,
         AddressesRepository $addressesRepository,
         CountriesRepository $countriesRepository,
+        AddressesMetaRepository $addressesMetaRepository,
         Emitter $emitter
     ) {
         parent::__construct($database);
         $this->usersRepository = $usersRepository;
         $this->addressesRepository = $addressesRepository;
         $this->countriesRepository = $countriesRepository;
+        $this->addressesMetaRepository = $addressesMetaRepository;
         $this->emitter = $emitter;
     }
 
@@ -205,6 +209,7 @@ class AddressChangeRequestsRepository extends Repository
     public function deleteAll($userId)
     {
         foreach ($this->userRequests($userId) as $addressChange) {
+            $this->addressesMetaRepository->deleteByAddressChangeRequestId($addressChange->id);
             $this->delete($addressChange);
         }
     }
