@@ -9,6 +9,12 @@ use Nette\Application\UI\Control;
 use Nette\Localization\ITranslator;
 use Nette\Utils\DateTime;
 
+/**
+ * This component fetches user login attempts
+ * and render bootstrap styled table.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class UserLoginAttempts extends Control implements WidgetInterface
 {
     private $templateName = 'user_login_attempts.latte';

@@ -502,6 +502,28 @@ component:
 		delete_all: Smazat všechny
 		delete_single: Smazat token
 
+	autologin_tokens:
+		created: Vytvořeno
+		from: Platný od
+		to: Platný do
+		code: Kód
+		used: Použitý
+		max: Maximální počet
+		empty_title: Žádný záznam
+		empty_text: Tento uživatel nemá aktuálně žádné přihlašovací kódy.
+
+	user_password_changes:
+		title: Změny
+		title_requests: Žádosti o změny
+		empty_title: Žádný záznam
+		empty_entry_text: Tento uživatel si heslo zatím neměnil.
+		empty_request_text: Tento uživatel zatím nepožádal o změnu.
+		type: Typ
+		when: Kdy
+		expire_at: Expiruje
+		state: Stav
+		token: Token
+
 config:
 	category: Uživatelé
 	not_logged_in_route:

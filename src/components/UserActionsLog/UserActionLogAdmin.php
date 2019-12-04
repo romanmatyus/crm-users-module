@@ -7,6 +7,12 @@ use Crm\UsersModule\DataProvider\FilterUserActionLogsDataProviderInterface;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Nette\Application\UI\Control;
 
+/**
+ * This component fetches user actions - filter them through data providers
+ * and render bootstrap styled table.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class UserActionLogAdmin extends Control
 {
     private $templateName = 'user_action_log.latte';

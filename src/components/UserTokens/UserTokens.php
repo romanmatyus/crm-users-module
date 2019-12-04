@@ -10,6 +10,11 @@ use League\Event\Emitter;
 use Nette\Application\UI\Control;
 use Nette\Localization\ITranslator;
 
+/**
+ * This widget fetches users tokens and renders bootstrap styled listing.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class UserTokens extends Control implements WidgetInterface
 {
     private $templateName = 'user_tokens.latte';

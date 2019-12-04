@@ -4,6 +4,11 @@ namespace Crm\UsersModule\Components;
 
 use Crm\ApplicationModule\Widget\BaseWidget;
 
+/**
+ * This widget renders simple address detail from given address.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class AddressWidget extends BaseWidget
 {
     private $templateName = 'address_widget.latte';

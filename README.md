@@ -644,3 +644,145 @@ Response:
     "status": "ok"
 }
 ```
+
+## Components
+
+**AddressWidget**
+
+Admin user detail address widget.
+
+![alt text](docs/_static/user_address.png "AddressWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/AddressWidget/AddressWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L251)
+
+**AutologinTokens**
+
+Admin user detail tokens widget.
+
+![alt text](docs/_static/autologin_tokens.png "AutologinTokens")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/AutologinTokens/AutologinTokens.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L204)
+
+**MonthToDateUsersStatWidget**
+
+Admin dashboard single stat widget.
+
+![alt text](docs/_static/relative_new_users.png "MonthToDateUsersStatWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/MonthToDateUsersStatWidget/MonthToDateUsersStatWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L240)
+
+**MonthUsersSmallBarGraphWidget**
+
+Admin users header widget.
+
+![alt text](docs/_static/small_users_graph.png "MonthUsersSmallBarGraphWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/MonthUsersSmallBarGraphWidget/MonthUsersSmallBarGraphWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L245)
+
+**MonthUsersStatWidget**
+
+Admin dashboard single stat widget.
+
+![alt text](docs/_static/month_new_users.png "MonthUsersStatWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/MonthUsersStatWidget/MonthUsersStatWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L235)
+
+**RegisteredUsersStatWidget**
+
+Admin dashboard single stat widget.
+
+![alt text](docs/_static/registered_users.png "RegisteredUsersStatWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/RegisteredUsersStatWidget/RegisteredUsersStatWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L225)
+
+**TodayUsersStatWidget**
+
+Admin dashboard single stat widget.
+
+![alt text](docs/_static/today_new_users.png "TodayUsersStatWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/TodayUsersStatWidget/TodayUsersStatWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L230)
+
+**UserActionsLog**
+
+Admin user detail listing component.
+
+![alt text](docs/_static/user_actions_log.png "UserActionsLog")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserActionsLog/UserActionLogAdmin.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/presenters/UserActionsLogAdminPresenter.php#L49)
+
+**UserLoginAttempts**
+
+Admin user detail listing component.
+
+![alt text](docs/_static/user_login_attempts.png "UserLoginAttempts")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserLoginAttempts/UserLoginAttempts.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L194)
+
+**UserMeta**
+
+Admin user detail listing component.
+
+![alt text](docs/_static/user_meta.png "UserMeta")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserMeta/UserMeta.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L209)
+
+**UserPasswordChanges**
+
+Admin user detail listing component.
+
+![alt text](docs/_static/password_changes.png "UserPasswordChanges")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserPasswordChanges/UserPasswordChanges.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L199)
+
+**UserSourceAccesses**
+
+Admin user detail listing component.
+
+![alt text](docs/_static/last_accesses.png "UserSourceAccesses")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserSourceAccesses/UserSourceAccesses.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L220)
+
+**UserTokens**
+
+Admin user detail listing component.
+
+![alt text](docs/_static/user_tokens.png "UserTokens")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserTokens/UserTokens.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L214)
+
+**DetailWidget**
+
+Admin user detail meta widget.
+
+![alt text](docs/_static/detail_widget.png "DetailWidget")
+
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/Widgets/DetailWidget/DetailWidget.php#L1)
+
+[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/presenters/UsersAdminPresenter.php#L381)

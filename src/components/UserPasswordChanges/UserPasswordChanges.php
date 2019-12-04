@@ -7,6 +7,12 @@ use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Nette\Application\UI\Control;
 
+/**
+ * This widget fetches user password changes and password change requests
+ * and render 2 bootstrap styled tables for both data sets.
+ *
+ * @package Crm\UsersModule\Components
+ */
 class UserPasswordChanges extends Control implements WidgetInterface
 {
     private $templateName = 'user_password_changes.latte';
