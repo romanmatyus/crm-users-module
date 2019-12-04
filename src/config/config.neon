@@ -69,7 +69,6 @@ services:
 	- Crm\UsersModule\Components\MonthToDateUsersStatWidget
 	- Crm\UsersModule\Components\MonthUsersSmallBarGraphWidget
 	- Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface
-	- Crm\UsersModule\Events\UserCookieEmailSignHandler
 	- Crm\UsersModule\Events\UserLastAccessHandler
 	- Crm\UsersModule\Events\UserMailHandler
 	- Crm\UsersModule\Events\UpdateUserNameFromAddress

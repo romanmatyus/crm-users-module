@@ -135,14 +135,6 @@ class UsersModule extends CrmModule
     public function registerEventHandlers(Emitter $emitter)
     {
         $emitter->addListener(
-            \Crm\UsersModule\Events\UserSignInEvent::class,
-            $this->getInstance(\Crm\UsersModule\Events\UserCookieEmailSignHandler::class)
-        );
-        $emitter->addListener(
-            \Crm\UsersModule\Events\UserSignOutEvent::class,
-            $this->getInstance(\Crm\UsersModule\Events\UserCookieEmailSignHandler::class)
-        );
-        $emitter->addListener(
             \Crm\UsersModule\Events\LoginAttemptEvent::class,
             $this->getInstance(\Crm\UsersModule\Events\LoginAttemptHandler::class)
         );
