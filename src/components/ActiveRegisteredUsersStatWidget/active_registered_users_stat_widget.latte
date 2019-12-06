@@ -1,0 +1,8 @@
+{if !$wasCalculated}
+<i class="fas fa-exclamation-triangle" style="color: red;" data-toggle="tooltip" data-original-title="{_dashboard.total.active_registrations.warning}"></i>
+{/if}
+<span class="badge">{$totalUsers}</span>
+<a n:tag-if="isset($totalPaidSubscribersLink)" href="{$totalPaidSubscribersLink}">
+	{_dashboard.total.active_registrations.title}
+</a>
+<i class="fa fa-question-circle" data-toggle="tooltip" data-original-title="{_dashboard.total.active_registrations.tooltip}"></i>

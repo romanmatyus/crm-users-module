@@ -63,7 +63,7 @@ services:
 	- Crm\UsersModule\Components\UserPasswordChanges
 	- Crm\UsersModule\Components\AutologinTokens
 	- Crm\UsersModule\Components\UserMeta
-	- Crm\UsersModule\Components\RegisteredUsersStatWidget
+	- Crm\UsersModule\Components\ActiveRegisteredUsersStatWidget
 	- Crm\UsersModule\Components\TodayUsersStatWidget
 	- Crm\UsersModule\Components\MonthUsersStatWidget
 	- Crm\UsersModule\Components\MonthToDateUsersStatWidget
@@ -103,6 +103,7 @@ services:
 	- Crm\UsersModule\Segment\GroupCriteria
 	- Crm\UsersModule\Segment\CreatedCriteria
 	- Crm\UsersModule\Seeders\ConfigsSeeder
+	- Crm\UsersModule\Seeders\SegmentsSeeder
 	- Crm\UsersModule\Seeders\UsersSeeder
 	- Crm\UsersModule\Components\UserSourceAccesses
 	- Crm\UsersModule\Components\UserTokens

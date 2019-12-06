@@ -697,15 +697,15 @@ Admin dashboard single stat widget.
 
 [How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L235)
 
-**RegisteredUsersStatWidget**
+**ActiveRegisteredUsersStatWidget**
 
 Admin dashboard single stat widget.
 
-![alt text](docs/_static/registered_users.png "RegisteredUsersStatWidget")
+![alt text](docs/_static/active_registered_users.png "ActiveRegisteredUsersStatWidget")
 
-[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/RegisteredUsersStatWidget/RegisteredUsersStatWidget.php#L1)
+[Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/ActiveRegisteredUsersStatWidget/ActiveRegisteredUsersStatWidget.php#L1)
 
-[How to use](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/UsersModule.php#L225)
+[How to use](https://github.com/remp2020/crm-users-module/blob/20ffe0c6035784412ec732565998caede418a0d1/src/UsersModule.php#L225)
 
 **TodayUsersStatWidget**
 

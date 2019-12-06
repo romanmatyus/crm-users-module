@@ -21,6 +21,7 @@ use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
+use Crm\UsersModule\Seeders\SegmentsSeeder;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Kdyby\Translation\Translator;
 use League\Event\Emitter;
@@ -28,7 +29,6 @@ use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 use Nette\DI\Container;
 use Nette\Security\User;
-use Symfony\Component\Console\Output\OutputInterface;
 use Tomaj\Hermes\Dispatcher;
 
 class UsersModule extends CrmModule
@@ -216,7 +216,7 @@ class UsersModule extends CrmModule
         );
         $widgetManager->registerWidget(
             'dashboard.singlestat.totals',
-            $this->getInstance(\Crm\UsersModule\Components\RegisteredUsersStatWidget::class),
+            $this->getInstance(\Crm\UsersModule\Components\ActiveRegisteredUsersStatWidget::class),
             500
         );
         $widgetManager->registerWidget(
@@ -331,6 +331,7 @@ class UsersModule extends CrmModule
     {
         $seederManager->addSeeder($this->getInstance(ConfigsSeeder::class));
         $seederManager->addSeeder($this->getInstance(UsersSeeder::class));
+        $seederManager->addSeeder($this->getInstance(SegmentsSeeder::class));
     }
 
     public function registerCleanupFunction(CallbackManagerInterface $cleanUpManager)
@@ -367,14 +368,5 @@ class UsersModule extends CrmModule
         $eventsStorage->register('user_sign_in', Events\UserSignInEvent::class);
         $eventsStorage->register('user_sign_out', Events\UserSignOutEvent::class);
         $eventsStorage->register('user_updated', Events\UserUpdatedEvent::class);
-    }
-
-    public function cache(OutputInterface $output, array $tags = [])
-    {
-        if (in_array('precalc', $tags, true)) {
-            $output->writeln('  * Refreshing <info>users stats</info> cache');
-
-            $this->usersRepository->totalCount(true, true);
-        }
     }
 }
