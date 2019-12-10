@@ -2,7 +2,9 @@
 
 namespace Crm\UsersModule\Forms;
 
+use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Auth\UserManager;
+use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
@@ -20,10 +22,20 @@ class ChangePasswordFormFactory
     /** @var  User */
     private $user;
 
-    public function __construct(UserManager $userManager, ITranslator $translator)
-    {
+    private $usersRepository;
+
+    private $accessToken;
+
+    public function __construct(
+        UserManager $userManager,
+        ITranslator $translator,
+        UsersRepository $usersRepository,
+        AccessToken $accessToken
+    ) {
         $this->userManager = $userManager;
         $this->translator = $translator;
+        $this->usersRepository = $usersRepository;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -54,14 +66,27 @@ class ChangePasswordFormFactory
             ->setAttribute('placeholder', 'users.frontend.change_password.new_password_confirm.placeholder')
             ->setOption('description', 'users.frontend.change_password.new_password_confirm.description');
 
-        $form->addSubmit('send', 'users.frontend.change_password.submit');
-
-        $form->onSuccess[] = [$this, 'formSucceeded'];
+        $form->addSubmit('send', 'users.frontend.change_password.submit')
+            ->onClick[] = [$this, 'formSucceeded'];
+        $form->addSubmit('send_and_logout', 'users.frontend.change_password.submit_with_devices_logout')
+            ->onClick[] = [$this, 'formSucceededWithLogout'];
         return $form;
     }
 
-    public function formSucceeded($form, $values)
+    public function formSucceededWithLogout($submitButton, $values)
     {
+        $this->formSucceeded($submitButton, $values, true);
+    }
+
+    public function formSucceeded($submitButton, $values, $devicesLogout = false)
+    {
+        $form = $submitButton->getForm();
+
+        if ($devicesLogout) {
+            $accessToken = $this->accessToken->getToken($form->getPresenter()->getHttpRequest());
+            $this->userManager->logoutUser($this->usersRepository->find($this->user->getId()), [$accessToken]);
+        }
+
         if (!$this->user->isLoggedIn()) {
             $form['actual_password']->addError('users.frontend.change_password.errors.could_not_authenticate');
             return false;
@@ -77,7 +102,7 @@ class ChangePasswordFormFactory
             $form['actual_password']->addError('users.frontend.change_password.errors.invalid_credentials');
         } else {
             // send email
-            $this->onSuccess->__invoke();
+            $this->onSuccess->__invoke($devicesLogout);
         }
     }
 }

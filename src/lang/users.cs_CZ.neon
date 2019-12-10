@@ -45,6 +45,7 @@ frontend:
 	change_password:
 		title: Změna hesla
 		submit: Změnit heslo
+		submit_with_devices_logout: Změň heslo a odhlás z ostatních zařízení
 		actual_password:
 			label: 'Aktuální heslo:'
 			required: Zadejte prosím Vaše aktuální heslo
@@ -65,6 +66,7 @@ frontend:
 			could_not_authenticate: Nepodařilo se ověřit Vaše přihlášení.
 			invalid_credentials: Nesprávné heslo.
 		success: Vaše heslo bylo úspěšně změněno.
+		success_with_logout: "Heslo bylo úspěšně změněno, na ostatních zařízeních jste byli odhlášen."
 		reset_success: 'Heslo jsme změnili a odeslali na váš email %email%.'
 	address:
 		type:

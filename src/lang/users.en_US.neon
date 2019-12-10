@@ -45,6 +45,7 @@ frontend:
 	change_password:
 		title: Change password
 		submit: Change password
+		submit_with_devices_logout: Change password and sign out of other devices
 		actual_password:
 			label: 'Current password:'
 			required: Please enter your current password
@@ -65,6 +66,7 @@ frontend:
 			could_not_authenticate: We coudn't verify your credentials.
 			invalid_credentials: Invalid password.
 		success: Password was successfully changed.
+		success_with_logout: "Password was successfully changed, you were signed out of other devices."
 		reset_success: 'Password was successfully changed and sent to your email %email%.'
 	address:
 		type:

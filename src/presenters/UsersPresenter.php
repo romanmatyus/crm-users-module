@@ -120,8 +120,13 @@ class UsersPresenter extends FrontendPresenter
                         )
                     )
             );
-        $this->changePasswordFormFactory->onSuccess = function () {
-            $this->flashMessage($this->translator->translate('users.frontend.change_password.success'));
+        $this->changePasswordFormFactory->onSuccess = function ($devicesLogout = false) {
+            if ($devicesLogout) {
+                $this->flashMessage($this->translator->translate('users.frontend.change_password.success_with_logout'));
+            } else {
+                $this->flashMessage($this->translator->translate('users.frontend.change_password.success'));
+            }
+
             $this->redirect($this->homeRoute);
         };
         return $form;
