@@ -16,6 +16,16 @@
 
 <hr/>
 
+<h4>{_users.frontend.settings.devices_logout.title}</h4>
+<div class="row">
+    <div class="col-md-12">
+        {var $confirm = LR\Filters::escapeHtmlText(call_user_func($this->filters->translate, "users.frontend.settings.devices_logout.confirm"))}
+        <a n:href="devicesLogout!" onclick="return confirm({$confirm})" class="btn btn-warning">{_users.frontend.settings.devices_logout.logout}</a>
+    </div>
+</div>
+
+<hr/>
+
 <h4>{_users.frontend.settings.account_delete.title}</h4>
 <div class="row">
     <div class="col-md-12">

@@ -72,9 +72,13 @@ class AccessTokensRepository extends Repository
         return $this->getTable()->where(['user_id' => $userId])->order('created_at DESC');
     }
 
-    public function removeAllUserTokens($userId)
+    public function removeAllUserTokens($userId, array $exceptTokens = [])
     {
         $tokens = $this->getTable()->where(['user_id' => $userId]);
+
+        if ($exceptTokens) {
+            $tokens->where('token NOT IN ?', $exceptTokens);
+        }
 
         $removed = 0;
         foreach ($tokens as $token) {

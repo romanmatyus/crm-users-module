@@ -5,6 +5,7 @@ namespace Crm\UsersModule\Presenters;
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\ApplicationModule\User\DownloadUserData;
+use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\NotificationEvent;
 use Crm\UsersModule\Forms\ChangePasswordFormFactory;
@@ -38,6 +39,8 @@ class UsersPresenter extends FrontendPresenter
 
     private $userManager;
 
+    private $accessToken;
+
     public function __construct(
         ChangePasswordFormFactory $changePasswordFormFactory,
         DownloadUserData $downloadUserData,
@@ -47,7 +50,8 @@ class UsersPresenter extends FrontendPresenter
         PasswordResetTokensRepository $passwordResetTokensRepository,
         ZipBuilder $zipBuilder,
         UserDeleteFormFactory $userDeleteFormFactory,
-        UserManager $userManager
+        UserManager $userManager,
+        AccessToken $accessToken
     ) {
         parent::__construct();
         $this->changePasswordFormFactory = $changePasswordFormFactory;
@@ -59,6 +63,7 @@ class UsersPresenter extends FrontendPresenter
         $this->zipBuilder = $zipBuilder;
         $this->userDeleteFormFactory = $userDeleteFormFactory;
         $this->userManager = $userManager;
+        $this->accessToken = $accessToken;
     }
 
     public function renderProfile()
@@ -172,6 +177,16 @@ class UsersPresenter extends FrontendPresenter
         clearstatcache();
 
         $this->sendResponse(new FileResponse($fileName, 'data.zip', 'application/zip', true));
+    }
+
+    public function handleDevicesLogout()
+    {
+        $accessToken = $this->accessToken->getToken($this->getHttpRequest());
+
+        $user = $this->usersRepository->find($this->getUser()->getId());
+
+        $this->userManager->logoutUser($user, [$accessToken]);
+        $this->flashMessage($this->translator->translate('users.frontend.settings.devices_logout.success'));
     }
 
     public function createComponentUserDeleteForm()

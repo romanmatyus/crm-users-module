@@ -180,15 +180,18 @@ class UserManager
         return $password;
     }
 
+
     /**
      * Log out user on all devices
-     * @param IRow $user
+     *
+     * @param IRow  $user
+     * @param array $exceptTokens access_tokens you want to exclude
      *
      * @return bool if user was logged out on at least one device
      */
-    public function logoutUser(IRow $user): bool
+    public function logoutUser(IRow $user, array $exceptTokens = []): bool
     {
-        return $this->accessTokensRepository->removeAllUserTokens($user->id) > 0;
+        return $this->accessTokensRepository->removeAllUserTokens($user->id, $exceptTokens) > 0;
     }
 
     public function suspiciousUser(IRow $user)

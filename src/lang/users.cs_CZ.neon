@@ -143,6 +143,11 @@ frontend:
 			title: Osobní data
 			info: "Zde si můžete stáhnout a prohlédnout osobní data, která o Vás systém uchovává."
 			download: Stáhnout
+		devices_logout:
+			title: Správa zařízení
+			logout: Odhlásit z ostatních zařízení
+			confirm: "Opravdu si přejete odhlásit se ze všech zařízení kromě současného?"
+			success: "Byli jste odhlášen z ostatních zařízení."
 		account_delete:
 			title: Zrušení konta
 			info: 'Pokud chcete nenávratně smazat uživatelský účet, zadejte heslo a stiskněte "Odstranit účet". <Strong> Tato akce je nevratná. </ Strong> '

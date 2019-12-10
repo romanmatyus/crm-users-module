@@ -143,6 +143,11 @@ frontend:
 			title: Personal data
 			info: "You can download and browse all personal data system stores."
 			download: Download
+		devices_logout:
+			title: Device management
+			logout: Sign out from other devices
+			confirm: "Do you wish to sign out from all devices except the current one?"
+			success: "You have been signed out of other devices."
 		account_delete:
 			title: Delete account
 			info: 'If you wish to permanently delete user account, please enter your password and press "Delete account". <strong>This action is irrevertible.</strong>'
