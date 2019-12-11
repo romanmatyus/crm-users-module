@@ -82,11 +82,6 @@ class ChangePasswordFormFactory
     {
         $form = $submitButton->getForm();
 
-        if ($devicesLogout) {
-            $accessToken = $this->accessToken->getToken($form->getPresenter()->getHttpRequest());
-            $this->userManager->logoutUser($this->usersRepository->find($this->user->getId()), [$accessToken]);
-        }
-
         if (!$this->user->isLoggedIn()) {
             $form['actual_password']->addError('users.frontend.change_password.errors.could_not_authenticate');
             return false;
@@ -100,9 +95,14 @@ class ChangePasswordFormFactory
 
         if (!$result) {
             $form['actual_password']->addError('users.frontend.change_password.errors.invalid_credentials');
-        } else {
-            // send email
-            $this->onSuccess->__invoke($devicesLogout);
+            return false;
         }
+
+        if ($devicesLogout) {
+            $accessToken = $this->accessToken->getToken($form->getPresenter()->getHttpRequest());
+            $this->userManager->logoutUser($this->usersRepository->find($this->user->getId()), [$accessToken]);
+        }
+
+        $this->onSuccess->__invoke($devicesLogout);
     }
 }
