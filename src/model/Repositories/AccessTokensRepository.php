@@ -77,7 +77,7 @@ class AccessTokensRepository extends Repository
         $tokens = $this->getTable()->where(['user_id' => $userId]);
 
         if ($exceptTokens) {
-            $tokens->where('token NOT IN ?', $exceptTokens);
+            $tokens->where('token NOT IN (?)', $exceptTokens);
         }
 
         $removed = 0;
