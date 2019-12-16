@@ -8,13 +8,24 @@
       {$address->last_name}
     {/if}
   </b>
+
+  {if $address->phone_number}
   <br>
   {$address->phone_number}
+  {/if}
+
+  {if $address->address}
   <br>
   {$address->address} {$address->number}
+  {/if}
+
+  {if $address->zip}
   <br>
-  {$address->zip} {$address->city}<br>
+  {$address->zip} {$address->city}
+  {/if}
+
   {if $address->country_id}
+    <br>
     {$address->country->name}
   {/if}
 </div>
