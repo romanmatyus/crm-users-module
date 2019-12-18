@@ -164,6 +164,7 @@ class UsersPresenter extends FrontendPresenter
 
     public function handleDownloadData()
     {
+        $this->onlyLoggedIn();
         set_time_limit(120);
 
         $zip = $this->zipBuilder->getZipFile();
@@ -186,6 +187,7 @@ class UsersPresenter extends FrontendPresenter
 
     public function handleDevicesLogout()
     {
+        $this->onlyLoggedIn();
         $accessToken = $this->accessToken->getToken($this->getHttpRequest());
 
         $user = $this->usersRepository->find($this->getUser()->getId());
@@ -212,6 +214,7 @@ class UsersPresenter extends FrontendPresenter
 
     public function handleEmailReset()
     {
+        $this->onlyLoggedIn();
         $user = $this->userManager->loadUser($this->getUser());
         $newPassword = $this->userManager->resetPassword($user->email);
 
