@@ -22,12 +22,12 @@ class NotificationEvent extends AbstractEvent
     /**
      * NotificationEvent constructor.
      *
-     * @param IRow   $user
-     * @param string $templateCode
-     * @param array  $params
-     * @param string $context
-     * @param array  $attachments
-     * @param string $scheduleAt RFC3339-formatted timestamp with notification execution time
+     * @param IRow      $user
+     * @param string    $templateCode
+     * @param array     $params
+     * @param string    $context
+     * @param array     $attachments
+     * @param \DateTime $scheduleAt
      */
     public function __construct(
         IRow $user,
@@ -35,7 +35,7 @@ class NotificationEvent extends AbstractEvent
         array $params = [],
         string $context = null,
         array $attachments = [],
-        string $scheduleAt = null
+        \DateTime $scheduleAt = null
     ) {
         $this->user         = $user;
         $this->templateCode = $templateCode;
@@ -85,10 +85,7 @@ class NotificationEvent extends AbstractEvent
         return $this->attachments;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getScheduleAt()
+    public function getScheduleAt(): ?\DateTime
     {
         return $this->scheduleAt;
     }
