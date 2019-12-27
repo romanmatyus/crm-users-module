@@ -48,6 +48,8 @@ class GenerateAccessCommand extends Command
                 $output->writeln("<comment> - {$e->getMessage()}</comment>");
             }
         }
+
+        return 0;
     }
 
     private function processPresenterClass($presenterClass, OutputInterface $output)

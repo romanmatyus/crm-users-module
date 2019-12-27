@@ -46,9 +46,10 @@ class CheckEmailsCommand extends Command
                 $validator = get_class($this->emailValidator->lastValidator());
                 $output->writeln("<error>INVALID</error> - ({$validator})");
             }
-            return;
+            return 0;
         }
 
         // todo - doplnit validaciu vsetkych emailov
+        return 0;
     }
 }
