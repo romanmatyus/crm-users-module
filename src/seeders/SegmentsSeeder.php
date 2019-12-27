@@ -25,7 +25,12 @@ class SegmentsSeeder implements ISeeder
     {
         $userFields = 'users.id,users.email,users.first_name,users.last_name';
 
-        $defaultGroup = $this->segmentGroupsRepository->load('Default group');
+        $group = 'Default group';
+        $defaultGroup = $this->segmentGroupsRepository->load($group);
+        if (!$defaultGroup) {
+            $defaultGroup = $this->segmentGroupsRepository->add($group, 1000);
+            $output->writeln("  <comment>* segment group <info>{$group}</info> created</comment>");
+        }
 
         $code = 'active_registered_users';
         if ($this->segmentsRepository->exists($code)) {
