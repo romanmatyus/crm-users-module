@@ -45,42 +45,27 @@ class NotificationEvent extends AbstractEvent
         $this->scheduleAt   = $scheduleAt;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUser()
+    public function getUser(): IRow
     {
         return $this->user;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTemplateCode()
+    public function getTemplateCode(): string
     {
         return $this->templateCode;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContext()
+    public function getContext(): ?string
     {
         return $this->context;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getAttachments()
+    public function getAttachments(): array
     {
         return $this->attachments;
     }
@@ -88,5 +73,35 @@ class NotificationEvent extends AbstractEvent
     public function getScheduleAt(): ?\DateTime
     {
         return $this->scheduleAt;
+    }
+
+    public function setUser(IRow $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function setTemplateCode(string $templateCode): void
+    {
+        $this->templateCode = $templateCode;
+    }
+
+    public function setParams(array $params): void
+    {
+        $this->params = $params;
+    }
+
+    public function setContext(string $context): void
+    {
+        $this->context = $context;
+    }
+
+    public function setAttachments(array $attachments): void
+    {
+        $this->attachments = $attachments;
+    }
+
+    public function setScheduleAt(\DateTime $scheduleAt): void
+    {
+        $this->scheduleAt = $scheduleAt;
     }
 }
