@@ -219,6 +219,7 @@ class UsersPresenter extends FrontendPresenter
         $newPassword = $this->userManager->resetPassword($user->email);
 
         $this->emitter->emit(new NotificationEvent(
+            $this->emitter,
             $user,
             'reset_password_with_password',
             [

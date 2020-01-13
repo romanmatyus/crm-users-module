@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
+use League\Event\Emitter;
 use Nette\Database\IRow;
 
 class NotificationEvent extends AbstractEvent
@@ -22,6 +23,7 @@ class NotificationEvent extends AbstractEvent
     /**
      * NotificationEvent constructor.
      *
+     * @param Emitter   $emitter
      * @param IRow      $user
      * @param string    $templateCode
      * @param array     $params
@@ -30,6 +32,7 @@ class NotificationEvent extends AbstractEvent
      * @param \DateTime $scheduleAt
      */
     public function __construct(
+        Emitter $emitter,
         IRow $user,
         string $templateCode,
         array $params = [],
@@ -43,6 +46,9 @@ class NotificationEvent extends AbstractEvent
         $this->context      = $context;
         $this->attachments  = $attachments;
         $this->scheduleAt   = $scheduleAt;
+
+        // Let modules modify NotificationEvent parameters
+        $emitter->emit(new PreNotificationEvent($this));
     }
 
     public function getUser(): IRow
