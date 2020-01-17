@@ -109,5 +109,7 @@ class AddUserCommand extends Command
         } else {
             $output->writeln("User <info>{$user->email}</info> [<comment>{$user->id}</comment>] was added.");
         }
+
+        return 0;
     }
 }

@@ -67,5 +67,7 @@ class UpdateLoginAttemptsCommand extends Command
                 break;
             }
         }
+
+        return 0;
     }
 }

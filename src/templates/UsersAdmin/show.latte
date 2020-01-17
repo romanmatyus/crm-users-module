@@ -130,6 +130,7 @@
     <div n:if="$invoiceAddress" class="panel panel-warning">
       <div class="panel-heading">
         {_users.admin.show.invoice_address} <small class="text-muted">#{$invoiceAddress->id}</small>
+        <a n:href="RemoveAddress! $invoiceAddress->id" class="pull-right btn-danger btn-xs" style="margin-left: 5px"><i class="fa fa-trash"></i></a>
         <a n:href="AddressAdmin:edit $invoiceAddress->id" class="pull-right btn-default btn-xs"><i class="fa fa-edit"></i></a>
       </div>
       <div class="panel-body">

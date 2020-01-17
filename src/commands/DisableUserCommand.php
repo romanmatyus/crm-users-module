@@ -38,15 +38,17 @@ class DisableUserCommand extends Command
         $user =  $this->usersRepository->getByEmail($email);
         if (!$user) {
             $output->writeln("<error>User not found</error>");
-            return;
+            return 1;
         }
 
         if (!$user->active) {
             $output->writeln("<error>Inactive user</error>");
-            return;
+            return 0;
         }
 
         $this->usersRepository->toggleActivation($user);
         $output->writeln("Done");
+
+        return 0;
     }
 }

@@ -46,7 +46,6 @@ class NotificationEvent extends AbstractEvent
         $this->context      = $context;
         $this->attachments  = $attachments;
         $this->scheduleAt   = $scheduleAt;
-
         // Let modules modify NotificationEvent parameters
         $emitter->emit(new PreNotificationEvent($this));
     }
