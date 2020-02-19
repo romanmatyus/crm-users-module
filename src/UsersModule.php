@@ -9,6 +9,7 @@ use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\CallbackManagerInterface;
 use Crm\ApplicationModule\Commands\CommandsContainerInterface;
 use Crm\ApplicationModule\Criteria\CriteriaStorage;
+use Crm\ApplicationModule\Criteria\ScenariosCriteriaStorage;
 use Crm\ApplicationModule\CrmModule;
 use Crm\ApplicationModule\Event\EventsStorage;
 use Crm\ApplicationModule\Menu\MenuContainerInterface;
@@ -20,6 +21,7 @@ use Crm\UsersModule\Auth\Permissions;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\Scenarios\UserSourceCriteria;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
 use Crm\UsersModule\Seeders\SegmentsSeeder;
 use Crm\UsersModule\Seeders\UsersSeeder;
@@ -246,6 +248,11 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\UsersModule\Components\AddressWidget::class),
             100
         );
+    }
+
+    public function registerScenariosCriteria(ScenariosCriteriaStorage $scenariosCriteriaStorage)
+    {
+        $scenariosCriteriaStorage->register('user', 'source', $this->getInstance(UserSourceCriteria::class));
     }
 
     public function registerApiCalls(ApiRoutersContainerInterface $apiRoutersContainer)

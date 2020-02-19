@@ -44,6 +44,7 @@ services:
 	- Crm\UsersModule\Repository\AddressesMetaRepository
 	- Crm\UsersModule\Repository\AddressChangeRequestsRepository
 	- Crm\UsersModule\Repository\UserActionsLogRepository
+	- Crm\UsersModule\Scenarios\UserSourceCriteria
 	- Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
 	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
 	- Crm\UsersModule\Auth\UserManager
