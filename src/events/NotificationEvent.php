@@ -6,31 +6,54 @@ use League\Event\AbstractEvent;
 use League\Event\Emitter;
 use Nette\Database\IRow;
 
+/**
+ * NotificationEvent serves for sending notification (e.g. emails, push notifications) to users.
+ *
+ * UserModule itself doesn't handle actual sending, other implementations (for example integrating with REMP Mailer)
+ * listening for this event are required to be used.
+ */
 class NotificationEvent extends AbstractEvent
 {
     private $user;
 
+    /**
+     * Template code should reference template - actual content - of notification. Implementation should be able to
+     * find the content of notification based on the provided code.
+     */
     private $templateCode;
 
+    /**
+     * Parameters (variables) for provided template. The presumption is that templates use kind of templating language
+     * with possibility of injecting dynamic values through variables.
+     */
     private $params;
 
+    /**
+     * Context serves for identification of why user received the notification. Implementations of event handlers
+     * should ensure that user   One user Implementations of handlers
+     */
     private $context;
 
+    /**
+     * Some notifications support attachments. You should pass them in following format:
+     *  [
+     *     [
+     *       // Name of attachment. If no content is provided and `file` contains valid path, handlers should try
+     *       // to load attachment content from the provided path.
+     *       'file' => '/tmp/attachment.pdf',
+     *
+     *       // Raw content of attachment.
+     *       'content' => 'raw_attachment_content',
+     *     ]
+     *  ]
+     */
     private $attachments;
 
+    /**
+     * If the notification should not be sent immediately, you can schedule it for late processing.
+     */
     private $scheduleAt;
 
-    /**
-     * NotificationEvent constructor.
-     *
-     * @param Emitter   $emitter
-     * @param IRow      $user
-     * @param string    $templateCode
-     * @param array     $params
-     * @param string    $context
-     * @param array     $attachments
-     * @param \DateTime $scheduleAt
-     */
     public function __construct(
         Emitter $emitter,
         IRow $user,
