@@ -153,6 +153,10 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\ApplicationModule\Events\RefreshUserDataTokenHandler::class)
         );
         $emitter->addListener(
+            \Crm\UsersModule\Events\UserUpdatedEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\UserUpdatedHandler::class)
+        );
+        $emitter->addListener(
             \Crm\UsersModule\Events\UserMetaEvent::class,
             $this->getInstance(\Crm\ApplicationModule\Events\RefreshUserDataTokenHandler::class)
         );
