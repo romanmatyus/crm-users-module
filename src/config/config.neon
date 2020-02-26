@@ -85,6 +85,7 @@ services:
 	- Crm\UsersModule\Api\UsersConfirmApiHandler
 	- Crm\UsersModule\Api\CreateAddressChangeRequestHandler
 	- Crm\UsersModule\Events\LoginAttemptHandler
+	- Crm\UsersModule\Events\UserUpdatedHandler
 	- Crm\UsersModule\Hermes\UserTokenUsageHandler
 	- Crm\UsersModule\Repository\AddressTypesRepository
 	- Crm\UsersModule\Repository\PasswordResetTokensRepository

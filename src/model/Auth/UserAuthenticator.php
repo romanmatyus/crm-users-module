@@ -8,6 +8,7 @@ use Crm\UsersModule\Auth\Rate\RateLimitException;
 use Crm\UsersModule\Events\UserSignInEvent;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
+use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -89,6 +90,11 @@ class UserAuthenticator implements IAuthenticator
         }
         $this->emitter->emit(new UserSignInEvent($user, $source, $regenerateToken ?? true));
 
+        return $this->getIdentity($user);
+    }
+
+    public function getIdentity(ActiveRow $user): Identity
+    {
         $arr = $user->toArray();
         unset($arr[self::COLUMN_PASSWORD_HASH]);
 
