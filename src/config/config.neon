@@ -12,6 +12,24 @@ services:
 			- register('gravatar', [Crm\UsersModule\Helpers\GravatarHelper(), process])
 			- register('userLabel', [Crm\UsersModule\Helpers\UserLabelHelper(), process])
 
+	accessTokensRepository: Crm\UsersModule\Repository\AccessTokensRepository
+	usersRepository: Crm\UsersModule\Repository\UsersRepository
+	groupsRepository: Crm\UsersModule\Repository\GroupsRepository
+	userGroupsRepository: Crm\UsersModule\Repository\UserGroupsRepository
+	loginAttemptsRepository: Crm\UsersModule\Repository\LoginAttemptsRepository
+	changePasswordsLogsRepository: Crm\UsersModule\Repository\ChangePasswordsLogsRepository
+	userMetaRepository: Crm\UsersModule\Repository\UserMetaRepository
+	addressesRepository: Crm\UsersModule\Repository\AddressesRepository
+	addressesMetaRepository: Crm\UsersModule\Repository\AddressesMetaRepository
+	addressChangeRequestsRepository: Crm\UsersModule\Repository\AddressChangeRequestsRepository
+	userActionsLogRepository: Crm\UsersModule\Repository\UserActionsLogRepository
+	adminGroupsRepository: Crm\UsersModule\Auth\Repository\AdminGroupsRepository
+	adminAccessRepository: Crm\UsersModule\Auth\Repository\AdminAccessRepository
+	autoLoginTokensRepository: Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
+	countriesRepository: Crm\UsersModule\Repository\CountriesRepository(%countries.default%)
+	addressTypesRepository: Crm\UsersModule\Repository\AddressTypesRepository
+	passwordResetTokensRepository: Crm\UsersModule\Repository\PasswordResetTokensRepository
+
 	# Authentication
 	- Crm\UsersModule\Authenticator\UsersAuthenticator
 	- Crm\UsersModule\Auth\UserAuthenticator
@@ -20,7 +38,7 @@ services:
 	userTokenAuthorization: Crm\UsersModule\Auth\UserTokenAuthorization
 
 	- Crm\UsersModule\Auth\Access\AccessToken
-	- Crm\UsersModule\Repository\AccessTokensRepository
+
 	- Crm\UsersModule\Forms\ChangePasswordFormFactory
 	- Crm\UsersModule\Forms\RequestPasswordFormFactory
 	- Crm\UsersModule\Forms\ResetPasswordFormFactory
@@ -34,27 +52,13 @@ services:
 	- Crm\UsersModule\Forms\UserDeleteFormFactory
 	- Crm\UsersModule\Forms\RegisterFormFactory
 	- Crm\UsersModule\Forms\SignInFormFactory
-	- Crm\UsersModule\Repository\UsersRepository
-	- Crm\UsersModule\Repository\GroupsRepository
-	- Crm\UsersModule\Repository\UserGroupsRepository
-	- Crm\UsersModule\Repository\LoginAttemptsRepository
-	- Crm\UsersModule\Repository\ChangePasswordsLogsRepository
-	- Crm\UsersModule\Repository\UserMetaRepository
-	- Crm\UsersModule\Repository\AddressesRepository
-	- Crm\UsersModule\Repository\AddressesMetaRepository
-	- Crm\UsersModule\Repository\AddressChangeRequestsRepository
-	- Crm\UsersModule\Repository\UserActionsLogRepository
 	- Crm\UsersModule\Scenarios\UserSourceCriteria
-	- Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
 	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
 	- Crm\UsersModule\Auth\UserManager
 	- Crm\UsersModule\Auth\PasswordGenerator
 	- Crm\UsersModule\Auth\Authorizator
 	- Crm\UsersModule\Auth\Permissions
-	- Crm\UsersModule\Auth\Repository\AdminGroupsRepository
-	- Crm\UsersModule\Auth\Repository\AdminAccessRepository
 	- Crm\UsersModule\Builder\UserBuilder
-	- Crm\UsersModule\Repository\CountriesRepository(%countries.default%)
 	- Crm\UsersModule\Commands\AddUserCommand
 	- Crm\UsersModule\Commands\GenerateAccessCommand
 	- Crm\UsersModule\Commands\CheckEmailsCommand
@@ -87,8 +91,6 @@ services:
 	- Crm\UsersModule\Events\LoginAttemptHandler
 	- Crm\UsersModule\Events\UserUpdatedHandler
 	- Crm\UsersModule\Hermes\UserTokenUsageHandler
-	- Crm\UsersModule\Repository\AddressTypesRepository
-	- Crm\UsersModule\Repository\PasswordResetTokensRepository
 	- Crm\UsersModule\Commands\UpdateLoginAttemptsCommand
 	- Crm\UsersModule\Components\UserActionLogAdminFactoryInterface
 	- Crm\UsersModule\User\BasicUserDataProvider
