@@ -15,7 +15,7 @@ class ChangePasswordsLogsRepository extends Repository
 
     protected $tableName = 'change_passwords_logs';
 
-    public function add($user, $type, $oldPassword, $newPassword)
+    final public function add($user, $type, $oldPassword, $newPassword)
     {
         return $this->insert([
             'user_id' => $user->id,
@@ -26,17 +26,17 @@ class ChangePasswordsLogsRepository extends Repository
         ]);
     }
 
-    public function totalUserLogs($userId)
+    final public function totalUserLogs($userId)
     {
         return $this->userLogs($userId)->count('*');
     }
 
-    public function lastUserLogs($userId)
+    final public function lastUserLogs($userId)
     {
         return $this->userLogs($userId)->order('created_at DESC')->limit(100);
     }
 
-    public function lastUserLog($userId, $type)
+    final public function lastUserLog($userId, $type)
     {
         return $this->userLogs($userId)->where(['type' => $type])->order('created_at DESC')->limit(1)->fetch();
     }
@@ -46,7 +46,7 @@ class ChangePasswordsLogsRepository extends Repository
         return $this->getTable()->where(['user_id' => $userId]);
     }
 
-    public function removeOldData($from): void
+    final public function removeOldData($from): void
     {
         $records = $this->getTable()
             ->select('change_passwords_logs.id')

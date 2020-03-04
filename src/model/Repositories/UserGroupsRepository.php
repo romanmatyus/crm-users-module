@@ -21,12 +21,12 @@ class UserGroupsRepository extends Repository
         $this->groupsRepository = $groupsRepository;
     }
 
-    public function isMember(IRow $groupRow, IRow $userRow)
+    final public function isMember(IRow $groupRow, IRow $userRow)
     {
         return $this->row($groupRow, $userRow)->count('*') > 0;
     }
 
-    public function addToGroup(IRow $groupRow, IRow $userRow)
+    final public function addToGroup(IRow $groupRow, IRow $userRow)
     {
         if ($this->isMember($groupRow, $userRow)) {
             return false;
@@ -41,7 +41,7 @@ class UserGroupsRepository extends Repository
         return true;
     }
 
-    public function removeFromGroup(IRow $groupRow, IRow $userRow)
+    final public function removeFromGroup(IRow $groupRow, IRow $userRow)
     {
         if (!$this->isMember($groupRow, $userRow)) {
             return false;
@@ -52,14 +52,14 @@ class UserGroupsRepository extends Repository
         return true;
     }
 
-    public function userGroups(IRow $userRow)
+    final public function userGroups(IRow $userRow)
     {
         return $this->groupsRepository->getTable()->where([
             ':user_groups.user_id' => $userRow->id,
         ])->order(':user_groups.created_at');
     }
 
-    public function groupMembers(IRow $groupRow)
+    final public function groupMembers(IRow $groupRow)
     {
         return $this->usersRepository->getTable()->where([
             ':user_groups.group_id' => $groupRow->id,

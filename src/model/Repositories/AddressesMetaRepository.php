@@ -19,7 +19,7 @@ class AddressesMetaRepository extends Repository
      * @return \Nette\Database\Table\IRow
      * @throws \Exception
      */
-    public function add(ActiveRow $address, ?Activerow $addressChangeRequest, $key, $value, $override = true)
+    final public function add(ActiveRow $address, ?Activerow $addressChangeRequest, $key, $value, $override = true)
     {
         if ($override && $this->exists($address, $addressChangeRequest, $key)) {
             $meta = $this->getTable()->where([
@@ -47,7 +47,7 @@ class AddressesMetaRepository extends Repository
         ]);
     }
 
-    public function all()
+    final public function all()
     {
         return $this->getTable()->where('address.deleted_at IS NULL');
     }
@@ -57,7 +57,7 @@ class AddressesMetaRepository extends Repository
      * @param array $keys
      * @return Selection
      */
-    public function values(ActiveRow $address, ?Activerow $addressChangeRequest, ...$keys)
+    final public function values(ActiveRow $address, ?Activerow $addressChangeRequest, ...$keys)
     {
         $values = $this->getTable()->where([
             'address_id' => $address->id,
@@ -75,7 +75,7 @@ class AddressesMetaRepository extends Repository
      * @param string $key
      * @return bool
      */
-    public function exists(ActiveRow $address, ?Activerow $addressChangeRequest, $key)
+    final public function exists(ActiveRow $address, ?Activerow $addressChangeRequest, $key)
     {
         return $this->getTable()->where([
                 'address_id' => $address->id,
@@ -90,7 +90,7 @@ class AddressesMetaRepository extends Repository
      * @param string $key
      * @return int
      */
-    public function remove(ActiveRow $address, ?Activerow $addressChangeRequest, $key)
+    final public function remove(ActiveRow $address, ?Activerow $addressChangeRequest, $key)
     {
         return $this->getTable()->where([
             'address_id' => $address->id,
@@ -99,7 +99,7 @@ class AddressesMetaRepository extends Repository
         ])->delete();
     }
 
-    public function deleteByAddressChangeRequestId($addressChangeRequestId)
+    final public function deleteByAddressChangeRequestId($addressChangeRequestId)
     {
         $records = $this->getTable()->where('address_change_request_id = ?', $addressChangeRequestId);
         foreach ($records as $record) {

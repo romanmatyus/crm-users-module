@@ -19,7 +19,7 @@ class AddressesRepository extends Repository
         $this->auditLogRepository = $auditLogRepository;
     }
 
-    public function add(
+    final public function add(
         ActiveRow $user,
         string $type,
         ?string $firstName,
@@ -55,7 +55,7 @@ class AddressesRepository extends Repository
         ]);
     }
 
-    public function address(IRow $user, $type)
+    final public function address(IRow $user, $type)
     {
         return $this->getTable()
             ->where(['user_id' => $user->id, 'type' => $type])
@@ -63,12 +63,12 @@ class AddressesRepository extends Repository
             ->order('updated_at DESC')->limit(1)->fetch();
     }
 
-    public function all()
+    final public function all()
     {
         return $this->getTable()->where('deleted_at IS NULL');
     }
 
-    public function addresses(IRow $user, $type = false)
+    final public function addresses(IRow $user, $type = false)
     {
         $where = ['user_id' => $user->id];
         if ($type) {
@@ -80,7 +80,7 @@ class AddressesRepository extends Repository
             ->fetchAll();
     }
 
-    public function addressesSelect(IRow $user, $type)
+    final public function addressesSelect(IRow $user, $type)
     {
         $rows = $this->addresses($user, $type);
         $result = [];
@@ -90,13 +90,13 @@ class AddressesRepository extends Repository
         return $result;
     }
 
-    public function update(IRow &$row, $data)
+    final public function update(IRow &$row, $data)
     {
         $data['updated_at'] = new DateTime();
         return parent::update($row, $data);
     }
 
-    public function findByAddress($address, $type, $userId)
+    final public function findByAddress($address, $type, $userId)
     {
         $addressMap = [
             'first_name' => null,
@@ -124,7 +124,7 @@ class AddressesRepository extends Repository
         return $this->getTable()->where($addressMap)->where('deleted_at IS NULL')->fetch();
     }
 
-    public function softDelete(ActiveRow $address)
+    final public function softDelete(ActiveRow $address)
     {
         $this->update($address, [
             'deleted_at' => new \DateTime(),

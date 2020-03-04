@@ -45,7 +45,7 @@ class AddressChangeRequestsRepository extends Repository
         $this->emitter = $emitter;
     }
 
-    public function add(
+    final public function add(
         ActiveRow $user,
         $parentAddress,
         ?string $firstName,
@@ -123,7 +123,7 @@ class AddressChangeRequestsRepository extends Repository
         return $changeRequest;
     }
 
-    public function changeStatus(IRow $addressChangeRequest, $status)
+    final public function changeStatus(IRow $addressChangeRequest, $status)
     {
         return $this->update($addressChangeRequest, [
             'updated_at' => new \DateTime(),
@@ -131,7 +131,7 @@ class AddressChangeRequestsRepository extends Repository
         ]);
     }
 
-    public function acceptRequest(ActiveRow $addressChangeRequest, $asAdmin = false)
+    final public function acceptRequest(ActiveRow $addressChangeRequest, $asAdmin = false)
     {
         $address = $addressChangeRequest->addr;
         if ($address) {
@@ -181,12 +181,12 @@ class AddressChangeRequestsRepository extends Repository
         return $address;
     }
 
-    public function rejectRequest(IRow $addressChangeRequest)
+    final public function rejectRequest(IRow $addressChangeRequest)
     {
         return $this->changeStatus($addressChangeRequest, self::STATUS_REJECTED);
     }
 
-    public function allNewRequests()
+    final public function allNewRequests()
     {
         return $this->getTable()
             ->where(['status' => self::STATUS_NEW])
@@ -194,19 +194,19 @@ class AddressChangeRequestsRepository extends Repository
             ->order('created_at DESC');
     }
 
-    public function all()
+    final public function all()
     {
         return $this->getTable()
             ->where('address.deleted_at IS NULL')
             ->order('created_at DESC');
     }
 
-    public function userRequests($userId)
+    final public function userRequests($userId)
     {
         return $this->all()->where('address_change_requests.user_id', $userId);
     }
 
-    public function deleteAll($userId)
+    final public function deleteAll($userId)
     {
         foreach ($this->userRequests($userId) as $addressChange) {
             $this->addressesMetaRepository->deleteByAddressChangeRequestId($addressChange->id);
@@ -214,7 +214,7 @@ class AddressChangeRequestsRepository extends Repository
         }
     }
 
-    public function lastAcceptedForAddress($addressId)
+    final public function lastAcceptedForAddress($addressId)
     {
         return $this->getTable()
             ->where([

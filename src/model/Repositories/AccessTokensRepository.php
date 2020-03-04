@@ -27,12 +27,12 @@ class AccessTokensRepository extends Repository
         $this->emitter = $emitter;
     }
 
-    public function all($limit = 500)
+    final public function all($limit = 500)
     {
         return $this->getTable()->order('created_at DESC')->limit($limit);
     }
 
-    public function add(IRow $user, int $version)
+    final public function add(IRow $user, int $version)
     {
         $token = TokenGenerator::generate();
 
@@ -51,7 +51,7 @@ class AccessTokensRepository extends Repository
         return $row;
     }
 
-    public function remove($token)
+    final public function remove($token)
     {
         $tokenRow = $this->loadToken($token);
         if (!$tokenRow) {
@@ -62,17 +62,17 @@ class AccessTokensRepository extends Repository
         return $result;
     }
 
-    public function loadToken($token)
+    final public function loadToken($token)
     {
         return $this->getTable()->where(['token' => $token])->fetch();
     }
 
-    public function allUserTokens($userId)
+    final public function allUserTokens($userId)
     {
         return $this->getTable()->where(['user_id' => $userId])->order('created_at DESC');
     }
 
-    public function removeAllUserTokens($userId, array $exceptTokens = [])
+    final public function removeAllUserTokens($userId, array $exceptTokens = [])
     {
         $tokens = $this->getTable()->where(['user_id' => $userId]);
 
@@ -89,7 +89,7 @@ class AccessTokensRepository extends Repository
         return $removed;
     }
 
-    public function removeNotUsedTokens(DateTime $usedBefore)
+    final public function removeNotUsedTokens(DateTime $usedBefore)
     {
         $tokens = $this->getTable()->where('last_used_at < ', $usedBefore);
         $removed = 0;
@@ -100,7 +100,7 @@ class AccessTokensRepository extends Repository
         return $removed;
     }
 
-    public function getVersionStats()
+    final public function getVersionStats()
     {
         $result = [];
         $stats = $this->getTable()->select('COUNT(*) AS counts, version')->group('version');

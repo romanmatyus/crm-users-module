@@ -10,7 +10,7 @@ class AdminGroupsRepository extends Repository
 {
     protected $tableName = 'admin_groups';
 
-    public function add($name, $sorting = 100)
+    final public function add($name, $sorting = 100)
     {
         return $this->insert([
             'name' => $name,
@@ -20,18 +20,18 @@ class AdminGroupsRepository extends Repository
         ]);
     }
 
-    public function update(IRow &$row, $data)
+    final public function update(IRow &$row, $data)
     {
         $values['updated_at'] = new DateTime();
         return parent::update($row, $data);
     }
 
-    public function findByName($name)
+    final public function findByName($name)
     {
         return $this->getTable()->where(['name' => $name])->limit(1)->fetch();
     }
 
-    public function all()
+    final public function all()
     {
         return $this->getTable()->order('sorting ASC');
     }

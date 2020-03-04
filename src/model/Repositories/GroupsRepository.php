@@ -11,7 +11,7 @@ class GroupsRepository extends Repository
 {
     protected $tableName = 'groups';
 
-    public function add($groupName, $sorting = 10)
+    final public function add($groupName, $sorting = 10)
     {
         return $this->insert([
             'name' => $groupName,
@@ -20,7 +20,7 @@ class GroupsRepository extends Repository
         ]);
     }
 
-    public function exists($name)
+    final public function exists($name)
     {
         return $this->getTable()->where(['name' => $name])->count('*') > 0;
     }
@@ -28,12 +28,12 @@ class GroupsRepository extends Repository
     /**
      * @return Selection
      */
-    public function all()
+    final public function all()
     {
         return $this->getTable()->order('sorting');
     }
 
-    public function update(IRow &$row, $data)
+    final public function update(IRow &$row, $data)
     {
         $data['updated_at'] = new DateTime();
         return parent::update($row, $data);

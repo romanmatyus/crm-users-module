@@ -23,12 +23,12 @@ class UserMetaRepository extends Repository
         $this->emitter = $emitter;
     }
 
-    public function exists(IRow $user, $key)
+    final public function exists(IRow $user, $key)
     {
         return $this->getTable()->where(['user_id' => $user->id, 'key' => $key])->count('*') > 0;
     }
 
-    public function add(IRow $user, $key, $value, ?DateTime $createdAt = null, $isPublic = false)
+    final public function add(IRow $user, $key, $value, ?DateTime $createdAt = null, $isPublic = false)
     {
         if ($this->exists($user, $key)) {
             $result = $this->getTable()->where(['user_id' => $user, 'key' => $key])
@@ -52,14 +52,14 @@ class UserMetaRepository extends Repository
         return $result;
     }
 
-    public function setMeta(IRow $user, array $metas, $isPublic = false)
+    final public function setMeta(IRow $user, array $metas, $isPublic = false)
     {
         foreach ($metas as $key => $value) {
             $this->add($user, $key, $value, null, $isPublic);
         }
     }
 
-    public function removeMeta($userId, $key)
+    final public function removeMeta($userId, $key)
     {
         $result = $this->getTable()->where(['user_id' => $userId, 'key' => $key])->delete();
         if ($result) {
@@ -68,19 +68,19 @@ class UserMetaRepository extends Repository
         return $result;
     }
 
-    public function userMeta($user)
+    final public function userMeta($user)
     {
         return $this->userMetaRows($user)->fetchPairs('key', 'value');
     }
 
-    public function userMetaValueByKey(IRow $user, string $key)
+    final public function userMetaValueByKey(IRow $user, string $key)
     {
         return $this->userMetaRows($user)
             ->where('key = ?', $key)
             ->fetchField('value');
     }
 
-    public function userMetaRows($user)
+    final public function userMetaRows($user)
     {
         if ($user instanceof IRow) {
             $user = $user->id;
@@ -88,7 +88,7 @@ class UserMetaRepository extends Repository
         return $this->getTable()->where(['user_id' => $user])->order('key ASC');
     }
 
-    public function usersWithKey($key, $value = null): Selection
+    final public function usersWithKey($key, $value = null): Selection
     {
         $users = $this->getTable()->where('key = ?', $key);
         if ($value) {

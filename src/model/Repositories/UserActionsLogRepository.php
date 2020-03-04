@@ -9,7 +9,7 @@ class UserActionsLogRepository extends Repository
 {
     protected $tableName = 'user_actions_log';
 
-    public function add($userId, $action, $params = [])
+    final public function add($userId, $action, $params = [])
     {
         return $this->insert([
             'user_id' => $userId,
@@ -19,17 +19,17 @@ class UserActionsLogRepository extends Repository
         ]);
     }
 
-    public function all()
+    final public function all()
     {
         return $this->getTable()->order('created_at DESC');
     }
 
-    public function totalCounts()
+    final public function totalCounts()
     {
         return $this->getTable()->group('action')->select('action, COUNT(*) AS count');
     }
 
-    public function removeOldData($from): void
+    final public function removeOldData($from): void
     {
         $records = $this->getTable()
             ->select('user_actions_log.id')
@@ -41,7 +41,7 @@ class UserActionsLogRepository extends Repository
         }
     }
 
-    public function availableSubscriptionTypes()
+    final public function availableSubscriptionTypes()
     {
         return $this->getTable()->select("DISTINCT(JSON_EXTRACT(params, \"$.subscription_type_id\")) AS subscription_type_id")->fetchPairs(null, 'subscription_type_id');
     }

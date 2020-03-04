@@ -12,7 +12,7 @@ class AutoLoginTokensRepository extends Repository
 
     use RetentionData;
 
-    public function add($token, IRow $user, $validFrom, $validTo, $maxCount = 1)
+    final public function add($token, IRow $user, $validFrom, $validTo, $maxCount = 1)
     {
         return $this->insert([
             'token' => $token,
@@ -26,7 +26,7 @@ class AutoLoginTokensRepository extends Repository
         ]);
     }
 
-    public function userTokens($userId)
+    final public function userTokens($userId)
     {
         return $this->getTable()->where('user_id', $userId)->order('valid_to DESC');
     }
@@ -36,7 +36,7 @@ class AutoLoginTokensRepository extends Repository
         return 'valid_to';
     }
 
-    public function deleteAll($userId)
+    final public function deleteAll($userId)
     {
         return $this->getTable()->where('user_id', $userId)->delete();
     }

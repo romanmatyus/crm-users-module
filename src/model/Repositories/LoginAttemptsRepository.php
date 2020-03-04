@@ -28,7 +28,7 @@ class LoginAttemptsRepository extends Repository
     /** @var Context */
     protected $tableName = 'login_attempts';
 
-    public function okStatuses(): array
+    final public function okStatuses(): array
     {
         return [
             LoginAttemptsRepository::STATUS_OK,
@@ -39,12 +39,12 @@ class LoginAttemptsRepository extends Repository
         ];
     }
 
-    public function okStatus($status): bool
+    final public function okStatus($status): bool
     {
         return in_array($status, $this->okStatuses());
     }
 
-    public function insertAttempt($email, $userId, $source, $status, $ip, $userAgent, $dateTime, $message = null)
+    final public function insertAttempt($email, $userId, $source, $status, $ip, $userAgent, $dateTime, $message = null)
     {
         $browser = null;
         $browserVersion = null;
@@ -81,32 +81,32 @@ class LoginAttemptsRepository extends Repository
         ]);
     }
 
-    public function all()
+    final public function all()
     {
         return $this->getTable()->order('id ASC');
     }
 
-    public function totalUserAttempts($userId)
+    final public function totalUserAttempts($userId)
     {
         return $this->getTable()->where(['user_id' => $userId])->count('*');
     }
 
-    public function lastUserAttempt($userId, $count = 100)
+    final public function lastUserAttempt($userId, $count = 100)
     {
         return $this->getTable()->where(['user_id' => $userId])->order('created_at DESC')->limit($count);
     }
 
-    public function userIps($userId)
+    final public function userIps($userId)
     {
         return $this->getTable()->where(['user_id' => $userId])->group('ip');
     }
 
-    public function userAgents($userId)
+    final public function userAgents($userId)
     {
         return $this->getTable()->where(['user_id' => $userId])->group('user_agent');
     }
 
-    public function lastIpAttempts($ip, $count)
+    final public function lastIpAttempts($ip, $count)
     {
         return $this->getTable()->where(['ip' => $ip])->order('created_at DESC')->limit($count);
     }

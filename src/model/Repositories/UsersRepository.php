@@ -54,12 +54,12 @@ class UsersRepository extends Repository
     /**
      * @return bool|mixed|IRow
      */
-    public function getByEmail($email)
+    final public function getByEmail($email)
     {
         return $this->getTable()->select('*')->where(['LOWER(email)' => strtolower($email)])->fetch();
     }
 
-    public function add(
+    final public function add(
         $email,
         $password,
         $firstName,
@@ -90,7 +90,7 @@ class UsersRepository extends Repository
         ]);
     }
 
-    public function totalCount($allowCached = false, $forceCacheUpdate = false)
+    final public function totalCount($allowCached = false, $forceCacheUpdate = false)
     {
         $callable = function () {
             return parent::totalCount();
@@ -106,7 +106,7 @@ class UsersRepository extends Repository
         return $callable();
     }
 
-    public function addSignIn($user)
+    final public function addSignIn($user)
     {
         return $this->getTable()->where(['id' => $user->id])->update([
             'current_sign_in_at' => new \DateTime(),
@@ -120,7 +120,7 @@ class UsersRepository extends Repository
      * @param string $text
      * @return Selection
      */
-    public function all($text = '')
+    final public function all($text = '')
     {
         $table = $this->getTable()->where(['deleted_at' => null])->order('users.id DESC');
 
@@ -163,7 +163,7 @@ class UsersRepository extends Repository
         return $table;
     }
 
-    public function update(IRow &$row, $data)
+    final public function update(IRow &$row, $data)
     {
         if (isset($data['email'])) {
             $originalEmail = $row->email;
@@ -188,7 +188,7 @@ class UsersRepository extends Repository
         $this->emitter->emit(new UserUpdatedEvent($row));
     }
 
-    public function toggleActivation($user)
+    final public function toggleActivation($user)
     {
         $active = 1;
         if ($user->active) {
@@ -205,7 +205,7 @@ class UsersRepository extends Repository
         return $user;
     }
 
-    public function getUsersRegisteredBetween(DateTime $startTime, DateTime $endTime = null)
+    final public function getUsersRegisteredBetween(DateTime $startTime, DateTime $endTime = null)
     {
         if (!$endTime) {
             $endTime = new DateTime();
@@ -217,12 +217,12 @@ class UsersRepository extends Repository
         ]);
     }
 
-    public function usersWithoutPassword()
+    final public function usersWithoutPassword()
     {
         return $this->getTable()->where(['password' => '']);
     }
 
-    public function getAbusiveUsers(DateTime $start, DateTime $end, $tokenCount = 10, $deviceCount = 1, $sortBy = 'device_count')
+    final public function getAbusiveUsers(DateTime $start, DateTime $end, $tokenCount = 10, $deviceCount = 1, $sortBy = 'device_count')
     {
         if (!in_array($sortBy, ['device_count', 'token_count'], true)) {
             $sortBy = 'device_count';
@@ -235,12 +235,12 @@ class UsersRepository extends Repository
             ->order("$sortBy DESC");
     }
 
-    public function getNoConfirmed(DateTime $toTime)
+    final public function getNoConfirmed(DateTime $toTime)
     {
         return $this->getTable()->where(['created_at <= ?' => $toTime, 'confirmed_at' => null]);
     }
 
-    public function getUserSources()
+    final public function getUserSources()
     {
         return $this->getTable()->select('distinct(source)')->fetchPairs('source', 'source');
     }
@@ -250,7 +250,7 @@ class UsersRepository extends Repository
      * @param DateTime $to
      * @return Selection
      */
-    public function usersRegisteredBetween(DateTime $from, DateTime $to)
+    final public function usersRegisteredBetween(DateTime $from, DateTime $to)
     {
         return $this->getTable()->where([
             'created_at > ?' => $from,
@@ -258,7 +258,7 @@ class UsersRepository extends Repository
         ]);
     }
 
-    public function isRole($userId, $role)
+    final public function isRole($userId, $role)
     {
         return $this->getTable()->where([
             'id' => $userId,
