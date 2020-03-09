@@ -2,8 +2,11 @@
 
 namespace Crm\UsersModule\Repository;
 
+use Crm\ApplicationModule\DataProvider\DataProviderException;
+use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\AuditLogRepository;
+use Crm\UsersModule\DataProvider\CanDeleteAddressDataProviderInterface;
 use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
@@ -13,10 +16,16 @@ class AddressesRepository extends Repository
 {
     protected $tableName = 'addresses';
 
-    public function __construct(Context $database, AuditLogRepository $auditLogRepository)
-    {
+    private $dataProviderManager;
+
+    public function __construct(
+        Context $database,
+        AuditLogRepository $auditLogRepository,
+        DataProviderManager $dataProviderManager
+    ) {
         parent::__construct($database);
         $this->auditLogRepository = $auditLogRepository;
+        $this->dataProviderManager = $dataProviderManager;
     }
 
     final public function add(
@@ -124,8 +133,47 @@ class AddressesRepository extends Repository
         return $this->getTable()->where($addressMap)->where('deleted_at IS NULL')->fetch();
     }
 
-    final public function softDelete(ActiveRow $address)
+    /**
+     * @param IRow $address
+     * @return array
+     * @throws DataProviderException
+     */
+    public function canDelete(IRow $address)
     {
+        /** @var CanDeleteAddressDataProviderInterface[] $providers */
+        $providers = $this->dataProviderManager->getProviders(
+            'users.dataprovider.address.can_delete',
+            CanDeleteAddressDataProviderInterface::class
+        );
+        foreach ($providers as $sorting => $provider) {
+            $result = $provider->provide([
+                'address' => $address
+            ]);
+
+            if (isset($result['canDelete']) && $result['canDelete'] === false) {
+                return $result;
+            }
+        }
+
+        return [
+            'canDelete' => true
+        ];
+    }
+
+    /**
+     * @param IRow $address
+     * @param bool $force
+     * @throws \Exception
+     */
+    public function softDelete(IRow $address, $force = false)
+    {
+        if (!$force) {
+            $check = $this->canDelete($address);
+            if ($check['canDelete'] === false) {
+                throw new CantDeleteAddressException($check['message']);
+            }
+        }
+
         $this->update($address, [
             'deleted_at' => new \DateTime(),
             'updated_at' => new \DateTime(),

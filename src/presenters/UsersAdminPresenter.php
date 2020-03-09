@@ -8,6 +8,7 @@ use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface;
+use Crm\UsersModule\Repository\CantDeleteAddressException;
 use Crm\UsersModule\DataProvider\FilterUsersFormDataProviderInterface;
 use Crm\UsersModule\DataProvider\FilterUsersSelectionDataProviderInterface;
 use Crm\UsersModule\Events\AddressRemovedEvent;
@@ -399,7 +400,12 @@ class UsersAdminPresenter extends AdminPresenter
     public function handleRemoveAddress($addressId)
     {
         $address = $this->addressesRepository->find($addressId);
-        $this->addressesRepository->softDelete($address);
+        try {
+            $this->addressesRepository->softDelete($address);
+        } catch (CantDeleteAddressException $exception) {
+            $this->flashMessage($exception->getMessage(), 'error');
+            $this->redirect('this');
+        }
         $this->emitter->emit(new AddressRemovedEvent($address));
     }
 }
