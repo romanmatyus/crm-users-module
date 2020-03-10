@@ -151,7 +151,7 @@ class UserManager
         return true;
     }
 
-    public function resetPassword($email, $password = null)
+    public function resetPassword($email, $password = null, $notify = true)
     {
         $user = $this->usersRepository->findBy('email', $email);
         if (!$user) {
@@ -176,7 +176,7 @@ class UserManager
             $hashedPassword
         );
 
-        $this->emitter->emit(new UserChangePasswordEvent($user));
+        $this->emitter->emit(new UserChangePasswordEvent($user, $notify));
         return $password;
     }
 

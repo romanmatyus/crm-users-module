@@ -106,7 +106,6 @@ services:
 	- Crm\UsersModule\Segment\EmailCriteria
 	- Crm\UsersModule\Segment\GroupCriteria
 	- Crm\UsersModule\Segment\CreatedCriteria
-	- Crm\UsersModule\Seeders\ConfigsSeeder
 	- Crm\UsersModule\Seeders\SegmentsSeeder
 	- Crm\UsersModule\Seeders\UsersSeeder
 	- Crm\UsersModule\Components\UserSourceAccesses
