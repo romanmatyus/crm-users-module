@@ -37,22 +37,23 @@ class ResetPasswordFormFactory
         $form = new Form;
 
         $form->setRenderer(new BootstrapRenderer());
+        $form->setTranslator($this->translator);
         $form->addProtection();
 
         $form->addHidden('token', $token);
 
-        $form->addPassword('new_password', $this->translator->translate('users.frontend.reset_password.new_password.label'))
-            ->setRequired($this->translator->translate('users.frontend.reset_password.new_password.required'))
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.reset_password.new_password.placeholder'))
-            ->addRule(Form::MIN_LENGTH, $this->translator->translate('users.frontend.reset_password.new_password.min_length'), 6);
+        $form->addPassword('new_password', 'users.frontend.reset_password.new_password.label')
+            ->setRequired('users.frontend.reset_password.new_password.required')
+            ->setAttribute('placeholder', 'users.frontend.reset_password.new_password.placeholder')
+            ->addRule(Form::MIN_LENGTH, 'users.frontend.reset_password.new_password.min_length', 6);
 
-        $form->addPassword('new_password_confirm', $this->translator->translate('users.frontend.reset_password.new_password_confirm.placeholder'))
-            ->setRequired($this->translator->translate('users.frontend.reset_password.new_password_confirm.required'))
-            ->addRule(Form::EQUAL, $this->translator->translate('users.frontend.reset_password.new_password_confirm.not_matching'), $form['new_password'])
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.reset_password.new_password_confirm.placeholder'))
-            ->setOption('description', $this->translator->translate('users.frontend.reset_password.new_password_confirm.description'));
+        $form->addPassword('new_password_confirm', 'users.frontend.reset_password.new_password_confirm.placeholder')
+            ->setRequired('users.frontend.reset_password.new_password_confirm.required')
+            ->addRule(Form::EQUAL, 'users.frontend.reset_password.new_password_confirm.not_matching', $form['new_password'])
+            ->setAttribute('placeholder', 'users.frontend.reset_password.new_password_confirm.placeholder')
+            ->setOption('description', 'users.frontend.reset_password.new_password_confirm.description');
 
-        $form->addSubmit('send', $this->translator->translate('users.frontend.reset_password.submit'));
+        $form->addSubmit('send', 'users.frontend.reset_password.submit');
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
         return $form;
@@ -62,7 +63,7 @@ class ResetPasswordFormFactory
     {
         $token = $this->passwordResetTokensRepository->loadAvailableToken($values->token);
         if (!$token) {
-            $form['new_password']->addError($this->translator->translate('users.frontend.reset_password.could_not_set'));
+            $form['new_password']->addError('users.frontend.reset_password.could_not_set');
             return;
         }
 
@@ -73,7 +74,7 @@ class ResetPasswordFormFactory
         $this->passwordResetTokensRepository->markUsed($token->token);
 
         if (!$result) {
-            $form['new_password']->addError($this->translator->translate('users.frontend.reset_password.could_not_set'));
+            $form['new_password']->addError('users.frontend.reset_password.could_not_set');
         } else {
             $this->onSuccess->__invoke();
         }

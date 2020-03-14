@@ -129,7 +129,7 @@ frontend:
 			label: 'New password:'
 			required: Please enter your new password
 			placeholder: new password
-			min_length: Password has to be at least %count% characters long
+			min_length: Password has to be at least %d characters long
 		new_password_confirm:
 			label: 'New password again:'
 			required: Please enter your new password again

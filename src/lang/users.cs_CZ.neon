@@ -129,7 +129,7 @@ frontend:
 			label: 'Nové heslo:'
 			required: Zadejte prosím Vaše nové heslo
 			placeholder: nové heslo
-			min_length: Heslo musí být dlouhé alespoň %count% znaků
+			min_length: Heslo musí být dlouhé alespoň %d znaků
 		new_password_confirm:
 			label: 'Nové heslo znovu:'
 			required: Zadejte prosím Vaše nové heslo znovu
