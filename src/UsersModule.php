@@ -293,6 +293,18 @@ class UsersModule extends CrmModule
         $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'confirm'), \Crm\UsersModule\Api\UsersConfirmApiHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
         );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'user-meta', 'list'), \Crm\UsersModule\Api\UserMetaListHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'user-meta', 'key-users'), \Crm\UsersModule\Api\UserMetaKeyUsersHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'user-meta', 'delete'), \Crm\UsersModule\Api\UserMetaDeleteHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'user-meta', 'upsert'), \Crm\UsersModule\Api\UserMetaUpsertHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
     }
 
     public function registerUserData(UserDataRegistrator $dataRegistrator)

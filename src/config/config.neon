@@ -89,6 +89,10 @@ services:
 	- Crm\UsersModule\Api\CreateAddressHandler
 	- Crm\UsersModule\Api\UsersConfirmApiHandler
 	- Crm\UsersModule\Api\CreateAddressChangeRequestHandler
+	- Crm\UsersModule\Api\UserMetaListHandler
+	- Crm\UsersModule\Api\UserMetaKeyUsersHandler
+	- Crm\UsersModule\Api\UserMetaDeleteHandler
+	- Crm\UsersModule\Api\UserMetaUpsertHandler
 	- Crm\UsersModule\Events\LoginAttemptHandler
 	- Crm\UsersModule\Events\UserUpdatedHandler
 	- Crm\UsersModule\Hermes\UserTokenUsageHandler

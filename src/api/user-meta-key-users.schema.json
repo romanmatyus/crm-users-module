@@ -1,0 +1,18 @@
+{
+    "$id": "https://example.com/post.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Get list of users by meta data",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "key"
+    ],
+    "properties": {
+        "key": {
+            "type": "string"
+        },
+        "value": {
+            "type": "string"
+        }
+    }
+}

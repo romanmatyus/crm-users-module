@@ -32,12 +32,14 @@ class UserMetaRepository extends Repository
     {
         if ($this->exists($user, $key)) {
             $result = $this->getTable()->where(['user_id' => $user, 'key' => $key])
-                ->update(['value' => $value, 'updated_at' => new DateTime()]);
+                ->update(['value' => $value, 'updated_at' => new DateTime(), 'is_public' => $isPublic]);
             if ($result) {
                 $this->emitter->emit(new UserMetaEvent($user->id, $key, $value));
             }
-            return $result;
+
+            return $this->getTable()->where(['user_id' => $user, 'key' => $key])->fetch();
         }
+
         $result = $this->insert([
             'user_id' => $user->id,
             'key' => $key,
@@ -59,9 +61,15 @@ class UserMetaRepository extends Repository
         }
     }
 
-    final public function removeMeta($userId, $key)
+    final public function removeMeta($userId, $key, $value = null)
     {
-        $result = $this->getTable()->where(['user_id' => $userId, 'key' => $key])->delete();
+        $selection = $this->getTable()->where(['user_id' => $userId, 'key' => $key]);
+        if ($value !== null) {
+            $selection->where('value = ?', $value);
+        }
+
+        $result = $selection->delete();
+
         if ($result) {
             $this->emitter->emit(new UserMetaEvent($userId, $key, null));
         }

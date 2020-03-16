@@ -645,6 +645,193 @@ Response:
 }
 ```
 
+---
+### USER META INFORMATION API
+
+The concept of meta user's information is to provide the way how to store user related data without need of the database structure changes.
+
+Meta information for user is stored as a pair **key** - **value** and respect two rules:
+* One value for one key
+* More unique keys for one user     
+
+Public property (**is_public**) defines the availability of meta information for the visual components of CRM administration and the availability for other modules by data providers.
+
+#### POST `/api/v1/user-meta/upsert`
+
+Create or update the meta information for given user.
+
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | API token. |
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| user_id | *Integer* | yes | ID of user to add/update meta information. |
+| key | *String* | yes | Meta information key to set. |
+| value | *String* | yes | Meta information value to set. |
+| is_public | *Boolean* | no | Meta information property public to set. |
+
+##### *Example:*
+
+```shell
+curl -X POST \
+  http://crm.press/api/v1/user-meta/upsert \
+  -H 'Authorization: Bearer XXX' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "user_id": 12345,
+    "key": "foo",
+    "value": "bar",
+    "is_public": false
+  }'
+```
+
+Response:
+
+```json5
+{
+    "key": "foo",
+    "value": "bar",
+    "is_public": false
+}
+```
+
+---
+
+#### POST `/api/v1/user-meta/list`
+
+Return all the meta information of specified user. You can specify meta information by using the meta information key.
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | API token. |
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| user_id | *Integer* | yes | The ID of user. |
+| key | *String* | no | The meta information key of user to filter by. |
+
+##### *Example:*
+
+```shell
+curl -X POST \
+  http://crm.press/api/v1/user-meta/list \
+  -H 'Authorization: Bearer XXX' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "user_id": 12345
+  }'
+```
+
+Response:
+
+```json5
+[
+    {
+        "key" : "foo",
+        "value" : "bar",
+        "is_public" : false
+    },
+    {
+        "key" : "fooz",
+        "value" : "1",
+        "is_public" : true
+    }
+]
+```
+
+---
+
+#### POST `/api/v1/user-meta/key-users`
+
+Return all users with specified meta information key and value.
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | API token. |
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| key | *String* | yes | The meta key information of user to filter by. |
+| value | *String* | no | The meta value information of user to filter by. |
+
+##### *Example:*
+
+```shell
+curl -X POST \
+  http://crm.press/api/v1/user-meta/key-users \
+  -H 'Authorization: Bearer XXX' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "key": "foo"
+  }'
+```
+
+Response:
+
+```json5
+[
+    {
+        "user_id" : 1,
+        "value" : "bar"
+    },
+    {
+        "user_id" : 2,
+        "value" : "friend"
+    }
+]
+```
+
+---
+
+#### POST `/api/v1/user-meta/delete`
+
+Delete the meta information of user by key. You can delete the meta information of user also only with specific value.
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | API token. |
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| user_id | *Integer* | yes | The ID of user. |
+| key | *String* | yes | The meta information key to delete by. |
+| value | *String* | no | The meta information value to delete by. |
+
+##### *Example:*
+
+```shell
+curl -X POST \
+  http://crm.press/api/v1/user-meta/delete \
+  -H 'Authorization: Bearer XXX' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "user_id": 12345,
+    "key": "gdpr"
+  }'
+```
+
 ## Components
 
 **AddressWidget**
