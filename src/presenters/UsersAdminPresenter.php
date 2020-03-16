@@ -12,6 +12,7 @@ use Crm\UsersModule\Repository\CantDeleteAddressException;
 use Crm\UsersModule\DataProvider\FilterUsersFormDataProviderInterface;
 use Crm\UsersModule\DataProvider\FilterUsersSelectionDataProviderInterface;
 use Crm\UsersModule\Events\AddressRemovedEvent;
+use Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory;
 use Crm\UsersModule\Forms\AdminUserGroupFormFactory;
 use Crm\UsersModule\Forms\UserFormFactory;
 use Crm\UsersModule\Forms\UserGroupsFormFactory;
@@ -22,7 +23,6 @@ use Crm\UsersModule\Repository\GroupsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
-use Nette\Utils\DateTime;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 
 class UsersAdminPresenter extends AdminPresenter
@@ -64,6 +64,8 @@ class UsersAdminPresenter extends AdminPresenter
 
     private $changePasswordsLogsRepository;
 
+    private $abusiveUsersFilterFormFactory;
+
     public function __construct(
         UsersRepository $usersRepository,
         UserFormFactory $userFormFactory,
@@ -75,7 +77,8 @@ class UsersAdminPresenter extends AdminPresenter
         DeleteUserData $deleteUserData,
         DataProviderManager $dataProviderManager,
         UserManager $userManager,
-        ChangePasswordsLogsRepository $changePasswordsLogsRepository
+        ChangePasswordsLogsRepository $changePasswordsLogsRepository,
+        AbusiveUsersFilterFormFactory $abusiveUsersFilterFormFactory
     ) {
         parent::__construct();
         $this->usersRepository = $usersRepository;
@@ -89,6 +92,7 @@ class UsersAdminPresenter extends AdminPresenter
         $this->dataProviderManager = $dataProviderManager;
         $this->userManager = $userManager;
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
+        $this->abusiveUsersFilterFormFactory = $abusiveUsersFilterFormFactory;
     }
 
     public function startup()
@@ -159,44 +163,6 @@ class UsersAdminPresenter extends AdminPresenter
 
 
         $this->template->canEditRoles = $this->getUser()->isAllowed('Users:AdminGroupAdmin', 'edit');
-    }
-
-    public function renderAbusive()
-    {
-        $startTime = new DateTime();
-        $endTime = new DateTime();
-        $startTime->modify('- 2 months');
-
-        if (isset($this->params['start_time'])) {
-            $startTime = $startTime->createFromFormat('Y-m-d', $this->params['start_time']);
-        }
-        if (isset($this->params['end_time'])) {
-            $endTime = $endTime->createFromFormat('Y-m-d', $this->params['end_time']);
-        }
-
-        $loginCount = isset($this->params['login_count']) ? $this->params['login_count'] : 25;
-        $deviceCount = isset($this->params['device_count']) ? $this->params['device_count'] : 1;
-        $sortBy = isset($this->params['sort_by']) ? $this->params['sort_by'] : 'device_count';
-
-        $getParams = [
-            'login_count' => $loginCount,
-            'device_count' => $deviceCount,
-            'start_time' => $startTime->format('Y-m-d'),
-            'end_time' => $endTime->format('Y-m-d'),
-        ];
-
-        $this->template->sortByTokenCountLink = $this->link('UsersAdmin:Abusive', array_merge($getParams, ['sort_by' => 'token_count']));
-        $this->template->sortByDeviceCountLink = $this->link('UsersAdmin:Abusive', array_merge($getParams, ['sort_by' => 'device_count']));
-
-        $this->template->startTime = $startTime->format('Y-m-d');
-        $this->template->endTime = $endTime->format('Y-m-d');
-        $this->template->loginCount = $loginCount;
-        $this->template->loginCountRanges = [10,25,50,100];
-        $this->template->deviceCount = $deviceCount;
-        $this->template->deviceCountRanges = [1,5,10,25,50];
-
-        $users = $this->usersRepository->getAbusiveUsers($startTime, $endTime, $loginCount, $deviceCount, $sortBy)->fetchAll();
-        $this->template->abusers = $users;
     }
 
     public function renderEdit($id)

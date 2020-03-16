@@ -417,6 +417,7 @@ admin:
 		time_ip_last_login: Čas / IP adresa posledného prihlásenia
 		additional_info: Ďalšie informácie
 		actions: Akcie
+		cancel_filter: Zrušiť filter
 	stats:
 		title: Štatistiky používateľov
 

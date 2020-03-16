@@ -52,6 +52,7 @@ services:
 	- Crm\UsersModule\Forms\UserDeleteFormFactory
 	- Crm\UsersModule\Forms\RegisterFormFactory
 	- Crm\UsersModule\Forms\SignInFormFactory
+	- Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory
 	- Crm\UsersModule\Scenarios\UserSourceCriteria
 	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
 	- Crm\UsersModule\Auth\UserManager

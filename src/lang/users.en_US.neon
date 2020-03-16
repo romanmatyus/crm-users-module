@@ -417,6 +417,7 @@ admin:
 		time_ip_last_login: Time / IP address of last login
 		additional_info: Additional information
 		actions: Actions
+		cancel_filter: Cancel filter
 	stats:
 		title: User stats
 

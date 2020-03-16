@@ -418,6 +418,7 @@ admin:
 		time_ip_last_login: Čas / IP adresa posledního přihlášení
 		additional_info: Další informace
 		actions: Akce
+		cancel_filter: Zrušit filtr
 	stats:
 		title: Statistiky uživatelů
 
