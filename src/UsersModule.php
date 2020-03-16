@@ -79,7 +79,7 @@ class UsersModule extends CrmModule
         $menuItem2 = new MenuItem($this->translator->translate('users.menu.groups'), ':Users:GroupsAdmin:', 'fa fa-users', 80, true);
         $menuItem3 = new MenuItem($this->translator->translate('users.menu.login_attempts'), ':Users:LoginAttemptsAdmin:', 'fa fa-hand-paper', 85, true);
         $menuItem4 = new MenuItem($this->translator->translate('users.menu.events'), ':Users:UserActionsLogAdmin:', 'fa fa-user-clock', 87, true);
-        $menuItem5 = new MenuItem($this->translator->translate('users.menu.cheaters'), ':Users:UsersAdmin:Abusive', 'fa fa-frown', 90, true);
+        $menuItem5 = new MenuItem($this->translator->translate('users.menu.cheaters'), ':Users:AbusiveUsersAdmin:default', 'fa fa-frown', 90, true);
         $menuItem6 = new MenuItem($this->translator->translate('users.menu.admin_rights'), ':Users:AdminGroupAdmin:', 'fa fa-lock', 100, true);
 
         $mainMenu->addChild($menuItem1);
