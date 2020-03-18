@@ -56,9 +56,9 @@ class AddressesRepository extends Repository
             'phone_number' => $phoneNumber,
             'country_id' => $countryId,
             'company_name' => $companyName,
-            'company_id' => $companyId,
-            'company_tax_id' => $companyTaxId,
-            'company_vat_id' => $companyVatId,
+            'company_id' => str_replace(' ', '', $companyId),
+            'company_tax_id' => str_replace(' ', '', $companyTaxId),
+            'company_vat_id' => str_replace(' ', '', $companyVatId),
             'created_at' => new DateTime(),
             'updated_at' => new DateTime(),
         ]);
