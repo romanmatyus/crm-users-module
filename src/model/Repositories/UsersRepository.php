@@ -130,12 +130,11 @@ class UsersRepository extends Repository
         $table = $this->getTable()->where(['deleted_at' => null])->order('users.id DESC');
 
         if (!empty($text)) {
-            $companyIdText = str_replace(' ', '', $text);
             $matchingUsersWithCompanyId = $this->addressesRepository->all()->select('DISTINCT(user_id)')
-                ->where("REPLACE(company_id, ' ', '') = ? OR REPLACE(company_tax_id, ' ', '') = ? OR REPLACE(company_vat_id, ' ', '') = ?", [
-                    "{$companyIdText}",
-                    "{$companyIdText}",
-                    "{$companyIdText}",
+                ->where("company_id = ? OR company_tax_id = ? OR company_vat_id = ?", [
+                    "{$text}",
+                    "{$text}",
+                    "{$text}",
                 ])->fetchPairs('user_id', 'user_id');
 
             foreach (explode(" ", $text) as $word) {
