@@ -113,6 +113,9 @@ frontend:
 	request_password:
 		title: Trouble logging in
 		info: "If you don't remember your password, we'll send a special link to your email which you can use to reset the password."
+		login:
+			text: "If you know your password, "
+			link: "sign in here - click"
 		email:
 			label: 'Your email:'
 			required: Please enter your email

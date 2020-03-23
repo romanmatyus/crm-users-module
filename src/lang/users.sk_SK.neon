@@ -113,6 +113,9 @@ frontend:
 	request_password:
 		title: Problém s prihlásením
 		info: "Ak si nepamätáte vaše heslo, na e-mail ktorým ste sa registrovali vám pošleme postup ako si ho môžete zmeniť."
+		login:
+		    text: "Ak poznáte svoje heslo, "
+		    link: "prihláste sa tu - kliknite"
 		email:
 			label: 'Váš email:'
 			required: Zadajte prosím Váš email
