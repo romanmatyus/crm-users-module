@@ -56,7 +56,7 @@ class UsersRepository extends Repository
      */
     final public function getByEmail($email)
     {
-        return $this->getTable()->where(['LOWER(email)' => strtolower($email)])->fetch();
+        return $this->getTable()->select('*')->where(['email' => $email])->fetch();
     }
 
     final public function getByExternalId($extId)
