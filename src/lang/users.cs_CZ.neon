@@ -298,6 +298,11 @@ admin:
 	logout_user:
 		all_devices: 'Uživatel byl odhlášen na všech zařízeních'
 
+	reset_password:
+		button: Resetovat heslo
+		confirm: Opravdu chcete resetovat heslo?
+		success: Heslo bylo úspěšně resetováno a email s informací pro uživatele byl odeslán.
+
 	user_note_form:
 		note_updated: Poznámka byla změněna
 		note:

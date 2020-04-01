@@ -8,6 +8,7 @@ use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface;
+use Crm\UsersModule\Events\NotificationEvent;
 use Crm\UsersModule\Repository\CantDeleteAddressException;
 use Crm\UsersModule\DataProvider\FilterUsersFormDataProviderInterface;
 use Crm\UsersModule\DataProvider\FilterUsersSelectionDataProviderInterface;
@@ -20,6 +21,7 @@ use Crm\UsersModule\Forms\UserNoteFormFactory;
 use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\GroupsRepository;
+use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
@@ -64,6 +66,8 @@ class UsersAdminPresenter extends AdminPresenter
 
     private $changePasswordsLogsRepository;
 
+    private $passwordResetTokensRepository;
+
     private $abusiveUsersFilterFormFactory;
 
     public function __construct(
@@ -78,6 +82,7 @@ class UsersAdminPresenter extends AdminPresenter
         DataProviderManager $dataProviderManager,
         UserManager $userManager,
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
+        PasswordResetTokensRepository $passwordResetTokensRepository,
         AbusiveUsersFilterFormFactory $abusiveUsersFilterFormFactory
     ) {
         parent::__construct();
@@ -92,6 +97,7 @@ class UsersAdminPresenter extends AdminPresenter
         $this->dataProviderManager = $dataProviderManager;
         $this->userManager = $userManager;
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
+        $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->abusiveUsersFilterFormFactory = $abusiveUsersFilterFormFactory;
     }
 
@@ -188,6 +194,25 @@ class UsersAdminPresenter extends AdminPresenter
         $this->userManager->logoutUser($user);
         $this->presenter->flashMessage($this->translator->translate('users.admin.logout_user.all_devices'));
         $this->redirect('show', $userId);
+    }
+
+    /**
+     * You need to process NotificationEvent in order to
+     * send user email containin new password.
+     *
+     * @param $userId
+     */
+    public function handleResetPassword($userId)
+    {
+        $user = $this->usersRepository->find($userId);
+        $password = $this->userManager->resetPassword($user->email);
+
+        $this->emitter->emit(new NotificationEvent($this->emitter, $user, 'admin_reset_password_with_password', [
+            'email' => $user->email,
+            'password' => $password
+        ]));
+
+        $this->presenter->flashMessage($this->translator->translate('users.admin.reset_password.success'));
     }
 
     public function createComponentUserForm()

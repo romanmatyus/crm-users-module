@@ -298,6 +298,11 @@ admin:
 	logout_user:
 		all_devices: 'The user has been logged out on all devices'
 
+	reset_password:
+		button: Reset password
+		confirm: Do you really want to reset password?
+		success: The password has been successfully reset and email with information for user has been sent.
+
 	user_note_form:
 		note_updated: Note was changed
 		note:
