@@ -205,7 +205,7 @@ class UsersAdminPresenter extends AdminPresenter
     public function handleResetPassword($userId)
     {
         $user = $this->usersRepository->find($userId);
-        $password = $this->userManager->resetPassword($user->email);
+        $password = $this->userManager->resetPassword($user->email, null, false);
 
         $this->emitter->emit(new NotificationEvent($this->emitter, $user, 'admin_reset_password_with_password', [
             'email' => $user->email,
