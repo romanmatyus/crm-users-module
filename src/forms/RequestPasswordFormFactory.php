@@ -4,6 +4,7 @@ namespace Crm\UsersModule\Forms;
 
 use Crm\UsersModule\Auth\UserManager;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\TextInput;
 use Nette\Localization\ITranslator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
@@ -31,14 +32,22 @@ class RequestPasswordFormFactory
 
         $form->setRenderer(new BootstrapRenderer());
         $form->addProtection();
+        $form->setTranslator($this->translator);
 
-        $form->addText('email', $this->translator->translate('users.frontend.request_password.email.label'))
+        $form->addText('email', 'users.frontend.request_password.email.label')
             ->setType('email')
             ->setAttribute('autofocus')
-            ->setRequired($this->translator->translate('users.frontend.request_password.email.required'))
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.request_password.email.placeholder'));
+            ->setRequired('users.frontend.request_password.email.required')
+            ->setAttribute('placeholder', 'users.frontend.request_password.email.placeholder')
+            ->addRule(function (TextInput $input) {
+                $userRow = $this->userManager->loadUserByEmail($input->getValue());
+                if ($userRow) {
+                    return (bool)$userRow->active;
+                }
+                return true;
+            }, 'users.frontend.request_password.inactive_user');
 
-        $form->addSubmit('send', $this->translator->translate('users.frontend.request_password.submit'));
+        $form->addSubmit('send', 'users.frontend.request_password.submit');
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
         return $form;

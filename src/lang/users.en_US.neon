@@ -122,6 +122,7 @@ frontend:
 			placeholder: email you used to register
 		submit: Send new passord
 		invalid_email: Invalid email
+		inactive_user: Your user account has been deactivated. Please use another email or contact support on info@dennikn.sk.
 		success: We've sent you and email with next steps
 	reset_password:
 		title: Reset password
