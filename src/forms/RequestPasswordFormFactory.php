@@ -60,7 +60,7 @@ class RequestPasswordFormFactory
         if (!$result) {
             $form['email']->addError($this->translator->translate('users.frontend.request_password.invalid_email'));
         } else {
-            $this->onSuccess->__invoke();
+            $this->onSuccess->__invoke($values->email);
         }
     }
 }

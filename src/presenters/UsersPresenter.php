@@ -135,9 +135,10 @@ class UsersPresenter extends FrontendPresenter
     public function createComponentRequestPasswordForm()
     {
         $form = $this->requestPasswordFormFactory->create();
-        $this->requestPasswordFormFactory->onSuccess = function () {
-            $this->flashMessage($this->translator->translate('users.frontend.request_password.success'));
-            $this->redirect(':Users:Sign:In');
+        $this->requestPasswordFormFactory->onSuccess = function (string $email) {
+            $sessionSection = $this->session->getSection('request_password_success');
+            $sessionSection->email = $email;
+            $this->redirect('requestPasswordSuccessInfo');
         };
         return $form;
     }
@@ -230,5 +231,16 @@ class UsersPresenter extends FrontendPresenter
 
         $this->flashMessage($this->translator->translate('users.frontend.change_password.reset_success', ['email' => $user->email]));
         $this->redirect('this');
+    }
+
+    public function renderRequestPasswordSuccessInfo()
+    {
+        $sessionSection = $this->session->getSection('request_password_success');
+        $email = $sessionSection->email;
+        unset($sessionSection->email);
+        if (!$email) {
+            $this->redirect('requestPassword');
+        }
+        $this->template->email = $email;
     }
 }

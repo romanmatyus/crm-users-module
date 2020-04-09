@@ -123,7 +123,9 @@ frontend:
 		submit: Pošli nové heslo
 		invalid_email: Nesprávny email
 		inactive_user: Vaše konto bolo deaktivované. Prihláste sa s iným emailom alebo kontaktujte podporu na info@dennikn.sk.
-		success: Email s postupom pre zmenu hesla sme Vám zaslali na zadaný email
+		success:
+			email: "Odkaz na zmenu vášho hesla sme vám poslali emailom na"
+			spam: "Skontrolujte si teraz, prosím, svoju emailovú schránku vrátane priečinka Propagácie / Reklama / Spam."
 	reset_password:
 		title: Zmena hesla
 		info: Na tejto stránke si môžte zmeniť heslo.

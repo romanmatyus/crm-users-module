@@ -123,7 +123,9 @@ frontend:
 		submit: Send new passord
 		invalid_email: Invalid email
 		inactive_user: Your user account has been deactivated. Please use another email or contact support on info@dennikn.sk.
-		success: We've sent you and email with next steps
+		success:
+			email: "The password change link has been send to your email"
+			spam: "Please check your email inbox and also folders Propagation / Advertisment / Spam."
 	reset_password:
 		title: Reset password
 		info: You can now change your password
