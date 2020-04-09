@@ -49,6 +49,10 @@ class UserBuilder extends Builder
         if (strlen($this->get('password')) < 6) {
             $this->addError('Heslo musí byť dlhé aspon 6 znakov');
         }
+        if (strlen($this->get('public_name')) < 1) {
+            $this->addError('Missing public_name');
+        }
+
         if (count($this->getErrors()) > 0) {
             return false;
         }
@@ -62,6 +66,7 @@ class UserBuilder extends Builder
         $this->set('active', true);
         $this->set('first_name', null);
         $this->set('last_name', null);
+        $this->set('public_name', null);
         $this->set('ext_id', null);
         $this->set('role', UsersRepository::ROLE_USER);
         $this->set('invoice', false);
@@ -81,6 +86,11 @@ class UserBuilder extends Builder
     public function setLastName($lastName)
     {
         return $this->set('last_name', $lastName);
+    }
+
+    public function setPublicName($publicName)
+    {
+        return $this->set('public_name', $publicName);
     }
 
     public function setRole($role)

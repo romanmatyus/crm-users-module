@@ -97,6 +97,7 @@ class UserManager
                 ->sendEmail($sendEmail)
                 ->setEmail($email)
                 ->setPassword($password)
+                ->setPublicName($email)
                 ->setReferer($referer)
                 ->setSource($source)
                 ->save();

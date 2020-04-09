@@ -54,6 +54,11 @@ class AddUserCommand extends Command
                 InputArgument::OPTIONAL,
                 'User lastname'
             )
+            ->addArgument(
+                'public_name',
+                InputArgument::OPTIONAL,
+                'Public name (if not set; email will be used)'
+            )
             ->addOption(
                 'admin',
                 null,
@@ -99,6 +104,11 @@ class AddUserCommand extends Command
         }
         if ($input->getArgument('first_name')) {
             $userBuilder->setFirstName($input->getArgument('first_name'));
+        }
+        if ($input->getArgument('public_name')) {
+            $userBuilder->setPublicName($input->getArgument('public_name'));
+        } else {
+            $userBuilder->setPublicName($input->getArgument('email'));
         }
 
         $user = $userBuilder->save();

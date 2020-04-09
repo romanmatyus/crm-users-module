@@ -82,6 +82,9 @@ class UserFormFactory
             ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.first_name.placeholder'));
         $form->addText('last_name', $this->translator->translate('users.admin.user_form.last_name.label'))
             ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.last_name.placeholder'));
+        $form->addText('public_name', $this->translator->translate('users.admin.user_form.public_name.label'))
+            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.public_name.placeholder'))
+            ->setOption('description', $this->translator->translate('users.admin.user_form.public_name.description'));
 
         $form->addGroup($this->translator->translate('users.admin.user_form.institution'));
 
@@ -156,11 +159,18 @@ class UserFormFactory
                 $form['email']->addError($e->getMessage());
             }
         } else {
+            if (strlen(trim($values['public_name']))) {
+                $publicName = $values['public_name'];
+            } else {
+                $publicName = $values['email'];
+            }
+
             $user = $this->userBuilder->createNew()
                 ->setEmail($values['email'])
                 ->setPassword($values['password'])
                 ->setFirstName($values['first_name'])
                 ->setLastName($values['last_name'])
+                ->setPublicName($publicName)
                 ->setRole($values['role'])
                 ->setActive($values['active'])
                 ->setExtId(!empty($values['ext_id']) ? intval($values['ext_id']) : null)

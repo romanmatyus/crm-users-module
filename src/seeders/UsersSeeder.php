@@ -60,6 +60,7 @@ class UsersSeeder implements ISeeder
             ->setPassword('password')
             ->setFirstName('Test')
             ->setLastName('Admin')
+            ->setPublicName('admin@admin.sk')
             ->setAddTokenOption(false)
             ->setRole(UsersRepository::ROLE_ADMIN)
             ->save();
@@ -85,6 +86,7 @@ class UsersSeeder implements ISeeder
             ->setPassword('password')
             ->setFirstName('Test')
             ->setLastName('User')
+            ->setPublicName('admin@admin.sk')
             ->setAddTokenOption(false)
             ->save();
         if (!$user) {

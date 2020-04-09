@@ -268,6 +268,10 @@ admin:
 		last_name:
 			label: 'Last name:'
 			placeholder: last name
+		public_name:
+			label: 'Public name:'
+			placeholder: public name
+			description: 'Public name shown to user (if not set, email will be used)'
 		institution: Institution
 		is_institution: Is institution
 		institution_name:
