@@ -32,6 +32,7 @@ services:
 
 	# Authentication
 	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator
+	- Crm\UsersModule\Authenticator\AccessTokenAuthenticator
 	- Crm\UsersModule\Authenticator\UsersAuthenticator
 	- Crm\UsersModule\Auth\UserAuthenticator
 

@@ -21,6 +21,18 @@ extensions:
 	- Crm\UsersModule\DI\UsersModuleExtension
 ```
 
+## AccessTokenAuthenticator
+
+UsersModule generates an access token for every successful user authentication. This token can be used to authenticate the user in API calls.
+
+You can log the user into the CRM automatically if you have such token thanks to the [`AccessTokenAuthenticator`](src/authenticator/AccessTokenAuthenticator.php).
+
+### How to use
+
+CRM checks if there's a cookie called `n_token` and extracts the value from it. If the value is valid access token (it's still present in the `access_tokens` table), and it doesn't belong to admin account, it logs user in automatically without requesting username or password.
+
+This comes handy in case your login process is handled on other domain (e.g. in your CMS via CRM's API) and you want your users to get logged in only once.
+
 ## API documentation
 
 All examples use `http://crm.press` as a base domain. Please change the host to the one you use

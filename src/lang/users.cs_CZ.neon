@@ -439,6 +439,10 @@ authenticator:
 	inactive_account: Účet je neaktivní.
 	rate_limit_exceeded: Příliš mnoho pokusů o přihlášení. Zkuste to později.
 
+	access_token:
+		invalid_token: Token je neplatný
+		autologin_disabled: "Automatické přihlášení není pro Vaše konto povolené, přihlaste se znovu, prosím."
+
 user_source_accesses_component:
 	title: Poslední přístupy
 	no_data: Zatím neevidujeme žádný přístup

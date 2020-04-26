@@ -438,6 +438,10 @@ authenticator:
 	inactive_account: Account is disabled.
 	rate_limit_exceeded: Too many unsuccessful login attempts. Try it later.
 
+	access_token:
+		invalid_token: Invalid token
+		autologin_disabled: 'Automatic login is disabled for this account, please use your email and password'
+
 user_source_accesses_component:
 	title: Last accesses
 	no_data: No data recorded

@@ -63,6 +63,10 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\UsersModule\Authenticator\UsersAuthenticator::class),
             500
         );
+        $authenticatorManager->registerAuthenticator(
+            $this->getInstance(\Crm\UsersModule\Authenticator\AccessTokenAuthenticator::class),
+            200
+        );
     }
 
     public function registerHermesHandlers(Dispatcher $dispatcher)
