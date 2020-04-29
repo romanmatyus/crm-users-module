@@ -193,12 +193,12 @@ class SignPresenter extends FrontendPresenter
             $this->userManager->loadUserByEmail($values->username);
         } else {
             try {
-                $this->userManager->addNewUser($values->username, true, 'signup-form', $referer);
+                $user = $this->userManager->addNewUser($values->username, true, 'signup-form', $referer);
             } catch (InvalidEmailException $e) {
                 $form->addError('users.frontend.sign_up.error.invalid_email');
                 return;
             }
-            $this->getUser()->login(['username' => $values->username, 'alwaysLogin' => true]);
+            $this->getUser()->login(['user' => $user, 'autoLogin' => true]);
         }
 
         if ($referer) {

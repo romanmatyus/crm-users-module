@@ -19,15 +19,10 @@ use Nette\Security\AuthenticationException;
 use Nette\Security\Passwords;
 
 /**
- * UsernameAuthenticator authenticates user based on username, password and alwaysLogin flag.
+ * UsernameAuthenticator authenticates user based on username.
  *
  * Required credentials (use setCredentials()):
- *
- * - 'username'
- * - 'alwaysLogin' === true
- *
- * OR
- *
+
  * - 'username'
  * - 'password'
  */
@@ -48,9 +43,6 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
 
     /** @var string */
     private $password = null;
-
-    /** @var bool */
-    private $alwaysLogin = false;
 
     public function __construct(
         Emitter $emitter,
@@ -73,10 +65,6 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
 
     public function authenticate()
     {
-        if ($this->username !== null && $this->alwaysLogin === true) {
-            return $this->processAlwaysLogin();
-        }
-
         if ($this->username !== null && $this->password !== null) {
             return $this->process();
         }
@@ -90,24 +78,9 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
 
         $this->username = $credentials['username'] ?? null;
         $this->password = $credentials['password'] ?? null;
-        $this->alwaysLogin = $credentials['alwaysLogin'] ?? false;
 
         return $this;
     }
-
-    /**
-     * @throws AuthenticationException
-     */
-    private function processAlwaysLogin() : IRow
-    {
-        $user = $this->usersRepository->getByEmail($this->username);
-        $this->addAttempt($this->username, $user, $this->source, LoginAttemptsRepository::STATUS_LOGIN_AFTER_SIGN_UP);
-        if (!$user) {
-            throw new AuthenticationException('Nesprávne meno.', UserAuthenticator::IDENTITY_NOT_FOUND);
-        }
-        return $user;
-    }
-
 
     /**
      * @throws AuthenticationException

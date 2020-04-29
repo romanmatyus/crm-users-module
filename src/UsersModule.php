@@ -56,6 +56,10 @@ class UsersModule extends CrmModule
     public function registerAuthenticators(AuthenticatorManagerInterface $authenticatorManager)
     {
         $authenticatorManager->registerAuthenticator(
+            $this->getInstance(\Crm\UsersModule\Authenticator\AutoLoginAuthenticator::class),
+            700
+        );
+        $authenticatorManager->registerAuthenticator(
             $this->getInstance(\Crm\UsersModule\Authenticator\UsersAuthenticator::class),
             500
         );

@@ -77,7 +77,7 @@ class RegisterFormFactory
             return;
         }
 
-        $this->user->login(['username' => $user->email, 'alwaysLogin' => true]);
+        $this->user->login(['user' => $user, 'autoLogin' => true]);
 
         /** @var RegisterFormDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.register_form', RegisterFormDataProviderInterface::class);

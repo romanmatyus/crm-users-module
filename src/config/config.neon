@@ -31,6 +31,7 @@ services:
 	passwordResetTokensRepository: Crm\UsersModule\Repository\PasswordResetTokensRepository
 
 	# Authentication
+	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator
 	- Crm\UsersModule\Authenticator\UsersAuthenticator
 	- Crm\UsersModule\Auth\UserAuthenticator
 
