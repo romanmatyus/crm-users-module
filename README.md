@@ -838,7 +838,7 @@ curl -X POST \
 
 Admin user detail address widget.
 
-![alt text](docs/_static/user_address.png "AddressWidget")
+![alt text](docs/user_address.png "AddressWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/AddressWidget/AddressWidget.php#L1)
 
@@ -848,7 +848,7 @@ Admin user detail address widget.
 
 Admin user detail tokens widget.
 
-![alt text](docs/_static/autologin_tokens.png "AutologinTokens")
+![alt text](docs/autologin_tokens.png "AutologinTokens")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/AutologinTokens/AutologinTokens.php#L1)
 
@@ -858,7 +858,7 @@ Admin user detail tokens widget.
 
 Admin dashboard single stat widget.
 
-![alt text](docs/_static/relative_new_users.png "MonthToDateUsersStatWidget")
+![alt text](docs/relative_new_users.png "MonthToDateUsersStatWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/MonthToDateUsersStatWidget/MonthToDateUsersStatWidget.php#L1)
 
@@ -868,7 +868,7 @@ Admin dashboard single stat widget.
 
 Admin users header widget.
 
-![alt text](docs/_static/small_users_graph.png "MonthUsersSmallBarGraphWidget")
+![alt text](docs/small_users_graph.png "MonthUsersSmallBarGraphWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/MonthUsersSmallBarGraphWidget/MonthUsersSmallBarGraphWidget.php#L1)
 
@@ -878,7 +878,7 @@ Admin users header widget.
 
 Admin dashboard single stat widget.
 
-![alt text](docs/_static/month_new_users.png "MonthUsersStatWidget")
+![alt text](docs/month_new_users.png "MonthUsersStatWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/MonthUsersStatWidget/MonthUsersStatWidget.php#L1)
 
@@ -888,7 +888,7 @@ Admin dashboard single stat widget.
 
 Admin dashboard single stat widget.
 
-![alt text](docs/_static/active_registered_users.png "ActiveRegisteredUsersStatWidget")
+![alt text](docs/active_registered_users.png "ActiveRegisteredUsersStatWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/ActiveRegisteredUsersStatWidget/ActiveRegisteredUsersStatWidget.php#L1)
 
@@ -898,7 +898,7 @@ Admin dashboard single stat widget.
 
 Admin dashboard single stat widget.
 
-![alt text](docs/_static/today_new_users.png "TodayUsersStatWidget")
+![alt text](docs/today_new_users.png "TodayUsersStatWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/TodayUsersStatWidget/TodayUsersStatWidget.php#L1)
 
@@ -908,7 +908,7 @@ Admin dashboard single stat widget.
 
 Admin user detail listing component.
 
-![alt text](docs/_static/user_actions_log.png "UserActionsLog")
+![alt text](docs/user_actions_log.png "UserActionsLog")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserActionsLog/UserActionLogAdmin.php#L1)
 
@@ -918,7 +918,7 @@ Admin user detail listing component.
 
 Admin user detail listing component.
 
-![alt text](docs/_static/user_login_attempts.png "UserLoginAttempts")
+![alt text](docs/user_login_attempts.png "UserLoginAttempts")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserLoginAttempts/UserLoginAttempts.php#L1)
 
@@ -928,7 +928,7 @@ Admin user detail listing component.
 
 Admin user detail listing component.
 
-![alt text](docs/_static/user_meta.png "UserMeta")
+![alt text](docs/user_meta.png "UserMeta")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserMeta/UserMeta.php#L1)
 
@@ -938,7 +938,7 @@ Admin user detail listing component.
 
 Admin user detail listing component.
 
-![alt text](docs/_static/password_changes.png "UserPasswordChanges")
+![alt text](docs/password_changes.png "UserPasswordChanges")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserPasswordChanges/UserPasswordChanges.php#L1)
 
@@ -948,7 +948,7 @@ Admin user detail listing component.
 
 Admin user detail listing component.
 
-![alt text](docs/_static/last_accesses.png "UserSourceAccesses")
+![alt text](docs/last_accesses.png "UserSourceAccesses")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserSourceAccesses/UserSourceAccesses.php#L1)
 
@@ -958,7 +958,7 @@ Admin user detail listing component.
 
 Admin user detail listing component.
 
-![alt text](docs/_static/user_tokens.png "UserTokens")
+![alt text](docs/user_tokens.png "UserTokens")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/UserTokens/UserTokens.php#L1)
 
@@ -968,7 +968,7 @@ Admin user detail listing component.
 
 Admin user detail meta widget.
 
-![alt text](docs/_static/detail_widget.png "DetailWidget")
+![alt text](docs/detail_widget.png "DetailWidget")
 
 [Source code](https://github.com/remp2020/crm-users-module/blob/0683e04c95027043d1d30f1d0aa868d9270e7aaf/src/components/Widgets/DetailWidget/DetailWidget.php#L1)
 
