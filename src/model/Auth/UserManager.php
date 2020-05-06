@@ -153,13 +153,8 @@ class UserManager
         return true;
     }
 
-    public function resetPassword($email, $password = null, $notify = true)
+    public function resetPassword(IRow $user, $password = null, $notify = true)
     {
-        $user = $this->usersRepository->findBy('email', $email);
-        if (!$user) {
-            return false;
-        }
-
         $oldPassword = $user->password;
 
         if (!$password) {

@@ -69,7 +69,7 @@ class ResetPasswordFormFactory
 
         $user = $token->user;
 
-        $result = $this->userManager->resetPassword($user->email, $values->new_password);
+        $result = $this->userManager->resetPassword($user, $values->new_password);
 
         $this->passwordResetTokensRepository->markUsed($token->token);
 

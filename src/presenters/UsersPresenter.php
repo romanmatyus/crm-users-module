@@ -217,7 +217,7 @@ class UsersPresenter extends FrontendPresenter
     {
         $this->onlyLoggedIn();
         $user = $this->userManager->loadUser($this->getUser());
-        $newPassword = $this->userManager->resetPassword($user->email);
+        $newPassword = $this->userManager->resetPassword($user);
 
         $this->emitter->emit(new NotificationEvent(
             $this->emitter,

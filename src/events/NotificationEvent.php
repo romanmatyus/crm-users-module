@@ -56,7 +56,7 @@ class NotificationEvent extends AbstractEvent
 
     public function __construct(
         Emitter $emitter,
-        IRow $user,
+        ?IRow $user,
         string $templateCode,
         array $params = [],
         string $context = null,
@@ -73,7 +73,7 @@ class NotificationEvent extends AbstractEvent
         $emitter->emit(new PreNotificationEvent($this));
     }
 
-    public function getUser(): IRow
+    public function getUser(): ?IRow
     {
         return $this->user;
     }
@@ -103,7 +103,7 @@ class NotificationEvent extends AbstractEvent
         return $this->scheduleAt;
     }
 
-    public function setUser(IRow $user): void
+    public function setUser(?IRow $user): void
     {
         $this->user = $user;
     }
