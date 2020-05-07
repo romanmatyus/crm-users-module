@@ -22,10 +22,12 @@ use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\GroupsRepository;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
+use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
+use Nette\Utils\DateTime;
 
 class UsersAdminPresenter extends AdminPresenter
 {
@@ -70,6 +72,8 @@ class UsersAdminPresenter extends AdminPresenter
 
     private $abusiveUsersFilterFormFactory;
 
+    private $userActionsLogRepository;
+
     public function __construct(
         UsersRepository $usersRepository,
         UserFormFactory $userFormFactory,
@@ -83,7 +87,8 @@ class UsersAdminPresenter extends AdminPresenter
         UserManager $userManager,
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
         PasswordResetTokensRepository $passwordResetTokensRepository,
-        AbusiveUsersFilterFormFactory $abusiveUsersFilterFormFactory
+        AbusiveUsersFilterFormFactory $abusiveUsersFilterFormFactory,
+        UserActionsLogRepository $userActionsLogRepository
     ) {
         parent::__construct();
         $this->usersRepository = $usersRepository;
@@ -99,6 +104,7 @@ class UsersAdminPresenter extends AdminPresenter
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->abusiveUsersFilterFormFactory = $abusiveUsersFilterFormFactory;
+        $this->userActionsLogRepository = $userActionsLogRepository;
     }
 
     public function startup()
@@ -188,10 +194,31 @@ class UsersAdminPresenter extends AdminPresenter
     {
         $user = $this->usersRepository->find($userId);
         if (!$user) {
-            throw new Nette\Application\BadRequestException();
+            throw new Nette\Application\BadRequestException("User with id: {$userId} doesn't exist.");
         }
 
+        $abusiveInformationSelection = $this->usersRepository->getAbusiveUsers(
+            new DateTime('-1 month'),
+            new DateTime(),
+            1,
+            1,
+            'device_count',
+            $user->email
+        );
+        $abusiveInformation = $abusiveInformationSelection->where('users.id = ?', $userId)->fetch();
+
+        $this->userActionsLogRepository->add(
+            $userId,
+            'users.admin.logout_user',
+            [
+                'admin_email' => $this->user->getIdentity()->email,
+                'active_logins' => $abusiveInformation->token_count ?? 0,
+                'active_devices' => $abusiveInformation->device_count ?? 0,
+            ]
+        );
+
         $this->userManager->logoutUser($user);
+
         $this->presenter->flashMessage($this->translator->translate('users.admin.logout_user.all_devices'));
         $this->redirect('show', $userId);
     }
@@ -205,6 +232,10 @@ class UsersAdminPresenter extends AdminPresenter
     public function handleResetPassword($userId)
     {
         $user = $this->usersRepository->find($userId);
+        if (!$user) {
+            throw new Nette\Application\BadRequestException("User with id: {$userId} doesn't exist.");
+        }
+
         $password = $this->userManager->resetPassword($user, null, false);
 
         $this->emitter->emit(new NotificationEvent($this->emitter, $user, 'admin_reset_password_with_password', [
@@ -350,14 +381,35 @@ class UsersAdminPresenter extends AdminPresenter
         $this->redirect('UsersAdmin:Show', $user->id);
     }
 
-    public function handleSuspicious($id)
+    public function handleSuspicious($userId)
     {
-        $user = $this->usersRepository->find($id);
+        $user = $this->usersRepository->find($userId);
         if (!$user) {
             throw new Nette\Application\BadRequestException();
         }
 
+        $abusiveInformationSelection = $this->usersRepository->getAbusiveUsers(
+            new DateTime('-1 month'),
+            new DateTime(),
+            1,
+            1,
+            'device_count',
+            $user->email
+        );
+        $abusiveInformation = $abusiveInformationSelection->where('users.id = ?', $userId)->fetch();
+
+        $this->userActionsLogRepository->add(
+            $userId,
+            'users.admin.suspicious_account',
+            [
+                'admin_email' => $this->user->getIdentity()->email,
+                'active_logins' => $abusiveInformation->token_count ?? 0,
+                'active_devices' => $abusiveInformation->device_count ?? 0,
+            ]
+        );
+
         $this->userManager->suspiciousUser($user);
+
         $this->flashMessage("OK"); // todo preklady
         $this->redirect('show', $user->id);
     }
