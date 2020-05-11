@@ -83,6 +83,7 @@ class UsersRepository extends Repository
         }
         return $this->insert([
             'email' => $email,
+            'public_name' => $email,
             'password' => Passwords::hash($password),
             'first_name' => $firstName,
             'last_name' => $lastName,
