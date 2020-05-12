@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
 use League\Event\Emitter;
-use Nette\Database\IRow;
+use Nette\Database\Table\IRow;
 
 /**
  * NotificationEvent serves for sending notification (e.g. emails, push notifications) to users.
