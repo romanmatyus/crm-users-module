@@ -13,6 +13,7 @@ use Crm\UsersModule\Forms\RequestPasswordFormFactory;
 use Crm\UsersModule\Forms\ResetPasswordFormFactory;
 use Crm\UsersModule\Forms\UserDeleteFormFactory;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
+use Crm\UsersModule\Repository\UserEmailConfirmationsRepository;
 use Crm\UsersModule\User\ZipBuilder;
 use Nette\Application\Responses\FileResponse;
 use Nette\Forms\Form;
@@ -41,6 +42,9 @@ class UsersPresenter extends FrontendPresenter
 
     private $accessToken;
 
+    /** @var UserEmailConfirmationsRepository */
+    private $userEmailConfirmationsRepository;
+
     public function __construct(
         ChangePasswordFormFactory $changePasswordFormFactory,
         DownloadUserData $downloadUserData,
@@ -51,7 +55,8 @@ class UsersPresenter extends FrontendPresenter
         ZipBuilder $zipBuilder,
         UserDeleteFormFactory $userDeleteFormFactory,
         UserManager $userManager,
-        AccessToken $accessToken
+        AccessToken $accessToken,
+        UserEmailConfirmationsRepository $userEmailConfirmationsRepository
     ) {
         parent::__construct();
         $this->changePasswordFormFactory = $changePasswordFormFactory;
@@ -64,6 +69,7 @@ class UsersPresenter extends FrontendPresenter
         $this->userDeleteFormFactory = $userDeleteFormFactory;
         $this->userManager = $userManager;
         $this->accessToken = $accessToken;
+        $this->userEmailConfirmationsRepository = $userEmailConfirmationsRepository;
     }
 
     public function renderProfile()
@@ -242,5 +248,12 @@ class UsersPresenter extends FrontendPresenter
             $this->redirect('requestPassword');
         }
         $this->template->email = $email;
+    }
+
+    public function renderEmailConfirm(string $token)
+    {
+        $verificationResult = $this->userEmailConfirmationsRepository->verify($token);
+
+        $this->template->verificationResult = $verificationResult;
     }
 }

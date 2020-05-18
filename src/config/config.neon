@@ -29,6 +29,7 @@ services:
 	countriesRepository: Crm\UsersModule\Repository\CountriesRepository(%countries.default%)
 	addressTypesRepository: Crm\UsersModule\Repository\AddressTypesRepository
 	passwordResetTokensRepository: Crm\UsersModule\Repository\PasswordResetTokensRepository
+	userEmailConfirmationsRepository: Crm\UsersModule\Repository\UserEmailConfirmationsRepository
 
 	# Authentication
 	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator

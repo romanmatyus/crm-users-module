@@ -145,6 +145,11 @@ frontend:
 		submit: Změnit heslo
 		could_not_set: Nelze nastavit nové heslo
 		success: Vaše heslo bylo úspěšně změněno.
+	email_confirm:
+		title: Ověření emailu
+		success: Ověření vaší emailové adresy proběhlo úspěšně.
+		fail: Nepodařilo se ověřit Vaši emailovou adresu. Prosím kontaktujte technickou podporu.
+		back: Spátky na titulku
 	settings:
 		title: Systémové nastavení účtu
 		personal_data:
