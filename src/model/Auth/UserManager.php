@@ -153,6 +153,11 @@ class UserManager
         return true;
     }
 
+    public function setPublicName(IRow $user, string $publicName)
+    {
+        $this->usersRepository->update($user, ['public_name' => $publicName]);
+    }
+
     public function resetPassword(IRow $user, $password = null, $notify = true)
     {
         $oldPassword = $user->password;
