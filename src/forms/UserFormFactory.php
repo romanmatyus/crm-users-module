@@ -141,6 +141,12 @@ class UserFormFactory
         if (isset($values['user_id'])) {
             $userId = $values['user_id'];
             unset($values['user_id']);
+
+            // if public name is missing, set email as public_name
+            if (strlen(trim($values['public_name'])) === 0) {
+                $values['public_name'] = $values['email'];
+            }
+
             try {
                 if (isset($values['password'])) {
                     if (strlen($values['password']) > 0) {
@@ -159,18 +165,12 @@ class UserFormFactory
                 $form['email']->addError($e->getMessage());
             }
         } else {
-            if (strlen(trim($values['public_name']))) {
-                $publicName = $values['public_name'];
-            } else {
-                $publicName = $values['email'];
-            }
-
             $user = $this->userBuilder->createNew()
                 ->setEmail($values['email'])
                 ->setPassword($values['password'])
                 ->setFirstName($values['first_name'])
                 ->setLastName($values['last_name'])
-                ->setPublicName($publicName)
+                ->setPublicName($values['public_name'])
                 ->setRole($values['role'])
                 ->setActive($values['active'])
                 ->setExtId(!empty($values['ext_id']) ? intval($values['ext_id']) : null)
