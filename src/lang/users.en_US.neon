@@ -237,7 +237,7 @@ admin:
 		address: Address
 
 	edit:
-		edit_user: Edit user
+		title: Edit user
 		back_to_detail: back to detail
 
 	admin_filter_form:

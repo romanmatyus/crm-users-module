@@ -237,7 +237,7 @@ admin:
 		address: Adresa
 
 	edit:
-		edit_user: Úprava používateľa
+		title: Úprava používateľa
 		back_to_detail: späť na záznam
 
 	admin_filter_form:
