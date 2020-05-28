@@ -157,7 +157,7 @@ class UsersModule extends CrmModule
         );
         $emitter->addListener(
             \Crm\UsersModule\Events\UserUpdatedEvent::class,
-            $this->getInstance(\Crm\ApplicationModule\Events\RefreshUserDataTokenHandler::class)
+            $this->getInstance(\Crm\UsersModule\Events\RefreshUserDataTokenHandler::class)
         );
         $emitter->addListener(
             \Crm\UsersModule\Events\UserUpdatedEvent::class,
@@ -165,7 +165,7 @@ class UsersModule extends CrmModule
         );
         $emitter->addListener(
             \Crm\UsersModule\Events\UserMetaEvent::class,
-            $this->getInstance(\Crm\ApplicationModule\Events\RefreshUserDataTokenHandler::class)
+            $this->getInstance(\Crm\UsersModule\Events\RefreshUserDataTokenHandler::class)
         );
         $emitter->addListener(
             \Crm\UsersModule\Events\UserSignInEvent::class,
@@ -178,6 +178,14 @@ class UsersModule extends CrmModule
         $emitter->addListener(
             \Crm\ApplicationModule\Events\AuthenticationEvent::class,
             $this->getInstance(\Crm\UsersModule\Events\AuthenticationHandler::class)
+        );
+        $emitter->addListener(
+            \Crm\UsersModule\Events\NewAccessTokenEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\NewAccessTokenHandler::class)
+        );
+        $emitter->addListener(
+            \Crm\UsersModule\Events\RemovedAccessTokenEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\RemovedAccessTokenHandler::class)
         );
     }
 
@@ -313,6 +321,12 @@ class UsersModule extends CrmModule
         $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'user-meta', 'upsert'), \Crm\UsersModule\Api\UserMetaUpsertHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
         );
+
+        $apiRoutersContainer->attachRouter(new ApiRoute(
+            new ApiIdentifier('1', 'users', 'data'),
+            \Crm\UsersModule\Api\UserDataHandler::class,
+            \Crm\ApiModule\Authorization\NoAuthorization::class
+        ));
     }
 
     public function registerUserData(UserDataRegistrator $dataRegistrator)
