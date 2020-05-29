@@ -22,6 +22,7 @@ use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Scenarios\UserSourceCriteria;
+use Crm\UsersModule\Seeders\ConfigsSeeder;
 use Crm\UsersModule\Seeders\SegmentsSeeder;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Kdyby\Translation\Translator;
@@ -369,6 +370,7 @@ class UsersModule extends CrmModule
 
     public function registerSeeders(SeederManager $seederManager)
     {
+        $seederManager->addSeeder($this->getInstance(ConfigsSeeder::class));
         $seederManager->addSeeder($this->getInstance(UsersSeeder::class));
         $seederManager->addSeeder($this->getInstance(SegmentsSeeder::class));
     }
