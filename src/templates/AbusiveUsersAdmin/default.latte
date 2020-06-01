@@ -14,66 +14,50 @@
   </div>
 </div>
 
-{form abusiveUsersFilterForm}
-<div class="row">
-  <div class="col-md-12">
-    <div class="row">
+{form abusiveUsersFilterForm, class => 'form-inline'}
+  <div class="form-group">
+    {label email /}
+    {input email, class => 'form-control'}
 
-      <div class="col-md-2">
-        <div class="form-group">
-          {label email /}
-          {input email, class => 'form-control'}
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          {label dateFrom /}
-          <div class="input-group flatpickr-wrap" data-flatpickr_wrap="true" >
-            {input dateFrom, class => 'form-control'}
-            <span class="input-group-addon" style="cursor: pointer;" data-toggle>
-              <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          {label dateTo /}
-          <div class="input-group flatpickr-wrap" data-flatpickr_wrap="true">
-            {input dateTo, class => 'form-control'}
-            <span class="input-group-addon" style="cursor: pointer;" data-toggle>
-                <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          {label loginCount /}
-          {input loginCount, class => 'form-control'}
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <div class="form-group">
-          {label deviceCount /}
-          {input deviceCount, class => 'form-control'}
-        </div>
-      </div>
-
-      <div class="col-md-2">
-        <label>&nbsp;</label>
-        <div class="form-group">
-          {input send, class => 'btn btn-primary'}
-          {input cancel, class => 'btn btn-default'}
-        </div>
-      </div>
+  <div class="form-group">
+    {label dateFrom /}
+    <div class="input-group flatpickr-wrap" data-flatpickr_wrap="true" >
+      {input dateFrom, class => 'form-control'}
+      <span class="input-group-addon" style="cursor: pointer;" data-toggle>
+        <span class="glyphicon glyphicon-calendar"></span>
+      </span>
     </div>
   </div>
-</div>
+
+  <div class="form-group">
+    {label dateTo /}
+    <div class="input-group flatpickr-wrap" data-flatpickr_wrap="true">
+      {input dateTo, class => 'form-control'}
+      <span class="input-group-addon" style="cursor: pointer;" data-toggle>
+          <span class="glyphicon glyphicon-calendar"></span>
+      </span>
+    </div>
+  </div>
+  <div class="form-group">
+    {label loginCount /}
+    {input loginCount, class => 'form-control'}
+  </div>
+
+  <div class="form-group">
+    {label deviceCount /}
+    {input deviceCount, class => 'form-control'}
+  </div>
+
+  <div n:foreach="$form['additional']->components as $component" class="form-group">
+      {label $component /}
+      {input $component}
+  </div>
+
+  <label>&nbsp;</label>
+  <div class="form-group">
+    {input send, class => 'btn btn-primary'}
+    {input cancel, class => 'btn btn-default'}
+  </div>
 {/form}
 <hr>
 <div class="row">

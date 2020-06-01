@@ -4,6 +4,8 @@ namespace Crm\UsersModule\Presenters;
 
 use Crm\AdminModule\Presenters\AdminPresenter;
 use Crm\ApplicationModule\Components\VisualPaginator;
+use Crm\ApplicationModule\DataProvider\DataProviderManager;
+use Crm\UsersModule\DataProvider\FilterAbusiveUserFormDataProviderInterface;
 use Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\BadRequestException;
@@ -35,12 +37,15 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
     /** @var AbusiveUsersFilterFormFactory @inject */
     public $abusiveUsersFilterFormFactory;
 
+    /** @var DataProviderManager @inject */
+    public $dataProviderManager;
+
     public function renderDefault($dateFrom, $dateTo, $loginCount = 10, $deviceCount = 1, $sortBy = 'device_count', $email = null)
     {
         $this->dateFrom = $dateFrom ?? (new DateTime())->modify('- 2 months')->format('Y-m-d');
         $this->dateTo = $dateTo ?? (new DateTime())->format('Y-m-d');
 
-        $users = $this->usersRepository->getAbusiveUsers(
+        $usersSelection = $this->usersRepository->getAbusiveUsers(
             new DateTime($this->dateFrom),
             new DateTime($this->dateTo),
             $loginCount,
@@ -48,7 +53,14 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
             $sortBy,
             $email
         );
-        $filteredCount = (clone $users)->count();
+
+        /** @var FilterAbusiveUserFormDataProviderInterface[] $providers */
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.filter_abusive_user_form', FilterAbusiveUserFormDataProviderInterface::class);
+        foreach ($providers as $sorting => $provider) {
+            $usersSelection = $provider->filter($usersSelection, $this->params);
+        }
+
+        $filteredCount = (clone $usersSelection)->count();
 
         $vp = new VisualPaginator();
         $this->addComponent($vp, 'vp');
@@ -56,7 +68,7 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
         $paginator->setItemCount($filteredCount);
         $paginator->setItemsPerPage($this->onPage);
 
-        $users = $users->limit($paginator->getLength(), $paginator->getOffset())->fetchAll();
+        $users = $usersSelection->limit($paginator->getLength(), $paginator->getOffset())->fetchAll();
 
         $this->template->filteredCount = $filteredCount;
         $this->template->vp = $vp;
@@ -75,6 +87,12 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
             'loginCount' => $this->loginCount,
             'deviceCount' => $this->deviceCount,
         ]);
+
+        /** @var FilterAbusiveUserFormDataProviderInterface[] $providers */
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.filter_abusive_user_form', FilterAbusiveUserFormDataProviderInterface::class);
+        foreach ($providers as $sorting => $provider) {
+            $form = $provider->provide(['form' => $form, 'params' => $this->params]);
+        }
 
         $this->abusiveUsersFilterFormFactory->onCancel = function () use ($form) {
             $emptyDefaults = array_fill_keys(array_keys((array) $form->getComponents()), null);
