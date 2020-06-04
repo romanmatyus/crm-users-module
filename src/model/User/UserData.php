@@ -36,12 +36,6 @@ class UserData
         }
         $this->userDataStorage->multiStore($tokensString, Json::encode($userDataContent));
     }
-    
-    public function refreshUserToken($userId, $token)
-    {
-        $userDataContent = $this->userDataRegistrator->generate($userId);
-        $this->userDataStorage->store($token, Json::encode($userDataContent));
-    }
 
     public function getUserToken($token)
     {
