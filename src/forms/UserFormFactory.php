@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Forms;
 
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
+use Crm\UsersModule\Auth\Repository\AdminUserGroupsRepository;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\DataProvider\UserFormDataProviderInterface;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
@@ -22,6 +23,8 @@ class UserFormFactory
 
     private $dataProviderManager;
 
+    private $adminUserGroupsRepository;
+
     public $onSave;
 
     public $onUpdate;
@@ -32,12 +35,14 @@ class UserFormFactory
         UsersRepository $userRepository,
         UserBuilder $userBuilder,
         ITranslator $translator,
-        DataProviderManager $dataProviderManager
+        DataProviderManager $dataProviderManager,
+        AdminUserGroupsRepository $adminUserGroupsRepository
     ) {
         $this->userRepository = $userRepository;
         $this->userBuilder = $userBuilder;
         $this->translator = $translator;
         $this->dataProviderManager = $dataProviderManager;
+        $this->adminUserGroupsRepository = $adminUserGroupsRepository;
     }
 
     public function create($userId): Form
@@ -158,6 +163,9 @@ class UserFormFactory
 
                 $user = $this->userRepository->find($userId);
                 $this->userRepository->update($user, $values);
+                if ($values['role'] === UsersRepository::ROLE_USER) {
+                    $this->adminUserGroupsRepository->removeGroupsForUser($user);
+                }
                 $this->onCallback = function () use ($form, $user) {
                     $this->onUpdate->__invoke($form, $user);
                 };

@@ -30,6 +30,7 @@ services:
 	addressTypesRepository: Crm\UsersModule\Repository\AddressTypesRepository
 	passwordResetTokensRepository: Crm\UsersModule\Repository\PasswordResetTokensRepository
 	userEmailConfirmationsRepository: Crm\UsersModule\Repository\UserEmailConfirmationsRepository
+	adminUserGroupsRepository: Crm\UsersModule\Auth\Repository\AdminUserGroupsRepository
 
 	# Authentication
 	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator
