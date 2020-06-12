@@ -36,6 +36,7 @@ services:
 	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator
 	- Crm\UsersModule\Authenticator\AccessTokenAuthenticator
 	- Crm\UsersModule\Authenticator\UsersAuthenticator
+	- Crm\UsersModule\Authenticator\AutoLoginTokenAuthenticator
 	- Crm\UsersModule\Auth\UserAuthenticator
 
 	# API Authorization
@@ -101,6 +102,7 @@ services:
 	- Crm\UsersModule\Api\UserMetaDeleteHandler
 	- Crm\UsersModule\Api\UserMetaUpsertHandler
 	- Crm\UsersModule\Api\UserDataHandler
+	- Crm\UsersModule\Api\AutoLoginTokenLoginApiHandler
 	- Crm\UsersModule\Events\LoginAttemptHandler
 	- Crm\UsersModule\Events\UserUpdatedHandler
 	- Crm\UsersModule\Hermes\UserTokenUsageHandler

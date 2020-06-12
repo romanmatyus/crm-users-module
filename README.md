@@ -844,6 +844,52 @@ curl -X POST \
   }'
 ```
 
+---
+
+#### POST `/api/v1/users/autologin-token-login`
+
+API call verifies provided autologin token and returns user identity and token.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| autologin_token | *String* | yes | User's autologin token. |
+
+
+##### *Example:*
+
+```shell
+curl --location --request GET 'http://crm.press/api/v1/users/autologin-token-login?autologin_token=f8fb5c8d41e454852c0049cfe1031ac1'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok",
+    "user": {
+        "id": 9,
+        "email": "user@user.sk",
+        "public_name": "user@user.sk",
+        "first_name": "Test",
+        "last_name": "User"
+    },
+    "access": {
+        "token": "762eec3fe9f20d87cf865cb40cf6458b" // user token
+    }
+}
+```
+
+Invalid token response:
+
+```json5
+{
+    "status": "error",
+    "message": "Invalid token"
+}
+```
+
 ## Components
 
 **AddressWidget**

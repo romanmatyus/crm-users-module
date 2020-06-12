@@ -68,6 +68,10 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\UsersModule\Authenticator\AccessTokenAuthenticator::class),
             200
         );
+        $authenticatorManager->registerAuthenticator(
+            $this->getInstance(\Crm\UsersModule\Authenticator\AutoLoginTokenAuthenticator::class),
+            800
+        );
     }
 
     public function registerHermesHandlers(Dispatcher $dispatcher)
@@ -321,6 +325,9 @@ class UsersModule extends CrmModule
         );
         $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'user-meta', 'upsert'), \Crm\UsersModule\Api\UserMetaUpsertHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'users', 'autologin-token-login'), \Crm\UsersModule\Api\AutoLoginTokenLoginApiHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
         );
 
         $apiRoutersContainer->attachRouter(new ApiRoute(
