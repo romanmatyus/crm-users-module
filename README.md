@@ -890,6 +890,32 @@ Invalid token response:
 }
 ```
 
+---
+
+#### POST `/api/v1/users/get-device-token`
+
+API call generates and returns new device token based on sent `device_id`.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| device_id | *String* | yes | User's device id. |
+
+##### *Example:*
+
+```shell
+curl --location --request POST 'http://crm.press:8080/api/v1/users/get-device-token' --form 'device_id=cosijak2'
+```
+
+Success response:
+
+```json5
+{
+    "device_token": "bfc6191c1837ec3600c23036edf35590"
+}
+```
+
 ## Components
 
 **AddressWidget**

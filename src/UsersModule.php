@@ -335,6 +335,14 @@ class UsersModule extends CrmModule
             \Crm\UsersModule\Api\UserDataHandler::class,
             \Crm\ApiModule\Authorization\NoAuthorization::class
         ));
+
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(
+                new ApiIdentifier('1', 'users', 'get-device-token'),
+                \Crm\UsersModule\Api\GetDeviceTokenApiHandler::class,
+                \Crm\ApiModule\Authorization\NoAuthorization::class
+            )
+        );
     }
 
     public function registerUserData(UserDataRegistrator $dataRegistrator)
