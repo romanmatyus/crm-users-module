@@ -141,10 +141,11 @@ class UsersRepository extends Repository
             foreach (explode(" ", $text) as $word) {
                 $table
                     ->where(
-                        'users.id = ? OR users.email LIKE ? OR users.first_name LIKE ? OR users.last_name LIKE ? OR users.id IN (?) OR users.id IN (?)',
+                        'users.id = ? OR users.email LIKE ? OR users.public_name = ? OR users.first_name LIKE ? OR users.last_name LIKE ? OR users.id IN (?) OR users.id IN (?)',
                         [
                             $word,
                             "%{$word}%",
+                            "{$word}",
                             "%{$word}%",
                             "%{$word}%",
                             $this->addressesRepository->all()->select('DISTINCT(user_id)')
