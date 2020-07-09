@@ -60,7 +60,8 @@ class AccessToken
                 '/',
                 CrmRequest::getDomain(),
                 null,
-                false
+                false,
+                'Lax'
             );
 
             $response->setCookie(
@@ -70,7 +71,8 @@ class AccessToken
                 '/',
                 CrmRequest::getDomain(),
                 null,
-                false
+                false,
+                'Lax'
             );
         }
 
