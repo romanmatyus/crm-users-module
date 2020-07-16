@@ -125,7 +125,7 @@ frontend:
 		inactive_user: Vaše konto bylo deaktivováno. Přihlaste se pomocí jiné e-mailové adresy nebo kontaktujte podporu na info@denikn.cz.
 		success:
 			email: "Odkaz na změnu vašeho hesla jsme vám poslali na e-mail"
-			spam: "Zkontrolujte si prosím svou e-mailovou schránku včetně kategorií Promoakce a Spam."
+			spam: "Zkontrolujte si prosím svou e-mailovou schránku včetně kategorií Hromadné, Promoakce a Spam."
 	reset_password:
 		title: Změna hesla
 		info: Na této stránce si můžete změnit heslo.
