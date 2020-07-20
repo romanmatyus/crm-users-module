@@ -9,10 +9,10 @@ use Crm\UsersModule\Events\UserChangePasswordRequestEvent;
 use Crm\UsersModule\Events\UserConfirmedEvent;
 use Crm\UsersModule\Events\UserSuspiciousEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
-use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
+use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Database\IRow;
@@ -37,11 +37,11 @@ class UserManager
 
     private $emailValidator;
 
-    private $addressesRepository;
-
     private $accessTokensRepository;
 
     private $passwordResetTokensRepository;
+
+    private $userMetaRepository;
 
     public function __construct(
         UsersRepository $usersRepository,
@@ -50,9 +50,9 @@ class UserManager
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
         UserBuilder $userBuilder,
         EmailValidator $emailValidator,
-        AddressesRepository $addressesRepository,
         PasswordResetTokensRepository $passwordResetTokensRepository,
-        AccessTokensRepository $accessTokensRepository
+        AccessTokensRepository $accessTokensRepository,
+        UserMetaRepository $userMetaRepository
     ) {
         $this->usersRepository = $usersRepository;
         $this->passwordGenerator = $passwordGenerator;
@@ -60,9 +60,9 @@ class UserManager
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
         $this->userBuilder = $userBuilder;
         $this->emailValidator = $emailValidator;
-        $this->addressesRepository = $addressesRepository;
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->accessTokensRepository = $accessTokensRepository;
+        $this->userMetaRepository = $userMetaRepository;
     }
 
     /**
@@ -237,7 +237,7 @@ class UserManager
         return true;
     }
 
-    public function confirmUser(IRow $user, ?DateTime $date = null)
+    public function confirmUser(IRow $user, ?DateTime $date = null, $byAdmin = false)
     {
         if (!$date) {
             $date = new DateTime();
@@ -247,8 +247,9 @@ class UserManager
                 'modified_at' => $date,
                 'confirmed_at' => $date,
             ]);
+            $this->userMetaRepository->add($user, 'confirmed_by_admin', true);
 
-            $this->emitter->emit(new UserConfirmedEvent($user));
+            $this->emitter->emit(new UserConfirmedEvent($user, $byAdmin));
         }
     }
 }
