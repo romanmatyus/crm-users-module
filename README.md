@@ -562,7 +562,7 @@ If the address with given type doesn't exist yet, HTTP 400 is returned with foll
 
 ```json5
 {
-    "status": "errror",
+    "status": "error",
     "message": "Parent address not found"
 }
 ```
@@ -624,8 +624,7 @@ Response:
 
 #### POST `/api/v1/users/confirm`
 
-Lists information of requested users (identified by user IDs). Endpoint requires pagination parameter to be included
-and paginates the result by 1000 users in one response.
+Confirms user based on given email address. 
 
 ##### *Headers:*
 
@@ -655,6 +654,15 @@ Response:
 ```json5
 {
     "status": "ok"
+}
+```
+
+If the user with given email doesn't exist , HTTP 404 is returned with following code:
+
+```json5
+{
+    "status": "error",
+    "code": "user_not_found"
 }
 ```
 

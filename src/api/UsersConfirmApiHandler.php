@@ -41,8 +41,8 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
         $user = $this->userManager->loadUserByEmail($params['email']);
 
         if (!$user) {
-            $response = new JsonResponse(['status' => 'ok']);
-            $response->setHttpCode(Response::S200_OK);
+            $response = new JsonResponse(['status' => 'error', 'code' => 'user_not_found']);
+            $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
         }
 
