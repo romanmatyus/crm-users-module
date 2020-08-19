@@ -9,7 +9,6 @@ use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
-use Crm\UsersModule\Repositories\DeviceAccessTokensRepository;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
@@ -25,17 +24,13 @@ class UsersCreateHandler extends ApiHandler
 
     private $deviceTokensRepository;
 
-    private $deviceAccessTokensRepository;
-
     public function __construct(
         UserManager $userManager,
         AccessTokensRepository $accessTokensRepository,
-        DeviceTokensRepository $deviceTokensRepository,
-        DeviceAccessTokensRepository $deviceAccessTokensRepository
+        DeviceTokensRepository $deviceTokensRepository
     ) {
         $this->userManager = $userManager;
         $this->accessTokensRepository = $accessTokensRepository;
-        $this->deviceAccessTokensRepository = $deviceAccessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
     }
 
@@ -151,7 +146,7 @@ class UsersCreateHandler extends ApiHandler
 
         $lastToken = $this->accessTokensRepository->allUserTokens($user->id)->limit(1)->fetch();
         if ($lastToken && $deviceToken) {
-            $this->deviceAccessTokensRepository->pairAccessToken($lastToken, $deviceToken);
+            $this->accessTokensRepository->pairWithDeviceToken($lastToken, $deviceToken);
         }
 
         $result = $this->formatResponse($user, $lastToken);

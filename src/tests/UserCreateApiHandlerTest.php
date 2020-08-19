@@ -6,7 +6,6 @@ use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
-use Crm\UsersModule\Repositories\DeviceAccessTokensRepository;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -22,9 +21,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
     /** @var UsersCreateHandler */
     private $handler;
 
-    /** @var DeviceAccessTokensRepository */
-    private $deviceAccessTokensRepository;
-
     /** @var AccessTokensRepository */
     private $accessTokensRepository;
 
@@ -33,7 +29,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         return [
             UsersRepository::class,
             DeviceTokensRepository::class,
-            DeviceAccessTokensRepository::class,
             AccessTokensRepository::class
         ];
     }
@@ -48,7 +43,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         parent::setUp();
 
         $this->deviceTokensRepository = $this->inject(DeviceTokensRepository::class);
-        $this->deviceAccessTokensRepository = $this->inject(DeviceAccessTokensRepository::class);
         $this->usersRepository = $this->inject(UsersRepository::class);
         $this->accessTokensRepository = $this->inject(AccessTokensRepository::class);
 
@@ -105,8 +99,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $this->assertNotEmpty($user);
 
         $accessToken = $this->accessTokensRepository->loadToken($payload['access']['token']);
-        $pair = $this->deviceAccessTokensRepository->getTable()
-            ->where('access_token_id', $accessToken->id)
+        $pair = $this->accessTokensRepository->getTable()
+            ->where('id', $accessToken->id)
             ->where('device_token_id', $deviceToken->id)
             ->fetch();
 

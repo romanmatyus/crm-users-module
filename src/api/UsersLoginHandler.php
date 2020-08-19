@@ -8,7 +8,6 @@ use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserAuthenticator;
-use Crm\UsersModule\Repositories\DeviceAccessTokensRepository;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
@@ -23,21 +22,17 @@ class UsersLoginHandler extends ApiHandler
 
     private $deviceTokensRepository;
 
-    private $deviceAccessTokensRepository;
-
     private $translator;
 
     public function __construct(
         UserAuthenticator $userAuthenticator,
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
-        DeviceAccessTokensRepository $deviceAccessTokensRepository,
         ITranslator $translator
     ) {
         $this->userAuthenticator = $userAuthenticator;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
-        $this->deviceAccessTokensRepository = $deviceAccessTokensRepository;
         $this->translator = $translator;
     }
 
@@ -126,7 +121,7 @@ class UsersLoginHandler extends ApiHandler
         $lastToken = $this->accessTokensRepository->allUserTokens($identity->id)->limit(1)->fetch();
 
         if ($lastToken && $deviceToken) {
-            $this->deviceAccessTokensRepository->pairAccessToken($lastToken, $deviceToken);
+            $this->accessTokensRepository->pairWithDeviceToken($lastToken, $deviceToken);
         }
 
         if ($lastToken) {

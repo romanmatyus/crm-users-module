@@ -3,27 +3,35 @@
 namespace Crm\UsersModule\Auth;
 
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
+use Crm\ApiModule\Authorization\TokenParser;
+use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use League\Event\Emitter;
 use Nette\Security\IAuthorizator;
 
-class UserTokenAuthorization implements ApiAuthorizationInterface
+class UserTokenAuthorization implements UsersApiAuthorizationInterface
 {
     protected $accessTokensRepository;
 
-    /** @var ApiAuthorizationInterface */
+    protected $deviceTokensRepository;
+
+    /** @var UsersApiAuthorizationInterface */
     protected $authorizator = null;
 
-    /** @var ApiAuthorizationInterface[] */
+    /** @var UsersApiAuthorizationInterface[] */
     protected $authorizators = [];
 
     protected $emitter;
 
+    private $errorMessage = false;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
+        DeviceTokensRepository $deviceTokensRepository,
         Emitter $emitter
     ) {
         $this->accessTokensRepository = $accessTokensRepository;
+        $this->deviceTokensRepository = $deviceTokensRepository;
         $this->emitter = $emitter;
     }
 
@@ -34,19 +42,38 @@ class UserTokenAuthorization implements ApiAuthorizationInterface
 
     public function authorized($resource = IAuthorizator::ALL)
     {
-        if (isset($_GET['source']) && isset($this->authorizators[$_GET['source']])) {
-            $this->authorizator = $this->authorizators[$_GET['source']];
-        } else {
-            $this->authorizator = new DefaultUserTokenAuthorization($this->accessTokensRepository, $this->emitter);
+        $tokenParser = new TokenParser();
+        if (!$tokenParser->isOk()) {
+            $this->errorMessage = $tokenParser->errorMessage();
+            return false;
         }
 
+        if (isset($_GET['source']) && isset($this->authorizators[$_GET['source']])) {
+            $this->authorizator = $this->authorizators[$_GET['source']];
+            return $this->authorizator->authorized($resource);
+        }
+
+        $this->authorizator = new DefaultUserTokenAuthorization($this->accessTokensRepository, $this->emitter);
+        if ($this->authorizator->authorized($resource)) {
+            return true;
+        }
+
+        $this->authorizator = new DeviceTokenAuthorization(
+            $this->accessTokensRepository,
+            $this->deviceTokensRepository,
+            $this->emitter
+        );
         return $this->authorizator->authorized($resource);
     }
 
     public function getErrorMessage()
     {
+        if ($this->errorMessage) {
+            return $this->errorMessage;
+        }
+
         if (is_null($this->authorizator)) {
-            return 'Authorize token first - use `authorized` method.';
+            throw new \Exception('Authorize token first - use `authorized` method.');
         }
         return $this->authorizator->getErrorMessage();
     }
@@ -54,8 +81,24 @@ class UserTokenAuthorization implements ApiAuthorizationInterface
     public function getAuthorizedData()
     {
         if (is_null($this->authorizator)) {
-            return 'Authorize token first - use `authorized` method.';
+            throw new \Exception('Authorize token first - use `authorized` method.');
         }
         return $this->authorizator->getAuthorizedData();
+    }
+
+    public function getAuthorizedUsers()
+    {
+        if (is_null($this->authorizator)) {
+            throw new \Exception('Authorize token first - use `authorized` method.');
+        }
+        return $this->authorizator->getAuthorizedUsers();
+    }
+
+    public function getAccessTokens()
+    {
+        if (is_null($this->authorizator)) {
+            throw new \Exception('Authorize token first - use `authorized` method.');
+        }
+        return $this->authorizator->getAccessTokens();
     }
 }

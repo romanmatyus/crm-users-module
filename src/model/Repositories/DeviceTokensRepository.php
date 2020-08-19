@@ -8,13 +8,11 @@ use Nette\Utils\DateTime;
 
 class DeviceTokensRepository extends Repository
 {
-    public const DEVICE_TOKEN_PREFIX = 'devtok_';
-
     protected $tableName = 'device_tokens';
 
     final public function add(string $deviceId)
     {
-        $token = self::DEVICE_TOKEN_PREFIX . TokenGenerator::generate();
+        $token = TokenGenerator::generate();
 
         $row = $this->insert([
             'device_id' => $deviceId,

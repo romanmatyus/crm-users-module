@@ -5,14 +5,17 @@ namespace Crm\UsersModule\Auth;
 use Crm\ApiModule\Authorization\TokenParser;
 use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Events\UserLastAccessEvent;
+use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use DateTime;
 use League\Event\Emitter;
 use Nette\Security\IAuthorizator;
 
-class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface
+class DeviceTokenAuthorization implements UsersApiAuthorizationInterface
 {
     protected $accessTokensRepository;
+
+    protected $deviceTokensRepository;
 
     protected $emitter;
 
@@ -26,9 +29,11 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface
 
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
+        DeviceTokensRepository $deviceTokensRepository,
         Emitter $emitter
     ) {
         $this->accessTokensRepository = $accessTokensRepository;
+        $this->deviceTokensRepository = $deviceTokensRepository;
         $this->emitter = $emitter;
     }
 
@@ -40,26 +45,30 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface
             return false;
         }
 
-        $token = $this->accessTokensRepository->loadToken($tokenParser->getToken());
+        $deviceToken = $this->deviceTokensRepository->findByToken($tokenParser->getToken());
 
-        if (!$token) {
-            $this->errorMessage = "Token doesn't exists";
+        if (!$deviceToken) {
+            $this->errorMessage = "Device token doesn't exists";
             return false;
         }
 
         $source = isset($_GET['source']) ? 'api+' . $_GET['source'] : null;
         $accessDate = new DateTime();
-        $this->accessTokensRepository->update($token, ['last_used_at' => $accessDate]);
-        $this->emitter->emit(new UserLastAccessEvent(
-            $token->user,
-            $accessDate,
-            $source,
-            Request::getUserAgent()
-        ));
+        $this->deviceTokensRepository->update($deviceToken, ['last_used_at' => $accessDate]);
 
-        $this->accessTokens[] = $token;
-        $this->authorizedUsers[$token->user_id] = $token->user;
-        $this->authorizedData['token'] = $token;
+        $accessTokens = $this->accessTokensRepository->findAllByDeviceToken($deviceToken);
+        foreach ($accessTokens as $accessToken) {
+            $this->authorizedUsers[$accessToken->user_id] = $accessToken->user;
+            $this->accessTokens[] = $accessToken->token;
+            $this->emitter->emit(new UserLastAccessEvent(
+                $accessToken->user,
+                $accessDate,
+                $source,
+                Request::getUserAgent()
+            ));
+        }
+
+        $this->authorizedData['token'] = $deviceToken;
         return true;
     }
 
