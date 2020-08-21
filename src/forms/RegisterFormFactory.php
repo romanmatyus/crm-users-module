@@ -66,14 +66,14 @@ class RegisterFormFactory
             if ($this->onUserExists) {
                 ($this->onUserExists)($form, $values);
             }
-            $form->addError('users.form.register.error.already_exists');
+            $form->addError('users.frontend.sign_up.error.already_registered');
             return;
         }
 
         try {
             $user = $this->userManager->addNewUser($form->values['email']);
         } catch (InvalidEmailException $e) {
-            $form->addError('users.form.register.error.invalid_email');
+            $form->addError('users.frontend.sign_up.error.invalid_email');
             return;
         }
 
