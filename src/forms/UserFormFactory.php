@@ -143,14 +143,14 @@ class UserFormFactory
             }
         }
 
+        // if public name is missing, set email as public_name
+        if (strlen(trim($values['public_name'])) === 0) {
+            $values['public_name'] = $values['email'];
+        }
+
         if (isset($values['user_id'])) {
             $userId = $values['user_id'];
             unset($values['user_id']);
-
-            // if public name is missing, set email as public_name
-            if (strlen(trim($values['public_name'])) === 0) {
-                $values['public_name'] = $values['email'];
-            }
 
             try {
                 if (isset($values['password'])) {
