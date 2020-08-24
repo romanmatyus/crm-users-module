@@ -2,16 +2,22 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
+use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
 use Nette\Security\IAuthorizator;
 
-class TestUserTokenAuthorization implements ApiAuthorizationInterface
+class TestUserTokenAuthorization implements UsersApiAuthorizationInterface
 {
-    private $token;
+    private $users = [];
 
-    public function __construct($token)
+    private $tokens = [];
+
+    public function __construct($token, $user = null)
     {
-        $this->token = $token;
+        $this->tokens[] = $token;
+
+        if ($user !== null) {
+            $this->users[] = $user;
+        }
     }
 
     public function authorized($resource = IAuthorizator::ALL)
@@ -27,7 +33,17 @@ class TestUserTokenAuthorization implements ApiAuthorizationInterface
     public function getAuthorizedData()
     {
         return [
-            'token' => $this->token
+            'token' => reset($this->tokens)
         ];
+    }
+
+    public function getAuthorizedUsers()
+    {
+        return $this->users;
+    }
+
+    public function getAccessTokens()
+    {
+        return $this->tokens;
     }
 }
