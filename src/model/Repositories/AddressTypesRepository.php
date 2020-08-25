@@ -12,4 +12,9 @@ class AddressTypesRepository extends Repository
     {
         return $this->getTable()->order('sorting')->fetchPairs('type', 'title');
     }
+
+    final public function findByType(string $type)
+    {
+        return $this->findBy('type', $type);
+    }
 }

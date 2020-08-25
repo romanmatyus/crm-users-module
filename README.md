@@ -350,45 +350,6 @@ Response:
 
 ---
 
-#### GET `/api/v1/users/remove-from-group`
-
-Removes the user from selected group. Group serves for artificial user groupping based on your arbitrary criteria.
-
-You can list your available groups in CRM admin at `/users/groups-admin/`.
-
-##### *Headers:*
-
-| Name | Value | Required | Description |
-| --- | --- | --- | --- |
-| Authorization | Bearer *String* | yes | API token. |
-
-##### *Params:*
-
-| Name | Value | Required | Description |
-| --- |---| --- | --- |
-| email | *String* | yes | Email to remove from group. |
-| group_id | *Integer* | yes | ID of user group to be removed from. |
-
-
-##### *Example:*
-
-```shell
-curl -X POST http://crm.press/api/v1/users/remove-from-group \
-  -H 'Authorization: Bearer XXX' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'email=user%40user.sk&group_id=1'
-```
-
-Response:
-
-```json5
-{
-    "status": "ok"
-}
-```
-
----
-
 #### GET `/api/v1/users/addresses`
 
 Lists all user addresses. User is identified by email address.
@@ -403,7 +364,7 @@ Lists all user addresses. User is identified by email address.
 
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
-| email | *String* | yes | Email to remove from group. |
+| email | *String* | yes | User email. |
 | type | *String* | no | Type of address - types of addresses are managed by modules (e.g. `InvoiceModule` adds support for `invoice` address type. |
 
 
@@ -451,9 +412,6 @@ Response:
 
 Creates new address for given user.
 
-Current implementation doesn't allow specification of country and the default application country is being
-implicitely used.
-
 ##### *Headers:*
 
 | Name | Value | Required | Description |
@@ -464,7 +422,7 @@ implicitely used.
 
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
-| email | *String* | yes | Email to remove from group. |
+| email | *String* | yes | User email. |
 | type | *String* | yes | Type of address - types of addresses are managed by modules (e.g. `InvoiceModule` adds support for `invoice` address type. |
 | first_name | *String* | no | First name. |
 | last_name | *String* | no | Last name. |
@@ -472,6 +430,7 @@ implicitely used.
 | number | *String* | no | Street number. |
 | zip | *String* | no | ZIP code. |
 | city | *String* | no | City. |
+| country_iso | *String* | no | Country ISO 3166-1 alpha-2 code. Default country is used if not provided |
 | company_name | *String* | no | Name of the company (if it's corporate address) |
 | company_id | *String* | no | ID of company (if it's corporate address) |
 | tax_id | *String* | no | Tax ID of company (if it's corporate address) |
@@ -483,7 +442,7 @@ implicitely used.
 
 ```shell
 curl -X POST \
-  http://crm.press/api/v1/users/addresses \
+  http://crm.press/api/v1/users/address \
   -H 'Authorization: Bearer XXX' \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
@@ -520,7 +479,7 @@ via [`users/address`](#post-apiv1usersaddress) API call.
 
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
-| email | *String* | yes | Email to remove from group. |
+| email | *String* | yes | User email. |
 | type | *String* | yes | Type of address - types of addresses are managed by modules (e.g. `InvoiceModule` adds support for `invoice` address type. |
 | first_name | *String* | no | First name. |
 | company_name | *String* | no | Name of the company (if it's corporate address) |
@@ -529,7 +488,8 @@ via [`users/address`](#post-apiv1usersaddress) API call.
 | number | *String* | no | Street number. |
 | zip | *String* | no | ZIP code. |
 | city | *String* | no | City. |
-| country_id | *String* | no | Internal CRM of country. Default country is used if not provided. |
+| country_iso | *String* | no | Country ISO 3166-1 alpha-2 code. Default country is used if not provided |
+| country_id | *String* | no | **Deprecated** and will be removed. Replaced with `country_iso`. |
 | phone_number | *String* | no | Phone number. |
 | company_id | *String* | no | ID of company (if it's corporate address) |
 | company_tax_id | *String* | no | Tax ID of company (if it's corporate address) |
