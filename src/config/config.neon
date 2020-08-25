@@ -110,6 +110,7 @@ services:
 	- Crm\UsersModule\Commands\UpdateLoginAttemptsCommand
 	- Crm\UsersModule\Components\UserActionLogAdminFactoryInterface
 	- Crm\UsersModule\User\UserData
+	- Crm\UsersModule\User\UnclaimedUser
 	- Crm\UsersModule\User\BasicUserDataProvider
 	- Crm\UsersModule\User\AddressesUserDataProvider
 	- Crm\UsersModule\User\AutoLoginTokensUserDataProvider
