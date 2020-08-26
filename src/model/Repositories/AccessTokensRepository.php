@@ -5,8 +5,11 @@ namespace Crm\UsersModule\Repository;
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Auth\Access\TokenGenerator;
+use Crm\UsersModule\Events\BeforeRemoveAccessTokenEvent;
 use Crm\UsersModule\Events\NewAccessTokenEvent;
+use Crm\UsersModule\Events\PairDeviceAccessTokensEvent;
 use Crm\UsersModule\Events\RemovedAccessTokenEvent;
+use Crm\UsersModule\Events\UnpairDeviceAccessTokensEvent;
 use Crm\UsersModule\User\UnclaimedUser;
 use DateTime;
 use League\Event\Emitter;
@@ -63,6 +66,7 @@ class AccessTokensRepository extends Repository
         if (!$tokenRow) {
             return true;
         }
+        $this->emitter->emit(new BeforeRemoveAccessTokenEvent($tokenRow));
         $result = $this->delete($tokenRow);
         $this->emitter->emit(new RemovedAccessTokenEvent($tokenRow->user_id, $token));
         return $result;
@@ -89,6 +93,7 @@ class AccessTokensRepository extends Repository
             $this->unpairDeviceToken($deviceToken);
         }
 
+        $this->emitter->emit(new PairDeviceAccessTokensEvent($deviceToken, $accessToken));
         return $this->update($accessToken, [
             'device_token_id' => $deviceToken->id
         ]);
@@ -100,6 +105,7 @@ class AccessTokensRepository extends Repository
 
         foreach ($accessTokens as $accessToken) {
             if (!$this->userMetaRepository->userMetaValueByKey($accessToken->user, UnclaimedUser::META_KEY)) {
+                $this->emitter->emit(new UnpairDeviceAccessTokensEvent($deviceToken, $accessToken));
                 $this->update($accessToken, ['device_token_id' => null]);
             }
         }
