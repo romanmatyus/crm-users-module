@@ -85,10 +85,6 @@ class BasicUserDataProvider implements UserDataProviderInterface
             // deactivate & mark as deleted
             'active' => false,
             'deleted_at' => $now,
-
-            // TODO: probably not needed columns? there data are in address table now
-            'address' => 'GDPR Removal',
-            'phone_number' => 'GDPR Removal',
         ];
 
         $this->usersRepository->update($user, $GDPRTemplateUser);
