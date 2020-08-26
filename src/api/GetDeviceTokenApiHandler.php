@@ -8,14 +8,20 @@ use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
+use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
 
 class GetDeviceTokenApiHandler extends ApiHandler
 {
+    private $accessTokensRepository;
+
     private $deviceTokensRepository;
 
-    public function __construct(DeviceTokensRepository $deviceTokensRepository)
-    {
+    public function __construct(
+        AccessTokensRepository $accessTokensRepository,
+        DeviceTokensRepository $deviceTokensRepository
+    ) {
+        $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
     }
 
@@ -23,6 +29,8 @@ class GetDeviceTokenApiHandler extends ApiHandler
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'device_id', InputParam::REQUIRED),
+
+            new InputParam(InputParam::TYPE_POST, 'access_token', InputParam::OPTIONAL),
         ];
     }
 
@@ -41,9 +49,26 @@ class GetDeviceTokenApiHandler extends ApiHandler
 
         $params = $paramsProcessor->getValues();
 
-        $token = $this->deviceTokensRepository->add($params['device_id']);
+        $accessToken = null;
+        if (isset($params['access_token'])) {
+            $accessToken = $this->accessTokensRepository->loadToken($params['access_token']);
+            if (!$accessToken) {
+                $response = new JsonResponse([
+                    'status' => 'error',
+                    'message' => 'Access token not valid'
+                ]);
+                $response->setHttpCode(Response::S400_BAD_REQUEST);
+                return $response;
+            }
+        }
+
+        $deviceToken = $this->deviceTokensRepository->add($params['device_id']);
+        if ($accessToken) {
+            $this->accessTokensRepository->pairWithDeviceToken($accessToken, $deviceToken);
+        }
+
         $response = new JsonResponse([
-            'device_token' => $token->token
+            'device_token' => $deviceToken->token
         ]);
         $response->setHttpCode(Response::S200_OK);
         return $response;

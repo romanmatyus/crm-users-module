@@ -870,6 +870,7 @@ API call generates and returns new device token based on sent `device_id`.
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
 | device_id | *String* | yes | User's device id. |
+| access_token | *String* | no | Access token to pair with generated device token. |
 
 ##### *Example:*
 
