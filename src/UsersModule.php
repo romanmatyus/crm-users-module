@@ -397,12 +397,12 @@ class UsersModule extends CrmModule
 
     public function registerCleanupFunction(CallbackManagerInterface $cleanUpManager)
     {
-        $cleanUpManager->add(function (Container $container) {
+        $cleanUpManager->add(ChangePasswordsLogsRepository::class, function (Container $container) {
             /** @var ChangePasswordsLogsRepository $changePasswordLogsRepository */
             $changePasswordLogsRepository = $container->getByType(ChangePasswordsLogsRepository::class);
             $changePasswordLogsRepository->removeOldData('-12 months');
         });
-        $cleanUpManager->add(function (Container $container) {
+        $cleanUpManager->add(UserActionsLogRepository::class, function (Container $container) {
             /** @var UserActionsLogRepository $changePasswordLogsRepository */
             $userActionsLogRepository = $container->getByType(UserActionsLogRepository::class);
             $userActionsLogRepository->removeOldData('-12 months');
