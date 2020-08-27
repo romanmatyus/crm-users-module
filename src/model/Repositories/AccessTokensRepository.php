@@ -7,6 +7,7 @@ use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Auth\Access\TokenGenerator;
 use Crm\UsersModule\Events\NewAccessTokenEvent;
 use Crm\UsersModule\Events\RemovedAccessTokenEvent;
+use Crm\UsersModule\User\UnclaimedUser;
 use DateTime;
 use League\Event\Emitter;
 use Nette\Database\Context;
@@ -18,13 +19,17 @@ class AccessTokensRepository extends Repository
 
     private $emitter;
 
+    private $userMetaRepository;
+
     public function __construct(
         Context $database,
-        Emitter $emitter
+        Emitter $emitter,
+        UserMetaRepository $userMetaRepository
     ) {
         parent::__construct($database);
         $this->database = $database;
         $this->emitter = $emitter;
+        $this->userMetaRepository = $userMetaRepository;
     }
 
     final public function all($limit = 500)
@@ -79,9 +84,24 @@ class AccessTokensRepository extends Repository
 
     final public function pairWithDeviceToken($accessToken, $deviceToken): bool
     {
+        if (!$this->userMetaRepository->userMetaValueByKey($accessToken->user, UnclaimedUser::META_KEY)) {
+            $this->unpairDeviceToken($deviceToken);
+        }
+
         return $this->update($accessToken, [
             'device_token_id' => $deviceToken->id
         ]);
+    }
+
+    final public function unpairDeviceToken($deviceToken)
+    {
+        $accessTokens = $this->findAllByDeviceToken($deviceToken);
+
+        foreach ($accessTokens as $accessToken) {
+            if (!$this->userMetaRepository->userMetaValueByKey($accessToken->user, UnclaimedUser::META_KEY)) {
+                $this->update($accessToken, ['device_token_id' => null]);
+            }
+        }
     }
 
     final public function removeAllUserTokens($userId, array $exceptTokens = [])
