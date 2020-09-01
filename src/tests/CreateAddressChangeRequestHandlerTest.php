@@ -10,6 +10,7 @@ use Crm\UsersModule\Api\CreateAddressChangeRequestHandler;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AddressChangeRequestsRepository;
 use Crm\UsersModule\Repository\AddressesRepository;
+use Crm\UsersModule\Repository\AddressTypesRepository;
 use Crm\UsersModule\Repository\CountriesRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
@@ -26,13 +27,17 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     /** @var UserManager */
     private $userManager;
 
+    /** @var AddressTypesRepository */
+    private $addressTypesRepository;
+
     protected function requiredRepositories(): array
     {
         return [
             AddressesRepository::class,
             AddressChangeRequestsRepository::class,
             CountriesRepository::class,
-            UsersRepository::class
+            UsersRepository::class,
+            AddressTypesRepository::class,
         ];
     }
 
@@ -51,6 +56,10 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $this->handler = $this->inject(CreateAddressChangeRequestHandler::class);
         $this->addressesRepository = $this->getRepository(AddressesRepository::class);
         $this->userManager = $this->inject(UserManager::class);
+        $this->addressTypesRepository = $this->getRepository(AddressTypesRepository::class);
+
+        $this->addressTypesRepository->add('test', 'Test');
+
         unset($_POST);
     }
 
@@ -68,7 +77,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     public function testUserNotFound()
     {
         $_POST['email'] = '0test@user.site';
-        $_POST['type'] = 'invoice';
+        $_POST['type'] = 'test';
 
         $response = $this->handler->handle(new NoAuthorization());
 
@@ -83,7 +92,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     public function testTypeNotFound()
     {
         $_POST['email'] = 'admin@admin.sk';
-        $_POST['type'] = '0invoice';
+        $_POST['type'] = '@test';
 
         $response = $this->handler->handle(new NoAuthorization());
 
@@ -98,7 +107,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     public function testCountryNotFound()
     {
         $_POST['email'] = 'admin@admin.sk';
-        $_POST['type'] = 'invoice';
+        $_POST['type'] = 'test';
 
         $_POST['country_iso'] = 'QQQ';
 
@@ -115,7 +124,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     public function testParentAddressNotFound()
     {
         $_POST['email'] = 'admin@admin.sk';
-        $_POST['type'] = 'invoice';
+        $_POST['type'] = 'test';
 
         $response = $this->handler->handle(new NoAuthorization());
 
@@ -130,7 +139,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     public function testValid()
     {
         $_POST['email'] = 'admin@admin.sk';
-        $_POST['type'] = 'invoice';
+        $_POST['type'] = 'test';
 
         $_POST['address'] = 'Vysoka';
         $_POST['city'] = 'Poprad';

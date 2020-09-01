@@ -8,6 +8,14 @@ class AddressTypesRepository extends Repository
 {
     protected $tableName = 'address_types';
 
+    final public function add(string $type, string $title)
+    {
+        return $this->insert([
+            'type' => $type,
+            'title' => $title,
+        ]);
+    }
+
     final public function getPairs()
     {
         return $this->getTable()->order('sorting')->fetchPairs('type', 'title');

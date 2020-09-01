@@ -91,7 +91,6 @@ class UsersRepository extends Repository
             'created_at' => new \DateTime(),
             'modified_at' => new \DateTime(),
             'active' => intval($active),
-            'address' => $address,
             'ext_id' => $extId,
         ]);
     }
