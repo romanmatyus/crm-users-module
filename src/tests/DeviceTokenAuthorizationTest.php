@@ -16,6 +16,7 @@ use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UserGroupsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\User\UnclaimedUser;
 
 class DeviceTokenAuthorizationTest extends DatabaseTestCase
 {
@@ -30,6 +31,9 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
 
     /** @var DeviceTokenAuthorization */
     private $deviceTokenAuthorization;
+
+    /** @var UserMetaRepository */
+    private $userMetaRepository;
 
     protected function requiredRepositories(): array
     {
@@ -58,11 +62,12 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
     {
         parent::setUp();
 
-        $this->deviceTokensRepository = $this->container->getByType('Crm\UsersModule\Repositories\DeviceTokensRepository');
-        $this->usersRepository = $this->container->getByType('Crm\UsersModule\Repository\UsersRepository');
-        $this->accessTokensRepository = $this->container->getByType('Crm\UsersModule\Repository\AccessTokensRepository');
+        $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
+        $this->usersRepository = $this->getRepository(UsersRepository::class);
+        $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
+        $this->userMetaRepository = $this->getRepository(UserMetaRepository::class);
 
-        $this->deviceTokenAuthorization = $this->container->getByType('Crm\UsersModule\Auth\DeviceTokenAuthorization');
+        $this->deviceTokenAuthorization = $this->container->getByType(DeviceTokenAuthorization::class);
     }
 
     public function testNotExistingDeviceToken()
@@ -87,28 +92,65 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
         unset($_SERVER['HTTP_AUTHORIZATION']);
     }
 
-    public function testAuthorizedUsersAndTokens()
+    public function testAuthorizedUnclaimedAndClaimedUsers()
     {
         $user1 = $this->usersRepository->add('test1@user.com', 'nbusr123', '', '');
+        $this->userMetaRepository->add($user1, UnclaimedUser::META_KEY, true);
         $accessToken1 = $this->accessTokensRepository->add($user1, 3);
+
         $user2 = $this->usersRepository->add('test2@user.com', 'nbusr123', '', '');
+        $this->userMetaRepository->add($user2, UnclaimedUser::META_KEY, true);
         $accessToken2 = $this->accessTokensRepository->add($user2, 3);
-        $accessToken3 = $this->accessTokensRepository->add($user2, 3);
+
+        $user3 = $this->usersRepository->add('test3@user.com', 'nbusr123', '', '');
+        $accessToken3 = $this->accessTokensRepository->add($user3, 3);
+        $accessToken4 = $this->accessTokensRepository->add($user3, 3);
 
         $deviceToken = $this->deviceTokensRepository->add('test_dev_id');
 
         $this->accessTokensRepository->pairWithDeviceToken($accessToken1, $deviceToken);
         $this->accessTokensRepository->pairWithDeviceToken($accessToken2, $deviceToken);
         $this->accessTokensRepository->pairWithDeviceToken($accessToken3, $deviceToken);
+        $this->accessTokensRepository->pairWithDeviceToken($accessToken4, $deviceToken);
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $deviceToken->token;
 
         $this->assertTrue($this->deviceTokenAuthorization->authorized());
 
         $authorizedUsers = $this->deviceTokenAuthorization->getAuthorizedUsers();
-        $this->assertCount(2, $authorizedUsers);
+        $this->assertCount(3, $authorizedUsers);
 
         $authorizedTokens = $this->deviceTokenAuthorization->getAccessTokens();
         $this->assertCount(3, $authorizedTokens);
+    }
+
+    public function testAuthorizedOnlyClaimedUsers()
+    {
+        $user1 = $this->usersRepository->add('test1@user.com', 'nbusr123', '', '');
+        $accessToken1 = $this->accessTokensRepository->add($user1, 3);
+
+        $user2 = $this->usersRepository->add('test2@user.com', 'nbusr123', '', '');
+        $accessToken2 = $this->accessTokensRepository->add($user2, 3);
+
+        $user3 = $this->usersRepository->add('test3@user.com', 'nbusr123', '', '');
+        $accessToken3 = $this->accessTokensRepository->add($user3, 3);
+        $accessToken4 = $this->accessTokensRepository->add($user3, 3);
+
+        $deviceToken = $this->deviceTokensRepository->add('test_dev_id');
+
+        $this->accessTokensRepository->pairWithDeviceToken($accessToken1, $deviceToken);
+        $this->accessTokensRepository->pairWithDeviceToken($accessToken2, $deviceToken);
+        $this->accessTokensRepository->pairWithDeviceToken($accessToken3, $deviceToken);
+        $this->accessTokensRepository->pairWithDeviceToken($accessToken4, $deviceToken);
+
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $deviceToken->token;
+
+        $this->assertTrue($this->deviceTokenAuthorization->authorized());
+
+        $authorizedUsers = $this->deviceTokenAuthorization->getAuthorizedUsers();
+        $this->assertCount(1, $authorizedUsers);
+
+        $authorizedTokens = $this->deviceTokenAuthorization->getAccessTokens();
+        $this->assertCount(1, $authorizedTokens);
     }
 }

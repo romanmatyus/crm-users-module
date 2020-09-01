@@ -39,6 +39,10 @@ class DeviceTokenAuthorization implements UsersApiAuthorizationInterface
 
     public function authorized($resource = IAuthorizator::ALL)
     {
+        $this->authorizedData = [];
+        $this->authorizedUsers = [];
+        $this->accessTokens = [];
+
         $tokenParser = new TokenParser();
         if (!$tokenParser->isOk()) {
             $this->errorMessage = $tokenParser->errorMessage();
