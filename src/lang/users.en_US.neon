@@ -120,7 +120,7 @@ frontend:
 			label: 'Your email:'
 			required: Please enter your email
 			placeholder: email you used to register
-		submit: Send new passord
+		submit: Send new password
 		invalid_email: Invalid email
 		inactive_user: Your user account has been deactivated. Please use another email or contact support on info@dennikn.sk.
 		success:
