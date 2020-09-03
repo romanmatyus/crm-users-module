@@ -37,11 +37,10 @@ class UserInfoHandler extends ApiHandler
         ];
 
         // additional custom data added by authorizators for other sources
-        if (isset($data['token']->source) && !empty($data['token']->source) && is_string($data['token']->source)) {
-            $source = $data['token']->source;
-
-            $result['source'] = $source;
-            $result[$source] = $data['token']->$source;
+        if (isset($data['token']->authSource) && !empty($data['token']->authSource) && is_string($data['token']->authSource)) {
+            $authSource = $data['token']->authSource;
+            $result['source'] = $authSource;
+            $result[$authSource] = $data['token']->$authSource;
         }
 
         $response = new JsonResponse($result);
