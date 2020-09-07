@@ -247,7 +247,7 @@ class UserManager
                 'modified_at' => $date,
                 'confirmed_at' => $date,
             ]);
-            $this->userMetaRepository->add($user, 'confirmed_by_admin', true);
+            $this->userMetaRepository->add($user, 'confirmed_by_admin', $byAdmin);
 
             $this->emitter->emit(new UserConfirmedEvent($user, $byAdmin));
         }
