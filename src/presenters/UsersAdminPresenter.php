@@ -244,6 +244,7 @@ class UsersAdminPresenter extends AdminPresenter
         ]));
 
         $this->presenter->flashMessage($this->translator->translate('users.admin.reset_password.success'));
+        $this->redirect('show', $userId);
     }
 
     public function handleConfirm($userId)
