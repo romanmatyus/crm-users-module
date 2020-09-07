@@ -10,7 +10,7 @@ use DateTime;
 use League\Event\Emitter;
 use Nette\Security\IAuthorizator;
 
-class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface
+class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
     protected $accessTokensRepository;
 

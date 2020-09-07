@@ -693,26 +693,22 @@ Return all the meta information of specified user. You can specify meta informat
 
 | Name | Value | Required | Description |
 | --- | --- | --- | --- |
-| Authorization | Bearer *String* | yes | API token. |
+| Authorization | Bearer *String* | yes | User or API token. |
 
 ##### *Params:*
 
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
-| user_id | *Integer* | yes | The ID of user. |
+| user_id | *Integer* | no | ID of user. Used only when API token is provided, otherwise user is determined from User token. |
 | key | *String* | no | The meta information key of user to filter by. |
 
 ##### *Example:*
 
 ```shell
-curl -X POST \
-  http://crm.press/api/v1/user-meta/list \
-  -H 'Authorization: Bearer XXX' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "user_id": 12345
-  }'
+curl -X GET \
+  http://crm.press/api/v1/user-meta/list?user_id=12345 \
+  -H 'Authorization: Bearer 80bae026b1b05d4b91a970db5032384f' \
+  -H 'Accept: application/json'
 ```
 
 Response:

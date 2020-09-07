@@ -2,10 +2,11 @@
 
 namespace Crm\UsersModule\Tests;
 
+use Crm\UsersModule\Auth\AccessTokensApiAuthorizationInterface;
 use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
 use Nette\Security\IAuthorizator;
 
-class TestUserTokenAuthorization implements UsersApiAuthorizationInterface
+class TestUserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
     private $users = [];
 

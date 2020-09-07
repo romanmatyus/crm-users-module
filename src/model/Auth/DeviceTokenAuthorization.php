@@ -11,7 +11,7 @@ use DateTime;
 use League\Event\Emitter;
 use Nette\Security\IAuthorizator;
 
-class DeviceTokenAuthorization implements UsersApiAuthorizationInterface
+class DeviceTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
     protected $accessTokensRepository;
 
@@ -52,7 +52,7 @@ class DeviceTokenAuthorization implements UsersApiAuthorizationInterface
         $deviceToken = $this->deviceTokensRepository->findByToken($tokenParser->getToken());
 
         if (!$deviceToken) {
-            $this->errorMessage = "Device token doesn't exists";
+            $this->errorMessage = "Device token doesn't exist";
             return false;
         }
 
