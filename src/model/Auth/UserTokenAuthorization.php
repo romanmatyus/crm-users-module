@@ -9,7 +9,7 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use League\Event\Emitter;
 use Nette\Security\IAuthorizator;
 
-class UserTokenAuthorization implements UsersApiAuthorizationInterface
+class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
     protected $accessTokensRepository;
 

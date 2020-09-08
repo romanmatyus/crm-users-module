@@ -42,6 +42,7 @@ services:
 	# API Authorization
 	userTokenAuthorization: Crm\UsersModule\Auth\UserTokenAuthorization
 	deviceTokenAuthorization: Crm\UsersModule\Auth\DeviceTokenAuthorization
+	serviceTokenAuthorization: Crm\UsersModule\Auth\ServiceTokenAuthorization
 
 	- Crm\UsersModule\Auth\Access\AccessToken
 
