@@ -17,7 +17,7 @@ class RemovedAccessTokenHandler extends AbstractListener
 
     public function handle(EventInterface $event)
     {
-        $token = $event->getToken();
+        $token = $event->getAccessToken();
         $this->userData->removeUserToken($token);
     }
 }
