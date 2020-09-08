@@ -3,7 +3,6 @@
 namespace Crm\UsersModule\Auth;
 
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
-use Crm\ApiModule\Authorization\TokenParser;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use League\Event\Emitter;
@@ -23,8 +22,6 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
 
     protected $emitter;
 
-    private $errorMessage = false;
-
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
@@ -42,12 +39,6 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
 
     public function authorized($resource = IAuthorizator::ALL)
     {
-        $tokenParser = new TokenParser();
-        if (!$tokenParser->isOk()) {
-            $this->errorMessage = $tokenParser->errorMessage();
-            return false;
-        }
-
         if (isset($_GET['source']) && isset($this->authorizators[$_GET['source']])) {
             $this->authorizator = $this->authorizators[$_GET['source']];
             return $this->authorizator->authorized($resource);
@@ -68,10 +59,6 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
 
     public function getErrorMessage()
     {
-        if ($this->errorMessage) {
-            return $this->errorMessage;
-        }
-
         if (is_null($this->authorizator)) {
             throw new \Exception('Authorize token first - use `authorized` method.');
         }

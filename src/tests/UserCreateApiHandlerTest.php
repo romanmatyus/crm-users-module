@@ -81,7 +81,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
     public function testCreateUserPairsDeviceAndAccessToken()
     {
-        $deviceToken = $this->deviceTokensRepository->add('testdevid123');
+        $deviceToken = $this->deviceTokensRepository->generate('testdevid123');
 
         $_POST['email'] = '0test2@user.site';
         $_POST['device_token'] = $deviceToken->token;

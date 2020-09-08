@@ -81,7 +81,7 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
 
     public function testAuthorizedWithDeviceTokens()
     {
-        $deviceToken = $this->deviceTokensRepository->add('test_dev_id');
+        $deviceToken = $this->deviceTokensRepository->generate('test_dev_id');
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $deviceToken->token;
 
@@ -106,7 +106,7 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
         $accessToken3 = $this->accessTokensRepository->add($user3, 3);
         $accessToken4 = $this->accessTokensRepository->add($user3, 3);
 
-        $deviceToken = $this->deviceTokensRepository->add('test_dev_id');
+        $deviceToken = $this->deviceTokensRepository->generate('test_dev_id');
 
         $this->accessTokensRepository->pairWithDeviceToken($accessToken1, $deviceToken);
         $this->accessTokensRepository->pairWithDeviceToken($accessToken2, $deviceToken);
@@ -136,7 +136,7 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
         $accessToken3 = $this->accessTokensRepository->add($user3, 3);
         $accessToken4 = $this->accessTokensRepository->add($user3, 3);
 
-        $deviceToken = $this->deviceTokensRepository->add('test_dev_id');
+        $deviceToken = $this->deviceTokensRepository->generate('test_dev_id');
 
         $this->accessTokensRepository->pairWithDeviceToken($accessToken1, $deviceToken);
         $this->accessTokensRepository->pairWithDeviceToken($accessToken2, $deviceToken);

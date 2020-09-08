@@ -62,7 +62,7 @@ class GetDeviceTokenApiHandler extends ApiHandler
             }
         }
 
-        $deviceToken = $this->deviceTokensRepository->add($params['device_id']);
+        $deviceToken = $this->deviceTokensRepository->generate($params['device_id']);
         if ($accessToken) {
             $this->accessTokensRepository->pairWithDeviceToken($accessToken, $deviceToken);
         }

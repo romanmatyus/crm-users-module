@@ -10,18 +10,20 @@ class DeviceTokensRepository extends Repository
 {
     protected $tableName = 'device_tokens';
 
-    final public function add(string $deviceId)
+    final public function generate(string $deviceId)
     {
         $token = TokenGenerator::generate();
+        return $this->add($deviceId, $token);
+    }
 
-        $row = $this->insert([
+    final public function add(string $deviceId, string $deviceToken)
+    {
+        return $this->insert([
             'device_id' => $deviceId,
             'created_at' => new DateTime(),
             'last_used_at' => new DateTime(),
-            'token' => $token,
+            'token' => $deviceToken,
         ]);
-
-        return $row;
     }
 
     final public function findByToken(string $token)

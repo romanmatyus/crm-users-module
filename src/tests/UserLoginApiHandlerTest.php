@@ -106,7 +106,7 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     {
         $user = $this->getUser();
 
-        $deviceToken = $this->deviceTokensRepository->add('poiqwe123');
+        $deviceToken = $this->deviceTokensRepository->generate('poiqwe123');
 
         $_POST['email'] = self::LOGIN;
         $_POST['password'] = self::PASSWORD;
