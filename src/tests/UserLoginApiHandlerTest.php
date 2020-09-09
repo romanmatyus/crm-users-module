@@ -5,7 +5,6 @@ namespace Crm\UsersModule\Tests;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
-use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Api\UsersLoginHandler;
 use Crm\UsersModule\Authenticator\UsersAuthenticator;
@@ -14,7 +13,7 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 
-class UserLoginApiHandlerTest extends DatabaseTestCase
+class UserLoginApiHandlerTest extends BaseTestCase
 {
     const LOGIN = '1test@user.st';
     const PASSWORD = 'password';
@@ -37,15 +36,6 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     private $emitter;
 
     private $user;
-
-    protected function requiredRepositories(): array
-    {
-        return [
-            UsersRepository::class,
-            DeviceTokensRepository::class,
-            AccessTokensRepository::class,
-        ];
-    }
 
     protected function requiredSeeders(): array
     {

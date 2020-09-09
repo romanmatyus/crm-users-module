@@ -42,7 +42,7 @@ class UnclaimedUser
             $email = $this->generateUnclaimedUserEmail();
         }
 
-        $user = $this->userManager->addNewUser($email, false, $source, null, false);
+        $user = $this->userManager->addNewUser($email, false, $source, null, false, null, false);
         $this->userMetaRepository->add($user, self::META_KEY, 1);
         return $user;
     }

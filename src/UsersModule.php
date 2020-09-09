@@ -288,6 +288,9 @@ class UsersModule extends CrmModule
             new ApiRoute(new ApiIdentifier('1', 'users', 'login'), \Crm\UsersModule\Api\UsersLoginHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
         );
         $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'users', 'logout'), \Crm\UsersModule\Api\UsersLogoutHandler::class, \Crm\UsersModule\Auth\UserTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'email'), \Crm\UsersModule\Api\UsersEmailHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
         );
         $apiRoutersContainer->attachRouter(

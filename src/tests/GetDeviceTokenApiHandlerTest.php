@@ -4,7 +4,6 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
-use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\GetDeviceTokenApiHandler;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -12,7 +11,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Nette\Http\Response;
 
-class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
+class GetDeviceTokenApiHandlerTest extends BaseTestCase
 {
     private $accessTokensRepository;
 
@@ -21,15 +20,6 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
     private $usersRepository;
 
     private $handler;
-
-    protected function requiredRepositories(): array
-    {
-        return [
-            AccessTokensRepository::class,
-            DeviceTokensRepository::class,
-            UsersRepository::class
-        ];
-    }
 
     protected function requiredSeeders(): array
     {

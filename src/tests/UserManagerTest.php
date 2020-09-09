@@ -2,26 +2,18 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
 
-class UserManagerTest extends DatabaseTestCase
+class UserManagerTest extends BaseTestCase
 {
     /** @var UsersRepository */
     private $usersRepository;
 
     /** @var UserManager */
     private $userManager;
-
-    public function requiredRepositories(): array
-    {
-        return [
-            UsersRepository::class,
-        ];
-    }
 
     public function requiredSeeders(): array
     {

@@ -91,6 +91,7 @@ services:
 	- Crm\UsersModule\Events\RemovedAccessTokenHandler
 	- Crm\UsersModule\Api\UsersEmailHandler
 	- Crm\UsersModule\Api\UsersLoginHandler
+	- Crm\UsersModule\Api\UsersLogoutHandler
 	- Crm\UsersModule\Api\ListUsersHandler
 	- Crm\UsersModule\Api\UsersCreateHandler
 	- Crm\UsersModule\Api\UserGroupApiHandler

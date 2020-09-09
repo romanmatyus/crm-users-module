@@ -4,23 +4,14 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
-use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersConfirmApiHandler;
-use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Nette\Http\Response;
 
-class UsersConfirmApiHandlerTest extends DatabaseTestCase
+class UsersConfirmApiHandlerTest extends BaseTestCase
 {
     /** @var UsersConfirmApiHandler */
     private $handler;
-
-    protected function requiredRepositories(): array
-    {
-        return [
-            UsersRepository::class
-        ];
-    }
 
     protected function requiredSeeders(): array
     {

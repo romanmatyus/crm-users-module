@@ -164,6 +164,33 @@ Invalid credentials response:
     "message": "Zadané heslo sa nezhoduje s našimi záznamami. Prihláste sa, prosím, tak, ako na webe Denníka N."
 }
 ```
+---
+
+#### POST `/api/v1/users/logout`
+
+API call that logs out the authenticated user. If user is authenticated using device token, all associated access tokens are removed too.
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | Access token or device token |
+
+##### *Example:*
+
+```shell
+curl 'http://crm.press/api/v1/users/logout' \
+  -H 'Authorization: Bearer 7973a4b16be01e25d9f0759c180911af' \
+  -H 'Accept: application/json'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok"
+}
+```
 
 ---
 

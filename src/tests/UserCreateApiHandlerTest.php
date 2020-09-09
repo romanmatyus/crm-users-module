@@ -4,13 +4,12 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
-use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 
-class UserCreateApiHandlerTest extends DatabaseTestCase
+class UserCreateApiHandlerTest extends BaseTestCase
 {
     /** @var DeviceTokensRepository */
     private $deviceTokensRepository;
@@ -23,20 +22,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
     /** @var AccessTokensRepository */
     private $accessTokensRepository;
-
-    protected function requiredRepositories(): array
-    {
-        return [
-            UsersRepository::class,
-            DeviceTokensRepository::class,
-            AccessTokensRepository::class
-        ];
-    }
-
-    protected function requiredSeeders(): array
-    {
-        return [];
-    }
 
     protected function setUp(): void
     {
