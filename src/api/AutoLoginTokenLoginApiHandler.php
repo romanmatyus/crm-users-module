@@ -49,6 +49,7 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
         } catch (AuthenticationException $e) {
             $response = new JsonResponse([
                 'status' => 'error',
+                'code' => 'auth_failed',
                 'message' => $e->getMessage()
             ]);
             if ($e->getCode() === UserAuthenticator::NOT_APPROVED) {
@@ -79,6 +80,7 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
             Debugger::log('Missing access token for user', ILogger::ERROR);
             $response = new JsonResponse([
                 'status' => 'error',
+                'code' => 'missing_access_token',
                 'message' => 'Missing access token for user'
             ]);
             $response->setHttpCode(Response::S500_INTERNAL_SERVER_ERROR);
