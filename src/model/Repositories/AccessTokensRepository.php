@@ -148,4 +148,12 @@ class AccessTokensRepository extends Repository
         }
         return $result;
     }
+
+    final public function existsForUserDeviceToken(IRow $user, IRow $deviceToken) : bool
+    {
+        return $this->getTable()->where([
+            'device_token_id' => $deviceToken->id,
+            'user_id' => $user->id
+        ])->count('*') > 0;
+    }
 }

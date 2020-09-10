@@ -54,6 +54,12 @@ class UserMetaRepository extends Repository
         return $result;
     }
 
+    final public function update(IRow &$row, $data)
+    {
+        $data['updated_at'] = new DateTime();
+        return parent::update($row, $data);
+    }
+
     final public function setMeta(IRow $user, array $metas, $isPublic = false)
     {
         foreach ($metas as $key => $value) {

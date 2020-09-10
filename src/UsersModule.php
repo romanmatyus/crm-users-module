@@ -11,6 +11,7 @@ use Crm\ApplicationModule\Commands\CommandsContainerInterface;
 use Crm\ApplicationModule\Criteria\CriteriaStorage;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaStorage;
 use Crm\ApplicationModule\CrmModule;
+use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\ApplicationModule\Event\EventsStorage;
 use Crm\ApplicationModule\Menu\MenuContainerInterface;
 use Crm\ApplicationModule\Menu\MenuItem;
@@ -18,6 +19,7 @@ use Crm\ApplicationModule\SeederManager;
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\ApplicationModule\Widget\WidgetManagerInterface;
 use Crm\UsersModule\Auth\Permissions;
+use Crm\UsersModule\DataProvider\UsersClaimUserDataProvider;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -427,5 +429,13 @@ class UsersModule extends CrmModule
         $eventsStorage->register('user_sign_in', Events\UserSignInEvent::class);
         $eventsStorage->register('user_sign_out', Events\UserSignOutEvent::class);
         $eventsStorage->register('user_updated', Events\UserUpdatedEvent::class);
+    }
+
+    public function registerDataProviders(DataProviderManager $dataProviderManager)
+    {
+        $dataProviderManager->registerDataProvider(
+            'users.dataprovider.claim_unclaimed_user',
+            $this->getInstance(UsersClaimUserDataProvider::class)
+        );
     }
 }
