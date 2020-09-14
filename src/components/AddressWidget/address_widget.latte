@@ -19,6 +19,11 @@
   {$address->address} {$address->number}
   {/if}
 
+  {if $address->city}
+  <br>
+  {$address->city}
+  {/if}
+
   {if $address->zip}
   <br>
   {$address->zip} {$address->city}
