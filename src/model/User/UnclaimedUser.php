@@ -106,9 +106,6 @@ class UnclaimedUser
             throw new UnclaimedUserException("User {$loggedUser->id} is unclaimed");
         }
 
-        if (!$this->accessTokensRepository->existsForUserDeviceToken($unclaimedUser, $deviceToken)) {
-            throw new AccessTokenNotFoundException("There is no access token for user {$unclaimedUser->id} and device token {$deviceToken->id}");
-        }
         if (!$this->accessTokensRepository->existsForUserDeviceToken($loggedUser, $deviceToken)) {
             throw new AccessTokenNotFoundException("There is no access token for user {$loggedUser->id} and device token {$deviceToken->id}");
         }
