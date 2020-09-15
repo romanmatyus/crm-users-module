@@ -46,9 +46,13 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
         $params = $paramsProcessor->getValues();
 
         try {
+            $source = 'api';
+            if (isset($params['source']) && $params['source'] !== 'api') {
+                $source .= '+' . $params['source'];
+            }
             $identity = $this->userAuthenticator->authenticate([
                 'autologin_token' => $params['autologin_token'],
-                'source' => $params['source'] ?? null,
+                'source' => $source,
             ]);
         } catch (AuthenticationException $e) {
             $response = new JsonResponse([
