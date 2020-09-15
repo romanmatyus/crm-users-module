@@ -847,12 +847,16 @@ API call verifies provided autologin token and returns user identity and token.
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
 | autologin_token | *String* | yes | User's autologin token. |
-
+| source | *String* | no | Source identifying originating client. For API-based logins we recommend to use `api+` prefix (e.g. (`api+ios_app`) |
 
 ##### *Example:*
 
 ```shell
-curl --location --request GET 'http://crm.press/api/v1/users/autologin-token-login?autologin_token=f8fb5c8d41e454852c0049cfe1031ac1'
+curl -X POST \
+  http://crm.press/api/v1/users/autologin-token-login \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'autologin_token=f8fb5c8d41e454852c0049cfe1031ac1&source=api%2Bios_app'
 ```
 
 Success response:

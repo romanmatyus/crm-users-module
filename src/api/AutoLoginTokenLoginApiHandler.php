@@ -31,7 +31,8 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
     public function params()
     {
         return [
-            new InputParam(InputParam::TYPE_GET, 'autologin_token', InputParam::REQUIRED),
+            new InputParam(InputParam::TYPE_POST, 'autologin_token', InputParam::REQUIRED),
+            new InputParam(InputParam::TYPE_POST, 'source', InputParam::OPTIONAL),
         ];
     }
 
@@ -45,7 +46,10 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
         $params = $paramsProcessor->getValues();
 
         try {
-            $identity = $this->userAuthenticator->authenticate(['autologin_token' => $params['autologin_token']]);
+            $identity = $this->userAuthenticator->authenticate([
+                'autologin_token' => $params['autologin_token'],
+                'source' => $params['source'] ?? null,
+            ]);
         } catch (AuthenticationException $e) {
             $response = new JsonResponse([
                 'status' => 'error',
