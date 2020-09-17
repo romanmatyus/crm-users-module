@@ -847,6 +847,7 @@ API call verifies provided autologin token and returns user identity and token.
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
 | autologin_token | *String* | yes | User's autologin token. |
+| device_token | *String* | yes | Device token acquired by `/api/v1/users/get-device-token`. |
 | source | *String* | no | Source identifying originating client. If provided, CRM will prefix `source` with `api+` prefix; otherwise CRM will use `api` as a default value for `source`. |
 
 ##### *Example:*

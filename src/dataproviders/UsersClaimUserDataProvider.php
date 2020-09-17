@@ -36,6 +36,11 @@ class UsersClaimUserDataProvider implements ClaimUserDataProviderInterface
             if ($unclaimedUserMeta->key === UnclaimedUser::META_KEY) {
                 continue;
             }
+            if ($this->userMetaRepository->exists($params['loggedUser'], $unclaimedUserMeta->key)) {
+                // don't overwrite logged user settings, if there are some
+                $this->userMetaRepository->delete($unclaimedUserMeta);
+                continue;
+            }
             $this->userMetaRepository->update($unclaimedUserMeta, ['user_id' => $params['loggedUser']->id]);
         }
 

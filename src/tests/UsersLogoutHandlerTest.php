@@ -47,14 +47,14 @@ class UsersLogoutHandlerTest extends BaseTestCase
         $accessToken2 = $this->accessTokenRepository->add($user1, 3);
         $this->assertEquals(2, $this->accessTokenRepository->all()->count());
 
-        $response = $this->logoutHandler->handle(new TestUserTokenAuthorization($accessToken1, $user1));
+        $response = $this->logoutHandler->handle(new TestUserTokenAuthorization($accessToken1->token, $user1));
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());
 
         // Check that after successful logout, only one access_token is kept
         $this->assertEquals(1, $this->accessTokenRepository->all()->count());
-        $storedToken = $this->accessTokenRepository->all(1)->fetch()->token;
-        $this->assertEquals($accessToken2, $storedToken);
+        $storedToken = $this->accessTokenRepository->all(1)->fetch();
+        $this->assertEquals($accessToken2->token, $storedToken->token);
     }
 
     public function testDeviceTokenLogout()

@@ -62,7 +62,7 @@ class UnclaimedUserTest extends DatabaseTestCase
 
         $this->unclaimedUserObj = $this->unclaimedUser->createUnclaimedUser();
         $this->loggedUser = $this->usersRepository->getByEmail('admin@admin.sk');
-        $this->deviceToken = $this->deviceTokensRepository->add('device');
+        $this->deviceToken = $this->deviceTokensRepository->add('test_device_id', 'test_device_token');
     }
 
     public function testCreateUnclaimedUserWithoutEmail()

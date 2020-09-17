@@ -8,6 +8,7 @@ use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserAuthenticator;
+use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
 use Nette\Security\AuthenticationException;
@@ -20,18 +21,23 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
 
     private $accessTokensRepository;
 
+    private $deviceTokensRepository;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
-        UserAuthenticator $userAuthenticator
+        UserAuthenticator $userAuthenticator,
+        DeviceTokensRepository $deviceTokensRepository
     ) {
         $this->accessTokensRepository = $accessTokensRepository;
         $this->userAuthenticator = $userAuthenticator;
+        $this->deviceTokensRepository = $deviceTokensRepository;
     }
 
     public function params()
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'autologin_token', InputParam::REQUIRED),
+            new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'source', InputParam::OPTIONAL),
         ];
     }
@@ -44,6 +50,20 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $params = $paramsProcessor->getValues();
+
+        $deviceToken = null;
+        if (isset($params['device_token'])) {
+            $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
+            if (!$deviceToken) {
+                $response = new JsonResponse([
+                    'status' => 'error',
+                    'error' => 'invalid_device_token',
+                    'message' => "device token doesn't exist: ". $params['device_token']
+                ]);
+                $response->setHttpCode(Response::S404_NOT_FOUND);
+                return $response;
+            }
+        }
 
         try {
             $source = 'api';
@@ -93,6 +113,10 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
             ]);
             $response->setHttpCode(Response::S500_INTERNAL_SERVER_ERROR);
             return $response;
+        }
+
+        if ($deviceToken) {
+            $this->accessTokensRepository->pairWithDeviceToken($lastToken, $deviceToken);
         }
 
         $result['access']['token'] = $lastToken->token;

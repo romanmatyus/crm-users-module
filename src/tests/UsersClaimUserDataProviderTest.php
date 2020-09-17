@@ -64,14 +64,17 @@ class UsersClaimUserDataProviderTest extends DatabaseTestCase
 
     public function testClaimUserMeta(): void
     {
+        $this->userMetaRepository->add($this->loggedUser, 'keep', 9);
         $this->userMetaRepository->add($this->unclaimedUserObj, 'test', 1);
+        $this->userMetaRepository->add($this->unclaimedUserObj, 'keep', 1);
 
         $this->dataProvider->provide(['unclaimedUser' => $this->unclaimedUserObj, 'loggedUser' => $this->loggedUser]);
 
         $this->assertEquals([UnclaimedUser::META_KEY => 1], $this->userMetaRepository->userMeta($this->unclaimedUserObj));
 
         $loggedUserMetas = $this->userMetaRepository->userMeta($this->loggedUser);
-        $this->assertArrayHasKey('test', $loggedUserMetas);
+        $this->assertEquals(1, $loggedUserMetas['test']);
+        $this->assertEquals(9, $loggedUserMetas['keep']);
         $this->assertArrayNotHasKey(UnclaimedUser::META_KEY, $loggedUserMetas);
     }
 
