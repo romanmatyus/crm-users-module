@@ -4,7 +4,9 @@ namespace Crm\UsersModule\Components;
 
 use Crm\ApplicationModule\Widget\WidgetInterface;
 use Crm\UsersModule\Auth\Access\AccessToken;
+use Crm\UsersModule\Events\UserSignOutEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UserData;
 use League\Event\Emitter;
 use Nette\Application\UI\Control;
@@ -29,12 +31,15 @@ class UserTokens extends Control implements WidgetInterface
 
     private $translator;
 
+    private $usersRepository;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
         AccessToken $accessToken,
         Emitter $emitter,
         UserData $userData,
-        ITranslator $translator
+        ITranslator $translator,
+        UsersRepository $usersRepository
     ) {
         parent::__construct();
         $this->accessTokensRepository = $accessTokensRepository;
@@ -42,6 +47,7 @@ class UserTokens extends Control implements WidgetInterface
         $this->emitter = $emitter;
         $this->userData = $userData;
         $this->translator = $translator;
+        $this->usersRepository = $usersRepository;
     }
 
     public function header($id = '')
@@ -96,6 +102,7 @@ class UserTokens extends Control implements WidgetInterface
     {
         $tokenRow = $this->accessTokensRepository->findBy('token', $token);
         $this->accessTokensRepository->remove($token);
+        $this->emitter->emit(new UserSignOutEvent($tokenRow->user));
         $this->presenter->flashMessage('Prístupový kód bol zmazaný');
         $this->presenter->redirect('UsersAdmin:Show', $tokenRow->user_id);
     }
@@ -103,6 +110,8 @@ class UserTokens extends Control implements WidgetInterface
     public function handleRemoveAllAccessToken($userId)
     {
         $this->accessTokensRepository->removeAllUserTokens($userId);
+        $user = $this->usersRepository->find($userId);
+        $this->emitter->emit(new UserSignOutEvent($user));
         $this->presenter->flashMessage('Všetky prístupové kódy boli zmazané');
         $this->presenter->redirect('UsersAdmin:Show', $userId);
     }
