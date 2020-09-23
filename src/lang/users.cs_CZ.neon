@@ -540,6 +540,8 @@ component:
 		actions: Akce
 		delete_all: Smazat všechny
 		delete_single: Smazat token
+		token_deleted: Přístupový kód byl smazán
+		all_tokens_deleted: Všechny přístupové kódy byly smazány
 
 	autologin_tokens:
 		created: Vytvořeno

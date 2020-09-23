@@ -539,6 +539,8 @@ component:
 		actions: Actions
 		delete_all: Delete all
 		delete_single: Delete token
+		token_deleted: Token was deleted
+		all_tokens_deleted: All access tokens were deleted
 
 	autologin_tokens:
 		created: Created at

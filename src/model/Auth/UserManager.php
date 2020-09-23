@@ -7,7 +7,6 @@ use Crm\UsersModule\Email\EmailValidator;
 use Crm\UsersModule\Events\UserChangePasswordEvent;
 use Crm\UsersModule\Events\UserChangePasswordRequestEvent;
 use Crm\UsersModule\Events\UserConfirmedEvent;
-use Crm\UsersModule\Events\UserSignOutEvent;
 use Crm\UsersModule\Events\UserSuspiciousEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
@@ -196,9 +195,7 @@ class UserManager
      */
     public function logoutUser(IRow $user, array $exceptTokens = []): bool
     {
-        $removed = $this->accessTokensRepository->removeAllUserTokens($user->id, $exceptTokens);
-        $this->emitter->emit(new UserSignOutEvent($user));
-        return $removed > 0;
+        return $this->accessTokensRepository->removeAllUserTokens($user->id, $exceptTokens) > 0;
     }
 
     public function suspiciousUser(IRow $user)

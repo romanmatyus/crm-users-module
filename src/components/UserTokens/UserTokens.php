@@ -4,7 +4,6 @@ namespace Crm\UsersModule\Components;
 
 use Crm\ApplicationModule\Widget\WidgetInterface;
 use Crm\UsersModule\Auth\Access\AccessToken;
-use Crm\UsersModule\Events\UserSignOutEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UserData;
@@ -102,17 +101,14 @@ class UserTokens extends Control implements WidgetInterface
     {
         $tokenRow = $this->accessTokensRepository->findBy('token', $token);
         $this->accessTokensRepository->remove($token);
-        $this->emitter->emit(new UserSignOutEvent($tokenRow->user));
-        $this->presenter->flashMessage('Prístupový kód bol zmazaný');
+        $this->presenter->flashMessage($this->translator->translate('users.component.user_tokens.token_deleted'));
         $this->presenter->redirect('UsersAdmin:Show', $tokenRow->user_id);
     }
 
     public function handleRemoveAllAccessToken($userId)
     {
         $this->accessTokensRepository->removeAllUserTokens($userId);
-        $user = $this->usersRepository->find($userId);
-        $this->emitter->emit(new UserSignOutEvent($user));
-        $this->presenter->flashMessage('Všetky prístupové kódy boli zmazané');
+        $this->presenter->flashMessage($this->translator->translate('users.component.user_tokens.all_tokens_deleted'));
         $this->presenter->redirect('UsersAdmin:Show', $userId);
     }
 
