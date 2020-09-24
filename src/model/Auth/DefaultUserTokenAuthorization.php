@@ -57,7 +57,7 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, A
             Request::getUserAgent()
         ));
 
-        $this->accessTokens[] = $token->token;
+        $this->accessTokens[] = $token;
         $this->authorizedUsers[$token->user_id] = $token->user;
         $this->authorizedData['token'] = $token;
         return true;

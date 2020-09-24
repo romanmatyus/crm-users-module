@@ -63,7 +63,7 @@ class DeviceTokenAuthorization implements UsersApiAuthorizationInterface, Access
         $accessTokens = $this->accessTokensRepository->findAllByDeviceToken($deviceToken);
         foreach ($accessTokens as $accessToken) {
             $this->authorizedUsers[$accessToken->user_id] = $accessToken->user;
-            $this->accessTokens[] = $accessToken->token;
+            $this->accessTokens[] = $accessToken;
             $this->emitter->emit(new UserLastAccessEvent(
                 $accessToken->user,
                 $accessDate,

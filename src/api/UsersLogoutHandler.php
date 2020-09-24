@@ -39,7 +39,7 @@ class UsersLogoutHandler extends ApiHandler
         $loggedOutUsers = [];
         foreach ($authorization->getAccessTokens() as $accessToken) {
             $loggedOutUsers[$accessToken->user_id] = $accessToken->user;
-            $this->accessTokensRepository->remove($accessToken);
+            $this->accessTokensRepository->remove($accessToken->token);
         }
         foreach ($loggedOutUsers as $user) {
             $this->emitter->emit(new UserSignOutEvent($user));
