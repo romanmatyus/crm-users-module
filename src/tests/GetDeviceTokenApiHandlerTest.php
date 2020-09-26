@@ -4,14 +4,16 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\GetDeviceTokenApiHandler;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Nette\Http\Response;
 
-class GetDeviceTokenApiHandlerTest extends BaseTestCase
+class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
 {
     private $accessTokensRepository;
 
@@ -28,13 +30,23 @@ class GetDeviceTokenApiHandlerTest extends BaseTestCase
         ];
     }
 
+    protected function requiredRepositories(): array
+    {
+        return [
+            AccessTokensRepository::class,
+            DeviceTokensRepository::class,
+            UsersRepository::class,
+            UserMetaRepository::class,
+        ];
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->accessTokensRepository = $this->inject(AccessTokensRepository::class);
-        $this->deviceTokensRepository = $this->inject(DeviceTokensRepository::class);
-        $this->usersRepository = $this->inject(UsersRepository::class);
+        $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
+        $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
+        $this->usersRepository = $this->getRepository(UsersRepository::class);
         $this->handler = $this->inject(GetDeviceTokenApiHandler::class);
     }
 

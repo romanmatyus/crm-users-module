@@ -3,16 +3,18 @@
 namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\JsonResponse;
+use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\GetDeviceTokenApiHandler;
 use Crm\UsersModule\Api\UsersLogoutHandler;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Auth\UserTokenAuthorization;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use Nette\Http\Response;
 
-class UsersLogoutHandlerTest extends BaseTestCase
+class UsersLogoutHandlerTest extends DatabaseTestCase
 {
     /** @var UsersLogoutHandler */
     private $logoutHandler;
@@ -28,6 +30,20 @@ class UsersLogoutHandlerTest extends BaseTestCase
 
     /** @var UserManager */
     private $userManager;
+
+    protected function requiredSeeders(): array
+    {
+        return [];
+    }
+
+    protected function requiredRepositories(): array
+    {
+        return [
+            DeviceTokensRepository::class,
+            AccessTokensRepository::class,
+            UsersRepository::class,
+        ];
+    }
 
     protected function setUp(): void
     {

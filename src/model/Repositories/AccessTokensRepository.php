@@ -87,16 +87,16 @@ class AccessTokensRepository extends Repository
         return $this->getTable()->where('device_token_id', $deviceToken->id)->fetchAll();
     }
 
-    final public function pairWithDeviceToken($accessToken, $deviceToken): bool
+    final public function pairWithDeviceToken($accessToken, $deviceToken)
     {
         if (!$this->userMetaRepository->userMetaValueByKey($accessToken->user, UnclaimedUser::META_KEY)) {
             $this->unpairDeviceToken($deviceToken);
         }
 
-        $this->emitter->emit(new PairDeviceAccessTokensEvent($deviceToken, $accessToken));
-        return $this->update($accessToken, [
+        $this->update($accessToken, [
             'device_token_id' => $deviceToken->id
         ]);
+        $this->emitter->emit(new PairDeviceAccessTokensEvent($deviceToken, $accessToken));
     }
 
     final public function unpairDeviceToken($deviceToken)

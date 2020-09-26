@@ -125,4 +125,26 @@ class UnclaimedUser
 
         $this->emitter->emit(new UserClaimedEvent($unclaimedUser, $loggedUser, $deviceToken));
     }
+
+    /**
+     * getClaimer returns user, who claimed provided unclaimed user. If unclaimed user was not claimed yet, method
+     * returns null.
+     */
+    public function getClaimer($unclaimedUser)
+    {
+        $claimerUserId = $this->userMetaRepository->userMetaValueByKey($unclaimedUser, self::CLAIMED_BY_KEY);
+        if (!$claimerUserId) {
+            return null;
+        }
+        return $this->usersRepository->find($claimerUserId);
+    }
+
+    public function getPreviouslyClaimedUser($user)
+    {
+        $claimedUserId = $this->userMetaRepository->userMetaValueByKey($user, self::CLAIMED_UNCLAIMED_USER_KEY);
+        if (!$claimedUserId) {
+            return null;
+        }
+        return $this->usersRepository->find($claimedUserId);
+    }
 }

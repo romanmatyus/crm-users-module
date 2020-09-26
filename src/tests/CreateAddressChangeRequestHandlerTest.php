@@ -5,14 +5,16 @@ namespace Crm\UsersModule\Tests;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Seeders\CountriesSeeder;
+use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\CreateAddressChangeRequestHandler;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\AddressTypesRepository;
+use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Nette\Http\Response;
 
-class CreateAddressChangeRequestHandlerTest extends BaseTestCase
+class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 {
     /** @var AddressesRepository */
     private $addressesRepository;
@@ -31,6 +33,15 @@ class CreateAddressChangeRequestHandlerTest extends BaseTestCase
         return [
             CountriesSeeder::class,
             UsersSeeder::class
+        ];
+    }
+
+    protected function requiredRepositories(): array
+    {
+        return [
+            AddressesRepository::class,
+            AddressTypesRepository::class,
+            UsersRepository::class,
         ];
     }
 

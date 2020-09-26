@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
+use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\DeviceTokenAuthorization;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -9,7 +10,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 
-class DeviceTokenAuthorizationTest extends BaseTestCase
+class DeviceTokenAuthorizationTest extends DatabaseTestCase
 {
     /** @var DeviceTokensRepository */
     private $deviceTokensRepository;
@@ -25,6 +26,21 @@ class DeviceTokenAuthorizationTest extends BaseTestCase
 
     /** @var UserMetaRepository */
     private $userMetaRepository;
+
+    protected function requiredSeeders(): array
+    {
+        return [];
+    }
+
+    protected function requiredRepositories(): array
+    {
+        return [
+            DeviceTokensRepository::class,
+            UsersRepository::class,
+            AccessTokensRepository::class,
+            UserMetaRepository::class,
+        ];
+    }
 
     public function setUp(): void
     {

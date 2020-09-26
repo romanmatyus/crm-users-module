@@ -4,12 +4,14 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 
-class UserCreateApiHandlerTest extends BaseTestCase
+class UserCreateApiHandlerTest extends DatabaseTestCase
 {
     /** @var DeviceTokensRepository */
     private $deviceTokensRepository;
@@ -27,11 +29,26 @@ class UserCreateApiHandlerTest extends BaseTestCase
     {
         parent::setUp();
 
-        $this->deviceTokensRepository = $this->inject(DeviceTokensRepository::class);
-        $this->usersRepository = $this->inject(UsersRepository::class);
-        $this->accessTokensRepository = $this->inject(AccessTokensRepository::class);
+        $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
+        $this->usersRepository = $this->getRepository(UsersRepository::class);
+        $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
 
         $this->handler = $this->inject(UsersCreateHandler::class);
+    }
+
+    protected function requiredSeeders(): array
+    {
+        return [];
+    }
+
+    protected function requiredRepositories(): array
+    {
+        return [
+            DeviceTokensRepository::class,
+            UsersRepository::class,
+            AccessTokensRepository::class,
+            UserMetaRepository::class,
+        ];
     }
 
     public function testCreateUserEmailError()

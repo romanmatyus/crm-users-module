@@ -5,15 +5,17 @@ namespace Crm\UsersModule\Tests;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
+use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Api\UsersLoginHandler;
 use Crm\UsersModule\Authenticator\UsersAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 
-class UserLoginApiHandlerTest extends BaseTestCase
+class UserLoginApiHandlerTest extends DatabaseTestCase
 {
     const LOGIN = '1test@user.st';
     const PASSWORD = 'password';
@@ -42,13 +44,23 @@ class UserLoginApiHandlerTest extends BaseTestCase
         return [];
     }
 
+    protected function requiredRepositories(): array
+    {
+        return [
+            DeviceTokensRepository::class,
+            UsersRepository::class,
+            UserMetaRepository::class,
+            AccessTokensRepository::class,
+        ];
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->deviceTokensRepository = $this->inject(DeviceTokensRepository::class);
-        $this->usersRepository = $this->inject(UsersRepository::class);
-        $this->accessTokensRepository = $this->inject(AccessTokensRepository::class);
+        $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
+        $this->usersRepository = $this->getRepository(UsersRepository::class);
+        $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
 
         $this->handler = $this->inject(UsersLoginHandler::class);
 
