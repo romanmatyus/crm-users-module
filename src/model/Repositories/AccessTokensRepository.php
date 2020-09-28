@@ -82,6 +82,11 @@ class AccessTokensRepository extends Repository
         return $this->getTable()->where(['user_id' => $userId])->order('created_at DESC');
     }
 
+    final public function allUserTokensBySource($userId, ?string $source)
+    {
+        return $this->allUserTokens($userId)->where(['source' => $source]);
+    }
+
     final public function findAllByDeviceToken(IRow $deviceToken)
     {
         return $this->getTable()->where('device_token_id', $deviceToken->id)->fetchAll();
