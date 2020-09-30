@@ -41,7 +41,7 @@ class GroupFormFactory
         $form->setRenderer(new BootstrapRenderer());
         $form->addProtection();
 
-        $form->addHidden('group_id');
+        $form->addHidden('id');
 
         $form->addText('name', $this->translator->translate('users.admin.group_form.name.label'))
             ->setAttribute('placeholder', $this->translator->translate('users.admin.group_form.name.placeholder'))
@@ -65,8 +65,8 @@ class GroupFormFactory
 
     public function formSucceeded($form, $values)
     {
-        if ($values->group_id) {
-            $group = $this->groupsRepository->find($values->group_id);
+        if ($values->id) {
+            $group = $this->groupsRepository->find($values->id);
             $this->groupsRepository->update($group, $values);
             $this->onUpdate->__invoke($group);
         } else {

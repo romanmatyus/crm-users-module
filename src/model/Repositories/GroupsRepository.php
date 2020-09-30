@@ -17,6 +17,7 @@ class GroupsRepository extends Repository
             'name' => $groupName,
             'sorting' => $sorting,
             'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
         ]);
     }
 
