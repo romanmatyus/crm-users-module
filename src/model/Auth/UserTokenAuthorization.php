@@ -32,16 +32,25 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
         $this->emitter = $emitter;
     }
 
-    public function registerAuthorizator(string $source, ApiAuthorizationInterface $authorizator)
+    public function registerAuthorizator(string $source, ApiAuthorizationInterface $authorizator, bool $useAlways = false)
     {
-        $this->authorizators[$source] = $authorizator;
+        $this->authorizators[$source] = [
+            'source' => $source,
+            'authorizator' => $authorizator,
+            'useAlways' => $useAlways,
+        ];
     }
 
     public function authorized($resource = IAuthorizator::ALL)
     {
-        if (isset($_GET['source']) && isset($this->authorizators[$_GET['source']])) {
-            $this->authorizator = $this->authorizators[$_GET['source']];
-            return $this->authorizator->authorized($resource);
+        foreach ($this->authorizators as $authDef) {
+            if ($authDef['useAlways'] || (isset($_GET['source']) && $authDef['source'] === $_GET['source'])) {
+                $this->authorizator = $authDef['authorizator'];
+                if ($this->authorizator->authorized($resource)) {
+                    return true;
+                }
+                continue;
+            }
         }
 
         $this->authorizator = new DefaultUserTokenAuthorization($this->accessTokensRepository, $this->emitter);
