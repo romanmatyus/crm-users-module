@@ -18,4 +18,19 @@ class UserClaimedEvent extends AbstractEvent
         $this->loggedUser = $loggedUser;
         $this->deviceToken = $deviceToken;
     }
+
+    public function getUnclaimedUser()
+    {
+        return $this->unclaimedUser;
+    }
+
+    public function getLoggedUser()
+    {
+        return $this->loggedUser;
+    }
+
+    public function getDeviceToken()
+    {
+        return $this->deviceToken;
+    }
 }
