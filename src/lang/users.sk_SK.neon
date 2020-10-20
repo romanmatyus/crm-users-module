@@ -225,6 +225,7 @@ admin:
 		no_print_address: Žiadna adresa pre doručovanie
 		invoice_address: Fakturačná adresa
 		add_address: Pridaj adresu
+		address_last_change: Posledná zmena
 		disabled_auto_invoice: Vypnuté automatické generovanie faktúry
 		last_login: Posledné prihlásenie
 		no_login: Zatiaľ nebol prihlásený

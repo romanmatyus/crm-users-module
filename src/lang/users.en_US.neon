@@ -222,9 +222,10 @@ admin:
 		source: Source
 		funnel: Registration funnel
 		referer: Registration referer
-		no_print_address: No delivery address
+		no_print_address: No delivery ADDRESS
 		invoice_address: Invoice address
 		add_address: Add address
+		address_last_change: Last change
 		disabled_auto_invoice: Automatic invoice generation is disabled
 		last_login: Last login
 		no_login: No login record yet

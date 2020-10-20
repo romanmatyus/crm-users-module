@@ -130,6 +130,7 @@
       <div class="panel-body">
         {control simpleWidget 'admin.user.address.partial', $printAddress}
       </div>
+      <div class="panel-footer"><small class="text-muted">{_users.admin.show.address_last_change} {$printAddress->updated_at|userDate}</small></div>
     </div>
 
     <div n:if="$invoiceAddress" class="panel panel-warning">
@@ -153,6 +154,7 @@
         <br>
         <span n:if="$user->disable_auto_invoice" class="label label-danger">{_users.admin.show.disabled_auto_invoice}</span>
       </div>
+      <div class="panel-footer"><small class="text-muted">{_users.admin.show.address_last_change} {$invoiceAddress->updated_at|userDate}</small></div>
     </div>
 
     <p class="text-center">
