@@ -222,7 +222,7 @@ admin:
 		source: Source
 		funnel: Registration funnel
 		referer: Registration referer
-		no_print_address: No delivery ADDRESS
+		no_print_address: No delivery address
 		invoice_address: Invoice address
 		add_address: Add address
 		address_last_change: Last change
