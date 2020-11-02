@@ -1,5 +1,5 @@
 {if !$wasCalculated}
-<i class="fas fa-exclamation-triangle" style="color: red;" data-toggle="tooltip" data-original-title="{_dashboard.total.active_registrations.warning}"></i>
+<i class="fas fa-exclamation-triangle" style="color: red;" data-toggle="tooltip" data-original-title="{_segment.dashboard.warning}"></i>
 {/if}
 <span class="badge">{$totalUsers}</span>
 <a n:tag-if="isset($totalPaidSubscribersLink)" href="{$totalPaidSubscribersLink}">
