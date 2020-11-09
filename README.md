@@ -714,7 +714,7 @@ Response:
 
 #### POST `/api/v1/user-meta/list`
 
-Return all the meta information of specified user. You can specify meta information by using the meta information key.
+Return all public meta information of specified user. You can specify meta information by using the meta information key.
 
 ##### *Headers:*
 
@@ -743,14 +743,14 @@ Response:
 ```json5
 [
     {
+        "user_id": 123,
         "key" : "foo",
-        "value" : "bar",
-        "is_public" : false
+        "value" : "bar"
     },
     {
+        "user_id": 123,
         "key" : "fooz",
-        "value" : "1",
-        "is_public" : true
+        "value" : "1"
     }
 ]
 ```

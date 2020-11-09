@@ -44,7 +44,10 @@ class UserMetaListHandler extends ApiHandler
 
         $userMetaRows = [];
         foreach ($authorization->getAuthorizedUsers() as $authorizedUser) {
-            $query = $this->userMetaRepository->userMetaRows($authorizedUser);
+            $query = $this->userMetaRepository
+                ->userMetaRows($authorizedUser)
+                ->where(['is_public' => true]);
+
             if ($key !== null) {
                 $query->where('key = ?', $key);
             }
@@ -60,7 +63,6 @@ class UserMetaListHandler extends ApiHandler
                 'user_id' => $data->user_id,
                 'key' => $data->key,
                 'value' => $data->value,
-                'is_public' => (bool)$data->is_public,
             ];
         }, array_values($userMetaRows));
 
