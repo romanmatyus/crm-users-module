@@ -38,13 +38,16 @@ class UnclaimedUser
 
     private $usersRepository;
 
+    private $userData;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
         DataProviderManager $dataProviderManager,
         Emitter $emitter,
         UserManager $userManager,
         UserMetaRepository $userMetaRepository,
-        UsersRepository $usersRepository
+        UsersRepository $usersRepository,
+        UserData $userData
     ) {
         $this->userManager = $userManager;
         $this->userMetaRepository = $userMetaRepository;
@@ -52,6 +55,7 @@ class UnclaimedUser
         $this->accessTokensRepository = $accessTokensRepository;
         $this->emitter = $emitter;
         $this->usersRepository = $usersRepository;
+        $this->userData = $userData;
     }
 
     /**
@@ -123,6 +127,7 @@ class UnclaimedUser
         $this->userMetaRepository->add($unclaimedUser, self::CLAIMED_BY_KEY, $loggedUser->id);
         $this->userMetaRepository->add($loggedUser, self::CLAIMED_UNCLAIMED_USER_KEY, $unclaimedUser->id);
 
+        $this->userData->refreshUserTokens($loggedUser->id);
         $this->emitter->emit(new UserClaimedEvent($unclaimedUser, $loggedUser, $deviceToken));
     }
 
