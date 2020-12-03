@@ -44,6 +44,7 @@ class DashboardPresenter extends AdminPresenter
 
     public function createComponentGoogleUserRegistrationsStatsGraph(GoogleBarGraphGroupControlFactoryInterface $factory)
     {
+        $this->getSession()->close();
         $graphDataItem = new GraphDataItem();
         $graphDataItem->setCriteria((new Criteria())
             ->setTableName('users')
@@ -64,6 +65,7 @@ class DashboardPresenter extends AdminPresenter
 
     public function createComponentGoogleUserDisabledGraph(GoogleBarGraphGroupControlFactoryInterface $factory)
     {
+        $this->getSession()->close();
         $graphDataItem = new GraphDataItem();
         $graphDataItem->setCriteria((new Criteria())
             ->setTableName('users')
@@ -83,6 +85,7 @@ class DashboardPresenter extends AdminPresenter
 
     public function createComponentGoogleLogginAttemptsGraph(GoogleLineGraphGroupControlFactoryInterface $factory)
     {
+        $this->getSession()->close();
         $graphDataItem = new GraphDataItem();
         $graphDataItem->setCriteria((new Criteria())
             ->setTimeField('created_at')
