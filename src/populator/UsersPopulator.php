@@ -27,7 +27,6 @@ class UsersPopulator extends AbstractPopulator
                 'ext_id' => $this->faker->boolean(5) ? null : $this->faker->numberBetween(100, 10000),
                 'role' => UsersRepository::ROLE_USER,
                 'active' => $this->faker->boolean(5) ? 0 : 1,
-                'address' => $this->faker->streetAddress,
                 'last_sign_in_at' => $this->faker->dateTimeBetween('-4 months'),
                 'current_sign_in_at' => $this->faker->dateTimeBetween('-4 months'),
                 'created_at' => $this->faker->dateTimeBetween('-4 months'),
