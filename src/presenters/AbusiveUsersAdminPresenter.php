@@ -99,14 +99,9 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
             $this->redirect($this->action, $emptyDefaults);
         };
 
-        $form->onSuccess[] = [$this, 'abusiveUsersFilterFormSucceeded'];
+        $form->onSuccess[] = [$this, 'adminFilterSubmitted'];
 
         return $form;
-    }
-
-    public function abusiveUsersFilterFormSucceeded($form, $values)
-    {
-        $this->redirect($this->action, array_filter((array) $values));
     }
 
     public function handleChangeActivation($userId)

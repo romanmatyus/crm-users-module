@@ -308,15 +308,10 @@ class UsersAdminPresenter extends AdminPresenter
         $export->onClick[] = function () use ($presenter) {
             $presenter->redirect('UsersAdmin:Export');
         };
-        $form->onSuccess[] = [$this, 'adminFilterSubmited'];
+        $form->onSuccess[] = [$this, 'adminFilterSubmitted'];
 
         $form->setDefaults((array)$this->params);
         return $form;
-    }
-
-    public function adminFilterSubmited($form, $values)
-    {
-        $this->redirect('Default', (array) $values);
     }
 
     public function createComponentUserGroupsForm()

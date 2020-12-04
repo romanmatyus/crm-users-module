@@ -92,9 +92,7 @@ class UserActionsLogAdminPresenter extends AdminPresenter
 
         $form->addSubmit('filter', $this->translator->translate('users.admin.user_actions_log.submit'));
         $form->setDefaults($this->params);
-        $form->onSuccess[] = function (Form $form, $values) {
-            $this->redirect('default', (array)$values);
-        };
+        $form->onSuccess[] = [$this, 'adminFilterSubmitted'];
         return $form;
     }
 }

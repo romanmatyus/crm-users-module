@@ -114,12 +114,7 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
             'source' => $this->request->getParameter('source'),
         ]);
 
-        $form->onSuccess[] = [$this, 'filterSubmitted'];
+        $form->onSuccess[] = [$this, 'adminFilterSubmitted'];
         return $form;
-    }
-
-    public function filterSubmitted($form, $values)
-    {
-        $this->redirect('Default', array_filter((array)$values));
     }
 }
