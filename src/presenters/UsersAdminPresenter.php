@@ -381,6 +381,8 @@ class UsersAdminPresenter extends AdminPresenter
         list($canBeDeleted, $errors) = $this->deleteUserData->canBeDeleted($user->id);
         if ($canBeDeleted) {
             $this->deleteUserData->deleteData($user->id);
+            $user = $this->usersRepository->find($id);
+            $this->usersRepository->update($user, ['note' => 'USER DELETED BY ADMIN']);
             $this->flashMessage($this->translator->translate('users.admin.delete_user.deleted'));
         } else {
             $this->flashMessage("<br/>" . implode("<br/>", $errors), 'error');
