@@ -2,6 +2,8 @@
 
 namespace Crm\UsersModule\Forms;
 
+use Crm\ApplicationModule\DataProvider\DataProviderManager;
+use Crm\UsersModule\DataProvider\AddressFormDataProviderInterface;
 use Crm\UsersModule\Repository\AddressChangeRequestsRepository;
 use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\AddressTypesRepository;
@@ -32,6 +34,8 @@ class AddressFormFactory
 
     public $onUpdate;
 
+    private $dataProviderManager;
+
     public function __construct(
         UsersRepository $userRepository,
         AddressesRepository $addressesRepository,
@@ -39,7 +43,8 @@ class AddressFormFactory
         AddressTypesRepository $addressTypesRepository,
         AddressChangeRequestsRepository $addressChangeRequestsRepository,
         Emitter $emitter,
-        ITranslator $translator
+        ITranslator $translator,
+        DataProviderManager $dataProviderManager
     ) {
         $this->userRepository = $userRepository;
         $this->addressesRepository = $addressesRepository;
@@ -48,6 +53,7 @@ class AddressFormFactory
         $this->countriesRepository = $countriesRepository;
         $this->emitter = $emitter;
         $this->translator = $translator;
+        $this->dataProviderManager = $dataProviderManager;
     }
 
     /**
@@ -102,16 +108,18 @@ class AddressFormFactory
         $form->addTextArea('company_name', 'users.frontend.address.company_name.label', null, 1)
             ->setAttribute('placeholder', 'users.frontend.address.company_name.placeholder')
             ->setMaxLength(150);
-        $companyId = $form->addText('company_id', 'users.frontend.address.company_id.label')
+        $form->addText('company_id', 'users.frontend.address.company_id.label')
             ->setAttribute('placeholder', 'users.frontend.address.company_id.placeholder');
-        $companyTaxId = $form->addText('company_tax_id', 'users.frontend.address.company_tax_id.label')
+        $form->addText('company_tax_id', 'users.frontend.address.company_tax_id.label')
             ->setAttribute('placeholder', 'users.frontend.address.company_tax_id.placeholder');
-        $companyVatId = $form->addText('company_vat_id', 'users.frontend.address.company_vat_id.label')
+        $form->addText('company_vat_id', 'users.frontend.address.company_vat_id.label')
             ->setAttribute('placeholder', 'users.frontend.address.company_vat_id.placeholder');
 
-        $companyId->addConditionOn($type, Form::EQUAL, 'invoice')->setRequired('users.frontend.address.company_id.required');
-        $companyTaxId->addConditionOn($type, Form::EQUAL, 'invoice')->setRequired('users.frontend.address.company_tax_id.required');
-        $companyVatId->addConditionOn($type, Form::EQUAL, 'invoice')->setRequired('users.frontend.address.company_vat_id.required');
+        /** @var AddressFormDataProviderInterface $providers */
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.address_form', AddressFormDataProviderInterface::class);
+        foreach ($providers as $sorting => $provider) {
+            $form = $provider->provide(['form' => $form]);
+        }
 
         $form->addSubmit('send', 'users.frontend.address.submit')
             ->getControlPrototype()
