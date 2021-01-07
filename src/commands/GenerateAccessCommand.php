@@ -64,7 +64,7 @@ class GenerateAccessCommand extends Command
 
         $actions = [];
 
-        $methodPrefixes = ['render', 'action'];
+        $methodPrefixes = ['render', 'action', 'handle'];
         foreach (get_class_methods($presenterClass) as $methodName) {
             foreach ($methodPrefixes as $methodPrefix) {
                 if (substr($methodName, 0, strlen($methodPrefix)) == $methodPrefix) {
