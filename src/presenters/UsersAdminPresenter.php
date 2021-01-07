@@ -378,11 +378,11 @@ class UsersAdminPresenter extends AdminPresenter
         }
 
         // checking if customer can be deleted (e.g. due to active subscription within last three months - customer claim managment)
-        list($canBeDeleted, $errors) = $this->deleteUserData->canBeDeleted($user->id);
+        [$canBeDeleted, $errors] = $this->deleteUserData->canBeDeleted($user->id);
         if ($canBeDeleted) {
             $this->deleteUserData->deleteData($user->id);
             $user = $this->usersRepository->find($id);
-            $this->usersRepository->update($user, ['note' => 'USER DELETED BY ADMIN']);
+            $this->usersRepository->update($user, ['note' => $this->translator->translate('users.deletion_note.admin_deleted_account')]);
             $this->flashMessage($this->translator->translate('users.admin.delete_user.deleted'));
         } else {
             $this->flashMessage("<br/>" . implode("<br/>", $errors), 'error');

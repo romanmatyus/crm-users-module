@@ -468,6 +468,10 @@ detail_widget_component:
 month_users_small_bar_graph_widget:
 	title: Uživatelé
 
+deletion_note:
+	user_deleted_account: 'Uživatel se sám smazal'
+	admin_deleted_account: 'Uživatel byl smazán administrátorem'
+
 api:
 	users_login_handler:
 		identity_not_found: "Zadaný e-mail se neshoduje s našimi záznamy. Přihlaste se, prosím, stejně jako na webu Deníku N."

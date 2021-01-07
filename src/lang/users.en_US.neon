@@ -467,6 +467,10 @@ detail_widget_component:
 month_users_small_bar_graph_widget:
 	title: Users
 
+deletion_note:
+	user_deleted_account: 'User has deleted himself/herself'
+	admin_deleted_account: 'User was deleted by admin'
+
 api:
 	users_login_handler:
 		identity_not_found: "Email you entered doesn't match our records. Please log in as you would on Dennik N website."

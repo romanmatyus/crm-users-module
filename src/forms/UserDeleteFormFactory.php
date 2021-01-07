@@ -82,7 +82,7 @@ class UserDeleteFormFactory
 
         $this->deleteUserData->deleteData($values->user_id);
         $user = $this->usersRepository->find($values->user_id);
-        $this->usersRepository->update($user, ['note' => 'USER HAS DELETED HIMSELF/HERSELF']);
+        $this->usersRepository->update($user, ['note' => $this->translator->translate('users.deletion_note.user_deleted_account')]);
         $this->onSuccess->__invoke();
     }
 }
