@@ -85,7 +85,6 @@ services:
 	- Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface
 	- Crm\UsersModule\DataProvider\UsersClaimUserDataProvider
 	- Crm\UsersModule\Events\UserLastAccessHandler
-	- Crm\UsersModule\Events\UpdateUserNameFromAddress
 	- Crm\UsersModule\Events\SignEventHandler
 	- Crm\UsersModule\Events\AuthenticationHandler
 	- Crm\UsersModule\Events\NewAccessTokenHandler
