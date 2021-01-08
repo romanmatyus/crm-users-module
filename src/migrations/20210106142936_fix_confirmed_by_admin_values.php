@@ -16,7 +16,7 @@ class FixConfirmedByAdminValues extends AbstractMigration
               AND `created_at` >= '2020-07-23'
               -- change to `confirmed_at` date
               AND `data` LIKE '%confirmed_at%'    
-        ")->fetchAll();
+        ")->fetchAll(PDO::FETCH_COLUMN, 0);
 
         $this->execute("
             UPDATE `user_meta`
