@@ -31,7 +31,7 @@ class FixConfirmedByAdminValues extends AbstractMigration
             $userIdsParam = implode(',', $confirmedUserIds);
             $this->execute("
                 UPDATE `user_meta`
-                SET `value` = '1',
+                SET `value` = '1'
                 WHERE `key` = 'confirmed_by_admin'
                   AND `user_id` IN ({$userIdsParam})
             ");
