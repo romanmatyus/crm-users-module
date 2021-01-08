@@ -6,25 +6,36 @@ class FixConfirmedByAdminValues extends AbstractMigration
 {
     public function up()
     {
-        $sql = <<<SQL
-            UPDATE `user_meta`
-            LEFT JOIN `audit_logs`
-               ON `audit_logs`.`signature` = `user_meta`.`user_id`
-               AND `audit_logs`.`table_name` = 'users'
-               -- change done by admin
-               AND `audit_logs`.`user_id` IS NOT NULL
-               -- change after commit date of "broken" change
-               AND `audit_logs`.`created_at` >= '2020-07-23'
-               -- change to `confirmed_at` date
-               AND `audit_logs`.`data` LIKE '%confirmed_at%'
-            SET `user_meta`.`value` = '0'
-            WHERE
-               `user_meta`.`key` = 'confirmed_by_admin'
-                AND `user_meta`.`value` = '1'
-                AND `audit_logs`.`id` IS NULL;
-SQL;
+        $confirmedUserIds = $this->query("
+            SELECT `signature`
+            FROM `audit_logs`
+            WHERE `table_name` = 'users'
+              -- change actually done by admin
+              AND `user_id` IS NOT NULL
+              -- change made after bug commit date
+              AND `created_at` >= '2020-07-23'
+              -- change to `confirmed_at` date
+              AND `data` LIKE '%confirmed_at%'    
+        ")->fetchAll();
 
-        $this->execute($sql);
+        $this->execute("
+            UPDATE `user_meta`
+            SET `value` = '0', `updated_at` = NOW()
+            WHERE `key` = 'confirmed_by_admin'
+              AND `value` = '1'
+              AND `updated_at` >= '2020-07-23'
+                
+        ");
+
+        if (count($confirmedUserIds)) {
+            $userIdsParam = implode(',', $confirmedUserIds);
+            $this->execute("
+                UPDATE `user_meta`
+                SET `value` = '1',
+                WHERE `key` = 'confirmed_by_admin'
+                  AND `user_id` IN ({$userIdsParam})
+            ");
+        }
     }
 
     public function down()
