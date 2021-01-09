@@ -17,7 +17,7 @@ class AutoLogin
         $this->autoLoginTokensRepository = $autoLoginTokensRepository;
     }
 
-    public function getToken($token)
+    public function getToken($token): ActiveRow
     {
         return $this->autoLoginTokensRepository->findBy('token', $token);
     }
