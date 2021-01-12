@@ -134,6 +134,7 @@ services:
 	- Crm\UsersModule\Components\UserTokens
 	- Crm\UsersModule\Auth\Rate\WrongPasswordRateLimit
 	- Crm\UsersModule\Auth\Rate\IpRateLimit
+	- Crm\UsersModule\AdminFilterFormData
 
 	- Crm\UsersModule\Api\GetDeviceTokenApiHandler
 	- Crm\UsersModule\Repositories\DeviceTokensRepository

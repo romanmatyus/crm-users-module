@@ -6,19 +6,19 @@ use Crm\AdminModule\Presenters\AdminPresenter;
 use Crm\ApplicationModule\Components\VisualPaginator;
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\ApplicationModule\User\DeleteUserData;
+use Crm\UsersModule\AdminFilterFormData;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface;
-use Crm\UsersModule\Events\NotificationEvent;
-use Crm\UsersModule\Repository\CantDeleteAddressException;
 use Crm\UsersModule\DataProvider\FilterUsersFormDataProviderInterface;
-use Crm\UsersModule\DataProvider\FilterUsersSelectionDataProviderInterface;
 use Crm\UsersModule\Events\AddressRemovedEvent;
+use Crm\UsersModule\Events\NotificationEvent;
 use Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory;
 use Crm\UsersModule\Forms\AdminUserGroupFormFactory;
 use Crm\UsersModule\Forms\UserFormFactory;
 use Crm\UsersModule\Forms\UserGroupsFormFactory;
 use Crm\UsersModule\Forms\UserNoteFormFactory;
 use Crm\UsersModule\Repository\AddressesRepository;
+use Crm\UsersModule\Repository\CantDeleteAddressException;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\GroupsRepository;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
@@ -26,25 +26,13 @@ use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
-use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 use Nette\Utils\DateTime;
+use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class UsersAdminPresenter extends AdminPresenter
 {
     /** @persistent */
-    public $text;
-
-    /** @persistent */
-    public $group;
-
-    /** @persistent */
-    public $source;
-
-    /** @persistent */
-    public $subscription_type;
-
-    /** @persistent */
-    public $actual_subscription;
+    public $formData = [];
 
     private $usersRepository;
 
@@ -74,7 +62,10 @@ class UsersAdminPresenter extends AdminPresenter
 
     private $userActionsLogRepository;
 
+    private $adminFilterFormData;
+
     public function __construct(
+        AdminFilterFormData $adminFilterFormData,
         UsersRepository $usersRepository,
         UserFormFactory $userFormFactory,
         GroupsRepository $groupsRepository,
@@ -105,19 +96,20 @@ class UsersAdminPresenter extends AdminPresenter
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->abusiveUsersFilterFormFactory = $abusiveUsersFilterFormFactory;
         $this->userActionsLogRepository = $userActionsLogRepository;
+        $this->adminFilterFormData = $adminFilterFormData;
     }
 
     public function startup()
     {
         parent::startup();
-        $this->text = isset($this->params['text']) ? $this->params['text'] : null;
+        $this->adminFilterFormData->parse($this->formData);
     }
 
     public function renderDefault()
     {
-        $filteredCount = $this->getFilteredUsers(true)->count('distinct(users.id)');
+        $filteredCount = $this->adminFilterFormData->getFilteredUsers()->count('distinct(users.id)');
 
-        $users = $this->getFilteredUsers();
+        $users = $this->adminFilterFormData->getFilteredUsers();
 
         $vp = new VisualPaginator();
         $this->addComponent($vp, 'vp');
@@ -130,34 +122,7 @@ class UsersAdminPresenter extends AdminPresenter
         $this->template->totalUsers = $this->usersRepository->totalCount();
     }
 
-    private function getFilteredUsers($onlyCount = false)
-    {
-        $users = $this->usersRepository
-            ->all($this->text)
-            ->select('users.*')
-            ->group('users.id');
 
-        $where = [];
-
-        if (isset($this->params['group'])) {
-            $where[':user_groups.group_id'] = intval($this->params['group']);
-        }
-        if (isset($this->params['source'])) {
-            $where['users.source'] = $this->params['source'];
-        }
-
-        /** @var FilterUsersSelectionDataProviderInterface[] $providers */
-        $providers = $this->dataProviderManager->getProviders('users.dataprovider.filter_users_selection', FilterUsersSelectionDataProviderInterface::class);
-        foreach ($providers as $sorting => $provider) {
-            $users = $provider
-                ->provide(['selection' => $users, 'params' => $this->params, 'only_count' => $onlyCount]);
-        }
-
-        if (count($where) > 0) {
-            $users->where($where);
-        }
-        return $users;
-    }
 
     public function renderShow($id)
     {
@@ -280,38 +245,66 @@ class UsersAdminPresenter extends AdminPresenter
     public function createComponentAdminFilterForm()
     {
         $form = new Form;
-        $form->setRenderer(new BootstrapInlineRenderer());
+        $form->setRenderer(new BootstrapRenderer());
+
+        $mainGroup = $form->addGroup('main')->setOption('label', null);
+        $collapseGroup = $form->addGroup('collapse', false)
+            ->setOption('container', 'div class="collapse"')
+            ->setOption('label', null)
+            ->setOption('id', 'formCollapse');
+        $buttonGroup = $form->addGroup('button', false)->setOption('label', null);
+
         $form->addText('text', $this->translator->translate('users.admin.admin_filter_form.text.label'))
             ->setAttribute('placeholder', $this->translator->translate('users.admin.admin_filter_form.text.placeholder'))
             ->setAttribute('autofocus');
-        $form->addSelect('group', '', $this->groupsRepository->all()->fetchPairs('id', 'name'))
-            ->setPrompt($this->translator->translate('users.admin.admin_filter_form.group'));
-        $form->addSelect('source', '', $this->usersRepository->getUserSources())
-            ->setPrompt($this->translator->translate('users.admin.admin_filter_form.source'));
+        $form->addText('address', $this->translator->translate('users.admin.admin_filter_form.address.label'))
+            ->setAttribute('placeholder', $this->translator->translate('users.admin.admin_filter_form.address.placeholder'));
+
+        $form->setCurrentGroup($collapseGroup);
+
+        $form->addSelect('group', $this->translator->translate('users.admin.admin_filter_form.group.label'), $this->groupsRepository->all()->fetchPairs('id', 'name'))
+            ->setPrompt('--')
+            ->getControlPrototype()->addAttributes(['class' => 'select2']);
+        $form->addSelect('source', $this->translator->translate('users.admin.admin_filter_form.source.label'), $this->usersRepository->getUserSources())
+            ->setPrompt('--')
+            ->getControlPrototype()->addAttributes(['class' => 'select2']);
 
         /** @var FilterUsersFormDataProviderInterface[] $providers */
-        $providers = $this->dataProviderManager->getProviders('users.dataprovider.filter_users_form', FilterUsersFormDataProviderInterface::class);
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.users_filter_form', FilterUsersFormDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
-            $form = $provider->provide(['form' => $form]);
+            $form = $provider->provide(['form' => $form, 'formData' => $this->formData]);
         }
+
+        $form->setCurrentGroup($buttonGroup);
 
         $form->addSubmit('send', $this->translator->translate('users.admin.admin_filter_form.submit'))
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fa fa-filter"></i> ' . $this->translator->translate('users.admin.admin_filter_form.submit'));
         $presenter = $this;
-        $form->addSubmit('cancel', $this->translator->translate('users.admin.admin_filter_form.cancel_filter'))->onClick[] = function () use ($presenter) {
-            $presenter->redirect('UsersAdmin:Default', ['text' => '']);
+        $form->addSubmit('cancel', $this->translator->translate('users.admin.admin_filter_form.cancel_filter'))->onClick[] = function () use ($presenter, $form) {
+            $emptyDefaults = array_fill_keys(array_keys((array) $form->getComponents()), null);
+            $presenter->redirect('UsersAdmin:Default', ['formData' => $emptyDefaults]);
         };
-        $export = $form->addSubmit('export', $this->translator->translate('users.admin.admin_filter_form.export'));
-        $export->getControlPrototype()->setName('button')->setHtml('<i class="fa fa-external-link"></i> ' . $this->translator->translate('users.admin.admin_filter_form.export'));
-        $export->onClick[] = function () use ($presenter) {
-            $presenter->redirect('UsersAdmin:Export');
-        };
+        $form->addButton('more', 'payments.admin.component.admin_filter_form.filter.more')
+            ->setHtmlAttribute('data-toggle', 'collapse')
+            ->setHtmlAttribute('data-target', '#formCollapse')
+            ->setAttribute('class', 'btn btn-info')
+            ->getControlPrototype()
+            ->setName('button')
+            ->setHtml('<i class="fas fa-caret-down"></i> ' . $this->translator->translate('payments.admin.component.admin_filter_form.filter.more'));
+
         $form->onSuccess[] = [$this, 'adminFilterSubmitted'];
 
-        $form->setDefaults((array)$this->params);
+        $form->setDefaults($this->adminFilterFormData->getFormValues());
         return $form;
+    }
+
+    public function adminFilterSubmitted($form, $values)
+    {
+        $this->redirect($this->action, ['formData' => array_map(function ($item) {
+            return $item ?: null;
+        }, (array)$values)]);
     }
 
     public function createComponentUserGroupsForm()
@@ -428,7 +421,7 @@ class UsersAdminPresenter extends AdminPresenter
         $this->getHttpResponse()->addHeader('Content-Type', 'application/csv');
         $this->getHttpResponse()->addHeader('Content-Disposition', 'attachment; filename=export.csv');
 
-        $this->template->users = $this->getFilteredUsers()->limit(100000);
+        $this->template->users = $this->adminFilterFormData->getFilteredUsers()->limit(100000);
     }
 
     protected function createComponentDetailWidget(DetailWidgetFactoryInterface $factory)

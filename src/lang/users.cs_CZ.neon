@@ -194,6 +194,7 @@ admin:
 		institution: Instituce
 		admin: admin
 		no_results: 'Nebyly nalezeny žádné záznamy, které by odpovídaly filtru'
+		export: Export
 
 	show:
 		back_to_list: zpět na seznam
@@ -240,13 +241,17 @@ admin:
 
 	admin_filter_form:
 		text:
-			label: Filtr
-			placeholder: Email / jméno / Adresa
-		group: Skupina
-		source: Zdroj
+			label: Email / Jméno
+			placeholder: Email / Jméno
+		address:
+			label: Adresa
+			placeholder: Adresa
+		group:
+			label: Skupina
+		source:
+			label: Zdroj
 		submit: Filtr
 		cancel_filter: Zruš filtr
-		export: Export
 
 	user_form:
 		title: Nový uživatel

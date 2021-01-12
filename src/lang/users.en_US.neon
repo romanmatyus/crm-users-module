@@ -194,6 +194,7 @@ admin:
 		institution: Institution
 		admin: Admin
 		no_results: 'No records found. Please alter your filter'
+		export: Export
 
 	show:
 		back_to_list: back to list
@@ -240,13 +241,17 @@ admin:
 
 	admin_filter_form:
 		text:
-			label: Filter
-			placeholder: E-mail / Name / Address
-		group: Group
-		source: Source
+			label: Email / Name
+			placeholder: Email / Name
+		address:
+			label: Address
+			placeholder: Address
+		group:
+			label: Group
+		source:
+			label: Source
 		submit: Filter
 		cancel_filter: Cancel filter
-		export: Export
 
 	user_form:
 		title: New user
