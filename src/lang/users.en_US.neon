@@ -244,8 +244,8 @@ admin:
 			label: Email / Name
 			placeholder: Email / Name
 		address:
-			label: Address
-			placeholder: Address
+			label: Address / Invoice details
+			placeholder: Address / Invoice details
 		group:
 			label: Group
 		source:

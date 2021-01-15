@@ -130,38 +130,18 @@ class UsersRepository extends Repository
         $table = $this->getTable()->where(['deleted_at' => null])->order('users.id DESC');
 
         if (!empty($text)) {
-            $matchingUsersWithCompanyId = $this->addressesRepository->all()->select('DISTINCT(user_id)')
-                ->where("company_id = ? OR company_tax_id = ? OR company_vat_id = ?", [
-                    "{$text}",
-                    "{$text}",
-                    "{$text}",
-                ])->fetchPairs('user_id', 'user_id');
-
             foreach (explode(" ", $text) as $word) {
                 $table
                     ->where(
-                        'users.id = ? OR users.email LIKE ? OR users.public_name = ? OR users.first_name LIKE ? OR users.last_name LIKE ? OR users.id IN (?) OR users.id IN (?)',
+                        'users.id = ? OR users.email LIKE ? OR users.public_name LIKE ? OR users.first_name LIKE ? OR users.last_name LIKE ?',
                         [
                             $word,
                             "%{$word}%",
-                            "{$word}",
                             "%{$word}%",
                             "%{$word}%",
-                            $this->addressesRepository->all()->select('DISTINCT(user_id)')
-                                ->where(
-                                    'address LIKE ? OR number LIKE ? OR city LIKE ? OR first_name LIKE ? OR last_name LIKE ?',
-                                    [
-                                    "%{$word}%",
-                                    "%{$word}%",
-                                    "%{$word}%",
-                                    "%{$word}%",
-                                    "%{$word}%",
-                                    ]
-                                ),
-                            $matchingUsersWithCompanyId,
+                            "%{$word}%"
                         ]
-                    )
-                    ->group('users.id');
+                    );
             }
         }
 

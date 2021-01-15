@@ -244,8 +244,8 @@ admin:
 			label: Email / Jméno
 			placeholder: Email / Jméno
 		address:
-			label: Adresa
-			placeholder: Adresa
+			label: Adresa / Fakturační údaje
+			placeholder: Adresa / Fakturační údaje
 		group:
 			label: Skupina
 		source:

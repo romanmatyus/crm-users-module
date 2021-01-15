@@ -41,7 +41,7 @@ class AdminFilterFormData
             ->group('users.id');
 
         if ($this->getAddress()) {
-            $users->where('users.id IN (?)', $this->getAddressQuery());
+            $users = $this->getAddressQuery($users);
         }
 
         if ($this->getGroup()) {
@@ -90,19 +90,35 @@ class AdminFilterFormData
         return $this->formData['source'] ?? null;
     }
 
-    private function getAddressQuery(): Selection
+    private function getAddressQuery(Selection $users): Selection
     {
         $queryString = $this->getAddress();
-        return $this->addressesRepository->all()->select('DISTINCT(user_id)')
+
+        $matchingUsersWithCompany = $this->addressesRepository->all()->select('DISTINCT(user_id)')
+                ->where("company_id = ? OR company_tax_id = ? OR company_vat_id = ? OR company_name LIKE ?", [
+                    "{$queryString}",
+                    "{$queryString}",
+                    "{$queryString}",
+                    "%{$queryString}%"
+                ]);
+
+
+        foreach (explode(" ", $queryString) as $partialString) {
+            $partialQuery = $this->addressesRepository->all()->select('DISTINCT(user_id)')
             ->where(
-                'address LIKE ? OR number LIKE ? OR city LIKE ? OR first_name LIKE ? OR last_name LIKE ?',
+                'address LIKE ? OR number LIKE ? OR city LIKE ? OR first_name LIKE ? OR last_name LIKE ? OR user_id IN (?)',
                 [
-                    "%{$queryString}%",
-                    "%{$queryString}%",
-                    "%{$queryString}%",
-                    "%{$queryString}%",
-                    "%{$queryString}%",
+                    "%{$partialString}%",
+                    "%{$partialString}%",
+                    "%{$partialString}%",
+                    "%{$partialString}%",
+                    "%{$partialString}%",
+                    $matchingUsersWithCompany
                 ]
             );
+
+            $users->where('users.id IN (?)', $partialQuery);
+        }
+        return $users;
     }
 }
