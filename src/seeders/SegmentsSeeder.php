@@ -5,10 +5,13 @@ namespace Crm\UsersModule\Seeders;
 use Crm\ApplicationModule\Seeders\ISeeder;
 use Crm\SegmentModule\Repository\SegmentGroupsRepository;
 use Crm\SegmentModule\Repository\SegmentsRepository;
+use Crm\SegmentModule\Seeders\SegmentsTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SegmentsSeeder implements ISeeder
 {
+    use SegmentsTrait;
+
     private $segmentGroupsRepository;
 
     private $segmentsRepository;
@@ -25,13 +28,7 @@ class SegmentsSeeder implements ISeeder
     {
         $userFields = 'users.id,users.email,users.first_name,users.last_name';
 
-        $groupName = 'Default group';
-        $groupCode = 'default-group';
-        $defaultGroup = $this->segmentGroupsRepository->findByCode($groupCode);
-        if (!$defaultGroup) {
-            $defaultGroup = $this->segmentGroupsRepository->add($groupName, $groupCode, 1000);
-            $output->writeln("  <comment>* segment group <info>{$groupName}</info> created</comment>");
-        }
+        $defaultGroup = $this->loadDefaultSegmentGroup($output);
 
         $code = 'active_registered_users';
         if ($this->segmentsRepository->exists($code)) {
