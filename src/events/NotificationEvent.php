@@ -61,7 +61,8 @@ class NotificationEvent extends AbstractEvent
         array $params = [],
         string $context = null,
         array $attachments = [],
-        \DateTime $scheduleAt = null
+        \DateTime $scheduleAt = null,
+        NotificationContext $notificationContext = null
     ) {
         $this->user         = $user;
         $this->templateCode = $templateCode;
@@ -70,7 +71,7 @@ class NotificationEvent extends AbstractEvent
         $this->attachments  = $attachments;
         $this->scheduleAt   = $scheduleAt;
         // Let modules modify NotificationEvent parameters
-        $emitter->emit(new PreNotificationEvent($this));
+        $emitter->emit(new PreNotificationEvent($this, $notificationContext));
     }
 
     public function getUser(): ?IRow
