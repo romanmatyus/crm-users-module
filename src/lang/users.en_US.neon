@@ -119,7 +119,7 @@ frontend:
 			placeholder: email you used to register
 		submit: Send new password
 		invalid_email: Invalid email
-		inactive_user: Your user account has been deactivated. Please use another email or contact support on info@dennikn.sk.
+		inactive_user: Your user account has been deactivated. Please use another email or contact support on %contactEmail%.
 		success:
 			email: "The password change link has been send to your email"
 			spam: "Please check your email inbox and also folders Propagation / Advertisment / Spam."

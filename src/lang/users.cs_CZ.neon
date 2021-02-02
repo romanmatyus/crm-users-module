@@ -119,7 +119,7 @@ frontend:
 			placeholder: 'Zadejte e-mail, kterým jste se registrovali'
 		submit: Chci poslat nové heslo
 		invalid_email: Nesprávný email
-		inactive_user: Vaše konto bylo deaktivováno. Přihlaste se pomocí jiné e-mailové adresy nebo kontaktujte podporu na info@denikn.cz.
+		inactive_user: Vaše konto bylo deaktivováno. Přihlaste se pomocí jiné e-mailové adresy nebo kontaktujte podporu na %contactEmail%.
 		success:
 			email: "Odkaz na změnu vašeho hesla jsme vám poslali na e-mail"
 			spam: "Zkontrolujte si prosím svou e-mailovou schránku včetně kategorií Hromadné, Promoakce a Spam."

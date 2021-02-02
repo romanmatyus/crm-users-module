@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Forms;
 
+use Crm\ApplicationModule\Config\ApplicationConfig;
 use Crm\UsersModule\Auth\UserManager;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\TextInput;
@@ -10,6 +11,8 @@ use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class RequestPasswordFormFactory
 {
+    private $applicationConfig;
+
     private $userManager;
 
     private $translator;
@@ -17,8 +20,12 @@ class RequestPasswordFormFactory
     /* callback function */
     public $onSuccess;
 
-    public function __construct(UserManager $userManager, ITranslator $translator)
-    {
+    public function __construct(
+        ApplicationConfig $applicationConfig,
+        UserManager $userManager,
+        ITranslator $translator
+    ) {
+        $this->applicationConfig = $applicationConfig;
         $this->userManager = $userManager;
         $this->translator = $translator;
     }
@@ -39,13 +46,19 @@ class RequestPasswordFormFactory
             ->setAttribute('autofocus')
             ->setRequired('users.frontend.request_password.email.required')
             ->setAttribute('placeholder', 'users.frontend.request_password.email.placeholder')
-            ->addRule(function (TextInput $input) {
-                $userRow = $this->userManager->loadUserByEmail($input->getValue());
-                if ($userRow) {
-                    return (bool)$userRow->active;
-                }
-                return true;
-            }, 'users.frontend.request_password.inactive_user');
+            ->addRule(
+                function (TextInput $input) {
+                    $userRow = $this->userManager->loadUserByEmail($input->getValue());
+                    if ($userRow) {
+                        return (bool)$userRow->active;
+                    }
+                    return true;
+                },
+                $this->translator->translate(
+                    'users.frontend.request_password.inactive_user',
+                    ['contactEmail' => $this->applicationConfig->get('contact_email')]
+                )
+            );
 
         $form->addSubmit('send', 'users.frontend.request_password.submit');
 
