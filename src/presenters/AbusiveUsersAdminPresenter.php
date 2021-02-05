@@ -7,9 +7,11 @@ use Crm\ApplicationModule\Components\VisualPaginator;
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\UsersModule\DataProvider\FilterAbusiveUserFormDataProviderInterface;
 use Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory;
+use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\BadRequestException;
 use Nette\Utils\DateTime;
+use PDO;
 
 class AbusiveUsersAdminPresenter extends AdminPresenter
 {
@@ -34,33 +36,98 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
     /** @var UsersRepository @inject */
     public $usersRepository;
 
+    /** @var AccessTokensRepository @inject */
+    public $accessTokensRepository;
+
     /** @var AbusiveUsersFilterFormFactory @inject */
     public $abusiveUsersFilterFormFactory;
 
     /** @var DataProviderManager @inject */
     public $dataProviderManager;
 
+    protected $onPage = 100;
+
     public function renderDefault($dateFrom, $dateTo, $loginCount = 10, $deviceCount = 1, $sortBy = 'device_count', $email = null)
     {
         $this->dateFrom = $dateFrom ?? (new DateTime())->modify('- 2 months')->format('Y-m-d');
         $this->dateTo = $dateTo ?? (new DateTime())->format('Y-m-d');
 
-        $usersSelection = $this->usersRepository->getAbusiveUsers(
-            new DateTime($this->dateFrom),
-            new DateTime($this->dateTo),
-            $loginCount,
-            $deviceCount,
-            $sortBy,
-            $email
-        );
+        // Due to performance optimization (access_token table can grow very large), raw queries are used
+        $sql = <<<SQL
+SELECT user_id, MD5(user_agent) AS hashed_ua
+FROM access_tokens
+WHERE last_used_at >= :from AND last_used_at < :to
+SQL;
 
+        if ($email) {
+            $emailIds = array_values($this->usersRepository->getTable()
+                ->where('users.email LIKE ?', "%{$email}%")
+                ->fetchAssoc('id=id'));
+            $sql .= ' AND user_id IN (' . implode(',', array_map('intval', $emailIds)) . ' )';
+        }
+        $sql .= " ORDER BY user_id, MD5(user_agent)";
+
+        $pdo = $this->accessTokensRepository->getDatabase()->getConnection()->getPdo();
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':from', $this->dateFrom);
+        $stmt->bindParam(':to', $this->dateTo);
+
+        $filteredUserDevicesCount = [];
+        $filteredUserTokensCount = [];
+
+        if ($stmt->execute()) {
+            $userId = 0;
+            $userTokenCount = 0;
+            $userDevices = [];
+
+            while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                if ($row->user_id !== $userId) {
+                    // we have all data of previous user, evaluate them before moving to next
+                    if (count($userDevices) >= $deviceCount && $userTokenCount >= $loginCount) {
+                        $filteredUserDevicesCount[$userId] = count($userDevices);
+                        $filteredUserTokensCount[$userId] = $userTokenCount;
+                    }
+
+                    $userId = $row->user_id;
+                    $userTokenCount = 0;
+                    $userDevices = [];
+                }
+
+                $userTokenCount += 1;
+                $userDevices[$row->hashed_ua] = true;
+            }
+
+            // don't forget to check the last processed user
+            if (count($userDevices) >= $deviceCount && $userTokenCount >= $loginCount) {
+                $filteredUserDevicesCount[$userId] = count($userDevices);
+                $filteredUserTokensCount[$userId] = $userTokenCount;
+            }
+        }
+        $pdo = null;
+
+        // Data provider
+        $thresholdsPassedUserIds = array_keys($filteredUserDevicesCount);
+        $usersSelection = $this->usersRepository->getTable()
+            ->select('users.id')
+            ->where('users.id IN (?)', $thresholdsPassedUserIds);
         /** @var FilterAbusiveUserFormDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.filter_abusive_user_form', FilterAbusiveUserFormDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
             $usersSelection = $provider->filter($usersSelection, $this->params);
         }
+        $filteredUserIds = $usersSelection->fetchAssoc('id=id');
 
-        $filteredCount = (clone $usersSelection)->count();
+        // Order and paginate
+        if ($sortBy === 'device_count') {
+            $filteredUserDevicesCount = array_intersect_key($filteredUserDevicesCount, $filteredUserIds);
+            arsort($filteredUserDevicesCount);
+            $filteredUserIds = array_keys($filteredUserDevicesCount);
+        } else {
+            $filteredUserTokensCount = array_intersect_key($filteredUserTokensCount, $filteredUserIds);
+            arsort($filteredUserTokensCount);
+            $filteredUserIds = array_keys($filteredUserTokensCount);
+        }
+        $filteredCount = count($filteredUserIds);
 
         $vp = new VisualPaginator();
         $this->addComponent($vp, 'vp');
@@ -68,11 +135,28 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
         $paginator->setItemCount($filteredCount);
         $paginator->setItemsPerPage($this->onPage);
 
-        $users = $usersSelection->limit($paginator->getLength(), $paginator->getOffset())->fetchAll();
+        $paginatedUserIds = array_slice($filteredUserIds, $paginator->offset, $paginator->getLength());
+        $paginatedUsers = [];
+
+        $q = $this->usersRepository->getTable()
+            ->where('users.id IN (?)', $paginatedUserIds);
+
+        if (count($paginatedUserIds)) {
+            // has to be added conditionally (in case of empty array ORDER condition crashes) - Nette doesn't correctly process FIELD
+            $q = $q->order('FIELD(id, ?)', $paginatedUserIds);
+        }
+
+        foreach ($q as $row) {
+            $paginatedUsers[] = (object) array_merge($row->toArray(), [
+                'user_row' => $row,
+                'token_count' => $filteredUserTokensCount[$row->id],
+                'device_count' => $filteredUserDevicesCount[$row->id],
+            ]);
+        }
 
         $this->template->filteredCount = $filteredCount;
         $this->template->vp = $vp;
-        $this->template->abusers = $users;
+        $this->template->abusers = $paginatedUsers;
         $this->template->sortByTokenCountLink = $this->link('AbusiveUsersAdmin:default', array_merge($this->getParameters(), ['sortBy' => 'token_count']));
         $this->template->sortByDeviceCountLink = $this->link('AbusiveUsersAdmin:default', array_merge($this->getParameters(), ['sortBy' => 'device_count']));
     }
