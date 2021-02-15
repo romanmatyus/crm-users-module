@@ -27,8 +27,9 @@ class UserSourceCriteria implements ScenariosCriteriaInterface
         ];
     }
 
-    public function addCondition(Selection $selection, $values, IRow $criterionItemRow): bool
+    public function addConditions(Selection $selection, array $paramValues, IRow $criterionItemRow): bool
     {
+        $values = $paramValues['source'];
         $selection->where('users.source IN (?)', $values->selection);
 
         return true;
