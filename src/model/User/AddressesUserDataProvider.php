@@ -2,11 +2,14 @@
 
 namespace Crm\UsersModule\User;
 
+use Crm\ApplicationModule\NowTrait;
 use Crm\ApplicationModule\User\UserDataProviderInterface;
 use Crm\UsersModule\Repository\AddressesRepository;
 
 class AddressesUserDataProvider implements UserDataProviderInterface
 {
+    use NowTrait;
+
     private $addressesRepository;
 
     public function __construct(
@@ -18,6 +21,26 @@ class AddressesUserDataProvider implements UserDataProviderInterface
     public static function identifier(): string
     {
         return 'addresses';
+    }
+
+    public static function gdprRemovalTemplate($deletedAt)
+    {
+        return [
+            'title' => 'GDPR removal',
+            'first_name' => 'GDPR removal',
+            'last_name' => 'GDPR removal',
+            'address' => 'GDPR removal',
+            'number' => 'GDPR removal',
+            'city' => 'GDPR removal',
+            'zip' => 'GDPR removal',
+            'country_id' => null,
+            'company_id' => 'GDPR removal',
+            'company_tax_id' => 'GDPR removal',
+            'company_vat_id' => 'GDPR removal',
+            'company_name' => 'GDPR removal',
+            'phone_number' => 'GDPR removal',
+            'deleted_at' => $deletedAt
+        ];
     }
 
     public function data($userId)
@@ -91,24 +114,9 @@ class AddressesUserDataProvider implements UserDataProviderInterface
         }
 
         $addresses = $query->fetchAll();
-        $GDPRTemplateAddress = [
-            'title' => 'GDPR removal',
-            'first_name' => 'GDPR removal',
-            'last_name' => 'GDPR removal',
-            'address' => 'GDPR removal',
-            'number' => 'GDPR removal',
-            'city' => 'GDPR removal',
-            'zip' => 'GDPR removal',
-            'country_id' => null,
-            'company_id' => 'GDPR removal',
-            'company_tax_id' => 'GDPR removal',
-            'company_vat_id' => 'GDPR removal',
-            'company_name' => 'GDPR removal',
-            'phone_number' => 'GDPR removal',
-        ];
-
+        $gdprRemovalTemplate = self::gdprRemovalTemplate($this->getNow());
         foreach ($addresses as $address) {
-            $this->addressesRepository->update($address, $GDPRTemplateAddress);
+            $this->addressesRepository->update($address, $gdprRemovalTemplate);
         }
     }
 
