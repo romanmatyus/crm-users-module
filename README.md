@@ -978,6 +978,100 @@ Success response:
     "device_token": "bfc6191c1837ec3600c23036edf35590"
 }
 ```
+---
+
+#### POST `/api/v1/users/set-email-validated`
+
+API call validates email address for user, if the user exists.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| Email | *String* | yes | User's email address. |
+
+##### *Example:*
+
+```shell
+curl 'http://crm.press/api/v1/users/set-email-validated' \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'email=admin%40admin.sk'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok",
+    "message": "Email has been validated",
+    "code": "success"
+}
+```
+
+Invalid request response:
+
+```json5
+{
+    "status": "error",
+    "message": "Details about problem",
+    "code": "invalid_request"
+}
+```
+
+Invalid email response:
+
+```json5
+{
+    "status": "error",
+    "message": "Email not valid",
+    "code": "invalid_param"
+}
+```
+
+Email not assigned response:
+
+```json5
+{
+    "status": "error",
+    "message": "Email isn't assigned to any user",
+    "code": "email_not_found",
+}
+```
+---
+
+#### POST `/api/v1/users/set-email-invalidated`
+
+API call invalidates email address for user, if the user exists.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| Email | *String* | yes | User's email address. |
+
+##### *Example:*
+
+```shell
+curl 'http://crm.press/api/v1/users/set-email-invalidated' \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'email=admin%40admin.sk'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok",
+    "message": "Email has been invalidated",
+    "code": "success"
+}
+```
+
+All other responses are the same as for /validateMail method above
+
+---
 
 ---
 

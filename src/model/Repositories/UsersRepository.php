@@ -150,17 +150,25 @@ class UsersRepository extends Repository
 
     final public function update(IRow &$row, $data)
     {
-        if (isset($data['email'])) {
-            $originalEmail = $row->email;
+        $email = $data['email'] ?? null;
+        if ($email !== null) {
             $user = $this->getTable()->where(['email' => $data['email'], 'id != ?' => $row->id])->fetch();
             if ($user) {
                 throw new UserAlreadyExistsException("Email '{$data['email']}' je už registrovaný");
             }
         }
+
+        $emailChanged = false;
+        $originalEmail = $row->email;
+        if ($email && $originalEmail !== $email) {
+            $emailChanged = true;
+            $data['email_validated_at'] = null;
+        }
+
         $data['modified_at'] = new \DateTime();
         parent::update($row, $data);
 
-        if (isset($originalEmail) && $originalEmail !== $data['email']) {
+        if ($emailChanged) {
             $this->hermesEmitter->emit(new HermesMessage(
                 'email-changed',
                 [
@@ -255,5 +263,22 @@ class UsersRepository extends Repository
             'id' => $userId,
             'role' => $role,
         ])->count('*') > 0;
+    }
+
+    final public function setEmailValidated($user, \DateTime $validatedAt)
+    {
+        if ($user->email_validated_at) {
+            return;
+        }
+        $this->update($user, [
+            'email_validated_at' => $validatedAt,
+        ]);
+    }
+    
+    final public function setEmailInvalidated($user)
+    {
+        $this->update($user, [
+            'email_validated_at' => null,
+        ]);
     }
 }

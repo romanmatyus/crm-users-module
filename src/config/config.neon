@@ -124,6 +124,7 @@ services:
 	- Crm\UsersModule\Api\UserDataHandler
 	- Crm\UsersModule\Api\AutoLoginTokenLoginApiHandler
 	- Crm\UsersModule\Api\GoogleTokenSignInHandler
+	- Crm\UsersModule\Api\EmailValidationApiHandler
 	- Crm\UsersModule\Events\LoginAttemptHandler
 	- Crm\UsersModule\Events\UserUpdatedHandler
 	- Crm\UsersModule\Hermes\UserTokenUsageHandler

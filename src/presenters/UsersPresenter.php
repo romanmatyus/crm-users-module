@@ -254,8 +254,12 @@ class UsersPresenter extends FrontendPresenter
 
     public function renderEmailConfirm(string $token)
     {
-        $verificationResult = $this->userEmailConfirmationsRepository->verify($token);
+        $userEmailConfirmation = $this->userEmailConfirmationsRepository->confirm($token);
+        if ($userEmailConfirmation) {
+            $this->userManager->setEmailValidated($userEmailConfirmation->user, $userEmailConfirmation->confirmed_at);
+            $this->userManager->confirmUser($userEmailConfirmation->user);
+        }
 
-        $this->template->verificationResult = $verificationResult;
+        $this->template->userEmailConfirmation = $userEmailConfirmation;
     }
 }

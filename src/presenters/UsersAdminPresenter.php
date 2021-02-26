@@ -217,7 +217,7 @@ class UsersAdminPresenter extends AdminPresenter
             throw new Nette\Application\BadRequestException("User with id: {$userId} doesn't exist.");
         }
 
-        $this->userManager->confirmUser($user, null, true);
+        $this->userManager->confirmUser($user, new DateTime(), true);
         $this->presenter->flashMessage($this->translator->translate('users.admin.confirm.success'));
     }
 

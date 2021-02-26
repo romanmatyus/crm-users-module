@@ -119,9 +119,6 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
         }
 
         $this->usersRepository->addSignIn($user);
-        if (!$user->confirmed_at) {
-            $this->userManager->confirmUser($user);
-        }
 
         return $user;
     }

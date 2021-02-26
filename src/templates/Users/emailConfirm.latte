@@ -8,11 +8,11 @@
     <div class="col-md-12">
         <blockquote>
             <p class="lead">
-            {if $verificationResult === true}
+            {ifset $userEmailConfirmation}
                 {_users.frontend.email_confirm.success}
             {else}
                 {_users.frontend.email_confirm.fail}
-            {/if}
+            {/ifset}
             </p>
 
             {control simpleWidget 'frontend.user.email_confirm'}

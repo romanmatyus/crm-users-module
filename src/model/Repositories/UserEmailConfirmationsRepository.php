@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Repository;
 
+use Crm\ApplicationModule\ActiveRow;
 use Crm\ApplicationModule\Repository;
 use Crm\UsersModule\Auth\Access\TokenGenerator;
 use Nette\Utils\DateTime;
@@ -18,18 +19,18 @@ class UserEmailConfirmationsRepository extends Repository
         ]);
     }
 
-    public function verify(string $token): bool
+    public function confirm(string $token): ?ActiveRow
     {
         $emailConfirmationRow = $this->getTable()->where('token', $token)->fetch();
         if (!$emailConfirmationRow) {
-            return false;
+            return null;
         }
 
         if ($emailConfirmationRow->confirmed_at === null) {
-            return $this->update($emailConfirmationRow, ['confirmed_at' => new DateTime()]);
+            $this->update($emailConfirmationRow, ['confirmed_at' => new DateTime()]);
         }
 
-        return true;
+        return $emailConfirmationRow;
     }
     
     public function getToken(int $userId): ?string

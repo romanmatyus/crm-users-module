@@ -3,6 +3,7 @@
 namespace Crm\UsersModule;
 
 use Crm\ApiModule\Api\ApiRoutersContainerInterface;
+use Crm\ApiModule\Authorization\BearerTokenAuthorization;
 use Crm\ApiModule\Router\ApiIdentifier;
 use Crm\ApiModule\Router\ApiRoute;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
@@ -19,6 +20,7 @@ use Crm\ApplicationModule\SeederManager;
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\ApplicationModule\Widget\WidgetManagerInterface;
 use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
+use Crm\UsersModule\Api\EmailValidationApiHandler;
 use Crm\UsersModule\Auth\Permissions;
 use Crm\UsersModule\DataProvider\UsersClaimUserDataProvider;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
@@ -356,6 +358,21 @@ class UsersModule extends CrmModule
                 \Crm\ApiModule\Authorization\NoAuthorization::class
             )
         );
+  
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(
+                new ApiIdentifier('1', 'users', 'set-email-validated'),
+                EmailValidationApiHandler::class,
+                BearerTokenAuthorization::class
+            )
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(
+                new ApiIdentifier('1', 'users', 'set-email-invalidated'),
+                EmailValidationApiHandler::class,
+                BearerTokenAuthorization::class
+            )
+        );
     }
 
     public function registerUserData(UserDataRegistrator $dataRegistrator)
@@ -387,8 +404,9 @@ class UsersModule extends CrmModule
             'active',
             'source',
             'confirmed_at',
+            'email_validated_at',
             'last_sign_in_at',
-            'created_at',
+            'created_at'
         ]);
     }
 

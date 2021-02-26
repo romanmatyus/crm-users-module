@@ -256,20 +256,27 @@ class UserManager
 
     public function confirmUser(IRow $user, ?DateTime $date = null, $byAdmin = false)
     {
+        if ($user->confirmed_at) {
+            return;
+        }
+
         if (!$date) {
             $date = new DateTime();
         }
-        if (!$user->confirmed_at) {
-            $this->usersRepository->update($user, [
-                'modified_at' => $date,
-                'confirmed_at' => $date,
-            ]);
 
-            if ($byAdmin) {
-                $this->userMetaRepository->add($user, 'confirmed_by_admin', true);
-            }
+        $this->usersRepository->update($user, ['confirmed_at' => $date]);
+        $this->emitter->emit(new UserConfirmedEvent($user, $byAdmin));
+        if ($byAdmin) {
+            $this->userMetaRepository->add($user, 'confirmed_by_admin', true);
+        }
+    }
 
-            $this->emitter->emit(new UserConfirmedEvent($user, $byAdmin));
+    public function setEmailValidated($user, ?DateTime $validated)
+    {
+        if ($validated) {
+            $this->usersRepository->setEmailValidated($user, $validated);
+        } else {
+            $this->usersRepository->setEmailInvalidated($user);
         }
     }
 
