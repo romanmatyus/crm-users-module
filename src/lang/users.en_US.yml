@@ -497,6 +497,14 @@ admin:
     stats:
         title: User stats
 
+measurements:
+    sign_in:
+        title: "Sign ins"
+        description: "Number of successful sign ins."
+    new_users:
+        title: "Registrations"
+        description: "Number of new registrations."
+
 authenticator:
     identity_not_found: Invalid email.
     invalid_credentials: Invalid password.

@@ -8,6 +8,9 @@ use Crm\ApplicationModule\Components\Graphs\GoogleBarGraphGroupControlFactoryInt
 use Crm\ApplicationModule\Components\Graphs\GoogleLineGraphGroupControlFactoryInterface;
 use Crm\ApplicationModule\Graphs\Criteria;
 use Crm\ApplicationModule\Graphs\GraphDataItem;
+use Crm\ApplicationModule\Models\Graphs\Scale\Measurements\RangeScaleFactory;
+use Crm\UsersModule\Measurements\NewUsersMeasurement;
+use Crm\UsersModule\Measurements\SignInMeasurement;
 use Nette\Utils\DateTime;
 
 class DashboardPresenter extends AdminPresenter
@@ -48,22 +51,23 @@ class DashboardPresenter extends AdminPresenter
     public function createComponentGoogleUserRegistrationsStatsGraph(GoogleBarGraphGroupControlFactoryInterface $factory)
     {
         $this->getSession()->close();
-        $graphDataItem = new GraphDataItem();
-        $graphDataItem->setCriteria((new Criteria())
-            ->setTableName('users')
-            ->setTimeField('created_at')
-            ->setGroupBy('users.source')
-            ->setSeries('users.source')
-            ->setValueField('count(*)')
-            ->setStart(DateTime::from($this->dateFrom))
-            ->setEnd(DateTime::from($this->dateTo)));
 
         $control = $factory->create();
         $control->setGraphTitle($this->translator->translate('dashboard.users.registration.title'))
             ->setGraphHelp($this->translator->translate('dashboard.users.registration.tooltip'))
-            ->addGraphDataItem($graphDataItem)
             ->setFrom($this->dateFrom)
             ->setTo($this->dateTo);
+
+        $criteria = (new Criteria)
+            ->setSeries(NewUsersMeasurement::CODE)
+            ->setGroupBy(NewUsersMeasurement::GROUP_SOURCE)
+            ->setStart($this->dateFrom)
+            ->setEnd($this->dateTo);
+        $graphDataItem = new GraphDataItem();
+        $graphDataItem->setCriteria($criteria)
+            ->setScaleProvider(RangeScaleFactory::PROVIDER_MEASUREMENT);
+
+        $control->addGraphDataItem($graphDataItem);
 
         return $control;
     }
@@ -92,23 +96,24 @@ class DashboardPresenter extends AdminPresenter
 
     public function createComponentGoogleLogginAttemptsGraph(GoogleLineGraphGroupControlFactoryInterface $factory)
     {
-        $this->getSession()->close();
-        $graphDataItem = new GraphDataItem();
-        $graphDataItem->setCriteria((new Criteria())
-            ->setTimeField('created_at')
-            ->setTableName('login_attempts')
-            ->setWhere("AND login_attempts.status = 'ok'")
-            ->setValueField('COUNT(*)')
-            ->setStart(DateTime::from($this->dateFrom))
-            ->setEnd(DateTime::from($this->dateTo)));
-        $graphDataItem->setName($this->translator->translate('dashboard.logins.total.title'));
+//        $this->getSession()->close();
 
         $control = $factory->create()
             ->setGraphTitle($this->translator->translate('dashboard.logins.total.title'))
             ->setGraphHelp($this->translator->translate('dashboard.logins.total.tooltip'))
-            ->addGraphDataItem($graphDataItem)
             ->setFrom($this->dateFrom)
             ->setTo($this->dateTo);
+
+        $criteria = (new Criteria)
+            ->setSeries(SignInMeasurement::CODE)
+            ->setStart($this->dateFrom)
+            ->setEnd($this->dateTo);
+        $graphDataItem = new GraphDataItem();
+        $graphDataItem->setCriteria($criteria)
+            ->setScaleProvider(RangeScaleFactory::PROVIDER_MEASUREMENT)
+            ->setName($this->translator->translate('dashboard.logins.total.title'));
+
+        $control->addGraphDataItem($graphDataItem);
 
         return $control;
     }

@@ -497,6 +497,14 @@ admin:
     stats:
         title: Štatistiky používateľov
 
+measurements:
+    sign_in:
+        title: "Prihlásenia"
+        description: "Celkový počet úspešných prihlásení."
+    new_users:
+        title: "Registrácie"
+        description: "Počet nových registrácií."
+
 authenticator:
     identity_not_found: Nesprávne meno.
     invalid_credentials: Heslo je nesprávne.

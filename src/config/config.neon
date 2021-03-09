@@ -12,6 +12,11 @@ services:
 			- register('gravatar', [Crm\UsersModule\Helpers\GravatarHelper(), process])
 			- register('userLabel', [Crm\UsersModule\Helpers\UserLabelHelper(), process])
 
+	measurementManager:
+		setup:
+			- register(Crm\UsersModule\Measurements\SignInMeasurement())
+			- register(Crm\UsersModule\Measurements\NewUsersMeasurement())
+
 	accessTokensRepository: Crm\UsersModule\Repository\AccessTokensRepository
 	usersRepository: Crm\UsersModule\Repository\UsersRepository
 	groupsRepository: Crm\UsersModule\Repository\GroupsRepository
@@ -173,6 +178,7 @@ services:
 	- Crm\UsersModule\Seeders\SegmentsSeeder
 	- Crm\UsersModule\Seeders\UsersSeeder
 	- Crm\UsersModule\Seeders\SnippetsSeeder
+	- Crm\UsersModule\Seeders\MeasurementsSeeder
 	- Crm\UsersModule\Components\UserSourceAccesses
 	- Crm\UsersModule\Components\UserTokens
 	- Crm\UsersModule\Auth\Rate\WrongPasswordRateLimit
