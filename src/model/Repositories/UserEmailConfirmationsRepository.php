@@ -31,4 +31,10 @@ class UserEmailConfirmationsRepository extends Repository
 
         return true;
     }
+    
+    public function getToken(int $userId): ?string
+    {
+        $token = $this->getTable()->where('user_id', $userId)->fetchField('token');
+        return $token ?: null;
+    }
 }
