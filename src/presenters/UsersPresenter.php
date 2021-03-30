@@ -87,10 +87,6 @@ class UsersPresenter extends FrontendPresenter
 
     public function renderResetPassword($id)
     {
-        if ($this->getUser()->isLoggedIn()) {
-            $this->getUser()->logout(true);
-        }
-
         if (is_null($id)) {
             $this->redirect('requestPassword');
         }
