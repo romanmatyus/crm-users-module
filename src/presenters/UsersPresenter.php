@@ -8,6 +8,7 @@ use Crm\ApplicationModule\User\DownloadUserData;
 use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\NotificationEvent;
+use Crm\UsersModule\Events\UserSignOutEvent;
 use Crm\UsersModule\Forms\ChangePasswordFormFactory;
 use Crm\UsersModule\Forms\RequestPasswordFormFactory;
 use Crm\UsersModule\Forms\ResetPasswordFormFactory;
@@ -87,6 +88,11 @@ class UsersPresenter extends FrontendPresenter
 
     public function renderResetPassword($id)
     {
+        if ($this->getUser()->isLoggedIn()) {
+            $this->emitter->emit(new UserSignOutEvent($this->getUser()));
+            $this->getUser()->logout(true);
+        }
+
         if (is_null($id)) {
             $this->redirect('requestPassword');
         }
