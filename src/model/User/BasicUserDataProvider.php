@@ -49,7 +49,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'public_name' => $user->public_name,
-            'created_at' => $user->created_at->format(\DateTime::RFC3339), //confirmed_at?
+            'created_at' => $user->created_at->format(\DateTimeInterface::RFC3339), //confirmed_at?
             'last_sign_in_up' => $user->last_sign_in_ip, //?
             'current_sign_in_up' => $user->current_sign_in_ip, //?
         ];
@@ -71,7 +71,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
         $now = new DateTime();
         $GDPRTemplateUser = [
             // anonymize
-            'email' => 'GDPR_removal@' . $now->getTimestamp() . rand(),
+            'email' => 'GDPR_removal@' . $now->getTimestamp() . mt_rand(),
             'first_name' => 'GDPR Removal',
             'last_name' => 'GDPR Removal',
             'public_name' => 'GDPR Removal',
