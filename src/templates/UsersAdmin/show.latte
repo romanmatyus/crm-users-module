@@ -115,7 +115,7 @@
   </div>
 
   <div class="col-md-3">
-    {control simpleWidget 'admin.user.detail.center', $user}
+    {control simpleWidget 'admin.user.detail.center', $user->id}
 
     {if count($printAddresses) == 0}
       <p class="well text-muted text-center">{_users.admin.show.no_print_address}</p>

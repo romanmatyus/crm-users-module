@@ -137,8 +137,6 @@ class UsersAdminPresenter extends AdminPresenter
         });
 
         $this->template->lastSuspicious = $this->changePasswordsLogsRepository->lastUserLog($user->id, ChangePasswordsLogsRepository::TYPE_SUSPICIOUS);
-
-
         $this->template->canEditRoles = $this->getUser()->isAllowed('Users:AdminGroupAdmin', 'edit');
     }
 
