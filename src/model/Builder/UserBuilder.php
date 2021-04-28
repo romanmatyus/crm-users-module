@@ -46,7 +46,8 @@ class UserBuilder extends Builder
         if ($user) {
             $this->addError("Email '{$this->get('email')}' je už registrovaný");
         }
-        if (strlen($this->get('password')) < 6) {
+        $password = $this->get('password');
+        if ($password && strlen($password) < 6) {
             $this->addError('Heslo musí byť dlhé aspon 6 znakov');
         }
         if (strlen($this->get('public_name')) < 1) {

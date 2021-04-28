@@ -18,14 +18,63 @@ Add installed extension to your `app/config/config.neon` file.
 
 ```neon
 extensions:
-	- Crm\UsersModule\DI\UsersModuleExtension
+	users: Crm\UsersModule\DI\UsersModuleExtension
 ```
+
+## Google Sign-In
+
+Users module supports Google Sign-In authentication using the Authorization code flow and ID token.
+
+### Configuration
+
+Any application that uses Google Sign-In must have authorization credentials that identify the application to Google's OAuth 2.0 server.
+To set up credentials, please go to Google [Credentials page](https://console.developers.google.com/apis/credentials).
+
+After acquiring credentials, put them to `neon` configuration file using the following format:
+```neon
+users:
+	sso:
+	    google:
+	        client_id: CLIENT_ID
+	        client_secret: CLIENT_SECRET
+```
+
+Last step is to **enable** Google Sign-In in CRM settings in `/admin/config-admin/` Authentication section.
+
+### ID Token
+
+ID Token is a Google-signed JWT token holding user information (see [the documentation](https://developers.google.com/identity/sign-in/web/backend-auth)).
+This module provides an [API endpoint](#post-apiv1usersgoogle-token-sign-in) to validate the token and match it to an existing user (or create a new one) using user's email address.
+
+### Authorization code flow
+
+Standard OAuth2 Authorization code flow is initiated when user is redirected to `http://crm.press/users/google/sign` URL.
+
+An optional parameter is `url`, which is a URL to redirect to after the successful login.
+`url` is validated against current CRM domain - `url` has to share at least the second level domain, e.g. if your CRM is available at `crm.yoursystem.com`, any domain passing `*.yoursystem.com` will be considered as a valid redirect URI.
+
+To enable more domains, please add the following configuration to your configuration `neon` file:
+
+```neon
+ssoRedirectValidator:
+    setup:
+    	- addAllowedDomains('another.domain.com', 'some.other.domain.net')
+```
+
+#### Example
+
+HTML button to initiate Google Sign-In:
+```html
+<a href="http://crm.press/users/sign/google">Google Sign-In</a>
+```
+
 
 ## AccessTokenAuthenticator
 
 UsersModule generates an access token for every successful user authentication. This token can be used to authenticate the user in API calls.
 
 You can log the user into the CRM automatically if you have such token thanks to the [`AccessTokenAuthenticator`](src/authenticator/AccessTokenAuthenticator.php).
+
 
 ### How to use
 
@@ -43,21 +92,21 @@ real tokens:
 
 * *API tokens.* Standard API keys for server-server communication. It identifies the calling application as a whole.
 They can be generated in CRM Admin (`/api/api-tokens-admin/`) and each API key has to be whitelisted to access
-specific API endpoints. By default the API key has access to no endpoint. 
+specific API endpoints. By default the API key has access to no endpoint.
 * *User tokens.* Generated for each user during the login process, token identify single user when communicating between
 different parts of the system. The token can be read:
     * From `n_token` cookie if the user was logged in via CRM.
-    * From the response of [`/api/v1/users/login` endpoint](https://github.com/remp2020/crm-users-module#post-apiv1userslogin) -
+    * From the response of [`/api/v1/users/login` endpoint](#post-apiv1userslogin) -
     you're free to store the response into your own cookie/local storage/session.
 
 API responses can contain following HTTP codes:
 
 | Value | Description |
 | --- | --- |
-| 200 OK | Successful response, default value | 
-| 400 Bad Request | Invalid request (missing required parameters) | 
-| 403 Forbidden | The authorization failed (provided token was not valid) | 
-| 404 Not found | Referenced resource wasn't found | 
+| 200 OK | Successful response, default value |
+| 400 Bad Request | Invalid request (missing required parameters) |
+| 403 Forbidden | The authorization failed (provided token was not valid) |
+| 404 Not found | Referenced resource wasn't found |
 
 If possible, the response includes `application/json` encoded payload with message explaining
 the error further.
@@ -78,7 +127,7 @@ API call returns basic user information based on provided user token.
 ##### *Example:*
 
 ```shell
-curl -v –X GET http://crm.press/api/v1/user/info \ 
+curl -v –X GET http://crm.press/api/v1/user/info \
 -H "Content-Type:application/json" \
 -H "Authorization: Bearer XXX"
 ```
@@ -201,7 +250,7 @@ API calls checks whether provided email address is valid and available to use (f
 Additionally it checks whether the provided password is valid for given email address or not. It doesn't login the
 user into the system and it also doesn't return any user token, it only verifies the password if it was provided.
 
-##### *Params:* 
+##### *Params:*
 
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
@@ -212,7 +261,7 @@ user into the system and it also doesn't return any user token, it only verifies
 ##### *Example:*
 
 ```shell
-curl -v –X GET http://crm.press/api/v1/users/email \ 
+curl -v –X GET http://crm.press/api/v1/users/email \
   -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
   -H 'Accept: application/json' \
   --data 'email=admin%40admin.sk'
@@ -273,7 +322,7 @@ When the user is registered, he/she is automatically logged in and user token is
 ##### *Example:*
 
 ```shell
-curl -v –X GET http://crm.press/api/v1/users/create \ 
+curl -v –X GET http://crm.press/api/v1/users/create \
   -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
   -H 'Accept: application/json' \
   --data 'email=user%40user.sk'
@@ -611,7 +660,7 @@ Response:
 
 #### POST `/api/v1/users/confirm`
 
-Confirms user based on given email address. 
+Confirms user based on given email address.
 
 ##### *Headers:*
 
@@ -660,7 +709,7 @@ The concept of meta user's information is to provide the way how to store user r
 
 Meta information for user is stored as a pair **key** - **value** and respect two rules:
 * One value for one key
-* More unique keys for one user     
+* More unique keys for one user
 
 Public property (**is_public**) defines the availability of meta information for the visual components of CRM administration and the availability for other modules by data providers.
 
@@ -913,6 +962,46 @@ Success response:
     "device_token": "bfc6191c1837ec3600c23036edf35590"
 }
 ```
+
+---
+
+#### POST `/api/v1/users/google-token-sign-in`
+
+API for authentication of user using Google Sign-In with ID token, as described in https://developers.google.com/identity/sign-in/web/backend-auth.
+Endpoint tries to match google user to an existing user using email address. If such user does not exist, a new account is created.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| id_token | *String* | yes | Google signed JWT token containing user data |
+| create_access_token | *Boolean* | no | If true, access token for user is created |
+
+##### *Example:*
+
+```shell
+curl -v –X POST http://crm.press/users/google-token-sign-in \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'id_token=ID_TOKEN_CONTENT&create_access_token=true'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok",
+    "user": {
+        "id": 101,
+        "email": "example_user@gmail.com",
+        "created_at": "2021-01-01T10:00:00+01:00", // RFC3339 date; user creation date
+    },
+    "access": {
+        "token": "762eec3fe9f20d87cf865cb40cf6458c" // user token
+    }
+}
+```
+
 
 ## Components
 

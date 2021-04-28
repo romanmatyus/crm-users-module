@@ -31,6 +31,7 @@ services:
 	passwordResetTokensRepository: Crm\UsersModule\Repository\PasswordResetTokensRepository
 	userEmailConfirmationsRepository: Crm\UsersModule\Repository\UserEmailConfirmationsRepository
 	adminUserGroupsRepository: Crm\UsersModule\Auth\Repository\AdminUserGroupsRepository
+	userConnectedAccountsRepository: Crm\UsersModule\Repository\UserConnectedAccountsRepository
 
 	# Authentication
 	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator
@@ -45,6 +46,10 @@ services:
 	serviceTokenAuthorization: Crm\UsersModule\Auth\ServiceTokenAuthorization
 
 	- Crm\UsersModule\Auth\Access\AccessToken
+	- Crm\UsersModule\Auth\Sso\GoogleSignIn(%sso.google.client_id%, %sso.google.client_secret%)
+
+	ssoRedirectValidator:
+	    class: Crm\UsersModule\Auth\Sso\SsoRedirectValidator
 
 	- Crm\UsersModule\Forms\ChangePasswordFormFactory
 	- Crm\UsersModule\Forms\RequestPasswordFormFactory
@@ -82,6 +87,7 @@ services:
 	- Crm\UsersModule\Components\MonthUsersStatWidget
 	- Crm\UsersModule\Components\MonthToDateUsersStatWidget
 	- Crm\UsersModule\Components\MonthUsersSmallBarGraphWidget
+	- Crm\UsersModule\Components\SsoWidget
 	- Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface
 	- Crm\UsersModule\DataProvider\UsersClaimUserDataProvider
 	- Crm\UsersModule\Events\UserLastAccessHandler
@@ -107,6 +113,7 @@ services:
 	- Crm\UsersModule\Api\UserMetaUpsertHandler
 	- Crm\UsersModule\Api\UserDataHandler
 	- Crm\UsersModule\Api\AutoLoginTokenLoginApiHandler
+	- Crm\UsersModule\Api\GoogleTokenSignInHandler
 	- Crm\UsersModule\Events\LoginAttemptHandler
 	- Crm\UsersModule\Events\UserUpdatedHandler
 	- Crm\UsersModule\Hermes\UserTokenUsageHandler

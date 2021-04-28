@@ -15,6 +15,9 @@ use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class SignPresenter extends FrontendPresenter
 {
+    /** @persistent */
+    public $back;
+
     private $authorizator;
 
     private $userManager;
@@ -22,9 +25,6 @@ class SignPresenter extends FrontendPresenter
     private $snippetRenderer;
 
     private $referer;
-
-    /** @persistent */
-    public $back;
 
     public function __construct(
         Authorizator $authorizator,

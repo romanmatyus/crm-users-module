@@ -169,7 +169,10 @@ frontend:
 			cannot_delete: Account cannot be deleted automatically. Please contact customer support.
 			confirm: Deleting the account is irreversible. Are you sure you want to proceed?
 			success: Your account was deleted.
-
+	google:
+		fail: "Unable to log in using Google Sign-in, please contact our support."
+		sign_using_google: Sign in using Google
+		or: or
 admin:
 	actions:
 		deactivate: Deactivate
@@ -573,6 +576,9 @@ component:
 
 config:
 	category: Users
+	category_authentication: Authentication
 	not_logged_in_route:
 		name: 'Page for not logged in users'
 		description: 'Nette route, where to redirect user after hitting URL only for logged in users (e.g. :Users:Sign:in)'
+	google_sign_in_enabled:
+		name: Google Sign-In enabled

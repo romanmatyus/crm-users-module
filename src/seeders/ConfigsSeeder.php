@@ -19,7 +19,7 @@ class ConfigsSeeder implements ISeeder
     private $configsRepository;
 
     private $configBuilder;
-    
+
     public function __construct(
         ConfigCategoriesRepository $configCategoriesRepository,
         ConfigsRepository $configsRepository,
@@ -33,7 +33,6 @@ class ConfigsSeeder implements ISeeder
     public function seed(OutputInterface $output)
     {
         $category = $this->configCategoriesRepository->loadByName('application.config.category');
-
         $this->addConfig(
             $output,
             $category,
@@ -43,6 +42,26 @@ class ConfigsSeeder implements ISeeder
             'application.config.not_logged_in_route.description',
             ':Users:Sign:in',
             280
+        );
+
+        $categoryName = 'users.config.category_authentication';
+        $category = $this->configCategoriesRepository->loadByName($categoryName);
+        if (!$category) {
+            $category = $this->configCategoriesRepository->add($categoryName, 'fa fa-key', 300);
+            $output->writeln('  <comment>* config category <info>Authentication</info> created</comment>');
+        } else {
+            $output->writeln('  * config category <info>Authentication</info> exists');
+        }
+
+        $this->addConfig(
+            $output,
+            $category,
+            'google_sign_in_enabled',
+            ApplicationConfig::TYPE_BOOLEAN,
+            'users.config.google_sign_in_enabled.name',
+            '',
+            false,
+            10
         );
     }
 }

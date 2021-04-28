@@ -11,6 +11,12 @@ final class UsersModuleExtension extends CompilerExtension implements ITranslati
     private $defaults = [
         'countries' => [
             'default' => 'SK',
+        ],
+        'sso' => [
+            'google' => [
+                'client_id' => null,
+                'client_secret' => null,
+            ]
         ]
     ];
 
@@ -23,6 +29,9 @@ final class UsersModuleExtension extends CompilerExtension implements ITranslati
         // set extension parameters
         if (!isset($builder->parameters['countries']['default'])) {
             $builder->parameters['countries']['default'] = $this->config['countries']['default'];
+        }
+        if (!isset($builder->parameters['sso']['google'])) {
+            $builder->parameters['sso']['google'] = $this->config['sso']['google'];
         }
 
         // load services from config and register them to Nette\DI Container

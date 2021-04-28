@@ -271,6 +271,11 @@ class UsersModule extends CrmModule
             $this->getInstance(\Crm\UsersModule\Components\AddressWidget::class),
             100
         );
+        $widgetManager->registerWidget(
+            'users.sign_in.top',
+            $this->getInstance(\Crm\UsersModule\Components\SsoWidget::class),
+            100
+        );
     }
 
     public function registerScenariosCriteria(ScenariosCriteriaStorage $scenariosCriteriaStorage)
@@ -330,6 +335,9 @@ class UsersModule extends CrmModule
         );
         $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'autologin-token-login'), \Crm\UsersModule\Api\AutoLoginTokenLoginApiHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'users', 'google-token-sign-in'), \Crm\UsersModule\Api\GoogleTokenSignInHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
         );
 
         $apiRoutersContainer->attachRouter(new ApiRoute(

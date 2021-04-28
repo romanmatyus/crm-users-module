@@ -169,6 +169,10 @@ frontend:
 			cannot_delete: Používateľa nie je možné zmazať. Kontaktuje prosím zákaznícku podporu.
 			confirm: Zmazanie používateľského účtu je nevratná akcia. Pokračovať?
 			success: Vaše konto bolo zmazané.
+	google:
+		fail: "Chyba prihlasovania pomocou prihlásenia cez Google, prosím kontaktujte našu podporu."
+		sign_using_google: Prihlásiť cez Google
+		or: alebo
 
 admin:
 	actions:
@@ -580,6 +584,9 @@ component:
 
 config:
 	category: Používatelia
+	category_authentication: Autentizácia
 	not_logged_in_route:
 		name: Stránka pre neprihlásených
 		description: 'Nette routa, na ktorú má byť používateľ presmerovaný pri návšteve URL, ktorá je dostupná len pre prihlásených používateľov (napr. :Users:Sign:in)'
+	google_sign_in_enabled:
+		name: Google Sign-In povolené
