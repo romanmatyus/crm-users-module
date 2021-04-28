@@ -28,7 +28,7 @@ class GooglePresenter extends FrontendPresenter
     public function renderSign()
     {
         if (!$this->googleSignIn->isEnabled()) {
-            $this->redirect('in');
+            $this->redirect('Sign:in');
         }
 
         $session = $this->getSession(self::SESSION_SECTION);
@@ -55,14 +55,14 @@ class GooglePresenter extends FrontendPresenter
         } catch (SsoException $e) {
             Debugger::log($e->getMessage(), Debugger::WARNING);
             $this->flashMessage($this->translator->translate('users.frontend.google.fail'));
-            $this->redirect('in');
+            $this->redirect('Sign:in');
         }
     }
 
     public function renderCallback()
     {
         if (!$this->googleSignIn->isEnabled()) {
-            $this->redirect('in');
+            $this->redirect('Sign:in');
         }
 
         try {
@@ -77,7 +77,7 @@ class GooglePresenter extends FrontendPresenter
         } catch (SsoException $e) {
             Debugger::log($e, Debugger::WARNING);
             $this->flashMessage($this->translator->translate('users.frontend.google.fail'));
-            $this->redirect('in');
+            $this->redirect('Sign:in');
         }
 
         $session = $this->getSession(self::SESSION_SECTION);
