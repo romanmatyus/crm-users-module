@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Auth;
 
+use Crm\ApplicationModule\EnvironmentConfig;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Email\EmailValidator;
 use Crm\UsersModule\Events\UserChangePasswordEvent;
@@ -254,5 +255,22 @@ class UserManager
 
             $this->emitter->emit(new UserConfirmedEvent($user, $byAdmin));
         }
+    }
+
+    /**
+     * Generates hashed ID derived from actual user ID.
+     * Hash is generated using one-way MAC function with crmKey as the salt
+     *
+     * @param $userId
+     *
+     * @return string
+     */
+    public static function hashedUserId($userId): string
+    {
+        $crmKey = EnvironmentConfig::getCrmKey();
+        if (!$crmKey) {
+            throw new \Exception("Unable to generate hashed user ID using empty 'CRM_KEY' value, please set it up in .env file using 'application:generate_key' command.");
+        }
+        return hash_hmac('sha256', $userId, $crmKey);
     }
 }

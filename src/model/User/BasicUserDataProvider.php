@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\User;
 
 use Crm\ApplicationModule\User\UserDataProviderInterface;
+use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Utils\DateTime;
 
@@ -33,6 +34,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
             'email' => $user->email,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
+            'hashed_id' => UserManager::hashedUserId($user->id),
         ];
     }
 
