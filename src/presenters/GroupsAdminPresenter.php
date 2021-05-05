@@ -14,20 +14,32 @@ class GroupsAdminPresenter extends AdminPresenter
     /** @var  GroupFormFactory @inject */
     public $groupFormFactory;
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault()
     {
         $this->template->groups = $this->groupsRepository->all();
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderNew()
     {
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderEdit($id)
     {
         $this->template->group = $this->groupsRepository->find($id);
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderShow($id)
     {
         $this->template->group = $this->groupsRepository->find($id);

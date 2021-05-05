@@ -57,37 +57,44 @@ class GenerateAccessCommand extends Command
         $parts = explode('\\', $presenterClass);
         $presenter = str_replace('Presenter', '', array_pop($parts));
         $next = array_pop($parts);
-        if ($next == 'Presenters') {
+        if ($next === 'Presenters') {
             $next = array_pop($parts);
         }
         $module = str_replace('Module', '', $next);
+        $resource = "{$module}:{$presenter}";
 
-        $actions = [];
-
+        // select which prefixes
         $methodPrefixes = ['render', 'action', 'handle'];
         foreach (get_class_methods($presenterClass) as $methodName) {
             foreach ($methodPrefixes as $methodPrefix) {
-                if (substr($methodName, 0, strlen($methodPrefix)) == $methodPrefix) {
-                    $method = str_replace($methodPrefix, '', $methodName);
-                    $method = lcfirst($method);
-                    $actions[] = $method;
+                if (substr($methodName, 0, strlen($methodPrefix)) !== $methodPrefix) {
+                    continue;
                 }
-            }
-        }
 
-        $presenterFolder = ucfirst($presenter);
-        foreach (glob(__DIR__ . "/../../{$module}Module/templates/{$presenterFolder}/*.latte") as $templateFile) {
-            $path = pathinfo($templateFile);
-            if (!in_array($path['filename'], $actions) && $path['filename'][0] != '@') {
-                $actions[] = $path['filename'];
-            }
-        }
+                // parse resource & load access level from annotation
+                $action = str_replace($methodPrefix, '', $methodName);
+                $action = lcfirst($action);
+                $accessLevel = \Nette\Reflection\Method::from($presenterClass, $methodName)
+                    ->getAnnotation('admin-access-level');
+                if (!in_array($accessLevel, [null, 'write', 'read'], true)) {
+                    $output->writeln(
+                        " * <error>ACL resource </error><fg=red;bg=white;options=bold> {$resource}:{$action} </><error>" .
+                        " has incorrect access level <fg=red;bg=white;options=bold>[{$accessLevel}]</>.</error>\n" .
+                        "   <error>Only read, write and null are allowed. Null will be used instead.</error>"
+                    );
+                    $accessLevel = null;
+                }
 
-        foreach ($actions as $action) {
-            $resource = "{$module}:{$presenter}";
-            if (!$this->adminAccessRepository->exists($resource, $action)) {
-                $this->adminAccessRepository->add($resource, $action);
-                $output->writeln(" <fg=yellow>* ACL resource <info>{$resource}:{$action}</info> was created</>");
+                // add / update access resource
+                $adminAccess = $this->adminAccessRepository->findByResourceAndAction($resource, $action);
+                if (!$adminAccess) {
+                    $this->adminAccessRepository->add($resource, $action, $accessLevel);
+                    $output->writeln(" <comment>* ACL resource <info>{$resource}:{$action}</info> was created</comment>");
+                } elseif ($adminAccess['level'] !== $accessLevel) {
+                    $this->adminAccessRepository->update($adminAccess, ['level' => $accessLevel]);
+                    $level = $accessLevel ?? 'null'; // we want to display 'null', if access level is null
+                    $output->writeln(" <comment>* ACL resource <info>{$resource}:{$action}</info> - level changed to <info>{$level}</info></comment>");
+                }
             }
         }
     }

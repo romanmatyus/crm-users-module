@@ -30,6 +30,9 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
         $this->loginAttemptsRepository = $loginAttemptsRepository;
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault()
     {
         $filteredLoginAttempts = $this->getFilteredLoginAttempts();

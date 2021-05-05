@@ -35,11 +35,17 @@ class UserActionsLogAdminPresenter extends AdminPresenter
         $this->dataProviderManager = $dataProviderManager;
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault()
     {
         $this->template->logs = $this->userActionsLogRepository->all();
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderShow($id)
     {
         $this->template->logAction = $id;

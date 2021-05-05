@@ -21,6 +21,53 @@ extensions:
 	users: Crm\UsersModule\DI\UsersModuleExtension
 ```
 
+## Generate ACL
+
+User access resources are used to control access rights of admin groups in CRM admin. These resources are generated from methods `render*`, `action*`, `handle*` of all presenters extending `Crm\AdminModule\Presenters\AdminPresenter`.
+
+To generate run command:
+
+  ```shell
+  php bin/command.php user:generate_access
+  ```
+
+This command should be run everytime new version is released to validate & generate new resources.
+
+All new resources are automatically assigned to `superadmin` admin group - check seeder `Crm\UsersModule\Seeders\UsersSeeder`.
+
+Other admin groups are not affected. New resources have to be assigned either manually via admin interface (http://crm.press/users/admin-group-admin/show/1) or seeded within your module.
+
+### ACL - `admin-access-level`
+
+_These annotations are optional and do not affect resolving access rights to resource._
+
+To ease assigning of access rights to admin groups (http://crm.press/users/admin-group-admin/show/1), level of access resource can be specified as method annotation `admin-access-level`. CRM uses now two levels `read` and `write`. Level `write` indicates that this method can be used to create, update or remove entity. Rest of resources has level `read`.
+
+Example:
+
+  ```php
+  use Crm\AdminModule\Presenters\AdminPresenter;
+
+  class ExampleAdminPresenter extends AdminPresenter {
+
+      /**
+       * @admin-access-level read
+       */
+      public function renderDefault()
+      {
+      }
+
+      /**
+       * @admin-access-level write
+       */
+      public function renderEdit()
+      {
+      }
+  }
+  ````
+
+If annotation `admin-access-level` is missing, no level is displayed on page where resources/right are assigned to admin groups (http://crm.press/users/admin-group-admin/show/1).
+
 ## Single sign-on
 
 ### Google Sign-In

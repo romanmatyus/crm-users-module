@@ -21,20 +21,32 @@ class AdminGroupAdminPresenter extends AdminPresenter
     /** @var  AdminAccessRepository @inject */
     public $adminAccessRepository;
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault()
     {
         $this->template->groups = $this->adminGroupsRepository->all();
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderNew()
     {
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderEdit($id)
     {
         $this->template->group = $this->adminGroupsRepository->find($id);
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderShow($id)
     {
         $this->template->group = $this->adminGroupsRepository->find($id);

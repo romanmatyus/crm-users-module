@@ -47,6 +47,9 @@ class AbusiveUsersAdminPresenter extends AdminPresenter
 
     protected $onPage = 100;
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault($dateFrom, $dateTo, $loginCount = 10, $deviceCount = 1, $sortBy = 'device_count', $email = null)
     {
         $this->dateFrom = $dateFrom ?? (new DateTime())->modify('- 2 months')->format('Y-m-d');
@@ -188,6 +191,9 @@ SQL;
         return $form;
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleChangeActivation($userId)
     {
         $user = $this->usersRepository->find($userId);

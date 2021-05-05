@@ -27,6 +27,9 @@ class AddressAdminPresenter extends AdminPresenter
         $this->usersRepository = $usersRepository;
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderEdit($id)
     {
         $address = $this->addressesRepository->find($id);
@@ -37,6 +40,9 @@ class AddressAdminPresenter extends AdminPresenter
         $this->template->user = $address->user;
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderNew($userId)
     {
         $this->template->user = $this->usersRepository->find($userId);

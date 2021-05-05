@@ -105,6 +105,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->adminFilterFormData->parse($this->formData);
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault()
     {
         $filteredCount = $this->adminFilterFormData->getFilteredUsers()->count('distinct(users.id)');
@@ -122,8 +125,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->template->totalUsers = $this->usersRepository->totalCount();
     }
 
-
-
+    /**
+     * @admin-access-level read
+     */
     public function renderShow($id)
     {
         $user = $this->usersRepository->find($id);
@@ -140,6 +144,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->template->canEditRoles = $this->getUser()->isAllowed('Users:AdminGroupAdmin', 'edit');
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderEdit($id)
     {
         $user = $this->usersRepository->find($id);
@@ -149,10 +156,16 @@ class UsersAdminPresenter extends AdminPresenter
         $this->template->user = $user;
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function renderNew()
     {
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleLogOut($userId)
     {
         $user = $this->usersRepository->find($userId);
@@ -188,7 +201,9 @@ class UsersAdminPresenter extends AdminPresenter
 
     /**
      * You need to process NotificationEvent in order to
-     * send user email containin new password.
+     * send user email containing new password.
+     *
+     * @admin-access-level write
      *
      * @param $userId
      */
@@ -210,6 +225,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->redirect('show', $userId);
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleConfirm($userId)
     {
         $user = $this->usersRepository->find($userId);
@@ -348,6 +366,9 @@ class UsersAdminPresenter extends AdminPresenter
         return $form;
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleChangeActivation($userId)
     {
         $user = $this->usersRepository->find($userId);
@@ -361,6 +382,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->redirect('UsersAdmin:Show', $user->id);
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleDeleteUser($id)
     {
         $user = $this->usersRepository->find($id);
@@ -381,6 +405,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->redirect('UsersAdmin:Show', $user->id);
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleSuspicious($userId)
     {
         $user = $this->usersRepository->find($userId);
@@ -414,6 +441,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->redirect('show', $user->id);
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderExport()
     {
         $this->getHttpResponse()->addHeader('Content-Type', 'application/csv');
@@ -440,6 +470,9 @@ class UsersAdminPresenter extends AdminPresenter
         return $form;
     }
 
+    /**
+     * @admin-access-level write
+     */
     public function handleRemoveAddress($addressId)
     {
         $address = $this->addressesRepository->find($addressId);

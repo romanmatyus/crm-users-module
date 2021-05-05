@@ -25,6 +25,9 @@ class DashboardPresenter extends AdminPresenter
         $this->dateTo = $this->dateTo ?? DateTime::from('today')->format('Y-m-d');
     }
 
+    /**
+     * @admin-access-level read
+     */
     public function renderDefault()
     {
         $this->template->dateFrom = $this->dateFrom;
