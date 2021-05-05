@@ -8,6 +8,7 @@ use Crm\UsersModule\Auth\Repository\AdminGroupsRepository;
 use Crm\UsersModule\Forms\AdminGroupFormFactory;
 use Nette\Application\UI\Form;
 use Nette\Utils\DateTime;
+use Nette\Utils\Html;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class AdminGroupAdminPresenter extends AdminPresenter
@@ -80,25 +81,138 @@ class AdminGroupAdminPresenter extends AdminPresenter
 
         $group = $this->adminGroupsRepository->find($this->params['id']);
 
+        $form->addGroup()
+            ->setOption('description', $this->translator->translate('users.admin.admin_group_admin.privileges.global_settings'))
+            ->setOption('container', Html::el('fieldset class="global-settings"'));
+        $form
+            ->addRadioList(
+                'privileges',
+                null,
+                [
+                    'all' => $this->translator->translate('users.admin.admin_group_admin.privileges.all'),
+                    'read' => $this->translator->translate('users.admin.admin_group_admin.privileges.read_only'),
+                    'none' => $this->translator->translate('users.admin.admin_group_admin.privileges.none'),
+                    'custom' => $this->translator->translate('users.admin.admin_group_admin.privileges.custom'),
+                ]
+            )
+            ->setDisabled(['custom']);
+
         $defaults = [];
         foreach ($group->related('admin_groups_access') as $adminGroupAccess) {
             $defaults['access_' . $adminGroupAccess->admin_access_id] = true;
         }
 
         $formGroup = false;
+        $accessesPerModule = [];
         foreach ($accesses as $access) {
             $parts = explode(':', $access->resource);
             if (!isset($parts[0])) {
                 continue;
             }
-            if ($formGroup != $parts[0]) {
-                $form->addGroup($parts[0]);
-            }
-            $permission = $access->resource . ':' . $access->action;
-            $form->addCheckbox('access_' . $access->id, ' ' . $permission);
+            $module = $parts[0];
 
-            $formGroup = $parts[0];
+            if ($formGroup !== $module) {
+                $form->addGroup($module)
+                    ->setOption('container', Html::el('fieldset class="resources-group"'))
+                    ->setOption('embedNext', true);
+
+                $allContainer = $form->addContainer(str_replace(':', '_', $access->resource));
+                $radioList = $allContainer
+                    ->addRadioList(
+                        'privileges',
+                        null,
+                        [
+                            'all' => $this->translator->translate('users.admin.admin_group_admin.privileges.all'),
+                            'read' => $this->translator->translate('users.admin.admin_group_admin.privileges.read_only'),
+                            'none' => $this->translator->translate('users.admin.admin_group_admin.privileges.none'),
+                            'custom' => $this->translator->translate('users.admin.admin_group_admin.privileges.custom'),
+                        ]
+                    )
+                    ->setDisabled(['custom'])
+                    ->setHtmlAttribute('data-access-module', $module);
+
+                $form->addGroup(null)
+                    ->setOption('container', Html::el('fieldset class="resources"'));
+
+                $accessesPerModule[$module] = ['radio' => [
+                    'container' => $allContainer->getName(),
+                    'radio' => $radioList->getName()]
+                ];
+            }
+
+            $permission = $access->resource . ':' . $access->action;
+            // missing access level won't be displayed as `read` to indicate that it needs to be checked by developer
+            // this will change in future; missing access level will be treated as 'read' level
+            $permissionLevel =  $access->level ? '<em class="access-level">(' . $access->level . ')</em> ' : '';
+
+            $checkbox = $form
+                ->addCheckbox(
+                    'access_' . $access->id,
+                    Html::el('span', ['class' => 'access-resource'])->setHtml($permissionLevel . $permission)
+                )
+                ->setHtmlAttribute('data-access-module', $module)
+                ->setHtmlAttribute('data-access-resource', $access->resource)
+                ->setHtmlAttribute('data-access-level', $access->level);
+
+            $accessesPerModule[$module]['checkboxes'][] = [
+                'name' => $checkbox->getName(),
+                'level' => $access->level
+            ];
+
+            $formGroup = $module;
         }
+
+        // set default values for radio lists
+        foreach ($accessesPerModule as $module) {
+            $moduleCheckboxes = array_column($module['checkboxes'], 'name');
+            $moduleCount = count($moduleCheckboxes);
+            $enabledCount = array_intersect($moduleCheckboxes, array_keys($defaults));
+
+            // set radio button to enabled if 'all' of all module checkboxes are set
+            if ($moduleCount === count($enabledCount)) {
+                $defaults[$module['radio']['container']] = [$module['radio']['radio'] => 'all'];
+            } else {
+                // we need to check read levels
+                $allReadOnly = true;
+                $noPrivileges = true;
+                foreach ($module['checkboxes'] as $checkbox) {
+                    if (!isset($defaults[$checkbox['name']])) {
+                        $allReadOnly = false;
+                        continue;
+                    }
+                    // found some set privilege
+                    $noPrivileges = false;
+
+                    if ($checkbox['level'] === 'write') {
+                        $allReadOnly = false;
+                    }
+                }
+
+                if ($noPrivileges) {
+                    $defaultValue = 'none';
+                } elseif ($allReadOnly) {
+                    $defaultValue = 'read';
+                } else {
+                    $defaultValue = 'custom';
+                }
+                $defaults[$module['radio']['container']] = [$module['radio']['radio'] => $defaultValue];
+            }
+        }
+
+        // set default values for global radio list
+        $globalPrivileges = 'all';
+        $radioButtonLevels = array_column($defaults, 'privileges');
+        $read = array_search('read', $radioButtonLevels, true);
+        $custom = array_search('custom', $radioButtonLevels, true);
+
+        if (count($radioButtonLevels) === 0) {
+            $globalPrivileges = 'none';
+        } elseif ($read === count($radioButtonLevels)) {
+            $globalPrivileges = 'read';
+        } elseif ($read !== 0 || $custom !== 0) {
+            $globalPrivileges = 'custom';
+        }
+        $defaults['privileges'] = $globalPrivileges;
 
         $form->setDefaults($defaults);
 
@@ -114,6 +228,9 @@ class AdminGroupAdminPresenter extends AdminPresenter
                     continue;
                 }
                 $accessId = str_replace('access_', '', $key);
+                if ($accessId === $key) {
+                    continue; // skip radio buttons (used only for frontend changes)
+                }
                 $accesses[] = $accessId;
             }
             $group->related('admin_groups_access')->where(['NOT admin_access_id' => $accesses])->delete();

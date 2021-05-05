@@ -430,6 +430,12 @@ admin:
 		group_created: Skupina byla vytvořena.
 		group_updated: Skupina byla aktualizována.
 		rights_updated: Práva pro skupinu byly nastaveny.
+		privileges:
+			global_settings: Globální nastavení
+			all: Všechna práva
+			read_only: Jen práva na zobrazení
+			none: Žádné práva
+			custom: Vlastní
 		submit: Ulož
 
 	admin_group_form:

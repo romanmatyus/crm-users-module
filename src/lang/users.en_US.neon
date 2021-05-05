@@ -428,6 +428,12 @@ admin:
 		group_created: Group was created.
 		group_updated: Group was updated.
 		rights_updated: Access rights for group were configured.
+		privileges:
+			global_settings: Global settings
+			all: All privileges
+			read_only: Read only
+			none: No privileges
+			custom: Custom
 		submit: Save
 
 	admin_group_form:

@@ -41,7 +41,144 @@
   <div class="col-md-12">
     <h3>{_users.admin.admin_group_admin.rights} {$group->related('admin_groups_access')->count('*')} <small>/ {$accesses->count('*')}</small></h3>
 
+    <style>
+      fieldset {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        flex-wrap: wrap;
+      }
+
+      fieldset.global-settings > p {
+        min-width: 300px;
+      }
+
+      fieldset.global-settings > div {
+        min-width: 600px;
+      }
+
+      fieldset.resources-group > div {
+        min-width: 300px;
+      }
+
+      fieldset.resources-group > fieldset.resources {
+        min-width: 600px;
+      }
+
+      .resources-group {
+        margin: 1.5em 0;
+      }
+
+      .form-group {
+        margin: 0;
+      }
+
+      .col-sm-3 {
+        width: 0;
+      }
+
+      fieldset.resources .col-sm-9 {
+        width: 600px;
+      }
+
+      .access-resource .access-level {
+        color: gray;
+      }
+    </style>
     {control accessForm}
   </div>
 </div>
 
+<script>
+
+  $(document).ready(function() {
+
+    // TODO: move whole access form to own form so we can render label for disabled radio with custom style (styling it without javascript)
+    // set different style for disabled "custom" radio
+    // (this cannot be done through css - nette adds label as parent element without any way to select it through css)
+    document.querySelectorAll('input[type = "radio"][disabled]').forEach(function(elem) {
+      elem.parentElement.setAttribute('style', 'font-style:italic; color: gray;')
+    });
+
+    // global radio buttons -> on change local radio buttons are changed
+    if (document.querySelector('input[type="radio"][name="privileges"]')) {
+      document.querySelectorAll('input[type="radio"][name="privileges"]').forEach(function(elem) {
+        elem.addEventListener("change", function(event) {
+          var item = event.target.value;
+
+          if (item === 'all') {
+            document.querySelectorAll('input[type="radio"][data-access-module]:not([data-access-module=""])[value="all"]').forEach(function(element) {
+              element.checked = true;
+              element.dispatchEvent(new Event("change")); // fired to trigger listener on local radio
+            });
+          }
+
+          if (item === 'none') {
+            document.querySelectorAll('input[type="radio"][data-access-module]:not([data-access-module=""])[value="none"]').forEach(function(element) {
+              element.checked = true;
+              element.dispatchEvent(new Event("change")); // fired to trigger listener on local radio
+            });
+          }
+
+          if (item === 'read') {
+            document.querySelectorAll('input[type="radio"][data-access-module]:not([data-access-module=""])[value="read"]').forEach(function(element) {
+              element.checked = true;
+              element.dispatchEvent(new Event("change")); // fired to trigger listener on local radio
+            });
+          }
+        });
+      });
+    }
+
+    // local radio buttons -> on change local checkboxes are changed
+    if (document.querySelector('input[type="radio"][data-access-module]:not([data-access-module=""])')) {
+      document.querySelectorAll('input[type="radio"][data-access-module]:not([data-access-module=""])').forEach(function(elem) {
+        elem.addEventListener("change", function(event) {
+          var item = event.target.value;
+          var accessModule = event.target.getAttribute('data-access-module');
+
+          if (item === 'all') {
+            document.querySelectorAll('input[type="checkbox"][data-access-module=' + accessModule + ']').forEach(function(element) {
+              element.checked = true
+            });
+          }
+
+          if (item === 'none') {
+            document.querySelectorAll('input[type="checkbox"][data-access-module=' + accessModule + ']').forEach(function(element) {
+              element.checked = false
+            });
+          }
+
+          if (item === 'read') {
+            document.querySelectorAll('input[type="checkbox"][data-access-module=' + accessModule + '][data-access-level="read"]').forEach(function(element) {
+              element.checked = true;
+            });
+            document.querySelectorAll('input[type="checkbox"][data-access-module=' + accessModule + ']:not([data-access-level="read"])').forEach(function(element) {
+              element.checked = false;
+            });
+          }
+        });
+
+        // if any local radio is clicked; change global radio to custom
+        elem.addEventListener("click", function(event) {
+          document.querySelector('input[type="radio"][name="privileges"][value="custom"]').checked = true;
+        });
+      });
+    }
+
+    // if any local checkbox is clicked; change local radio to custom
+    if (document.querySelector('input[type="checkbox"][data-access-module]:not([data-access-module=""])')) {
+      document.querySelectorAll('input[type="checkbox"][data-access-module]:not([data-access-module=""])').forEach(function(elem) {
+        elem.addEventListener("click", function (event) {
+          var accessModule = event.target.getAttribute('data-access-module');
+          var element = document.querySelector('input[type="radio"][data-access-module=' + accessModule + '][value="custom"]');
+          element.checked = true;
+          element.dispatchEvent(new Event("click")); // fired to trigger listener on local radio
+        });
+      });
+    }
+  });
+
+</script>
