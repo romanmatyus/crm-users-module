@@ -32,8 +32,6 @@ class BasicUserDataProvider implements UserDataProviderInterface
         return [
             'id' => $user->id,
             'email' => $user->email,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
             'created_at' => $user->created_at->getTimestamp(),
             'hashed_id' => UserManager::hashedUserId($user->id),
         ];
@@ -49,8 +47,6 @@ class BasicUserDataProvider implements UserDataProviderInterface
 
         return [
             'email' => $user->email,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
             'public_name' => $user->public_name,
             'created_at' => $user->created_at->format(\DateTimeInterface::RFC3339), //confirmed_at?
             'last_sign_in_up' => $user->last_sign_in_ip, //?
