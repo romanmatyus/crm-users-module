@@ -34,6 +34,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
             'email' => $user->email,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
+            'created_at' => $user->created_at->getTimestamp(),
             'hashed_id' => UserManager::hashedUserId($user->id),
         ];
     }
