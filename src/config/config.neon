@@ -46,7 +46,7 @@ services:
 	serviceTokenAuthorization: Crm\UsersModule\Auth\ServiceTokenAuthorization
 
 	- Crm\UsersModule\Auth\Access\AccessToken
-	- Crm\UsersModule\Auth\Sso\GoogleSignIn(%sso.google.client_id%, %sso.google.client_secret%)
+	googleSignIn: Crm\UsersModule\Auth\Sso\GoogleSignIn(%sso.google.client_id%, %sso.google.client_secret%)
 
 	ssoRedirectValidator:
 	    class: Crm\UsersModule\Auth\Sso\SsoRedirectValidator

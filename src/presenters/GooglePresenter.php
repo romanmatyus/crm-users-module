@@ -25,7 +25,7 @@ class GooglePresenter extends FrontendPresenter
         $this->ssoRedirectValidator = $ssoRedirectValidator;
     }
 
-    public function renderSign()
+    public function actionSign()
     {
         if (!$this->googleSignIn->isEnabled()) {
             $this->redirect('Sign:in');
@@ -59,7 +59,7 @@ class GooglePresenter extends FrontendPresenter
         }
     }
 
-    public function renderCallback()
+    public function actionCallback()
     {
         if (!$this->googleSignIn->isEnabled()) {
             $this->redirect('Sign:in');
