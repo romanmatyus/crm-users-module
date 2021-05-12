@@ -134,8 +134,6 @@ class UserFormFactory
 
     public function formSucceeded($form, $values)
     {
-        $user = null;
-
         $values = clone($values);
         foreach ($values as $i => $item) {
             if ($item instanceof Nette\Utils\ArrayHash) {
@@ -147,6 +145,7 @@ class UserFormFactory
         if (strlen(trim($values['public_name'])) === 0) {
             $values['public_name'] = $values['email'];
         }
+        $values['ext_id'] = trim($values['ext_id']) ? (int) $values['ext_id'] : null;
 
         if (isset($values['user_id'])) {
             $userId = $values['user_id'];
@@ -181,7 +180,7 @@ class UserFormFactory
                 ->setPublicName($values['public_name'])
                 ->setRole($values['role'])
                 ->setActive($values['active'])
-                ->setExtId(!empty($values['ext_id']) ? intval($values['ext_id']) : null)
+                ->setExtId($values['ext_id'])
                 ->setInstitutionName($values['institution_name'])
                 ->setIsInstitution($values['is_institution'])
                 ->setSource($values['source'])
