@@ -21,9 +21,7 @@ class GoogleSignIn
 
     // Default scopes MUST be included for OpenID Connect.
     private const DEFAULT_SCOPES =  [
-        'openid', // "openid" MUST be the first scope in the list.
         'email',
-        'profile',
     ];
 
     private $configsRepository;
@@ -101,9 +99,7 @@ class GoogleSignIn
                 $user = $this->userBuilder->createNew()
                     ->setEmail($payload['email'])
                     ->setPassword('', false) // Password will be empty, therefore unable to log-in
-                    ->setFirstName($payload['given_name'])
-                    ->setLastName($payload['family_name'])
-                    ->setPublicName($payload['name'])
+                    ->setPublicName($payload['email'])
                     ->setRole('user')
                     ->setActive(true)
                     ->setIsInstitution(false)
@@ -219,9 +215,7 @@ class GoogleSignIn
                 $user = $this->userBuilder->createNew()
                     ->setEmail($userInfo->getEmail())
                     ->setPassword('', false) // Password will be empty, therefore unable to log-in
-                    ->setFirstName($userInfo->getGivenName())
-                    ->setLastName($userInfo->getFamilyName())
-                    ->setPublicName($userInfo->getName())
+                    ->setPublicName($userInfo->getEmail())
                     ->setRole('user')
                     ->setActive(true)
                     ->setIsInstitution(false)
