@@ -303,6 +303,11 @@ admin:
 		user_created: User was created.
 		user_updated: User was updated.
 
+	scenarios:
+		user_has_address_criteria:
+			label: User has address
+			param: User has address of type
+
 	user_groups_form:
 		user_added: User was added to the group
 		user_removed: User was removed from the group

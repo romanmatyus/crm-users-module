@@ -304,6 +304,11 @@ admin:
 		user_created: Používateľ bol vytvorený.
 		user_updated: Používateľ bol aktualizovaný.
 
+	scenarios:
+		user_has_address_criteria:
+			label: Používateľ má adresu
+			param: Používateľ má adresu typu
+
 	user_groups_form:
 		user_added: Používateľ bol pridaný do skupiny
 		user_removed: Používateľ bol odstránený zo skupiny

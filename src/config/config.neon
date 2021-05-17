@@ -66,6 +66,7 @@ services:
 	- Crm\UsersModule\Forms\SignInFormFactory
 	- Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory
 	- Crm\UsersModule\Scenarios\UserSourceCriteria
+	- Crm\UsersModule\Scenarios\UserHasAddressCriteria
 	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
 	- Crm\UsersModule\Auth\UserManager
 	- Crm\UsersModule\Auth\PasswordGenerator
