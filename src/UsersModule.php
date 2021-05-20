@@ -364,6 +364,7 @@ class UsersModule extends CrmModule
         $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\AutoLoginTokensUserDataProvider::class));
         $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\UserMetaUserDataProvider::class));
         $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\AdminUserGroupsUserDataProvider::class));
+        $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\UserConnectedAccountsDataProvider::class));
     }
 
     public function registerSegmentCriteria(CriteriaStorage $criteriaStorage)

@@ -13,6 +13,7 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
+use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
@@ -44,8 +45,11 @@ class UserManager
 
     private $userMetaRepository;
 
+    private $userConnectedAccountsRepository;
+
     public function __construct(
         UsersRepository $usersRepository,
+        UserConnectedAccountsRepository $userConnectedAccountsRepository,
         PasswordGenerator $passwordGenerator,
         Emitter $emitter,
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
@@ -64,6 +68,7 @@ class UserManager
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->userMetaRepository = $userMetaRepository;
+        $this->userConnectedAccountsRepository = $userConnectedAccountsRepository;
     }
 
     /**
@@ -123,6 +128,17 @@ class UserManager
     public function loadUser(User $user)
     {
         return $this->usersRepository->find($user->getIdentity()->getId());
+    }
+
+    public function matchSsoUser(string $connectedAccountType, string $externalId, string $email): ?IRow
+    {
+        // external ID has priority over email
+        $connectedAccount = $this->userConnectedAccountsRepository->getByExternalId($connectedAccountType, $externalId);
+        if ($connectedAccount) {
+            return $connectedAccount->user;
+        }
+
+        return $this->usersRepository->getByEmail($email) ?: null;
     }
 
     public function setNewPassword($userId, $actualPassword, $newPassword)

@@ -10,31 +10,29 @@ use Nette\Utils\Json;
 
 class UserConnectedAccountsRepository extends Repository
 {
-    const TYPE_GOOGLE_SIGN_IN = 'google_sign_in';
+    public const TYPE_GOOGLE_SIGN_IN = 'google_sign_in';
 
     protected $tableName = 'user_connected_accounts';
 
-    private $usersRepository;
-
     public function __construct(
         Context $database,
-        UsersRepository $usersRepository,
         AuditLogRepository $auditLogRepository
     ) {
         parent::__construct($database);
         $this->database = $database;
-        $this->usersRepository = $usersRepository;
         $this->auditLogRepository = $auditLogRepository;
     }
 
     final public function add(
         IRow $user,
         string $type,
-        string $email,
+        string $externalId,
+        ?string $email,
         $meta = null
     ) {
         return $this->insert([
             'user_id' => $user->id,
+            'external_id' => $externalId,
             'email' => $email,
             'type' => $type,
             'created_at' => new \DateTime(),
@@ -43,33 +41,12 @@ class UserConnectedAccountsRepository extends Repository
         ]);
     }
 
-    /**
-     * Loads either user with given $email (user has preference over connected account)
-     * or user having connected account with given $email and $type.
-     *
-     * @param string $email
-     * @param string $type
-     *
-     * @return IRow|null
-     */
-    final public function getUserByEmail(string $email, string $type): ?IRow
+    final public function getByExternalId(string $type, string $externalId)
     {
-        $user = $this->usersRepository->getByEmail($email);
-
-        if ($user) {
-            return $user;
-        }
-
-        $row = $this->getTable()->where([
-            'email' => $email,
-            'type' => $type
+        return $this->getTable()->where([
+            'external_id' => $externalId,
+            'type' => $type,
         ])->fetch();
-
-        if ($row) {
-            return $row->user;
-        }
-
-        return null;
     }
 
     final public function getForUser(IRow $user, string $type)
@@ -78,5 +55,12 @@ class UserConnectedAccountsRepository extends Repository
             'user_id' => $user->id,
             'type' => $type,
         ])->fetch();
+    }
+
+    public function removeAccountsForUser(IRow $user): int
+    {
+        return $this->getTable()
+            ->where(['user_id' => $user->id])
+            ->delete();
     }
 }
