@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
+use Crm\UsersModule\Auth\PasswordGenerator;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
@@ -41,6 +42,8 @@ class GoogleSignIn
 
     private $userManager;
 
+    private $passwordGenerator;
+
     public function __construct(
         ?string $clientId,
         ?string $clientSecret,
@@ -49,7 +52,8 @@ class GoogleSignIn
         UserBuilder $userBuilder,
         UserConnectedAccountsRepository $connectedAccountsRepository,
         UserManager $userManager,
-        Context $dbContext
+        Context $dbContext,
+        PasswordGenerator $passwordGenerator
     ) {
         $this->configsRepository = $configsRepository;
         $this->session = $session;
@@ -59,6 +63,7 @@ class GoogleSignIn
         $this->clientSecret = $clientSecret;
         $this->dbContext = $dbContext;
         $this->userManager = $userManager;
+        $this->passwordGenerator = $passwordGenerator;
     }
 
     public function isEnabled(): bool
@@ -115,9 +120,10 @@ class GoogleSignIn
             if (!$user) {
                 // if user is not in our DB, create him/her
                 // our access_token is not automatically created
+                $password = $this->passwordGenerator->generatePassword();
                 $user = $this->userBuilder->createNew()
                     ->setEmail($userEmail)
-                    ->setPassword('', false) // Password will be empty, therefore unable to log-in
+                    ->setPassword($password)
                     ->setPublicName($userEmail)
                     ->setRole('user')
                     ->setActive(true)
@@ -241,9 +247,10 @@ class GoogleSignIn
             if (!$user) {
                 // if user is not in our DB, create him/her
                 // our access_token is not automatically created
+                $password = $this->passwordGenerator->generatePassword();
                 $user = $this->userBuilder->createNew()
                     ->setEmail($userInfo->getEmail())
-                    ->setPassword('', false) // Password will be empty, therefore unable to log-in
+                    ->setPassword($password)
                     ->setPublicName($userInfo->getEmail())
                     ->setRole('user')
                     ->setActive(true)
