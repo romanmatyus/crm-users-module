@@ -16,15 +16,5 @@
       "Crm\\UsersModule\\": "src/"
     },
     "classmap": ["src/"]
-  },
-  "scripts": {
-    "post-update-cmd": [
-      "Google\\Task\\Composer::cleanup"
-    ]
-  },
-  "extra": {
-    "google/apiclient-services": [
-      "Oauth2"
-    ]
   }
 }
