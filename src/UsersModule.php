@@ -18,6 +18,7 @@ use Crm\ApplicationModule\Menu\MenuItem;
 use Crm\ApplicationModule\SeederManager;
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\ApplicationModule\Widget\WidgetManagerInterface;
+use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Crm\UsersModule\Auth\Permissions;
 use Crm\UsersModule\DataProvider\UsersClaimUserDataProvider;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
@@ -409,12 +410,17 @@ class UsersModule extends CrmModule
         $cleanUpManager->add(ChangePasswordsLogsRepository::class, function (Container $container) {
             /** @var ChangePasswordsLogsRepository $changePasswordLogsRepository */
             $changePasswordLogsRepository = $container->getByType(ChangePasswordsLogsRepository::class);
-            $changePasswordLogsRepository->removeOldData('-12 months');
+            $changePasswordLogsRepository->removeOldData();
         });
         $cleanUpManager->add(UserActionsLogRepository::class, function (Container $container) {
-            /** @var UserActionsLogRepository $changePasswordLogsRepository */
+            /** @var UserActionsLogRepository $userActionsLogRepository */
             $userActionsLogRepository = $container->getByType(UserActionsLogRepository::class);
-            $userActionsLogRepository->removeOldData('-12 months');
+            $userActionsLogRepository->removeOldData();
+        });
+        $cleanUpManager->add(AutoLoginTokensRepository::class, function (Container $container) {
+            /** @var AutoLoginTokensRepository $tokensRepository */
+            $tokensRepository = $container->getByType(AutoLoginTokensRepository::class);
+            $tokensRepository->removeOldData();
         });
     }
 

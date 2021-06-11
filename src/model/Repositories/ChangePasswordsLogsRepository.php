@@ -3,10 +3,13 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
+use Crm\ApplicationModule\Repository\RetentionData;
 use Nette\Utils\DateTime;
 
 class ChangePasswordsLogsRepository extends Repository
 {
+    use RetentionData;
+
     const TYPE_CHANGE = 'change';
     const TYPE_RESET = 'reset';
     const TYPE_FORCE = 'force';
@@ -46,12 +49,12 @@ class ChangePasswordsLogsRepository extends Repository
         return $this->getTable()->where(['user_id' => $userId]);
     }
 
-    final public function removeOldData($from): void
+    final public function removeOldData(): void
     {
         $records = $this->getTable()
             ->select('change_passwords_logs.id')
             ->where('user.active = ?', false)
-            ->where('change_passwords_logs.created_at < ?', DateTime::from($from));
+            ->where('change_passwords_logs.created_at < ?', DateTime::from($this->getRetentionThreshold()));
 
         if ($records->fetchAll()) {
             $this->getTable()->where('id IN (?)', $records)->delete();

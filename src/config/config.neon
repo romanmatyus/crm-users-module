@@ -17,15 +17,24 @@ services:
 	groupsRepository: Crm\UsersModule\Repository\GroupsRepository
 	userGroupsRepository: Crm\UsersModule\Repository\UserGroupsRepository
 	loginAttemptsRepository: Crm\UsersModule\Repository\LoginAttemptsRepository
-	changePasswordsLogsRepository: Crm\UsersModule\Repository\ChangePasswordsLogsRepository
+	changePasswordsLogsRepository:
+		class: Crm\UsersModule\Repository\ChangePasswordsLogsRepository
+		setup:
+			- setRetentionThreshold('-12 months')
 	userMetaRepository: Crm\UsersModule\Repository\UserMetaRepository
 	addressesRepository: Crm\UsersModule\Repository\AddressesRepository
 	addressesMetaRepository: Crm\UsersModule\Repository\AddressesMetaRepository
 	addressChangeRequestsRepository: Crm\UsersModule\Repository\AddressChangeRequestsRepository
-	userActionsLogRepository: Crm\UsersModule\Repository\UserActionsLogRepository
+	userActionsLogRepository:
+		class: Crm\UsersModule\Repository\UserActionsLogRepository
+		setup:
+			- setRetentionThreshold('-12 months')
 	adminGroupsRepository: Crm\UsersModule\Auth\Repository\AdminGroupsRepository
 	adminAccessRepository: Crm\UsersModule\Auth\Repository\AdminAccessRepository
-	autoLoginTokensRepository: Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
+	autoLoginTokensRepository:
+		class: Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
+		setup:
+			- setRetentionThreshold('now', 'valid_to')
 	countriesRepository: Crm\UsersModule\Repository\CountriesRepository(%countries.default%)
 	addressTypesRepository: Crm\UsersModule\Repository\AddressTypesRepository
 	passwordResetTokensRepository: Crm\UsersModule\Repository\PasswordResetTokensRepository

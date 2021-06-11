@@ -41,6 +41,22 @@ users:
 
 Last step is to **enable** Google Sign-In in CRM settings in `/admin/config-admin/` Authentication section.
 
+#### Data retention configuration
+
+You can configure time before which `application:cleanup` deletes old repository data and column which it uses by using (in your project configuration file):
+
+```neon
+autoLoginTokensRepository:
+	setup:
+		- setRetentionThreshold('now', 'valid_at')
+changePasswordsLogsRepository:
+	setup:
+		- setRetentionThreshold('-12 months')
+userActionsLogRepository:
+	setup:
+		- setRetentionThreshold('-12 months')
+```
+
 ### ID Token
 
 ID Token is a Google-signed JWT token holding user information (see [the documentation](https://developers.google.com/identity/sign-in/web/backend-auth)).

@@ -3,10 +3,13 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
+use Crm\ApplicationModule\Repository\RetentionData;
 use Nette\Utils\DateTime;
 
 class UserActionsLogRepository extends Repository
 {
+    use RetentionData;
+
     protected $tableName = 'user_actions_log';
 
     final public function add($userId, $action, $params = [])
@@ -29,12 +32,12 @@ class UserActionsLogRepository extends Repository
         return $this->getTable()->group('action')->select('action, COUNT(*) AS count');
     }
 
-    final public function removeOldData($from): void
+    final public function removeOldData(): void
     {
         $records = $this->getTable()
             ->select('user_actions_log.id')
             ->where('user.active = ?', false)
-            ->where('user_actions_log.created_at < ?', DateTime::from($from));
+            ->where('user_actions_log.created_at < ?', DateTime::from($this->getRetentionThreshold()));
 
         if ($records->fetchAll()) {
             $this->getTable()->where('id IN (?)', $records)->delete();

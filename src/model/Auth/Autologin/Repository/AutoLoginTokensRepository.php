@@ -31,11 +31,6 @@ class AutoLoginTokensRepository extends Repository
         return $this->getTable()->where('user_id', $userId)->order('valid_to DESC');
     }
 
-    protected function removingField()
-    {
-        return 'valid_to';
-    }
-
     final public function deleteAll($userId)
     {
         return $this->getTable()->where('user_id', $userId)->delete();
