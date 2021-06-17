@@ -176,7 +176,7 @@ class UsersRepository extends Repository
                     'original_email' => $originalEmail,
                     'new_email' => $row->email,
                 ]
-            ));
+            ), HermesMessage::PRIORITY_DEFAULT);
         }
         $this->emitter->emit(new UserUpdatedEvent($row));
     }
