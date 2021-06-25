@@ -19,8 +19,8 @@ use Crm\ApplicationModule\Menu\MenuItem;
 use Crm\ApplicationModule\SeederManager;
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\ApplicationModule\Widget\WidgetManagerInterface;
-use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Crm\UsersModule\Api\EmailValidationApiHandler;
+use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Crm\UsersModule\Auth\Permissions;
 use Crm\UsersModule\DataProvider\UsersClaimUserDataProvider;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
@@ -343,6 +343,9 @@ class UsersModule extends CrmModule
         );
         $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'google-token-sign-in'), \Crm\UsersModule\Api\GoogleTokenSignInHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'users', 'apple-token-sign-in'), \Crm\UsersModule\Api\AppleTokenSignInHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
         );
 
         $apiRoutersContainer->attachRouter(new ApiRoute(

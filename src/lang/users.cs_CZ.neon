@@ -173,6 +173,9 @@ frontend:
 		fail: "Chyba přihlašování pomocí přihlášení přes Google, prosím kontaktujte naši podporu."
 		sign_using_google: Přihlásit přes Google
 		or: nebo
+	apple:
+		fail: "Chyba přihlašování pomocí přihlášení přes Apple, prosím kontaktujte naši podporu."
+		sign_using_apple: Přihlásit přes Apple
 
 admin:
 	actions:
@@ -589,3 +592,5 @@ config:
 		description: 'Nette Routa, na kterou má být uživatel přesměrován při návštěvě URL, která je dostupná pouze pro přihlášené uživatele (např. :Users:Sign:in)'
 	google_sign_in_enabled:
 		name: Google Sign-In povoleno
+	apple_sign_in_enabled:
+		name: Apple Sign-In povoleno

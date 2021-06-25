@@ -10,6 +10,8 @@ use Nette\Utils\Json;
 
 class UserConnectedAccountsRepository extends Repository
 {
+    public const TYPE_APPLE_SIGN_IN = 'apple_sign_in';
+
     public const TYPE_GOOGLE_SIGN_IN = 'google_sign_in';
 
     protected $tableName = 'user_connected_accounts';

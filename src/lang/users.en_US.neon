@@ -173,6 +173,9 @@ frontend:
 		fail: "Unable to log in using Google Sign-in, please contact our support."
 		sign_using_google: Sign in using Google
 		or: or
+	apple:
+		fail: "Unable to log in using Apple Sign-in, please contact our support."
+		sign_using_apple: Sign in using Apple
 admin:
 	actions:
 		deactivate: Deactivate
@@ -587,3 +590,5 @@ config:
 		description: 'Nette route, where to redirect user after hitting URL only for logged in users (e.g. :Users:Sign:in)'
 	google_sign_in_enabled:
 		name: Google Sign-In enabled
+	apple_sign_in_enabled:
+		name: Apple Sign-In enabled

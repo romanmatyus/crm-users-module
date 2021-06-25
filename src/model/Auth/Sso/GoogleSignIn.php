@@ -3,13 +3,9 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
-use Crm\UsersModule\Auth\PasswordGenerator;
-use Crm\UsersModule\Auth\UserManager;
-use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google_Client;
 use Google_Service_Oauth2;
-use Nette\Database\Context;
 use Nette\Database\Table\IRow;
 use Nette\Http\Session;
 
@@ -30,40 +26,24 @@ class GoogleSignIn
 
     private $session;
 
-    private $userBuilder;
-
-    private $connectedAccountsRepository;
-
     private $clientId;
 
     private $clientSecret;
 
-    private $dbContext;
-
-    private $userManager;
-
-    private $passwordGenerator;
+    private $ssoUserManager;
 
     public function __construct(
         ?string $clientId,
         ?string $clientSecret,
         ConfigsRepository $configsRepository,
         Session $session,
-        UserBuilder $userBuilder,
-        UserConnectedAccountsRepository $connectedAccountsRepository,
-        UserManager $userManager,
-        Context $dbContext,
-        PasswordGenerator $passwordGenerator
+        SsoUserManager $ssoUserManager
     ) {
         $this->configsRepository = $configsRepository;
         $this->session = $session;
-        $this->userBuilder = $userBuilder;
-        $this->connectedAccountsRepository = $connectedAccountsRepository;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->dbContext = $dbContext;
-        $this->userManager = $userManager;
-        $this->passwordGenerator = $passwordGenerator;
+        $this->ssoUserManager = $ssoUserManager;
     }
 
     public function isEnabled(): bool
@@ -99,57 +79,23 @@ class GoogleSignIn
             return null;
         }
 
-        $this->dbContext->beginTransaction();
-
-        try {
-            $userEmail = $payload['email'];
+        $userEmail = $payload['email'];
             // 'sub' represents Google ID in id_token
             //
             // Note: A Google account's email address can change, so don't use it to identify a user.
             // Instead, use the account's ID, which you can get on the client with getBasicProfile().getId(),
             // and on the backend from the sub claim of the ID token.
             // https://developers.google.com/identity/sign-in/web/people
-            $googleUserId = $payload['sub'];
+        $googleUserId = $payload['sub'];
 
-            $user = $this->userManager->matchSsoUser(
-                UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
-                $googleUserId,
-                $userEmail
-            );
-
-            if (!$user) {
-                // if user is not in our DB, create him/her
-                // our access_token is not automatically created
-                $password = $this->passwordGenerator->generatePassword();
-                $user = $this->userBuilder->createNew()
-                    ->setEmail($userEmail)
-                    ->setPassword($password)
-                    ->setPublicName($userEmail)
-                    ->setRole('user')
-                    ->setActive(true)
-                    ->setIsInstitution(false)
-                    ->setSource(self::USER_SOURCE_GOOGLE_SSO)
-                    ->setAddTokenOption(false)
-                    ->save();
-            }
-
-            $connectedAccount = $this->connectedAccountsRepository->getForUser($user, UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN);
-            if (!$connectedAccount) {
-                $this->connectedAccountsRepository->add(
-                    $user,
-                    UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
-                    $googleUserId,
-                    $userEmail,
-                    $payload
-                );
-            }
-        } catch (\Exception $e) {
-            $this->dbContext->rollBack();
-            throw $e;
-        }
-        $this->dbContext->commit();
-
-        return $user;
+        // Match google user to CRM user
+        return $this->ssoUserManager->getUser(
+            $googleUserId,
+            $userEmail,
+            UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
+            self::USER_SOURCE_GOOGLE_SSO,
+            $payload
+        );
     }
 
     /**
@@ -236,47 +182,23 @@ class GoogleSignIn
             throw new SsoException('Google SignIn error: unable to retrieve user info', $e->getCode(), $e);
         }
 
+        $userEmail =  $userInfo->getEmail();
+            // 'sub' represents Google ID in id_token
+            //
+            // Note: A Google account's email address can change, so don't use it to identify a user.
+            // Instead, use the account's ID, which you can get on the client with getBasicProfile().getId(),
+            // and on the backend from the sub claim of the ID token.
+            // https://developers.google.com/identity/sign-in/web/people
+        $googleUserId =  $userInfo->getId();
+
         // Match google user to CRM user
-        $this->dbContext->beginTransaction();
-        try {
-            $user = $this->userManager->matchSsoUser(
-                UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
-                $userInfo->getId(), // this represents Google ID, same as 'sub' in id_token
-                $userInfo->getEmail()
-            );
-            if (!$user) {
-                // if user is not in our DB, create him/her
-                // our access_token is not automatically created
-                $password = $this->passwordGenerator->generatePassword();
-                $user = $this->userBuilder->createNew()
-                    ->setEmail($userInfo->getEmail())
-                    ->setPassword($password)
-                    ->setPublicName($userInfo->getEmail())
-                    ->setRole('user')
-                    ->setActive(true)
-                    ->setIsInstitution(false)
-                    ->setSource(self::USER_SOURCE_GOOGLE_SSO)
-                    ->setAddTokenOption(false)
-                    ->save();
-            }
-
-            $connectedAccount = $this->connectedAccountsRepository->getForUser($user, UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN);
-            if (!$connectedAccount) {
-                $this->connectedAccountsRepository->add(
-                    $user,
-                    UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
-                    $userInfo->getId(),
-                    $userInfo->getEmail(),
-                    $userInfo->toSimpleObject()
-                );
-            }
-        } catch (\Exception $e) {
-            $this->dbContext->rollBack();
-            throw $e;
-        }
-        $this->dbContext->commit();
-
-        return $user;
+        return $this->ssoUserManager->getUser(
+            $googleUserId,
+            $userEmail,
+            UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
+            self::USER_SOURCE_GOOGLE_SSO,
+            $userInfo->toSimpleObject()
+        );
     }
 
     private function getClient(?string $redirectUri = null): Google_Client

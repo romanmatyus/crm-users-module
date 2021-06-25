@@ -63,5 +63,16 @@ class ConfigsSeeder implements ISeeder
             false,
             10
         );
+
+        $this->addConfig(
+            $output,
+            $category,
+            'apple_sign_in_enabled',
+            ApplicationConfig::TYPE_BOOLEAN,
+            'users.config.apple_sign_in_enabled.name',
+            '',
+            false,
+            10
+        );
     }
 }

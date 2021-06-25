@@ -55,7 +55,9 @@ services:
 	serviceTokenAuthorization: Crm\UsersModule\Auth\ServiceTokenAuthorization
 
 	- Crm\UsersModule\Auth\Access\AccessToken
+	- Crm\UsersModule\Auth\Sso\SsoUserManager
 	googleSignIn: Crm\UsersModule\Auth\Sso\GoogleSignIn(%sso.google.client_id%, %sso.google.client_secret%)
+	appleSignIn: Crm\UsersModule\Auth\Sso\AppleSignIn('sk.dennikn')
 
 	ssoRedirectValidator:
 	    class: Crm\UsersModule\Auth\Sso\SsoRedirectValidator
@@ -123,6 +125,7 @@ services:
 	- Crm\UsersModule\Api\UserMetaUpsertHandler
 	- Crm\UsersModule\Api\UserDataHandler
 	- Crm\UsersModule\Api\AutoLoginTokenLoginApiHandler
+	- Crm\UsersModule\Api\AppleTokenSignInHandler
 	- Crm\UsersModule\Api\GoogleTokenSignInHandler
 	- Crm\UsersModule\Api\EmailValidationApiHandler
 	- Crm\UsersModule\Events\LoginAttemptHandler

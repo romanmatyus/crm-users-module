@@ -130,17 +130,6 @@ class UserManager
         return $this->usersRepository->find($user->getIdentity()->getId());
     }
 
-    public function matchSsoUser(string $connectedAccountType, string $externalId, string $email): ?IRow
-    {
-        // external ID has priority over email
-        $connectedAccount = $this->userConnectedAccountsRepository->getByExternalId($connectedAccountType, $externalId);
-        if ($connectedAccount) {
-            return $connectedAccount->user;
-        }
-
-        return $this->usersRepository->getByEmail($email) ?: null;
-    }
-
     public function setNewPassword($userId, $actualPassword, $newPassword)
     {
         $user = $this->usersRepository->find($userId);

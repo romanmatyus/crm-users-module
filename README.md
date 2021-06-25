@@ -21,11 +21,13 @@ extensions:
 	users: Crm\UsersModule\DI\UsersModuleExtension
 ```
 
-## Google Sign-In
+## Single sign-on
+
+### Google Sign-In
 
 Users module supports Google Sign-In authentication using the Authorization code flow and ID token.
 
-### Configuration
+#### Configuration
 
 Any application that uses Google Sign-In must have authorization credentials that identify the application to Google's OAuth 2.0 server.
 To set up credentials, please go to Google [Credentials page](https://console.developers.google.com/apis/credentials).
@@ -41,19 +43,66 @@ users:
 
 Last step is to **enable** Google Sign-In in CRM settings in `/admin/config-admin/` Authentication section.
 
-### ID Token
+#### ID Token
 
 ID Token is a Google-signed JWT token holding user information (see [the documentation](https://developers.google.com/identity/sign-in/web/backend-auth)).
 This module provides an [API endpoint](#post-apiv1usersgoogle-token-sign-in) to validate the token and match it to an existing user (or create a new one) using user's email address.
 
-### Authorization code flow
+#### Authorization code flow
 
 Standard OAuth2 Authorization code flow is initiated when user is redirected to `http://crm.press/users/google/sign` URL.
 
 An optional parameter is `url`, which is a URL to redirect to after the successful login.
 `url` is validated against current CRM domain - `url` has to share at least the second level domain, e.g. if your CRM is available at `crm.yoursystem.com`, any domain passing `*.yoursystem.com` will be considered as a valid redirect URI.
 
-To enable more domains, please add the following configuration to your configuration `neon` file:
+#### Example
+
+HTML button to initiate Google Sign-In:
+```html
+<a href="http://crm.press/users/google/sign">Google Sign-In</a>
+```
+
+### Apple Sign-In
+
+Users module supports Apple Sign-In authentication using the Authorization code flow and ID token.
+
+#### Configuration
+
+Any application that uses Apple Sign-In must have authorization credentials that identify the application to Apple.
+For more information, please go to Apple [Get started page](https://developer.apple.com/sign-in-with-apple/get-started/).
+
+After acquiring credentials, put them to `neon` configuration file using the following format:
+```neon
+users:
+	sso:
+	    apple:
+	        client_id: CLIENT_ID
+```
+
+Last step is to **enable** Apple Sign-In in CRM settings in `/admin/config-admin/` Authentication section.
+
+#### ID Token
+
+ID Token is a Apple-signed JWT token holding user information.
+This module provides an [API endpoint](#post-apiv1usersapple-token-sign-in) to validate the token and match it to an existing user (or create a new one) using user's email address.
+
+#### Authorization code flow
+
+Standard OAuth2 Authorization code flow is initiated when user is redirected to `http://crm.press/users/apple/sign` URL.
+
+An optional parameter is `url`, which is a URL to redirect to after the successful login.
+`url` is validated against current CRM domain - `url` has to share at least the second level domain, e.g. if your CRM is available at `crm.yoursystem.com`, any domain passing `*.yoursystem.com` will be considered as a valid redirect URI.
+
+#### Example
+
+HTML button to initiate Apple Sign-In:
+```html
+<a href="http://crm.press/users/apple/sign">Apple Sign-In</a>
+```
+
+### Allow domains in url redirect
+
+To enable more domains in url redirect, please add the following configuration to your configuration `neon` file:
 
 ```neon
 ssoRedirectValidator:
@@ -61,13 +110,21 @@ ssoRedirectValidator:
     	- addAllowedDomains('another.domain.com', 'some.other.domain.net')
 ```
 
-#### Example
+## Data retention configuration
 
-HTML button to initiate Google Sign-In:
-```html
-<a href="http://crm.press/users/sign/google">Google Sign-In</a>
+You can configure time before which `application:cleanup` deletes old repository data and column which it uses by using (in your project configuration file):
+
+```neon
+autoLoginTokensRepository:
+	setup:
+		- setRetentionThreshold('now', 'valid_at')
+changePasswordsLogsRepository:
+	setup:
+		- setRetentionThreshold('-12 months')
+userActionsLogRepository:
+	setup:
+		- setRetentionThreshold('-12 months')
 ```
-
 
 ## AccessTokenAuthenticator
 
@@ -1075,6 +1132,43 @@ Endpoint tries to match google user to an existing user using email address. If 
 
 ```shell
 curl -v –X POST http://crm.press/users/google-token-sign-in \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'id_token=ID_TOKEN_CONTENT&create_access_token=true'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok",
+    "user": {
+        "id": 101,
+        "email": "example_user@gmail.com",
+        "created_at": "2021-01-01T10:00:00+01:00", // RFC3339 date; user creation date
+    },
+    "access": {
+        "token": "762eec3fe9f20d87cf865cb40cf6458c" // user token
+    }
+}
+```
+
+#### POST `/api/v1/users/apple-token-sign-in`
+
+API for authentication of user using Apple Sign-In with ID token.
+Endpoint tries to match google user to an existing user using email address. If such user does not exist, a new account is created.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| id_token | *String* | yes | Apple signed JWT token containing user data |
+| create_access_token | *Boolean* | no | If true, access token for user is created |
+
+##### *Example:*
+
+```shell
+curl -v –X POST http://crm.press/users/apple-token-sign-in \
   -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
   -H 'Accept: application/json' \
   --data 'id_token=ID_TOKEN_CONTENT&create_access_token=true'
