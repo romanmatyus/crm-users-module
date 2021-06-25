@@ -1,50 +1,81 @@
 {block #content}
 
-<div class="page-header">
+{*PASSWORD CHANGE*}
+{if $user->isLoggedIn()}
+  <div class="page-header">
+    <h1>{_users.frontend.change_password.title}</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-9">
+
+      {control changePasswordForm}
+    </div>
+  </div>
+{else}
+  <div class="page-header">
+    <h1>{_users.frontend.request_password.title}</h1>
+  </div>
+
+  <p>{_users.frontend.request_password.login.text}<a n:href=":Users:Sign:in"
+            class="link">{_users.frontend.request_password.login.link}</a>.</p>
+
+  <p>{_users.frontend.request_password.info}</p>
+
+  <div class="well">
+    {control requestPasswordForm}
+  </div>
+{/if}
+
+{*SETTINGS*}
+{if $user->isLoggedIn()}
+  <div class="page-header">
     <h1 n:block=title>{_users.frontend.settings.title}</h1>
-</div>
+  </div>
 
-{control simpleWidget 'frontend.user.settings.top'}
+  {control simpleWidget 'frontend.user.settings.top'}
 
-<h4>{_users.frontend.settings.personal_data.title}</h4>
-<div class="row">
+  <h4>{_users.frontend.settings.personal_data.title}</h4>
+  <div class="row">
     <div class="col-md-12">
-        <p>{_users.frontend.settings.personal_data.info}</p>
-        <a n:href="downloadData!" class="btn btn-primary">{_users.frontend.settings.personal_data.download}</a>
+      <p>{_users.frontend.settings.personal_data.info}</p>
+      <a n:href="downloadData!" class="btn btn-primary">{_users.frontend.settings.personal_data.download}</a>
     </div>
-</div>
+  </div>
 
-<hr/>
+  <hr/>
 
-<h4>{_users.frontend.settings.devices_logout.title}</h4>
-<div class="row">
+  <h4>{_users.frontend.settings.devices_logout.title}</h4>
+  <div class="row">
     <div class="col-md-12">
-        {capture $confirm}{_users.frontend.settings.devices_logout.confirm}{/capture}
-        <a n:href="devicesLogout!" onclick="return confirm({$confirm})" class="btn btn-warning">{_users.frontend.settings.devices_logout.logout}</a>
+      {capture $confirm}{_users.frontend.settings.devices_logout.confirm}{/capture}
+      <a n:href="devicesLogout!" onclick="return confirm({$confirm})"
+                                 class="btn btn-warning">{_users.frontend.settings.devices_logout.logout}</a>
     </div>
-</div>
+  </div>
 
-<hr/>
+  <hr/>
 
-<h4>{_users.frontend.settings.account_delete.title}</h4>
-<div class="row">
+  <h4>{_users.frontend.settings.account_delete.title}</h4>
+  <div class="row">
     <div class="col-md-12">
-        {if true || $canBeDeleted}
+      {if $canBeDeleted}
 
-            <p>{_users.frontend.settings.account_delete.info|noescape}</p>
+        <p>{_users.frontend.settings.account_delete.info|noescape}</p>
 
-            {form userDeleteForm}
-                <div class="row form-group">
-                    <div class="col-md-4">{label password /}{input password, class => 'form-control text'}</div>
-                </div>
+        {form userDeleteForm}
+          <div class="row form-group">
+            <div class="col-md-4">{label password /}{input password, class => 'form-control text'}</div>
+          </div>
 
-                <div class="row form-group">
-                    {var $confirm = LR\Filters::escapeHtmlText(call_user_func($this->filters->translate, "users.frontend.settings.account_delete.confirm"))}
-                    <div class="col-md-4">{input send, class => 'btn btn-warning', onclick => "return confirm('" . $confirm . "')"}</div>
-                </div>
-            {/form}
-        {else}
-            {control snippet 'remove-active-user'}
-        {/if}
+          <div class="row form-group">
+            {var $confirm = LR\Filters::escapeHtmlText(call_user_func($this->filters->translate, "users.frontend.settings.account_delete.confirm"))}
+            <div class="col-md-4">{input send, class => 'btn btn-warning', onclick => "return confirm('" . $confirm . "')"}</div>
+          </div>
+        {/form}
+      {else}
+        {control snippet 'remove-active-user'}
+      {/if}
     </div>
-</div>
+  </div>
+{/if}

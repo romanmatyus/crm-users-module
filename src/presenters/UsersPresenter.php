@@ -79,13 +79,6 @@ class UsersPresenter extends FrontendPresenter
         $this->template->user = $this->getUser();
     }
 
-    public function renderChangePassword()
-    {
-        if (!$this->getUser()->isLoggedIn()) {
-            $this->redirect('request-password');
-        }
-    }
-
     public function renderResetPassword($id)
     {
         if ($this->getUser()->isLoggedIn()) {
@@ -94,7 +87,7 @@ class UsersPresenter extends FrontendPresenter
         }
 
         if (is_null($id)) {
-            $this->redirect('requestPassword');
+            $this->redirect('settings');
         }
 
         if (!$this->passwordResetTokensRepository->isAvailable($id)) {
@@ -102,14 +95,7 @@ class UsersPresenter extends FrontendPresenter
                 $this->translator->translate('users.frontend.reset_password.errors.invalid_password_reset_token'),
                 "error"
             );
-            $this->redirect('requestPassword');
-        }
-    }
-
-    public function renderRequestPassword()
-    {
-        if ($this->getUser()->isLoggedIn()) {
-            $this->redirect($this->homeRoute);
+            $this->redirect('settings');
         }
     }
 
@@ -167,8 +153,10 @@ class UsersPresenter extends FrontendPresenter
 
     public function renderSettings()
     {
-        $this->onlyLoggedIn();
-        list($this->template->canBeDeleted, $_) = $this->deleteUserData->canBeDeleted($this->getUser()->getId());
+        $this->template->canBeDeleted = false;
+        if ($this->getUser()->isLoggedIn()) {
+            list($this->template->canBeDeleted, $_) = $this->deleteUserData->canBeDeleted($this->getUser()->getId());
+        }
     }
 
     public function handleDownloadData()
@@ -247,7 +235,7 @@ class UsersPresenter extends FrontendPresenter
         $email = $sessionSection->email;
         unset($sessionSection->email);
         if (!$email) {
-            $this->redirect('requestPassword');
+            $this->redirect('settings');
         }
         $this->template->email = $email;
     }

@@ -8,7 +8,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
-use Tomaj\Form\Renderer\BootstrapRenderer;
+use Tomaj\Form\Renderer\BootstrapVerticalRenderer;
 
 class ChangePasswordFormFactory
 {
@@ -46,7 +46,7 @@ class ChangePasswordFormFactory
         $form = new Form;
         $this->user = $user;
 
-        $form->setRenderer(new BootstrapRenderer());
+        $form->setRenderer(new BootstrapVerticalRenderer());
         $form->setTranslator($this->translator);
         $form->addProtection();
 

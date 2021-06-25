@@ -122,9 +122,6 @@ class UsersModule extends CrmModule
 
     public function registerFrontendMenuItems(MenuContainerInterface $menuContainer)
     {
-        $menuItem = new MenuItem($this->translator->translate('users.menu.change_password'), ':Users:Users:changePassword', '', 800, true);
-        $menuContainer->attachMenuItem($menuItem);
-
         $menuItem = new MenuItem($this->translator->translate('users.menu.settings'), ':Users:Users:settings', '', 850, true);
         $menuContainer->attachMenuItem($menuItem);
 
@@ -417,6 +414,9 @@ class UsersModule extends CrmModule
     {
         $router[] = new Route('sign/in/', 'Users:Sign:in');
         $router[] = new Route('sign/up/', 'Users:Sign:up');
+
+        $router[] = new Route('users/users/request-password', 'Users:Users:settings', Route::ONE_WAY);
+        $router[] = new Route('users/users/change-password', 'Users:Users:settings', Route::ONE_WAY);
     }
 
     public function registerSeeders(SeederManager $seederManager)
