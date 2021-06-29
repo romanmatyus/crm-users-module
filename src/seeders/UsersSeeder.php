@@ -44,6 +44,8 @@ class UsersSeeder implements ISeeder
             $output->writeln("  * admin group <info>{$name}</info> exists");
         }
 
+        $this->seedAccessToHandlers($output);
+
         $accesses = $this->adminAccessRepository->all();
         foreach ($accesses as $access) {
             if ($superGroup->related('admin_groups_access')->where(['admin_group_id' => $superGroup->id, 'admin_access_id' => $access->id])->count('*') == 0) {
@@ -93,6 +95,47 @@ class UsersSeeder implements ISeeder
             $output->writeln('  * user <info>user@user.sk</info> exists');
         } else {
             $output->writeln('  <comment>* user <info>user@user.sk</info> created</comment>');
+        }
+    }
+
+    /**
+     * In the past, all admin roles had access to all signals. From now signals
+     * will be listed as separate access resource. We don't want to completely
+     * break installed instances (and admin groups), so first time this seeder
+     * is launched after signals are added by `GenerateAccessCommand`, we'll
+     * seed access to all signals for all admin groups.
+     */
+    private function seedAccessToHandlers(OutputInterface $output)
+    {
+        // 1. load signals (handle prefix)
+        $handleAccesses = $this->adminAccessRepository->all()
+            ->where('type = "handle"')
+            ->fetchAssoc('id=id');
+
+        // check if any admin group was given access to signal
+        // if yes, abort seeding rights to signals
+        $count = $this->adminAccessRepository->getDatabase()
+            ->table('admin_groups_access')
+            ->where(['admin_access_id IN (?)' => $handleAccesses])
+            ->count('*');
+
+        if ($count > 0) {
+            return;
+        }
+
+        $output->writeln("  * seeding rights to signals to <info>all admin groups</info>");
+
+        $adminGroups = $this->adminGroupsRepository->all();
+
+        foreach ($handleAccesses as $handleAccess) {
+            foreach ($adminGroups as $adminGroup) {
+                // only inserting; no signals should be assigned to admin groups; update is not needed
+                $adminGroup->related('admin_groups_access')->insert([
+                    'admin_group_id' => $adminGroup->id,
+                    'admin_access_id' => $handleAccess,
+                    'created_at' => new DateTime(),
+                ]);
+            }
         }
     }
 }
