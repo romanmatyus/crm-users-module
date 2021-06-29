@@ -15,12 +15,13 @@ class AdminAccessRepository extends Repository
     /**
      * @return bool|int|\Nette\Database\Table\IRow
      */
-    final public function add(string $resource, string $action, string $level = null)
+    final public function add(string $resource, string $action, string $type, string $level = null)
     {
         $now = new DateTime();
         return $this->insert([
             'resource' => $resource,
             'action' => $action,
+            'type' => $type,
             'level' => $level,
             'created_at' => $now,
             'updated_at' => $now,

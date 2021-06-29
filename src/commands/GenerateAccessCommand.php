@@ -88,12 +88,25 @@ class GenerateAccessCommand extends Command
                 // add / update access resource
                 $adminAccess = $this->adminAccessRepository->findByResourceAndAction($resource, $action);
                 if (!$adminAccess) {
-                    $this->adminAccessRepository->add($resource, $action, $accessLevel);
+                    $this->adminAccessRepository->add($resource, $action, $methodPrefix, $accessLevel);
                     $output->writeln(" <comment>* ACL resource <info>{$resource}:{$action}</info> was created</comment>");
-                } elseif ($adminAccess['level'] !== $accessLevel) {
-                    $this->adminAccessRepository->update($adminAccess, ['level' => $accessLevel]);
-                    $level = $accessLevel ?? 'null'; // we want to display 'null', if access level is null
-                    $output->writeln(" <comment>* ACL resource <info>{$resource}:{$action}</info> - level changed to <info>{$level}</info></comment>");
+                } else {
+                    $updateData = [];
+                    if ($adminAccess['type'] !== $methodPrefix) {
+                        $updateData['type'] = $methodPrefix;
+                    }
+                    if ($adminAccess['level'] !== $accessLevel) {
+                        $updateData['level'] = $accessLevel;
+                    }
+
+                    if (!empty($updateData)) {
+                        $this->adminAccessRepository->update($adminAccess, $updateData);
+                        $outputData = print_r($updateData, true);
+                        $output->writeln(" <comment>* ACL resource <info>{$resource}:{$action}</info> updated. Changes:</comment>");
+                        foreach ($updateData as $key => $value) {
+                            $output->writeln("\t- <comment>[{$key}]</comment> => <info>{$value}</info>");
+                        }
+                    }
                 }
             }
         }

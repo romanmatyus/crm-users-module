@@ -143,7 +143,7 @@ class AdminGroupAdminPresenter extends AdminPresenter
             $permission = $access->resource . ':' . $access->action;
             // missing access level won't be displayed as `read` to indicate that it needs to be checked by developer
             // this will change in future; missing access level will be treated as 'read' level
-            $permissionLevel =  $access->level ? '<em class="access-level">(' . $access->level . ')</em> ' : '';
+            $permissionLevel =  $access->level ? '<em class="access-metadata">(' . $access->type . ', ' . $access->level . ')</em> ' : '';
 
             $checkbox = $form
                 ->addCheckbox(
