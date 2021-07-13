@@ -101,7 +101,6 @@ class GenerateAccessCommand extends Command
 
                     if (!empty($updateData)) {
                         $this->adminAccessRepository->update($adminAccess, $updateData);
-                        $outputData = print_r($updateData, true);
                         $output->writeln(" <comment>* ACL resource <info>{$resource}:{$action}</info> updated. Changes:</comment>");
                         foreach ($updateData as $key => $value) {
                             $output->writeln("\t- <comment>[{$key}]</comment> => <info>{$value}</info>");
