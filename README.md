@@ -68,6 +68,18 @@ Example:
 
 If annotation `admin-access-level` is missing, no level is displayed on page where resources/right are assigned to admin groups (http://crm.press/users/admin-group-admin/show/1).
 
+### Cleanup
+
+Command has also cleanup option:
+
+  ```shell
+  php bin/command.php user:generate_access --cleanup
+  ```
+
+After resources are generated, it will compare current ACL resources and actions with previous state. Orphaned ACL resources will be removed from database. Useful when module is uninstalled or admin presenter / action is removed.
+
+> **WARNING**: This option doesn't fix ACL after resource is moved. That should be handled by module when resource is moved / renamed (eg. by migration).
+
 ## Single sign-on
 
 ### Google Sign-In

@@ -29,8 +29,9 @@ services:
 		class: Crm\UsersModule\Repository\UserActionsLogRepository
 		setup:
 			- setRetentionThreshold('-12 months')
-	adminGroupsRepository: Crm\UsersModule\Auth\Repository\AdminGroupsRepository
 	adminAccessRepository: Crm\UsersModule\Auth\Repository\AdminAccessRepository
+	adminGroupsRepository: Crm\UsersModule\Auth\Repository\AdminGroupsRepository
+	adminGroupsAccessRepository: Crm\UsersModule\Auth\Repository\AdminGroupsAccessRepository
 	autoLoginTokensRepository:
 		class: Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
 		setup:

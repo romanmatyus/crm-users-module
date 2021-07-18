@@ -39,6 +39,12 @@ class AdminAccessRepository extends Repository
         return $this->getTable()->order('resource');
     }
 
+    final public function findByResource(string $resource): Selection
+    {
+        return $this->getTable()
+            ->where(['resource' => $resource]);
+    }
+
     final public function findByResourceAndAction(string $resource, string $action): ?ActiveRow
     {
         return $this->getTable()

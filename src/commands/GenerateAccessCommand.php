@@ -3,40 +3,55 @@
 namespace Crm\UsersModule\Commands;
 
 use Crm\UsersModule\Auth\Repository\AdminAccessRepository;
+use Crm\UsersModule\Auth\Repository\AdminGroupsAccessRepository;
 use Nette\DI\Container;
 use Nette\DI\MissingServiceException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateAccessCommand extends Command
 {
     private $adminAccessRepository;
 
+    private $adminGroupsAccessRepository;
+
     private $container;
 
     public function __construct(
         AdminAccessRepository $adminAccessRepository,
+        AdminGroupsAccessRepository $adminGroupsAccessRepository,
         Container $container
     ) {
         parent::__construct();
         $this->adminAccessRepository = $adminAccessRepository;
+        $this->adminGroupsAccessRepository = $adminGroupsAccessRepository;
         $this->container = $container;
     }
 
     protected function configure()
     {
         $this->setName('user:generate_access')
-            ->setDescription('Generate all access data');
+            ->setDescription('Generate user access control resources')
+            ->addOption(
+                'cleanup',
+                null,
+                InputOption::VALUE_NONE,
+                'Use this option to remove orphaned ACL resources (eg. (re)moved presenter / action; uninstalled module).'
+            )
+            ->addUsage('--cleanup');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $generatedACL = [];
         foreach ($this->container->findByType('Crm\AdminModule\Presenters\AdminPresenter') as $adminServiceName) {
             try {
                 $adminPresenterName = get_class($this->container->getService($adminServiceName));
                 $output->writeln("Processing class <info>{$adminPresenterName}</info>");
-                $this->processPresenterClass($adminPresenterName, $output);
+                [$presenterResource, $presenterActions] = $this->processPresenterClass($adminPresenterName, $output);
+                $generatedACL[$presenterResource] = $presenterActions;
             } catch (MissingServiceException $e) {
                 $output->writeln("<error>Service {$adminServiceName} missing</error>");
             } catch (\Exception $e) {
@@ -49,10 +64,34 @@ class GenerateAccessCommand extends Command
             }
         }
 
+        if ($input->getOption('cleanup')) {
+            $output->writeln("\nRemoving orphaned resources without presenter or action:");
+            $storedResources = $this->adminAccessRepository->all()->fetchAll();
+            $generatedResources = array_keys($generatedACL);
+            foreach ($storedResources as $storedResource) {
+                // is resource *Module*:*Presenter* still present?
+                if (in_array($storedResource['resource'], $generatedResources)) {
+                    // is *Module*:*Presenter*:*Action* still present?
+                    $generatedActions = array_values($generatedACL[$storedResource['resource']]);
+                    if (in_array($storedResource['action'], $generatedActions)) {
+                        continue;
+                    }
+                }
+
+                // not present; remove
+                $output->writeln(" <comment>* ACL resource <info>{$storedResource->resource}:{$storedResource->action}</info> removed.");
+                $this->adminGroupsAccessRepository->deleteByAdminAccess($storedResource);
+                $this->adminAccessRepository->delete($storedResource);
+            }
+        }
+
         return 0;
     }
 
-    private function processPresenterClass($presenterClass, OutputInterface $output)
+    /**
+     * @return array [string $resource, array $resourceActions]
+     */
+    private function processPresenterClass($presenterClass, OutputInterface $output): array
     {
         $parts = explode('\\', $presenterClass);
         $presenter = str_replace('Presenter', '', array_pop($parts));
@@ -62,6 +101,8 @@ class GenerateAccessCommand extends Command
         }
         $module = str_replace('Module', '', $next);
         $resource = "{$module}:{$presenter}";
+
+        $resourceActions = [];
 
         // select which prefixes
         $methodPrefixes = ['render', 'action', 'handle'];
@@ -107,7 +148,11 @@ class GenerateAccessCommand extends Command
                         }
                     }
                 }
+
+                $resourceActions[] = $action;
             }
         }
+
+        return [$resource, $resourceActions];
     }
 }
