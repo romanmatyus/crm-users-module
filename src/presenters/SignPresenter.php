@@ -6,6 +6,7 @@ use Crm\ApplicationModule\Presenters\FrontendPresenter;
 use Crm\ApplicationModule\Snippet\SnippetRenderer;
 use Crm\UsersModule\Auth\Authorizator;
 use Crm\UsersModule\Auth\InvalidEmailException;
+use Crm\UsersModule\Auth\SignInRedirectValidator;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\UserSignOutEvent;
 use Nette\Application\UI\Form;
@@ -26,15 +27,21 @@ class SignPresenter extends FrontendPresenter
 
     private $referer;
 
+    private $signInRedirect;
+
+    private $signInRedirectValidator;
+
     public function __construct(
         Authorizator $authorizator,
         UserManager $userManager,
-        SnippetRenderer $snippetRenderer
+        SnippetRenderer $snippetRenderer,
+        SignInRedirectValidator $signInRedirectValidator
     ) {
         parent::__construct();
         $this->authorizator = $authorizator;
         $this->userManager = $userManager;
         $this->snippetRenderer = $snippetRenderer;
+        $this->signInRedirectValidator = $signInRedirectValidator;
     }
 
     public function startup()
@@ -74,6 +81,8 @@ class SignPresenter extends FrontendPresenter
 
         $form->addCheckbox('remember', $this->translator->translate('users.frontend.sign_in.remember'));
 
+        $form->addHidden('redirect', $this->signInRedirect);
+
         $form->addSubmit('send', $this->translator->translate('users.frontend.sign_in.submit'));
 
         $form->setDefaults([
@@ -84,11 +93,14 @@ class SignPresenter extends FrontendPresenter
         return $form;
     }
 
-    public function renderIn()
+    public function renderIn($url = null)
     {
         if ($this->getUser()->isLoggedIn()) {
-            $this->redirect($this->homeRoute);
+            $this->redirect('signInCallback', $url);
         }
+
+        $this->signInRedirect = $url;
+        $this->template->signInRedirect = $url;
     }
 
     public function signInFormSucceeded($form, $values)
@@ -108,7 +120,8 @@ class SignPresenter extends FrontendPresenter
             $session->success = 'success';
 
             $this->restoreRequest($this->getParameter('back'));
-            $this->redirect($this->homeRoute);
+
+            $this->redirect('signInCallback', $values->redirect);
         } catch (AuthenticationException $e) {
             $form->addError($e->getMessage());
         }
@@ -129,7 +142,7 @@ class SignPresenter extends FrontendPresenter
     public function renderUp()
     {
         if ($this->getUser()->isLoggedIn()) {
-            $this->redirect($this->homeRoute);
+            $this->redirect('signInCallback');
         }
     }
 
@@ -201,8 +214,13 @@ class SignPresenter extends FrontendPresenter
             $this->getUser()->login(['user' => $user, 'autoLogin' => true]);
         }
 
-        if ($referer) {
-            $this->redirectUrl($referer);
+        $this->redirect('signInCallback', $referer);
+    }
+
+    public function actionSignInCallback($redirectUrl = null)
+    {
+        if ($redirectUrl && $this->signInRedirectValidator->isAllowed($redirectUrl)) {
+            $this->redirectUrl($redirectUrl);
         } else {
             $this->redirect($this->homeRoute);
         }

@@ -152,7 +152,7 @@ HTML button to initiate Apple Sign-In:
 To enable more domains in url redirect, please add the following configuration to your configuration `neon` file:
 
 ```neon
-ssoRedirectValidator:
+signInRedirectValidator:
     setup:
     	- addAllowedDomains('another.domain.com', 'some.other.domain.net')
 ```

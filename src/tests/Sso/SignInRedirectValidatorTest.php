@@ -2,12 +2,12 @@
 
 namespace Crm\UsersModule\Tests\Sso;
 
-use Crm\UsersModule\Auth\Sso\SsoRedirectValidator;
+use Crm\UsersModule\Auth\SignInRedirectValidator;
 use Nette\Http\Request;
 use Nette\Http\UrlScript;
 use PHPUnit\Framework\TestCase;
 
-class SsoRedirectValidatorTest extends TestCase
+class SignInRedirectValidatorTest extends TestCase
 {
     /**
      * @dataProvider provider
@@ -15,7 +15,7 @@ class SsoRedirectValidatorTest extends TestCase
     public function testValidation(string $crmHost, array $allowedDomains, string $urlToValidate, bool $isValidRedirect): void
     {
         $r = new Request(new UrlScript($crmHost));
-        $validator = new SsoRedirectValidator($r);
+        $validator = new SignInRedirectValidator($r);
         $validator->addAllowedDomains(...$allowedDomains);
         $this->assertEquals($isValidRedirect, $validator->isAllowed($urlToValidate));
     }

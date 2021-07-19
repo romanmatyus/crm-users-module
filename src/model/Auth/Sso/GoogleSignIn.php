@@ -75,10 +75,6 @@ class GoogleSignIn
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (!$this->clientId) {
-            throw new \Exception("Google Sign In Client ID and Secret not configured, please configure 'users.sso.google' parameter based on the README file.");
-        }
-
         $client = $this->getClient();
         $payload = $client->verifyIdToken($idToken);
         if (!$payload) {

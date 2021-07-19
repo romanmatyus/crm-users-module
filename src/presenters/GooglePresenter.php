@@ -4,9 +4,9 @@ namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
 use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
+use Crm\UsersModule\Auth\SignInRedirectValidator;
 use Crm\UsersModule\Auth\Sso\GoogleSignIn;
 use Crm\UsersModule\Auth\Sso\SsoException;
-use Crm\UsersModule\Auth\Sso\SsoRedirectValidator;
 use Tracy\Debugger;
 
 class GooglePresenter extends FrontendPresenter
@@ -15,15 +15,15 @@ class GooglePresenter extends FrontendPresenter
 
     private $googleSignIn;
 
-    private $ssoRedirectValidator;
+    private $signInRedirectValidator;
 
     public function __construct(
         GoogleSignIn $googleSignIn,
-        SsoRedirectValidator $ssoRedirectValidator
+        SignInRedirectValidator $signInRedirectValidator
     ) {
         parent::__construct();
         $this->googleSignIn = $googleSignIn;
-        $this->ssoRedirectValidator = $ssoRedirectValidator;
+        $this->signInRedirectValidator = $signInRedirectValidator;
     }
 
     public function actionSign()
@@ -40,9 +40,9 @@ class GooglePresenter extends FrontendPresenter
         if ($finalUrl) {
             $refererUrl = $this->getHttpRequest()->getReferer();
 
-            if ($this->ssoRedirectValidator->isAllowed($finalUrl)) {
+            if ($this->signInRedirectValidator->isAllowed($finalUrl)) {
                 $session->finalUrl = $finalUrl;
-            } elseif ($refererUrl && $this->ssoRedirectValidator->isAllowed($refererUrl->getAbsoluteUrl())) {
+            } elseif ($refererUrl && $this->signInRedirectValidator->isAllowed($refererUrl->getAbsoluteUrl())) {
                 // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
                 $session->finalUrl = $refererUrl->getAbsoluteUrl();
             }
@@ -91,8 +91,8 @@ class GooglePresenter extends FrontendPresenter
         }
 
         $session = $this->getSession(self::SESSION_SECTION);
-
         $finalUrl = $session->finalUrl;
+
         if ($finalUrl) {
             $this->redirectUrl($finalUrl);
         } else {

@@ -24,12 +24,13 @@ class SsoWidget extends BaseWidget
         return 'ssowidget';
     }
 
-    public function render()
+    public function render($url = null)
     {
         return;
 
         // Currently, Google Sign In button in template is not allowed
         // TODO: enable once SSO button is ready in other templates (and Sign In is enabled in configuration)
+//        $this->template->redirectUrl = $url;
         //$this->template->setFile(__DIR__ . '/' . $this->templateName);
         //$this->template->render();
     }

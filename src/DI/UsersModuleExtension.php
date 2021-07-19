@@ -16,6 +16,9 @@ final class UsersModuleExtension extends CompilerExtension implements ITranslati
             'google' => [
                 'client_id' => null,
                 'client_secret' => null,
+            ],
+            'apple' => [
+                'client_id' => null
             ]
         ]
     ];
@@ -32,6 +35,9 @@ final class UsersModuleExtension extends CompilerExtension implements ITranslati
         }
         if (!isset($builder->parameters['sso']['google'])) {
             $builder->parameters['sso']['google'] = $this->config['sso']['google'];
+        }
+        if (!isset($builder->parameters['sso']['apple'])) {
+            $builder->parameters['sso']['apple'] = $this->config['sso']['apple'];
         }
 
         // load services from config and register them to Nette\DI Container

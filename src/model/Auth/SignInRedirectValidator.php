@@ -1,12 +1,12 @@
 <?php
 
-namespace Crm\UsersModule\Auth\Sso;
+namespace Crm\UsersModule\Auth;
 
 use Nette\Http\Request;
 use Nette\Http\Url;
 use Nette\Utils\Strings;
 
-class SsoRedirectValidator
+class SignInRedirectValidator
 {
     private $request;
 
