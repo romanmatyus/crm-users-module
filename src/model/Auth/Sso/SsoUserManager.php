@@ -36,29 +36,39 @@ class SsoUserManager
         $this->usersRepository = $usersRepository;
     }
 
-    public function getUser(string $externalId, string $email, string $type, string $source, $meta = null): IRow
+    public function getUser(string $externalId, string $email, string $type, string $source, $meta = null, $loggedUserId = null): IRow
     {
         $this->dbContext->beginTransaction();
         try {
-            $user = $this->matchSsoUser(
-                $type,
-                $externalId,
-                $email
-            );
-            if (!$user) {
-                // if user is not in our DB, create him/her
-                // our access_token is not automatically created
-                $password = $this->passwordGenerator->generatePassword();
-                $user = $this->userBuilder->createNew()
-                    ->setEmail($email)
-                    ->setPassword($password)
-                    ->setPublicName($email)
-                    ->setRole('user')
-                    ->setActive(true)
-                    ->setIsInstitution(false)
-                    ->setSource($source)
-                    ->setAddTokenOption(false)
-                    ->save();
+            if ($loggedUserId) {
+                $connectedAccount = $this->connectedAccountsRepository->getByExternalId($type, $externalId);
+                if ($connectedAccount && $connectedAccount->user->id !== $loggedUserId) {
+                    throw new AlreadyLinkedAccountSsoException($externalId, $email);
+                }
+
+                $user = $this->usersRepository->find($loggedUserId);
+            } else {
+                $user = $this->matchSsoUser(
+                    $type,
+                    $externalId,
+                    $email
+                );
+
+                if (!$user) {
+                    // if user is not in our DB, create him/her
+                    // our access_token is not automatically created
+                    $password = $this->passwordGenerator->generatePassword();
+                    $user = $this->userBuilder->createNew()
+                        ->setEmail($email)
+                        ->setPassword($password)
+                        ->setPublicName($email)
+                        ->setRole('user')
+                        ->setActive(true)
+                        ->setIsInstitution(false)
+                        ->setSource($source)
+                        ->setAddTokenOption(false)
+                        ->save();
+                }
             }
 
             $connectedAccount = $this->connectedAccountsRepository->getForUser($user, $type);

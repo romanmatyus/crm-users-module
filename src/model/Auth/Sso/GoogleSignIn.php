@@ -8,6 +8,8 @@ use Google_Client;
 use Google_Service_Oauth2;
 use Nette\Database\Table\IRow;
 use Nette\Http\Session;
+use Nette\Security\Identity;
+use Nette\Security\User;
 
 class GoogleSignIn
 {
@@ -32,18 +34,22 @@ class GoogleSignIn
 
     private $ssoUserManager;
 
+    private $user;
+
     public function __construct(
         ?string $clientId,
         ?string $clientSecret,
         ConfigsRepository $configsRepository,
         Session $session,
-        SsoUserManager $ssoUserManager
+        SsoUserManager $ssoUserManager,
+        User $user
     ) {
         $this->configsRepository = $configsRepository;
         $this->session = $session;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->ssoUserManager = $ssoUserManager;
+        $this->user = $user;
     }
 
     public function isEnabled(): bool
@@ -131,6 +137,7 @@ class GoogleSignIn
         // save state to session for later verification
         $sessionSection = $this->session->getSection(self::SESSION_SECTION);
         $sessionSection->oauth2state = $state;
+        $sessionSection->loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
 
         return $client->createAuthUrl();
     }
@@ -144,6 +151,7 @@ class GoogleSignIn
      * @param string $redirectUri
      *
      * @return IRow user row
+     * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      */
     public function signInCallback(string $redirectUri): IRow
@@ -163,11 +171,19 @@ class GoogleSignIn
 
         $sessionSection = $this->session->getSection(self::SESSION_SECTION);
 
-        // Check state
+        // Check internal state
         if (empty($_GET['state']) || ($_GET['state'] !== $sessionSection->oauth2state)) {
             // State is invalid, possible CSRF attack in progress
             unset($sessionSection->oauth2state);
             throw new SsoException('Google SignIn error: invalid state');
+        }
+
+        // Check user state
+        $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
+        if ($loggedUserId !== $sessionSection->loggedUserId) {
+            // State is invalid, possible user change between login request and callback
+            unset($sessionSection->loggedUserId);
+            throw new SsoException('Google SignIn error: invalid user state');
         }
 
         // Get OAuth access token
@@ -197,7 +213,8 @@ class GoogleSignIn
             $userEmail,
             UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
             self::USER_SOURCE_GOOGLE_SSO,
-            $userInfo->toSimpleObject()
+            $userInfo->toSimpleObject(),
+            $loggedUserId
         );
     }
 

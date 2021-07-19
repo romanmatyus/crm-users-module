@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
+use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\GoogleSignIn;
 use Crm\UsersModule\Auth\Sso\SsoException;
 use Crm\UsersModule\Auth\Sso\SsoRedirectValidator;
@@ -66,18 +67,27 @@ class GooglePresenter extends FrontendPresenter
         }
 
         try {
-            $user = $this->googleSignIn->signInCallback($this->link('//callback'));
+            $user = $this->googleSignIn->signInCallback(
+                $this->link('//callback')
+            );
 
-            // AutoLogin will log in user - create access token and set user flag (in session) to authenticated
-            $this->getUser()->login([
-                'user' => $user,
-                'autoLogin' => true,
-                'source' => GoogleSignIn::ACCESS_TOKEN_SOURCE_WEB_GOOGLE_SSO,
-            ]);
+            if (!$this->getUser()->isLoggedIn()) {
+                // AutoLogin will log in user - create access token and set user flag (in session) to authenticated
+                $this->getUser()->login([
+                    'user' => $user,
+                    'autoLogin' => true,
+                    'source' => GoogleSignIn::ACCESS_TOKEN_SOURCE_WEB_GOOGLE_SSO,
+                ]);
+            }
         } catch (SsoException $e) {
             Debugger::log($e, Debugger::WARNING);
-            $this->flashMessage($this->translator->translate('users.frontend.google.fail'));
-            $this->redirect('Sign:in');
+            $this->flashMessage($this->translator->translate('users.frontend.google.fail'), 'error');
+            $this->redirect('Users:settings');
+        } catch (AlreadyLinkedAccountSsoException $e) {
+            $this->flashMessage($this->translator->translate('users.frontend.google.used_account', [
+                'email' => $e->getEmail(),
+            ]), 'error');
+            $this->redirect('Users:settings');
         }
 
         $session = $this->getSession(self::SESSION_SECTION);

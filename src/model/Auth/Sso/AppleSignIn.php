@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use Nette\Database\Table\IRow;
 use Nette\Http\Session;
 use Nette\Http\Url;
+use Nette\Security\User;
 use Nette\Utils\Json;
 
 class AppleSignIn
@@ -28,16 +29,20 @@ class AppleSignIn
 
     private $ssoUserManager;
 
+    private $user;
+
     public function __construct(
         ?string $clientId,
         ConfigsRepository $configsRepository,
         Session $session,
-        SsoUserManager $ssoUserManager
+        SsoUserManager $ssoUserManager,
+        User $user
     ) {
         $this->clientId = $clientId;
         $this->configsRepository = $configsRepository;
         $this->session = $session;
         $this->ssoUserManager = $ssoUserManager;
+        $this->user = $user;
     }
 
     public function isEnabled(): bool
@@ -78,6 +83,7 @@ class AppleSignIn
         $sessionSection = $this->session->getSection(self::SESSION_SECTION);
         $sessionSection->oauth2state = $state;
         $sessionSection->nonce = $nonce;
+        $sessionSection->loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
 
         return $url->getAbsoluteUrl();
     }
@@ -88,9 +94,8 @@ class AppleSignIn
      *
      * Note: Access token is not automatically created
      *
-     * @param string $redirectUri
-     *
      * @return IRow user row
+     * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      */
     public function signInCallback(): IRow
@@ -106,11 +111,19 @@ class AppleSignIn
 
         $sessionSection = $this->session->getSection(self::SESSION_SECTION);
 
-        // Check state
-        if (($_POST['state'] !== $sessionSection->oauth2state)) {
+        // Check internal state
+        if ($_POST['state'] !== $sessionSection->oauth2state) {
             // State is invalid, possible CSRF attack in progress
             unset($sessionSection->oauth2state);
             throw new SsoException('Apple SignIn error: invalid state');
+        }
+
+        // Check user state
+        $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
+        if ($loggedUserId !== $sessionSection->loggedUserId) {
+            // State is invalid, possible user change between login request and callback
+            unset($sessionSection->loggedUserId);
+            throw new SsoException('Apple SignIn error: invalid user state');
         }
 
         try {
@@ -141,7 +154,8 @@ class AppleSignIn
             $appleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN,
-            self::USER_SOURCE_APPLE_SSO
+            self::USER_SOURCE_APPLE_SSO,
+            $loggedUserId
         );
     }
 

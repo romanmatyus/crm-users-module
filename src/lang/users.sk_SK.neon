@@ -168,13 +168,22 @@ frontend:
 			cannot_delete: Používateľa nie je možné zmazať. Kontaktuje prosím zákaznícku podporu.
 			confirm: Zmazanie používateľského účtu je nevratná akcia. Pokračovať?
 			success: Vaše konto bolo zmazané.
+		linked_accounts:
+			title: Správa prepojených účtov
+			connect: Prepojiť účet s
+			connected: Prepojený účet
+			unlink: zrušiť
+			unlink_success: Prepojenie účtov bolo zrušené
+
 	google:
 		fail: "Chyba prihlasovania pomocou prihlásenia cez Google, prosím kontaktujte našu podporu."
 		sign_using_google: Prihlásiť cez Google
 		or: alebo
+		used_account: "Prepojenie účtu nie je možné. Google účet %email% už je prepojený s iným kontom."
 	apple:
 		fail: "Chyba prihlasovania pomocou prihlásenia cez Apple, prosím kontaktujte našu podporu."
 		sign_using_apple: Prihlásiť cez Apple
+		used_account: "Prepojenie účtu nie je možné. Apple účet %email% už je prepojený s iným kontom."
 
 admin:
 	actions:

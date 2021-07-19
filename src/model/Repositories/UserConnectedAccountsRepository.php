@@ -65,4 +65,14 @@ class UserConnectedAccountsRepository extends Repository
             ->where(['user_id' => $user->id])
             ->delete();
     }
+
+    public function removeAccountForUser(IRow $user, int $id): int
+    {
+        return $this->getTable()
+            ->where([
+                'user_id' => $user->id,
+                'id' => $id
+            ])
+            ->delete();
+    }
 }

@@ -168,13 +168,21 @@ frontend:
 			cannot_delete: Account cannot be deleted automatically. Please contact customer support.
 			confirm: Deleting the account is irreversible. Are you sure you want to proceed?
 			success: Your account was deleted.
+		linked_accounts:
+			title: Linked account management
+			connect: Link account with
+			connected: Account linked
+			unlink: cancel
+			unlink_success: Connected account has been removed
 	google:
 		fail: "Unable to log in using Google Sign-in, please contact our support."
 		sign_using_google: Sign in using Google
 		or: or
+		used_account: "Unable to link accounts. Google account %email% was already linked with another account."
 	apple:
 		fail: "Unable to log in using Apple Sign-in, please contact our support."
 		sign_using_apple: Sign in using Apple
+		used_account: "Unable to link accounts. Apple account %email% was already linked with another account."
 admin:
 	actions:
 		deactivate: Deactivate

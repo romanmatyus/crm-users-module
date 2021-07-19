@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
+use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\AppleSignIn;
 use Crm\UsersModule\Auth\Sso\SsoException;
 use Crm\UsersModule\Auth\Sso\SsoRedirectValidator;
@@ -67,16 +68,21 @@ class ApplePresenter extends FrontendPresenter
         try {
             $user = $this->appleSignIn->signInCallback();
 
-            // AutoLogin will log in user - create access token and set user flag (in session) to authenticated
-            $this->getUser()->login([
-                'user' => $user,
-                'autoLogin' => true,
-                'source' => AppleSignIn::ACCESS_TOKEN_SOURCE_WEB_APPLE_SSO,
-            ]);
+            if (!$this->getUser()->isLoggedIn()) {
+                // AutoLogin will log in user - create access token and set user flag (in session) to authenticated
+                $this->getUser()->login([
+                    'user' => $user,
+                    'autoLogin' => true,
+                    'source' => AppleSignIn::ACCESS_TOKEN_SOURCE_WEB_APPLE_SSO,
+                ]);
+            }
         } catch (SsoException $e) {
             Debugger::log($e, Debugger::WARNING);
             $this->flashMessage($this->translator->translate('users.frontend.apple.fail'), 'danger');
-            $this->redirect('Sign:in');
+            $this->redirect('Users:settings');
+        } catch (AlreadyLinkedAccountSsoException $e) {
+            $this->flashMessage($this->translator->translate('users.frontend.apple.used_account'), 'danger');
+            $this->redirect('Users:settings');
         }
 
         $session = $this->getSession(self::SESSION_SECTION);

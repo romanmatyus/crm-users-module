@@ -6,6 +6,8 @@ use Crm\ApplicationModule\Presenters\FrontendPresenter;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\ApplicationModule\User\DownloadUserData;
 use Crm\UsersModule\Auth\Access\AccessToken;
+use Crm\UsersModule\Auth\Sso\AppleSignIn;
+use Crm\UsersModule\Auth\Sso\GoogleSignIn;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\NotificationEvent;
 use Crm\UsersModule\Events\UserSignOutEvent;
@@ -14,6 +16,7 @@ use Crm\UsersModule\Forms\RequestPasswordFormFactory;
 use Crm\UsersModule\Forms\ResetPasswordFormFactory;
 use Crm\UsersModule\Forms\UserDeleteFormFactory;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
+use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UserEmailConfirmationsRepository;
 use Crm\UsersModule\User\ZipBuilder;
 use Nette\Application\Responses\FileResponse;
@@ -46,6 +49,12 @@ class UsersPresenter extends FrontendPresenter
     /** @var UserEmailConfirmationsRepository */
     private $userEmailConfirmationsRepository;
 
+    private $googleSignIn;
+
+    private $appleSignIn;
+
+    private $userConnectedAccountsRepository;
+
     public function __construct(
         ChangePasswordFormFactory $changePasswordFormFactory,
         DownloadUserData $downloadUserData,
@@ -57,7 +66,10 @@ class UsersPresenter extends FrontendPresenter
         UserDeleteFormFactory $userDeleteFormFactory,
         UserManager $userManager,
         AccessToken $accessToken,
-        UserEmailConfirmationsRepository $userEmailConfirmationsRepository
+        UserEmailConfirmationsRepository $userEmailConfirmationsRepository,
+        GoogleSignIn $googleSignIn,
+        AppleSignIn $appleSignIn,
+        UserConnectedAccountsRepository $userConnectedAccountsRepository
     ) {
         parent::__construct();
         $this->changePasswordFormFactory = $changePasswordFormFactory;
@@ -71,6 +83,9 @@ class UsersPresenter extends FrontendPresenter
         $this->userManager = $userManager;
         $this->accessToken = $accessToken;
         $this->userEmailConfirmationsRepository = $userEmailConfirmationsRepository;
+        $this->googleSignIn = $googleSignIn;
+        $this->appleSignIn = $appleSignIn;
+        $this->userConnectedAccountsRepository = $userConnectedAccountsRepository;
     }
 
     public function renderProfile()
@@ -156,6 +171,18 @@ class UsersPresenter extends FrontendPresenter
         $this->template->canBeDeleted = false;
         if ($this->getUser()->isLoggedIn()) {
             list($this->template->canBeDeleted, $_) = $this->deleteUserData->canBeDeleted($this->getUser()->getId());
+
+            $userRow = $this->usersRepository->find($this->getUser()->getId());
+
+            $this->template->appleSignIn = $this->appleSignIn->isEnabled() ?
+                $this->link(':Users:Apple:sign', ['url' => $this->link('//this')]) : false;
+            $this->template->appleConnectedAccount = $this->userConnectedAccountsRepository
+                ->getForUser($userRow, UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN);
+
+            $this->template->googleSignIn = $this->googleSignIn->isEnabled() ?
+                $this->link(':Users:Google:sign', ['url' => $this->link('//this')]) : false;
+            $this->template->googleConnectedAccount = $this->userConnectedAccountsRepository
+                ->getForUser($userRow, UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN);
         }
     }
 
@@ -191,6 +218,18 @@ class UsersPresenter extends FrontendPresenter
 
         $this->userManager->logoutUser($user, [$accessToken]);
         $this->flashMessage($this->translator->translate('users.frontend.settings.devices_logout.success'));
+    }
+
+    public function handleUnlinkConnectedAccount(int $accountId)
+    {
+        $this->onlyLoggedIn();
+
+        $userRow = $this->usersRepository->find($this->getUser()->getId());
+
+        $this->userConnectedAccountsRepository->removeAccountForUser($userRow, $accountId);
+
+        $this->flashMessage($this->translator->translate('users.frontend.settings.linked_accounts.unlink_success'));
+        $this->redirect('this');
     }
 
     public function createComponentUserDeleteForm()
