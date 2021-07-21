@@ -30,6 +30,7 @@ use Crm\UsersModule\Scenarios\UserHasAddressCriteria;
 use Crm\UsersModule\Scenarios\UserSourceCriteria;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
 use Crm\UsersModule\Seeders\SegmentsSeeder;
+use Crm\UsersModule\Seeders\SnippetsSeeder;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Kdyby\Translation\Translator;
 use League\Event\Emitter;
@@ -424,6 +425,7 @@ class UsersModule extends CrmModule
         $seederManager->addSeeder($this->getInstance(ConfigsSeeder::class));
         $seederManager->addSeeder($this->getInstance(UsersSeeder::class));
         $seederManager->addSeeder($this->getInstance(SegmentsSeeder::class));
+        $seederManager->addSeeder($this->getInstance(SnippetsSeeder::class));
     }
 
     public function registerCleanupFunction(CallbackManagerInterface $cleanUpManager)

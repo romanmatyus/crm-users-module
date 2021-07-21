@@ -153,6 +153,7 @@ services:
 	- Crm\UsersModule\Seeders\ConfigsSeeder
 	- Crm\UsersModule\Seeders\SegmentsSeeder
 	- Crm\UsersModule\Seeders\UsersSeeder
+	- Crm\UsersModule\Seeders\SnippetsSeeder
 	- Crm\UsersModule\Components\UserSourceAccesses
 	- Crm\UsersModule\Components\UserTokens
 	- Crm\UsersModule\Auth\Rate\WrongPasswordRateLimit
