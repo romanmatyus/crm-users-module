@@ -345,6 +345,8 @@ admin:
 		note_updated: Note was changed
 		note:
 			placeholder: Add user note
+			validation:
+				maximum: Note is too long. Allowed text length is %d characters.
 
 	groups_admin:
 		title: Admin groups

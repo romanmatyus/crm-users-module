@@ -41,9 +41,20 @@ class UserNoteFormFactory
         $form->addProtection();
         $form->setTranslator($this->translator);
 
-        $form->addTextArea('note', '')
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_note_form.note.placeholder'))
-            ->getControlPrototype()->addAttributes(['class' => 'autosize']);
+        $note = $form->addTextArea('note', '')
+            ->setAttribute('placeholder', 'users.admin.user_note_form.note.placeholder')
+            ->setNullable()
+            ->setRequired(false);
+        $note->addCondition(Form::FILLED)
+                ->addRule(
+                    Form::MAX_LENGTH,
+                    'users.admin.user_note_form.note.validation.maximum',
+                    \Phinx\Db\Adapter\MysqlAdapter::TEXT_REGULAR
+                );
+        $note->getControlPrototype()->addAttributes([
+                'class' => 'autosize',
+                'style' => 'max-height: 400px;'
+            ]);
 
         $form->addSubmit('send', 'system.save')
             ->setAttribute('class', 'btn btn-primary')

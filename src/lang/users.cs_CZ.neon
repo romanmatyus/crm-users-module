@@ -346,6 +346,8 @@ admin:
 		note_updated: Poznámka byla změněna
 		note:
 			placeholder: Sem můžete napsat poznámku
+			validation:
+				maximum: Poznámka je příliš dlouhá. Povolený počet znaků je %d.
 
 	groups_admin:
 		title: Admin skupiny
