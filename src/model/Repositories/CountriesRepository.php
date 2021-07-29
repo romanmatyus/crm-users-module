@@ -27,15 +27,15 @@ class CountriesRepository extends Repository
             throw new \Exception("Missing environment variable `CRM_DEFAULT_COUNTRY_ISO`");
         }
         $this->defaultCountryISO = $defaultCountryISO;
-
-        $country = $this->findBy('iso_code', $defaultCountryISO);
-        $this->defaultCountry = $country;
     }
 
     final public function defaultCountry()
     {
-        if (!$this->defaultCountry) {
+        if (!$this->defaultCountryISO) {
             throw new \Exception("Unable to load default country from provided ISO code `{$this->defaultCountryISO}`");
+        }
+        if (!$this->defaultCountry) {
+            $this->defaultCountry = $this->findBy('iso_code', $this->defaultCountryISO);
         }
         return $this->defaultCountry;
     }
