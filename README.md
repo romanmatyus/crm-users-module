@@ -407,7 +407,7 @@ Response when email is available:
 
 ---
 
-#### GET `/api/v1/users/create`
+#### POST `/api/v1/users/create`
 
 API for registration of user into the system. Password is generated automatically by the system and sent to user by email.
 
@@ -424,6 +424,7 @@ When the user is registered, he/she is automatically logged in and user token is
 | Name | Value | Required | Description |
 | --- |---| --- | --- |
 | email | *String* | yes | - |
+| password | *String* | no | - |
 | first_name | *String* | no | - |
 | last_name | *String* | no | - |
 | ext_id | *Integer* | no | User identificator from external system |
