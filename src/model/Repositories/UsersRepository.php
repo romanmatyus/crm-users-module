@@ -20,6 +20,8 @@ class UsersRepository extends Repository
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
 
+    public const DEFAULT_REGISTRATION_CHANNEL = 'crm';
+
     protected $tableName = 'users';
 
     private $emitter;
@@ -92,6 +94,7 @@ class UsersRepository extends Repository
             'modified_at' => new \DateTime(),
             'active' => intval($active),
             'ext_id' => $extId,
+            'registration_channel' => self::DEFAULT_REGISTRATION_CHANNEL
         ]);
     }
 

@@ -19,7 +19,9 @@ class AppleSignIn
 
     private const SESSION_SECTION = 'apple_sign_in';
 
-    private const USER_SOURCE_APPLE_SSO = "apple_sso";
+    public const USER_SOURCE_APPLE_SSO = "apple_sso";
+
+    public const USER_APPLE_REGISTRATION_CHANNEL = "apple";
 
     private $clientId;
 
@@ -58,7 +60,7 @@ class AppleSignIn
      * @return string
      * @throws SsoException
      */
-    public function signInRedirect(string $redirectUri): string
+    public function signInRedirect(string $redirectUri, string $source = null): string
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -84,6 +86,7 @@ class AppleSignIn
         $sessionSection->oauth2state = $state;
         $sessionSection->nonce = $nonce;
         $sessionSection->loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
+        $sessionSection->source = $source;
 
         return $url->getAbsoluteUrl();
     }
@@ -154,8 +157,10 @@ class AppleSignIn
             $appleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN,
-            self::USER_SOURCE_APPLE_SSO,
-            $loggedUserId
+            $sessionSection->source ?? self::USER_SOURCE_APPLE_SSO,
+            null,
+            $loggedUserId,
+            self::USER_APPLE_REGISTRATION_CHANNEL
         );
     }
 

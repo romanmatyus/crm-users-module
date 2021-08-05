@@ -8,14 +8,15 @@ use Google_Client;
 use Google_Service_Oauth2;
 use Nette\Database\Table\IRow;
 use Nette\Http\Session;
-use Nette\Security\Identity;
 use Nette\Security\User;
 
 class GoogleSignIn
 {
     public const ACCESS_TOKEN_SOURCE_WEB_GOOGLE_SSO = 'web+google_sso';
 
-    private const USER_SOURCE_GOOGLE_SSO = "google_sso";
+    public const USER_SOURCE_GOOGLE_SSO = "google_sso";
+
+    public const USER_GOOGLE_REGISTRATION_CHANNEL = "google";
 
     private const SESSION_SECTION = 'google_sign_in';
 
@@ -108,7 +109,7 @@ class GoogleSignIn
      * @return string
      * @throws SsoException
      */
-    public function signInRedirect(string $redirectUri): string
+    public function signInRedirect(string $redirectUri, string $source = null): string
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -134,6 +135,7 @@ class GoogleSignIn
         $sessionSection = $this->session->getSection(self::SESSION_SECTION);
         $sessionSection->oauth2state = $state;
         $sessionSection->loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
+        $sessionSection->source = $source;
 
         return $client->createAuthUrl();
     }
@@ -208,9 +210,10 @@ class GoogleSignIn
             $googleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
-            self::USER_SOURCE_GOOGLE_SSO,
+            $sessionSection->source ?? self::USER_SOURCE_GOOGLE_SSO,
             $userInfo->toSimpleObject(),
-            $loggedUserId
+            $loggedUserId,
+            self::USER_GOOGLE_REGISTRATION_CHANNEL
         );
     }
 

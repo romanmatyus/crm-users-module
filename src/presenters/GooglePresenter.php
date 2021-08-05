@@ -3,8 +3,8 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
-use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\SignInRedirectValidator;
+use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\GoogleSignIn;
 use Crm\UsersModule\Auth\Sso\SsoException;
 use Tracy\Debugger;
@@ -48,9 +48,11 @@ class GooglePresenter extends FrontendPresenter
             }
         }
 
+        $source = $this->getParameter('n_source');
+
         try {
             // redirect URL is your.crm.url/users/google/callback
-            $authUrl = $this->googleSignIn->signInRedirect($this->link('//callback'));
+            $authUrl = $this->googleSignIn->signInRedirect($this->link('//callback'), $source);
             // redirect user to google authentication
             $this->redirectUrl($authUrl);
         } catch (SsoException $e) {

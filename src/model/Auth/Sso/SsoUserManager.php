@@ -36,7 +36,7 @@ class SsoUserManager
         $this->usersRepository = $usersRepository;
     }
 
-    public function getUser(string $externalId, string $email, string $type, string $source, $meta = null, $loggedUserId = null): IRow
+    public function getUser(string $externalId, string $email, string $type, string $source, $meta = null, $loggedUserId = null, $registrationChannel = null): IRow
     {
         $this->dbContext->beginTransaction();
         try {
@@ -66,6 +66,7 @@ class SsoUserManager
                         ->setActive(true)
                         ->setIsInstitution(false)
                         ->setSource($source)
+                        ->setRegistrationChannel($registrationChannel)
                         ->setAddTokenOption(false)
                         ->save();
                 }

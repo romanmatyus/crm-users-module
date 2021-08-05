@@ -3,8 +3,8 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
-use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\SignInRedirectValidator;
+use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\AppleSignIn;
 use Crm\UsersModule\Auth\Sso\SsoException;
 use Tracy\Debugger;
@@ -47,9 +47,11 @@ class ApplePresenter extends FrontendPresenter
             }
         }
 
+        $source = $this->getParameter('n_source');
+
         try {
             // redirect URL is your.crm.url/users/apple/callback
-            $authUrl = $this->appleSignIn->signInRedirect($this->link('//callback'));
+            $authUrl = $this->appleSignIn->signInRedirect($this->link('//callback'), $source);
             // redirect user to apple authentication
             $this->redirectUrl($authUrl);
         } catch (SsoException $e) {

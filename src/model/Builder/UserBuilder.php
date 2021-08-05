@@ -71,6 +71,7 @@ class UserBuilder extends Builder
         $this->set('ext_id', null);
         $this->set('role', UsersRepository::ROLE_USER);
         $this->set('invoice', false);
+        $this->set('registration_channel', UsersRepository::DEFAULT_REGISTRATION_CHANNEL);
         $this->setOption('add_user_token', true);
     }
 
@@ -146,6 +147,11 @@ class UserBuilder extends Builder
     public function setSource($source)
     {
         return $this->set('source', $source);
+    }
+
+    public function setRegistrationChannel($registrationChannel)
+    {
+        return $this->set('registration_channel', $registrationChannel);
     }
 
     public function sendEmail($sendEmail)
