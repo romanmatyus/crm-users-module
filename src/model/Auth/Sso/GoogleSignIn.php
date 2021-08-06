@@ -97,7 +97,9 @@ class GoogleSignIn
             $userEmail,
             UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
             self::USER_SOURCE_GOOGLE_SSO,
-            $payload
+            $payload,
+            null,
+            self::USER_GOOGLE_REGISTRATION_CHANNEL
         );
     }
 

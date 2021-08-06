@@ -66,7 +66,7 @@ class SsoUserManager
                         ->setActive(true)
                         ->setIsInstitution(false)
                         ->setSource($source)
-                        ->setRegistrationChannel($registrationChannel)
+                        ->setRegistrationChannel($registrationChannel ?? UsersRepository::DEFAULT_REGISTRATION_CHANNEL)
                         ->setAddTokenOption(false)
                         ->save();
                 }
