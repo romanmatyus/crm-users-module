@@ -11,6 +11,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
+use Nette\Security\Passwords;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class UserFormFactory
@@ -31,18 +32,23 @@ class UserFormFactory
 
     private $onCallback;
 
+    /** @var Passwords */
+    private $passwords;
+
     public function __construct(
         UsersRepository $userRepository,
         UserBuilder $userBuilder,
         ITranslator $translator,
         DataProviderManager $dataProviderManager,
-        AdminUserGroupsRepository $adminUserGroupsRepository
+        AdminUserGroupsRepository $adminUserGroupsRepository,
+        Passwords $passwords
     ) {
         $this->userRepository = $userRepository;
         $this->userBuilder = $userBuilder;
         $this->translator = $translator;
         $this->dataProviderManager = $dataProviderManager;
         $this->adminUserGroupsRepository = $adminUserGroupsRepository;
+        $this->passwords = $passwords;
     }
 
     public function create($userId): Form
@@ -154,7 +160,7 @@ class UserFormFactory
             try {
                 if (isset($values['password'])) {
                     if (strlen($values['password']) > 0) {
-                        $values['password'] = Nette\Security\Passwords::hash($values['password']);
+                        $values['password'] = $this->passwords->hash($values['password']);
                     } else {
                         unset($values['password']);
                     }

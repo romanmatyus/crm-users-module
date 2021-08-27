@@ -47,6 +47,9 @@ class UserManager
 
     private $userConnectedAccountsRepository;
 
+    /** @var Passwords */
+    private $passwords;
+
     public function __construct(
         UsersRepository $usersRepository,
         UserConnectedAccountsRepository $userConnectedAccountsRepository,
@@ -57,7 +60,8 @@ class UserManager
         EmailValidator $emailValidator,
         PasswordResetTokensRepository $passwordResetTokensRepository,
         AccessTokensRepository $accessTokensRepository,
-        UserMetaRepository $userMetaRepository
+        UserMetaRepository $userMetaRepository,
+        Passwords $passwords
     ) {
         $this->usersRepository = $usersRepository;
         $this->passwordGenerator = $passwordGenerator;
@@ -69,6 +73,7 @@ class UserManager
         $this->accessTokensRepository = $accessTokensRepository;
         $this->userMetaRepository = $userMetaRepository;
         $this->userConnectedAccountsRepository = $userConnectedAccountsRepository;
+        $this->passwords = $passwords;
     }
 
     /**
@@ -139,11 +144,11 @@ class UserManager
 
         $newPassword = trim($newPassword);
 
-        if (!Passwords::verify($actualPassword, $user[UserAuthenticator::COLUMN_PASSWORD_HASH])) {
+        if (!$this->passwords->verify($actualPassword, $user[UserAuthenticator::COLUMN_PASSWORD_HASH])) {
             return false;
         }
 
-        $newPassword = Passwords::hash($newPassword);
+        $newPassword = $this->passwords->hash($newPassword);
 
         $this->changePasswordsLogsRepository->add(
             $user,
@@ -173,7 +178,7 @@ class UserManager
         if (!$password) {
             $password = $this->passwordGenerator->generatePassword();
         }
-        $hashedPassword = Passwords::hash($password);
+        $hashedPassword = $this->passwords->hash($password);
 
         $this->usersRepository->update($user, [
             'password' => $hashedPassword,
@@ -209,7 +214,7 @@ class UserManager
         $oldPassword = $user->password;
 
         $password = $this->passwordGenerator->generatePassword();
-        $hashedPassword = Passwords::hash($password);
+        $hashedPassword = $this->passwords->hash($password);
 
         $this->usersRepository->update($user, [
             'password' => $hashedPassword,

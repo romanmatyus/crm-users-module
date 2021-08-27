@@ -32,13 +32,16 @@ class UsersRepository extends Repository
 
     private $cacheRepository;
 
+    private $passwords;
+
     public function __construct(
         Context $database,
         Emitter $emitter,
         AuditLogRepository $auditLogRepository,
         CacheRepository $cacheRepository,
         \Tomaj\Hermes\Emitter $hermesEmmiter,
-        AccessTokensRepository $accessTokensRepository
+        AccessTokensRepository $accessTokensRepository,
+        Passwords $passwords
     ) {
         parent::__construct($database);
         $this->database = $database;
@@ -47,6 +50,7 @@ class UsersRepository extends Repository
         $this->hermesEmitter = $hermesEmmiter;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->cacheRepository = $cacheRepository;
+        $this->passwords = $passwords;
     }
 
     /**
@@ -82,7 +86,7 @@ class UsersRepository extends Repository
         return $this->insert([
             'email' => $email,
             'public_name' => $email,
-            'password' => Passwords::hash($password),
+            'password' => $this->passwords->hash($password),
             'first_name' => $firstName,
             'last_name' => $lastName,
             'role' => $role,

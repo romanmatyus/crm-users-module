@@ -10,6 +10,14 @@ use Nette\Security\Passwords;
 
 class UsersPopulator extends AbstractPopulator
 {
+    /** @var Passwords */
+    private $passwords;
+
+    public function __construct($name, $count, Passwords $passwords)
+    {
+        $this->passwords = $passwords;
+        parent::__construct($name, $count);
+    }
     /**
      * @param \Symfony\Component\Console\Helper\ProgressBar $progressBar
      */
@@ -21,7 +29,7 @@ class UsersPopulator extends AbstractPopulator
         for ($i = 0; $i < $this->count; $i++) {
             $data = [
                 'email' => $this->faker->email,
-                'password' => Passwords::hash($this->faker->userName),
+                'password' => $this->passwords->hash($this->faker->userName),
                 'first_name' => $this->faker->firstName,
                 'last_name' => $this->faker->lastName,
                 'ext_id' => $this->faker->boolean(5) ? null : $this->faker->numberBetween(100, 10000),

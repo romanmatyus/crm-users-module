@@ -27,16 +27,20 @@ class UserBuilder extends Builder
     
     private $passwordLazyParams = [];
 
+    private $passwords;
+
     public function __construct(
         Context $database,
         Emitter $emitter,
         \Tomaj\Hermes\Emitter $hermesEmitter,
-        AccessToken $accessToken
+        AccessToken $accessToken,
+        Passwords $passwords
     ) {
         parent::__construct($database);
         $this->emitter = $emitter;
         $this->hermesEmitter = $hermesEmitter;
         $this->accessToken = $accessToken;
+        $this->passwords = $passwords;
     }
 
     public function isValid()
@@ -106,7 +110,7 @@ class UserBuilder extends Builder
     {
         if ($generateHash) {
             $this->originalPassword = $password;
-            $password = Passwords::hash($password);
+            $password = $this->passwords->hash($password);
         }
         return $this->set('password', $password);
     }

@@ -41,7 +41,11 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
 
     /** @var string */
     private $password = null;
+
     private UnclaimedUser $unclaimedUser;
+
+    /** @var Passwords */
+    private $passwords;
 
     public function __construct(
         Emitter $emitter,
@@ -51,7 +55,8 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
         ITranslator $translator,
         WrongPasswordRateLimit $wrongPasswordRateLimit,
         IpRateLimit $ipRateLimit,
-        UnclaimedUser $unclaimedUser
+        UnclaimedUser $unclaimedUser,
+        Passwords $passwords
     ) {
         parent::__construct($emitter, $hermesEmitter, $request);
 
@@ -60,6 +65,7 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
         $this->wrongPasswordRateLimit = $wrongPasswordRateLimit;
         $this->ipRateLimit = $ipRateLimit;
         $this->unclaimedUser = $unclaimedUser;
+        $this->passwords = $passwords;
     }
 
     public function authenticate()
@@ -108,9 +114,9 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
         } elseif (!$user->active) {
             $this->addAttempt($this->username, $user, $this->source, LoginAttemptsRepository::STATUS_INACTIVE_USER, 'Konto je neaktívne.');
             throw new AuthenticationException($this->translator->translate('users.authenticator.inactive_account'), UserAuthenticator::IDENTITY_NOT_FOUND);
-        } elseif (Passwords::needsRehash($user[UserAuthenticator::COLUMN_PASSWORD_HASH])) {
+        } elseif ($this->passwords->needsRehash($user[UserAuthenticator::COLUMN_PASSWORD_HASH])) {
             $this->usersRepository->update($user, [
-                UserAuthenticator::COLUMN_PASSWORD_HASH => Passwords::hash($this->password),
+                UserAuthenticator::COLUMN_PASSWORD_HASH => $this->passwords->hash($this->password),
             ]);
         }
 
@@ -127,6 +133,6 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
 
     protected function checkPassword($inputPassword, $passwordHash)
     {
-        return Passwords::verify($inputPassword, $passwordHash);
+        return $this->passwords->verify($inputPassword, $passwordHash);
     }
 }
