@@ -46,18 +46,18 @@ class SignInFormFactory
         $form->setRenderer(new BootstrapRenderer());
         $form->addProtection();
         $username = $form->addText('username', $this->translator->translate('users.frontend.sign_in.username.label'))
-            ->setType('email')
+            ->setHtmlType('email')
             ->setRequired($this->translator->translate('users.frontend.sign_in.username.required'))
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.username.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.username.placeholder'));
 
         $password = $form->addPassword('password', $this->translator->translate('users.frontend.sign_in.password.label'))
             ->setRequired($this->translator->translate('users.frontend.sign_in.password.required'))
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.password.required'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.password.required'));
 
         if ($username) {
-            $password->setAttribute('autofocus');
+            $password->setHtmlAttribute('autofocus');
         } else {
-            $username->setAttribute('autofocus');
+            $username->setHtmlAttribute('autofocus');
         }
 
         $form->addCheckbox('remember', $this->translator->translate('users.frontend.sign_in.remember'));

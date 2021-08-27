@@ -271,10 +271,10 @@ class UsersAdminPresenter extends AdminPresenter
         $buttonGroup = $form->addGroup('button', false)->setOption('label', null);
 
         $form->addText('text', $this->translator->translate('users.admin.admin_filter_form.text.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.admin_filter_form.text.placeholder'))
-            ->setAttribute('autofocus');
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.admin_filter_form.text.placeholder'))
+            ->setHtmlAttribute('autofocus');
         $form->addText('address', $this->translator->translate('users.admin.admin_filter_form.address.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.admin_filter_form.address.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.admin_filter_form.address.placeholder'));
 
         $form->setCurrentGroup($collapseGroup);
 
@@ -305,7 +305,7 @@ class UsersAdminPresenter extends AdminPresenter
         $form->addButton('more', 'payments.admin.component.admin_filter_form.filter.more')
             ->setHtmlAttribute('data-toggle', 'collapse')
             ->setHtmlAttribute('data-target', '#formCollapse')
-            ->setAttribute('class', 'btn btn-info')
+            ->setHtmlAttribute('class', 'btn btn-info')
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fas fa-caret-down"></i> ' . $this->translator->translate('payments.admin.component.admin_filter_form.filter.more'));

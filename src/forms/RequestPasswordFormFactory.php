@@ -42,10 +42,10 @@ class RequestPasswordFormFactory
         $form->setTranslator($this->translator);
 
         $form->addText('email', 'users.frontend.request_password.email.label')
-            ->setType('email')
-            ->setAttribute('autofocus')
+            ->setHtmlType('email')
+            ->setHtmlAttribute('autofocus')
             ->setRequired('users.frontend.request_password.email.required')
-            ->setAttribute('placeholder', 'users.frontend.request_password.email.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.frontend.request_password.email.placeholder')
             ->addRule(
                 function (TextInput $input) {
                     $userRow = $this->userManager->loadUserByEmail($input->getValue());

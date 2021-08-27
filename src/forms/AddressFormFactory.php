@@ -89,31 +89,31 @@ class AddressFormFactory
         }
 
         $form->addText('first_name', 'users.frontend.address.first_name.label')
-            ->setAttribute('placeholder', 'users.frontend.address.first_name.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.first_name.placeholder');
         $form->addText('last_name', 'users.frontend.address.last_name.label')
-            ->setAttribute('placeholder', 'users.frontend.address.first_name.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.first_name.placeholder');
 
         $form->addText('phone_number', 'users.frontend.address.phone_number.label')
-            ->setAttribute('placeholder', 'users.frontend.address.phone_number.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.phone_number.placeholder');
         $form->addText('address', 'users.frontend.address.address.label')
-            ->setAttribute('placeholder', 'users.frontend.address.address.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.address.placeholder');
         $form->addText('number', 'users.frontend.address.number.label')
-            ->setAttribute('placeholder', 'users.frontend.address.number.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.number.placeholder');
         $form->addText('zip', 'users.frontend.address.zip.label')
-            ->setAttribute('placeholder', 'users.frontend.address.zip.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.zip.placeholder');
         $form->addText('city', 'users.frontend.address.city.label')
-            ->setAttribute('placeholder', 'users.frontend.address.city.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.city.placeholder');
         $form->addSelect('country_id', 'users.frontend.address.country.label', $this->countriesRepository->getAllPairs());
 
         $form->addTextArea('company_name', 'users.frontend.address.company_name.label', null, 1)
-            ->setAttribute('placeholder', 'users.frontend.address.company_name.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.company_name.placeholder')
             ->setMaxLength(150);
         $form->addText('company_id', 'users.frontend.address.company_id.label')
-            ->setAttribute('placeholder', 'users.frontend.address.company_id.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.company_id.placeholder');
         $form->addText('company_tax_id', 'users.frontend.address.company_tax_id.label')
-            ->setAttribute('placeholder', 'users.frontend.address.company_tax_id.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.company_tax_id.placeholder');
         $form->addText('company_vat_id', 'users.frontend.address.company_vat_id.label')
-            ->setAttribute('placeholder', 'users.frontend.address.company_vat_id.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.address.company_vat_id.placeholder');
 
         /** @var AddressFormDataProviderInterface $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.address_form', AddressFormDataProviderInterface::class);

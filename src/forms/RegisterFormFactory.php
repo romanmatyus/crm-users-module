@@ -43,9 +43,9 @@ class RegisterFormFactory
         $form->setTranslator($this->translator);
         $form->setRenderer(new BootstrapRenderer());
         $form->addText('email', 'users.form.register.email.label')
-            ->setAttribute('autofocus')
+            ->setHtmlAttribute('autofocus')
             ->setRequired('users.form.register.email.required')
-            ->setAttribute('placeholder', 'users.form.register.email.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.form.register.email.placeholder');
 
         /** @var RegisterFormDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.register_form', RegisterFormDataProviderInterface::class);

@@ -64,7 +64,7 @@ class UserGroupsFormFactory
             foreach ($userGroups as $group) {
                 $userGroupsIds[] = $group->id;
                 $button = $form->addSubmit('group_' . $group->id, $group->name);
-                $button->setAttribute('class', 'btn btn-default btn-blxock btn-sm');
+                $button->setHtmlAttribute('class', 'btn btn-default btn-blxock btn-sm');
                 $button->getControlPrototype()->setName('button')->setHtml('<i class="fa fa-times"></i> ' . $group->name);
                 $button->onClick[] = function () use ($factory, $group, $user, $form) {
                     $factory->userGroupsRepository->removeFromGroup($group, $user);
@@ -88,7 +88,7 @@ class UserGroupsFormFactory
                 ->setPrompt('users.form.user_group.group_id.prompt');
 
             $form->addSubmit('send', 'users.form.user_group.send')
-                ->setAttribute('class', 'btn btn-primary')
+                ->setHtmlAttribute('class', 'btn btn-primary')
                 ->getControlPrototype()
                 ->setName('button')
                 ->setHtml('<i class="fa fa-save"></i> ' . $this->translator->translate('users.form.user_group.send'));

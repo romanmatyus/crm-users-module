@@ -44,13 +44,13 @@ class ResetPasswordFormFactory
 
         $form->addPassword('new_password', 'users.frontend.reset_password.new_password.label')
             ->setRequired('users.frontend.reset_password.new_password.required')
-            ->setAttribute('placeholder', 'users.frontend.reset_password.new_password.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.frontend.reset_password.new_password.placeholder')
             ->addRule(Form::MIN_LENGTH, 'users.frontend.reset_password.new_password.min_length', 6);
 
         $form->addPassword('new_password_confirm', 'users.frontend.reset_password.new_password_confirm.placeholder')
             ->setRequired('users.frontend.reset_password.new_password_confirm.required')
             ->addRule(Form::EQUAL, 'users.frontend.reset_password.new_password_confirm.not_matching', $form['new_password'])
-            ->setAttribute('placeholder', 'users.frontend.reset_password.new_password_confirm.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.frontend.reset_password.new_password_confirm.placeholder')
             ->setOption('description', 'users.frontend.reset_password.new_password_confirm.description');
 
         $form->addSubmit('send', 'users.frontend.reset_password.submit');

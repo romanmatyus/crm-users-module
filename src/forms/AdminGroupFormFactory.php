@@ -44,11 +44,11 @@ class AdminGroupFormFactory
         $form->addHidden('group_id');
 
         $form->addText('name', $this->translator->translate('users.admin.admin_group_form.name.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.admin_group_form.name.placeholder'))
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.admin_group_form.name.placeholder'))
             ->setRequired();
 
         $form->addText('sorting', $this->translator->translate('users.admin.admin_group_form.sorting.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.admin_group_form.sorting.placeholder'))
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.admin_group_form.sorting.placeholder'))
             ->setDefaultValue(100)
             ->setRequired();
 

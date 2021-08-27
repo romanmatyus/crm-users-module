@@ -71,14 +71,14 @@ class SignPresenter extends FrontendPresenter
         $form->setRenderer(new BootstrapRenderer());
         $form->addProtection();
         $form->addText('username', $this->translator->translate('users.frontend.sign_in.username.label'))
-            ->setType('email')
-            ->setAttribute('autofocus')
+            ->setHtmlType('email')
+            ->setHtmlAttribute('autofocus')
             ->setRequired($this->translator->translate('users.frontend.sign_in.username.required'))
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.username.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.username.placeholder'));
 
         $form->addPassword('password', $this->translator->translate('users.frontend.sign_in.password.label'))
             ->setRequired($this->translator->translate('users.frontend.sign_in.password.required'))
-            ->setAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.password.required'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.frontend.sign_in.password.required'));
 
         $form->addCheckbox('remember', $this->translator->translate('users.frontend.sign_in.remember'));
 
@@ -158,13 +158,13 @@ class SignPresenter extends FrontendPresenter
         $form->setTranslator($this->translator);
 
         $form->addText('username', 'users.frontend.sign_up.username.label')
-            ->setType('email')
-            ->setAttribute('autofocus')
+            ->setHtmlType('email')
+            ->setHtmlAttribute('autofocus')
             ->setRequired('users.frontend.sign_up.username.required')
-            ->setAttribute('placeholder', 'users.frontend.sign_up.username.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.sign_up.username.placeholder');
 
         $password = $form->addPassword('password', 'users.frontend.sign_up.password.label')
-            ->setAttribute('placeholder', 'users.frontend.sign_up.password.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.sign_up.password.placeholder');
         $exists = false;
         if ($this->request->getPost('username')) {
             $exists = $this->userManager->loadUserByEmail($this->request->getPost('username'));

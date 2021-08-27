@@ -73,10 +73,10 @@ class UserFormFactory
         $form->addGroup($this->translator->translate('users.admin.user_form.credentials'));
         $form->addText('email', $this->translator->translate('users.admin.user_form.email.label'))
             ->setRequired($this->translator->translate('users.admin.user_form.email.required'))
-            ->setType('email')
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.email.placeholder'));
+            ->setHtmlType('email')
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.email.placeholder'));
         $password = $form->addPassword('password', $this->translator->translate('users.admin.user_form.password.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.password.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.password.placeholder'));
         if (!$userId) {
             $password->setRequired($this->translator->translate('users.admin.user_form.password.required'));
         } else {
@@ -90,18 +90,18 @@ class UserFormFactory
         $form->addGroup($this->translator->translate('users.admin.user_form.personal_information'));
 
         $form->addText('first_name', $this->translator->translate('users.admin.user_form.first_name.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.first_name.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.first_name.placeholder'));
         $form->addText('last_name', $this->translator->translate('users.admin.user_form.last_name.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.last_name.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.last_name.placeholder'));
         $form->addText('public_name', $this->translator->translate('users.admin.user_form.public_name.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.public_name.placeholder'))
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.public_name.placeholder'))
             ->setOption('description', $this->translator->translate('users.admin.user_form.public_name.description'));
 
         $form->addGroup($this->translator->translate('users.admin.user_form.institution'));
 
         $form->addCheckbox('is_institution', $this->translator->translate('users.admin.user_form.is_institution'));
         $form->addText('institution_name', $this->translator->translate('users.admin.user_form.institution_name.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.institution_name.placeholder'))
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.institution_name.placeholder'))
             ->addConditionOn($form['is_institution'], Form::EQUAL, true)
                 ->setRequired($this->translator->translate('users.admin.user_form.institution_name.required'));
 
@@ -114,7 +114,7 @@ class UserFormFactory
         $form->addGroup($this->translator->translate('users.admin.user_form.other'));
 
         $form->addText('ext_id', $this->translator->translate('users.admin.user_form.external_id.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.user_form.external_id.placeholder'))
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.external_id.placeholder'))
             ->addCondition(Form::FILLED)
             ->addRule(Form::INTEGER, $this->translator->translate('users.admin.user_form.external_id.integer'));
         $form->addSelect('role', $this->translator->translate('users.admin.user_form.role.label'), [

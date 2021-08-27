@@ -83,8 +83,8 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
         $form->setRenderer(new BootstrapInlineRenderer());
 
         $form->addText('email', $this->translator->translate('users.admin.login_attempts_form.email.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.email.placeholder'))
-            ->setAttribute('autofocus');
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.email.placeholder'))
+            ->setHtmlAttribute('autofocus');
 
         $statuses = $this->loginAttemptsRepository->getTable()->select("DISTINCT status")->fetchPairs("status", "status");
         $form->addMultiSelect('status', $this->translator->translate('users.admin.login_attempts_form.status.label'), $statuses)
@@ -95,13 +95,13 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
             ->getControlPrototype()->addAttributes(['class' => 'select2']);
 
         $form->addText('created_at_from', $this->translator->translate('users.admin.login_attempts_form.created_at_from.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.created_at_from.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.created_at_from.placeholder'));
 
         $form->addText('created_at_to', $this->translator->translate('users.admin.login_attempts_form.created_at_to.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.created_at_to.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.created_at_to.placeholder'));
 
         $form->addText('user_agent', $this->translator->translate('users.admin.login_attempts_form.user_agent.label'))
-            ->setAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.user_agent.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.user_agent.placeholder'));
 
         $form->addSubmit('send', $this->translator->translate('users.admin.login_attempts_form.submit'))
             ->getControlPrototype()

@@ -64,7 +64,7 @@ class AdminUserGroupFormFactory
                 $userGroupsIds[] = $group->id;
                 $accesses = $group->related('admin_groups_access')->count('*');
                 $button = $form->addSubmit('group_' . $group->id, $group->name);
-                $button->setAttribute('class', 'btn btn-default btn-blxock btn-sm');
+                $button->setHtmlAttribute('class', 'btn btn-default btn-blxock btn-sm');
                 $button->getControlPrototype()->setName('button')->setHtml('<i class="fa fa-times"></i> ' . $group->name . ' (' . $accesses . ')');
                 $button->onClick[] = function () use ($factory, $group, $user, $form) {
                     $user->related('admin_user_groups')->where(['admin_group_id' => $group->id])->delete();
@@ -88,7 +88,7 @@ class AdminUserGroupFormFactory
                 ->setPrompt('users.form.admin_user_group.group_id.prompt');
 
             $form->addSubmit('send', 'users.form.admin_user_group.send')
-                ->setAttribute('class', 'btn btn-primary')
+                ->setHtmlAttribute('class', 'btn btn-primary')
                 ->getControlPrototype()
                 ->setName('button')
                 ->setHtml('<i class="fa fa-save"></i> ' . $this->translator->translate('users.form.admin_user_group.send'));

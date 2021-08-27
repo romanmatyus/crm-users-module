@@ -41,10 +41,10 @@ class AbusiveUsersFilterFormFactory
         $form->addText('email', 'users.admin.abusive.email');
 
         $form->addText('dateFrom', 'users.admin.abusive.date_from')
-            ->setAttribute('data-input');
+            ->setHtmlAttribute('data-input');
 
         $form->addText('dateTo', 'users.admin.abusive.date_to')
-            ->setAttribute('data-input');
+            ->setHtmlAttribute('data-input');
 
         $form->addSelect(
             'loginCount',

@@ -42,7 +42,7 @@ class UserNoteFormFactory
         $form->setTranslator($this->translator);
 
         $note = $form->addTextArea('note', '')
-            ->setAttribute('placeholder', 'users.admin.user_note_form.note.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.admin.user_note_form.note.placeholder')
             ->setNullable()
             ->setRequired(false);
         $note->addCondition(Form::FILLED)
@@ -57,7 +57,7 @@ class UserNoteFormFactory
             ]);
 
         $form->addSubmit('send', 'system.save')
-            ->setAttribute('class', 'btn btn-primary')
+            ->setHtmlAttribute('class', 'btn btn-primary')
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fa fa-save"></i> ' . $this->translator->translate('system.save'));

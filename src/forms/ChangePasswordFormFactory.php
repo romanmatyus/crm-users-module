@@ -51,19 +51,19 @@ class ChangePasswordFormFactory
         $form->addProtection();
 
         $form->addPassword('actual_password', 'users.frontend.change_password.actual_password.label')
-            ->setAttribute('autofocus')
+            ->setHtmlAttribute('autofocus')
             ->setRequired('users.frontend.change_password.actual_password.required')
-            ->setAttribute('placeholder', 'users.frontend.change_password.actual_password.placeholder');
+            ->setHtmlAttribute('placeholder', 'users.frontend.change_password.actual_password.placeholder');
 
         $form->addPassword('new_password', 'users.frontend.change_password.new_password.label')
             ->setRequired('users.frontend.change_password.new_password.required')
-            ->setAttribute('placeholder', 'users.frontend.change_password.new_password.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.frontend.change_password.new_password.placeholder')
             ->addRule(Form::MIN_LENGTH, 'users.frontend.change_password.new_password.minlength', 6);
 
         $form->addPassword('new_password_confirm', 'users.frontend.change_password.new_password_confirm.label')
             ->setRequired('users.frontend.change_password.new_password_confirm.required')
             ->addRule(Form::EQUAL, 'users.frontend.change_password.new_password_confirm.not_matching', $form['new_password'])
-            ->setAttribute('placeholder', 'users.frontend.change_password.new_password_confirm.placeholder')
+            ->setHtmlAttribute('placeholder', 'users.frontend.change_password.new_password_confirm.placeholder')
             ->setOption('description', 'users.frontend.change_password.new_password_confirm.description');
 
         $form->addSubmit('send', 'users.frontend.change_password.submit')
