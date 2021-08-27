@@ -25,7 +25,6 @@ class UserPasswordChanges extends Control implements WidgetInterface
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
         PasswordResetTokensRepository $passwordResetTokensRepository
     ) {
-        parent::__construct();
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
     }

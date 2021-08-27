@@ -23,7 +23,6 @@ class AutologinTokens extends Control implements WidgetInterface
 
     public function __construct(AutoLoginTokensRepository $autoLoginTokensRepository)
     {
-        parent::__construct();
         $this->autoLoginTokensRepository = $autoLoginTokensRepository;
     }
 

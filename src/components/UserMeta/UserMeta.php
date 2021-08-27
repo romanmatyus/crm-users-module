@@ -35,7 +35,6 @@ class UserMeta extends Control implements WidgetInterface
         UsersRepository $usersRepository,
         ITranslator $translator
     ) {
-        parent::__construct();
         $this->userMetaRepository = $userMetaRepository;
         $this->usersRepository = $usersRepository;
         $this->translator = $translator;

@@ -30,7 +30,6 @@ class UserLoginAttempts extends Control implements WidgetInterface
         UserSourceAccessesRepository $userSourceAccessesRepository,
         ITranslator $translator
     ) {
-        parent::__construct();
         $this->loginAttemptsRepository = $loginAttemptsRepository;
         $this->userSourceAccessesRepository = $userSourceAccessesRepository;
         $this->translator = $translator;

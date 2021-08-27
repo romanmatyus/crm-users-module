@@ -40,7 +40,6 @@ class UserTokens extends Control implements WidgetInterface
         ITranslator $translator,
         UsersRepository $usersRepository
     ) {
-        parent::__construct();
         $this->accessTokensRepository = $accessTokensRepository;
         $this->accessToken = $accessToken;
         $this->emitter = $emitter;

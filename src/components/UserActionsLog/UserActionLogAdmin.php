@@ -27,7 +27,6 @@ class UserActionLogAdmin extends Control
         UserActionsLogRepository $userActionsLogRepository,
         DataProviderManager $dataProviderManager
     ) {
-        parent::__construct();
         $this->userActionsLogRepository = $userActionsLogRepository;
         $this->dataProviderManager = $dataProviderManager;
     }
