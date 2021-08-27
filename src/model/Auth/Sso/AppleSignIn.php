@@ -270,7 +270,7 @@ class AppleSignIn
     {
         $client = new Client();
         $response = $client->get('https://appleid.apple.com/auth/keys');
-        $response = Json::decode($response->getBody()->getContents(), true);
+        $response = Json::decode($response->getBody()->getContents(), Json::FORCE_ARRAY);
 
         return JWT::decode($idToken, JWK::parseKeySet($response), ['RS256']);
     }
