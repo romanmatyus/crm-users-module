@@ -3,7 +3,7 @@ services:
 		setup:
 			- addModule(Crm\UsersModule\UsersModule(), 300)
 	emailValidator:
-		class: Crm\UsersModule\Email\EmailValidator
+		factory: Crm\UsersModule\Email\EmailValidator
 		setup:
 			- addValidator(Crm\UsersModule\Email\RegexpValidator())
 			- addValidator(Crm\UsersModule\Email\StaticDomainFileValidator())
@@ -18,7 +18,7 @@ services:
 	userGroupsRepository: Crm\UsersModule\Repository\UserGroupsRepository
 	loginAttemptsRepository: Crm\UsersModule\Repository\LoginAttemptsRepository
 	changePasswordsLogsRepository:
-		class: Crm\UsersModule\Repository\ChangePasswordsLogsRepository
+		factory: Crm\UsersModule\Repository\ChangePasswordsLogsRepository
 		setup:
 			- setRetentionThreshold('-12 months')
 	userMetaRepository: Crm\UsersModule\Repository\UserMetaRepository
@@ -26,14 +26,14 @@ services:
 	addressesMetaRepository: Crm\UsersModule\Repository\AddressesMetaRepository
 	addressChangeRequestsRepository: Crm\UsersModule\Repository\AddressChangeRequestsRepository
 	userActionsLogRepository:
-		class: Crm\UsersModule\Repository\UserActionsLogRepository
+		factory: Crm\UsersModule\Repository\UserActionsLogRepository
 		setup:
 			- setRetentionThreshold('-12 months')
 	adminAccessRepository: Crm\UsersModule\Auth\Repository\AdminAccessRepository
 	adminGroupsRepository: Crm\UsersModule\Auth\Repository\AdminGroupsRepository
 	adminGroupsAccessRepository: Crm\UsersModule\Auth\Repository\AdminGroupsAccessRepository
 	autoLoginTokensRepository:
-		class: Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
+		factory: Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository
 		setup:
 			- setRetentionThreshold('now', 'valid_to')
 	countriesRepository: Crm\UsersModule\Repository\CountriesRepository(%countries.default%)
@@ -63,7 +63,7 @@ services:
 	appleSignIn: Crm\UsersModule\Auth\Sso\AppleSignIn(%sso.apple.client_id%, %sso.apple.trusted_client_ids%)
 
 	signInRedirectValidator:
-		class: Crm\UsersModule\Auth\SignInRedirectValidator
+		factory: Crm\UsersModule\Auth\SignInRedirectValidator
 
 	- Crm\UsersModule\Forms\ChangePasswordFormFactory
 	- Crm\UsersModule\Forms\RequestPasswordFormFactory
