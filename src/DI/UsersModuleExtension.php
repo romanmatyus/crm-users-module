@@ -3,7 +3,6 @@
 namespace Crm\UsersModule\DI;
 
 use Kdyby\Translation\DI\ITranslationProvider;
-use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 
 final class UsersModuleExtension extends CompilerExtension implements ITranslationProvider
@@ -42,8 +41,7 @@ final class UsersModuleExtension extends CompilerExtension implements ITranslati
         }
 
         // load services from config and register them to Nette\DI Container
-        Compiler::loadDefinitions(
-            $builder,
+        $this->compiler->loadDefinitionsFromConfig(
             $this->loadFromFile(__DIR__.'/../config/config.neon')['services']
         );
     }
