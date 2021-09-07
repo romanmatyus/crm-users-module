@@ -120,7 +120,9 @@ class SignPresenter extends FrontendPresenter
             $session = $this->getSession('success_login');
             $session->success = 'success';
 
-            $this->restoreRequest($this->getParameter('back'));
+            if ($this->getParameter('back') !== null) {
+                $this->restoreRequest($this->getParameter('back'));
+            }
 
             $this->redirect('signInCallback', $values->redirect);
         } catch (AuthenticationException $e) {
@@ -135,7 +137,9 @@ class SignPresenter extends FrontendPresenter
         $this->getUser()->logout();
 
         $this->flashMessage($this->translator->translate('users.frontend.sign_in.signed_out'));
-        $this->restoreRequest($this->getParameter('back'));
+        if ($this->getParameter('back') !== null) {
+            $this->restoreRequest($this->getParameter('back'));
+        }
 
         $this->redirect('in');
     }
