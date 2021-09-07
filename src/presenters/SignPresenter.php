@@ -11,6 +11,7 @@ use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\UserSignOutEvent;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
+use Nette\Security\IUserStorage;
 use Nette\Utils\Html;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
@@ -106,9 +107,9 @@ class SignPresenter extends FrontendPresenter
     public function signInFormSucceeded($form, $values)
     {
         if ($values->remember) {
-            $this->getUser()->setExpiration('14 days', false);
+            $this->getUser()->setExpiration('14 days');
         } else {
-            $this->getUser()->setExpiration('20 minutes', true);
+            $this->getUser()->setExpiration('20 minutes', IUserStorage::CLEAR_IDENTITY);
         }
 
         try {

@@ -8,6 +8,7 @@ use Crm\UsersModule\Auth\UserManager;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Security\AuthenticationException;
+use Nette\Security\IUserStorage;
 use Nette\Security\User;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
@@ -75,9 +76,9 @@ class SignInFormFactory
     public function formSucceeded($form, $values)
     {
         if ($values->remember) {
-            $this->user->setExpiration('14 days', false);
+            $this->user->setExpiration('14 days');
         } else {
-            $this->user->setExpiration('20 minutes', true);
+            $this->user->setExpiration('20 minutes', IUserStorage::CLEAR_IDENTITY);
         }
 
         try {
