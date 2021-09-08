@@ -77,7 +77,7 @@ class UsersLoginHandler extends ApiHandler
                     'message' => 'Device token doesn\'t exist',
                     'code' => 'device_token_doesnt_exist'
                 ]);
-                $response->setHttpCode(Response::S400_BAD_REQUEST);
+                $response->setHttpCode(Response::S404_NOT_FOUND);
                 return $response;
             }
         }
