@@ -12,6 +12,7 @@ use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
+use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\IRow;
 use Nette\Http\Response;
 use Nette\Utils\Validators;
@@ -24,14 +25,18 @@ class UsersCreateHandler extends ApiHandler
 
     private $deviceTokensRepository;
 
+    private $usersRepository;
+
     public function __construct(
         UserManager $userManager,
         AccessTokensRepository $accessTokensRepository,
-        DeviceTokensRepository $deviceTokensRepository
+        DeviceTokensRepository $deviceTokensRepository,
+        UsersRepository $usersRepository
     ) {
         $this->userManager = $userManager;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
+        $this->usersRepository = $usersRepository;
     }
 
     public function params()
@@ -142,7 +147,7 @@ class UsersCreateHandler extends ApiHandler
             $userData['note'] = $params['note'];
         }
 
-        $user->update($userData);
+        $this->usersRepository->update($user, $userData);
 
         $lastToken = $this->accessTokensRepository->allUserTokens($user->id)->limit(1)->fetch();
         if ($lastToken && $deviceToken) {
@@ -158,6 +163,7 @@ class UsersCreateHandler extends ApiHandler
 
     private function formatResponse(IRow $user, IRow $lastToken): array
     {
+        $user = $this->usersRepository->find($user->id);
         $result = [
             'status' => 'ok',
             'user' => [
@@ -165,6 +171,7 @@ class UsersCreateHandler extends ApiHandler
                 'email' => $user->email,
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
+                'confirmed_at' => $user->confirmed_at ? $user->confirmed_at->format(DATE_RFC3339) : null,
             ],
         ];
 

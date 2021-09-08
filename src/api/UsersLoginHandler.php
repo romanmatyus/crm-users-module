@@ -111,6 +111,7 @@ class UsersLoginHandler extends ApiHandler
                 'email' => $identity->data['email'],
                 'first_name' => $identity->data['first_name'],
                 'last_name' => $identity->data['last_name'],
+                'confirmed_at' => $identity->data['confirmed_at'] ? $identity->data['confirmed_at']->format(DATE_RFC3339) : null,
             ],
         ];
 

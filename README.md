@@ -256,6 +256,7 @@ Response:
     "user": {
         "id": 1,
         "email": "admin@example.com",
+        "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
         "first_name": "Test",
         "last_name": "Admin"
     }
@@ -310,6 +311,7 @@ Success response:
     "user": {
         "id": 9,
         "email": "admin@admin.sk",
+        "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
         "first_name": "Test",
         "last_name": "Admin",
         "roles": ["redaktor", "superadmin"] // admin roles
@@ -453,6 +455,7 @@ Success response:
     "user": {
         "id": 101,
         "email": "user@user.sk",
+        "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
         "first_name": null,
         "last_name": null,
         "roles": [] // admin roles
@@ -1034,6 +1037,7 @@ Success response:
     "user": {
         "id": 9,
         "email": "user@user.sk",
+        "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
         "public_name": "user@user.sk",
         "first_name": "Test",
         "last_name": "User"
@@ -1206,6 +1210,7 @@ Success response:
         "id": 101,
         "email": "example_user@gmail.com",
         "created_at": "2021-01-01T10:00:00+01:00", // RFC3339 date; user creation date
+        "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
     },
     "access": {
         "token": "762eec3fe9f20d87cf865cb40cf6458c" // user token
@@ -1243,6 +1248,7 @@ Success response:
         "id": 101,
         "email": "example_user@gmail.com",
         "created_at": "2021-01-01T10:00:00+01:00", // RFC3339 date; user creation date
+        "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
     },
     "access": {
         "token": "762eec3fe9f20d87cf865cb40cf6458c" // user token

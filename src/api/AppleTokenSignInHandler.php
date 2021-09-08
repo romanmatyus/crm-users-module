@@ -9,6 +9,7 @@ use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\Sso\AppleSignIn;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\IRow;
 use Nette\Http\Response;
 
@@ -18,12 +19,16 @@ class AppleTokenSignInHandler extends ApiHandler
 
     private $accessTokensRepository;
 
+    private $usersRepository;
+
     public function __construct(
         AppleSignIn $appleSignIn,
-        AccessTokensRepository $accessTokensRepository
+        AccessTokensRepository $accessTokensRepository,
+        UsersRepository $usersRepository
     ) {
         $this->appleSignIn = $appleSignIn;
         $this->accessTokensRepository = $accessTokensRepository;
+        $this->usersRepository = $usersRepository;
     }
 
     public function params()
@@ -76,12 +81,14 @@ class AppleTokenSignInHandler extends ApiHandler
 
     private function formatResponse(IRow $user, ?IRow $accessToken): array
     {
+        $user = $this->usersRepository->find($user->id);
         $result = [
             'status' => 'ok',
             'user' => [
                 'id' => $user->id,
                 'email' => $user->email,
-                'created_at' => $user->created_at->format(\DateTimeInterface::RFC3339)
+                'created_at' => $user->created_at->format(\DateTimeInterface::RFC3339),
+                'confirmed_at' => $user->confirmed_at ? $user->confirmed_at->format(\DateTimeInterface::RFC3339) : null,
             ],
         ];
 
