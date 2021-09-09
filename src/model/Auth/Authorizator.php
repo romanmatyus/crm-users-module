@@ -13,7 +13,7 @@ class Authorizator implements IAuthorizator
         $this->permissions = $permissions;
     }
 
-    public function isAllowed($role, $resource, $privilege)
+    public function isAllowed($role, $resource, $privilege): bool
     {
         return $this->permissions->allowed($role, $resource, $privilege);
     }

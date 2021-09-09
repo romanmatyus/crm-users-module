@@ -12,6 +12,7 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
+use Nette\Security\IIdentity;
 use Nette\Security\Identity;
 use Nette\SmartObject;
 
@@ -43,7 +44,7 @@ class UserAuthenticator implements IAuthenticator
      * @return Identity
      * @throws AuthenticationException
      */
-    public function authenticate(array $credentials)
+    public function authenticate(array $credentials): IIdentity
     {
 
         // Dirty hack so we can use in both User->Authenticator->authenticate() and \Nette\Security\User->login() methods
