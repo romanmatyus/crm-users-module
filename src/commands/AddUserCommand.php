@@ -12,18 +12,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AddUserCommand extends Command
 {
-    /** @var UsersRepository */
-    private $userRepository;
-
     /** @var UserBuilder */
     private $userBuilder;
 
     public function __construct(
-        UsersRepository $userRepository,
         UserBuilder $userBuilder
     ) {
         parent::__construct();
-        $this->userRepository = $userRepository;
         $this->userBuilder = $userBuilder;
     }
 
