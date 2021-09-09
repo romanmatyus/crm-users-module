@@ -120,6 +120,6 @@ class AddUserCommand extends Command
             $output->writeln("User <info>{$user->email}</info> [<comment>{$user->id}</comment>] was added.");
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

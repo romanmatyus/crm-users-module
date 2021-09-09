@@ -78,6 +78,6 @@ class ReconstructUserDataCommand extends Command
 
         $progress->finish();
         $output->writeln('');
-        return 0;
+        return Command::SUCCESS;
     }
 }
