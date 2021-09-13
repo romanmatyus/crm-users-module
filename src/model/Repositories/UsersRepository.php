@@ -169,7 +169,7 @@ class UsersRepository extends Repository
         }
 
         $data['modified_at'] = new \DateTime();
-        parent::update($row, $data);
+        $result = parent::update($row, $data);
 
         if ($emailChanged) {
             $this->hermesEmitter->emit(new HermesMessage(
@@ -182,6 +182,8 @@ class UsersRepository extends Repository
             ), HermesMessage::PRIORITY_DEFAULT);
         }
         $this->emitter->emit(new UserUpdatedEvent($row));
+
+        return $result;
     }
 
     final public function toggleActivation($user)
@@ -277,7 +279,7 @@ class UsersRepository extends Repository
             'email_validated_at' => $validatedAt,
         ]);
     }
-    
+
     final public function setEmailInvalidated($user)
     {
         $this->update($user, [
