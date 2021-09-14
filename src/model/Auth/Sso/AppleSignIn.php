@@ -25,6 +25,8 @@ class AppleSignIn
 
     private $clientId;
 
+    private $trustedClientIds;
+
     private $configsRepository;
 
     private $session;
@@ -35,12 +37,14 @@ class AppleSignIn
 
     public function __construct(
         ?string $clientId,
+        array $trustedClientIds,
         ConfigsRepository $configsRepository,
         Session $session,
         SsoUserManager $ssoUserManager,
         User $user
     ) {
         $this->clientId = $clientId;
+        $this->trustedClientIds = array_flip(array_merge([$clientId], array_filter($trustedClientIds)));
         $this->configsRepository = $configsRepository;
         $this->session = $session;
         $this->ssoUserManager = $ssoUserManager;
@@ -226,7 +230,7 @@ class AppleSignIn
             return false;
         }
 
-        if ($idToken->aud !== $this->clientId) {
+        if (!isset($this->trustedClientIds[$idToken->aud])) {
             return false;
         }
 
@@ -235,7 +239,7 @@ class AppleSignIn
         }
 
         if ($idToken->nonce_supported) {
-            if ($idToken->nonce !== $nonce) {
+            if ($nonce && ($idToken->nonce ?? null) !== $nonce) {
                 return false;
             }
         }

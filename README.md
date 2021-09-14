@@ -135,7 +135,8 @@ After acquiring credentials, put them to `neon` configuration file using the fol
 users:
 	sso:
 	    apple:
-	        client_id: CLIENT_ID
+	        client_id: CLIENT_ID # default client ID used for signing in on the web
+	        trusted_client_ids: [CLIENT_ID] # other trusted client IDs using the Apple ID to sign in (e.g. mobile apps)
 ```
 
 Last step is to **enable** Apple Sign-In in CRM settings in `/admin/config-admin/` Authentication section.

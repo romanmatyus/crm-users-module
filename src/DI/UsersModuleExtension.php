@@ -18,7 +18,8 @@ final class UsersModuleExtension extends CompilerExtension implements ITranslati
                 'client_secret' => null,
             ],
             'apple' => [
-                'client_id' => null
+                'client_id' => null,
+                'trusted_client_ids' => [],
             ]
         ]
     ];
