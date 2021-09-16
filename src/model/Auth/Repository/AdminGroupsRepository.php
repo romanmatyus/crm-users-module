@@ -22,7 +22,7 @@ class AdminGroupsRepository extends Repository
 
     final public function update(IRow &$row, $data)
     {
-        $values['updated_at'] = new DateTime();
+        $data['updated_at'] = new DateTime();
         return parent::update($row, $data);
     }
 
