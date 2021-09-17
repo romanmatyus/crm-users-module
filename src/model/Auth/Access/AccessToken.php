@@ -24,6 +24,8 @@ class AccessToken
     private $emitter;
 
     protected $cookieName = 'n_token';
+    
+    private $sameSiteFlag = 'Lax';
 
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
@@ -35,6 +37,16 @@ class AccessToken
         $this->usersRepository = $usersRepository;
         $this->accessManager = $accessManager;
         $this->emitter = $emitter;
+    }
+
+    /**
+     * Optionally, one can modify `SameSite` flag sent when setting n_token cookie
+     * By default, 'Lax' value is used
+     * @param string $sameSiteFlag
+     */
+    public function setSameSiteFlag(string $sameSiteFlag): void
+    {
+        $this->sameSiteFlag = $sameSiteFlag;
     }
 
     public function addUserToken($user, Request $request = null, Response $response = null, ?string $source = null)
@@ -61,7 +73,7 @@ class AccessToken
                 CrmRequest::getDomain(),
                 null,
                 false,
-                'Lax'
+                $this->sameSiteFlag
             );
 
             $response->setCookie(
@@ -72,7 +84,7 @@ class AccessToken
                 CrmRequest::getDomain(),
                 null,
                 false,
-                'Lax'
+                $this->sameSiteFlag
             );
         }
 
