@@ -46,7 +46,6 @@ class UsersPresenter extends FrontendPresenter
 
     private $accessToken;
 
-    /** @var UserEmailConfirmationsRepository */
     private $userEmailConfirmationsRepository;
 
     private $googleSignIn;
@@ -279,12 +278,16 @@ class UsersPresenter extends FrontendPresenter
         $this->template->email = $email;
     }
 
-    public function renderEmailConfirm(string $token)
+    public function renderEmailConfirm(string $token, string $redirectUrl = null)
     {
         $userEmailConfirmation = $this->userEmailConfirmationsRepository->confirm($token);
         if ($userEmailConfirmation) {
             $this->userManager->setEmailValidated($userEmailConfirmation->user, $userEmailConfirmation->confirmed_at);
             $this->userManager->confirmUser($userEmailConfirmation->user);
+
+            if ($redirectUrl) {
+                $this->redirectUrl(rawurldecode($redirectUrl));
+            }
         }
 
         $this->template->userEmailConfirmation = $userEmailConfirmation;
