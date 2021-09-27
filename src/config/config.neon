@@ -80,6 +80,7 @@ services:
 	- Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory
 	- Crm\UsersModule\Scenarios\UserSourceCriteria
 	- Crm\UsersModule\Scenarios\UserHasAddressCriteria
+	- Crm\UsersModule\Scenarios\IsConfirmedCriteria
 	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
 	- Crm\UsersModule\Auth\UserManager
 	- Crm\UsersModule\Auth\PasswordGenerator

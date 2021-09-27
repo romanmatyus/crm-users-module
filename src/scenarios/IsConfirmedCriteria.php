@@ -1,0 +1,46 @@
+<?php
+
+namespace Crm\UsersModule\Scenarios;
+
+use Crm\ApplicationModule\Criteria\ScenarioParams\BooleanParam;
+use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
+use Nette\Database\Table\IRow;
+use Nette\Database\Table\Selection;
+use Nette\Localization\ITranslator;
+
+class IsConfirmedCriteria implements ScenariosCriteriaInterface
+{
+    public const KEY = 'is_user_confirmed';
+
+    private $translator;
+
+    public function __construct(ITranslator $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    public function params(): array
+    {
+        return [
+            new BooleanParam('is_confirmed', $this->translator->translate('users.admin.scenarios.is_confirmed.param')),
+        ];
+    }
+
+    public function addConditions(Selection $selection, array $paramValues, IRow $criterionItemRow): bool
+    {
+        $values = $paramValues['is_confirmed'];
+
+        if ($values->selection) {
+            $selection->where('confirmed_at IS NOT NULL');
+        } else {
+            $selection->where('confirmed_at IS NULL');
+        }
+
+        return true;
+    }
+
+    public function label(): string
+    {
+        return $this->translator->translate('users.admin.scenarios.is_confirmed.label');
+    }
+}

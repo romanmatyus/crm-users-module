@@ -317,6 +317,11 @@ admin:
 		user_has_address_criteria:
 			label: User has address
 			param: User has address of type
+		source:
+			label: Registration source
+		is_confirmed:
+			label: Is confirmed
+			param: User's account is confirmed
 
 	user_groups_form:
 		user_added: User was added to the group

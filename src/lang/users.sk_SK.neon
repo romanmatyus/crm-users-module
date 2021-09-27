@@ -319,6 +319,11 @@ admin:
 		user_has_address_criteria:
 			label: Používateľ má adresu
 			param: Používateľ má adresu typu
+		source:
+			label: Zdroj registrácie
+		is_confirmed:
+			label: Je potvrdený
+			param: Používateľove konto je potvrdené
 
 	user_groups_form:
 		user_added: Používateľ bol pridaný do skupiny

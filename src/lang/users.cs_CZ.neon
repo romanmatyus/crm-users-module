@@ -318,6 +318,11 @@ admin:
 		user_has_address_criteria:
 			label: Uživatel má adresu
 			param: Uživatel má adresu typu
+		source:
+			label: Zdroj registrace
+		is_confirmed:
+			label: Je potvrzen
+			param: Uživatelove konto je potvrzeno
 
 	user_groups_form:
 		user_added: Uživatel byl přidán do skupiny
