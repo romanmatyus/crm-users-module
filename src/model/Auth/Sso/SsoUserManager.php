@@ -23,11 +23,11 @@ class SsoUserManager
     private $usersRepository;
 
     public function __construct(
-        Context $dbContext,
-        PasswordGenerator $passwordGenerator,
-        UserBuilder $userBuilder,
+        Context                         $dbContext,
+        PasswordGenerator               $passwordGenerator,
+        UserBuilder                     $userBuilder,
         UserConnectedAccountsRepository $connectedAccountsRepository,
-        UsersRepository $usersRepository
+        UsersRepository                 $usersRepository
     ) {
         $this->dbContext = $dbContext;
         $this->passwordGenerator = $passwordGenerator;
@@ -36,7 +36,7 @@ class SsoUserManager
         $this->usersRepository = $usersRepository;
     }
 
-    public function getUser(string $externalId, string $email, string $type, string $source, $meta = null, $loggedUserId = null, $registrationChannel = null): IRow
+    public function matchOrCreateUser(string $externalId, string $email, string $type, string $source, $meta = null, $loggedUserId = null, $registrationChannel = null): IRow
     {
         $this->dbContext->beginTransaction();
         try {
@@ -48,7 +48,7 @@ class SsoUserManager
 
                 $user = $this->usersRepository->find($loggedUserId);
             } else {
-                $user = $this->matchSsoUser(
+                $user = $this->matchUser(
                     $type,
                     $externalId,
                     $email
@@ -72,16 +72,13 @@ class SsoUserManager
                 }
             }
 
-            $connectedAccount = $this->connectedAccountsRepository->getForUser($user, $type);
-            if (!$connectedAccount) {
-                $this->connectedAccountsRepository->add(
-                    $user,
-                    $type,
-                    $externalId,
-                    $email,
-                    $meta
-                );
-            }
+            $this->connectedAccountsRepository->connectUser(
+                $user,
+                $type,
+                $externalId,
+                $email,
+                $meta
+            );
         } catch (\Exception $e) {
             $this->dbContext->rollBack();
             throw $e;
@@ -91,7 +88,7 @@ class SsoUserManager
         return $user;
     }
 
-    public function matchSsoUser(string $connectedAccountType, string $externalId, string $email): ?IRow
+    public function matchUser(string $connectedAccountType, string $externalId, string $email): ?IRow
     {
         // external ID has priority over email
         $connectedAccount = $this->connectedAccountsRepository->getByExternalId($connectedAccountType, $externalId);

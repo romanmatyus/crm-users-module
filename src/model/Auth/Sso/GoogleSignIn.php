@@ -3,9 +3,12 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
+use Crm\ApplicationModule\DataProvider\DataProviderManager;
+use Crm\UsersModule\DataProvider\GoogleSignInDataProviderInterface;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google_Client;
 use Google_Service_Oauth2;
+use GuzzleHttp\Client;
 use Nette\Database\Table\IRow;
 use Nette\Http\Session;
 use Nette\Security\User;
@@ -37,13 +40,16 @@ class GoogleSignIn
 
     private $user;
 
+    private $dataProviderManager;
+
     public function __construct(
         ?string $clientId,
         ?string $clientSecret,
         ConfigsRepository $configsRepository,
         Session $session,
         SsoUserManager $ssoUserManager,
-        User $user
+        User $user,
+        DataProviderManager $dataProviderManager
     ) {
         $this->configsRepository = $configsRepository;
         $this->session = $session;
@@ -51,12 +57,14 @@ class GoogleSignIn
         $this->clientSecret = $clientSecret;
         $this->ssoUserManager = $ssoUserManager;
         $this->user = $user;
+        $this->dataProviderManager = $dataProviderManager;
     }
 
     public function isEnabled(): bool
     {
         return (boolean) ($this->configsRepository->loadByName('google_sign_in_enabled')->value ?? false);
     }
+
 
     /**
      * Implements validation of ID token (JWT token) as described in:
@@ -65,12 +73,14 @@ class GoogleSignIn
      * If token is successfully verified, user with Google connected account will be created (or matched to an existing user).
      * Note: Access token is not automatically created
      *
-     * @param string $idToken
+     * @param string      $idToken
+     * @param string|null $gsiAccessToken
      *
      * @return IRow|null created/matched user
-     * @throws \Exception
+     * @throws AlreadyLinkedAccountSsoException
+     * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInUsingIdToken(string $idToken): ?IRow
+    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null): ?IRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -91,8 +101,20 @@ class GoogleSignIn
             // https://developers.google.com/identity/sign-in/web/people
         $googleUserId = $payload['sub'];
 
+        $matchedUser = $this->ssoUserManager->matchUser(UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN, $googleUserId, $userEmail);
+
+        /** @var GoogleSignInDataProviderInterface[] $providers */
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
+        foreach ($providers as $sorting => $provider) {
+             $provider->provide([
+                 'user' => $matchedUser,
+                 'userEmail' => $userEmail,
+                 'gsiAccessToken' => $gsiAccessToken,
+             ]);
+        }
+
         // Match google user to CRM user
-        return $this->ssoUserManager->getUser(
+        return $this->ssoUserManager->matchOrCreateUser(
             $googleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
@@ -101,6 +123,27 @@ class GoogleSignIn
             null,
             self::USER_GOOGLE_REGISTRATION_CHANNEL
         );
+    }
+
+    /**
+     * Exchanges one-time auth code for credentials, containing id_token, access_token, ...
+     * Useful e.g. for offline access for users logged in apps.
+     * See:
+     * - https://developers.google.com/identity/sign-in/android/offline-access
+     * - https://developers.google.com/identity/sign-in/ios/offline-access
+     *
+     * @param string $gsiAuthCode
+     *
+     * @return array keys 'access_token', 'scope', 'id_token', 'token_type', 'refresh_token', 'expires_in', 'created'
+     * @throws \Exception
+     */
+    public function exchangeAuthCode(string $gsiAuthCode): array
+    {
+        // "postmessage" is a reserved URI string in Google-land (kind-of undocumented)
+        // it is required for server side workflow
+        // @see https://github.com/googleapis/google-auth-library-php/blob/21dd478e77b0634ed9e3a68613f74ed250ca9347/src/OAuth2.php#L777
+        $client = $this->getClient('postmessage');
+        return $client->fetchAccessTokenWithAuthCode($gsiAuthCode);
     }
 
     /**
@@ -207,8 +250,16 @@ class GoogleSignIn
             // https://developers.google.com/identity/sign-in/web/people
         $googleUserId =  $userInfo->getId();
 
+        $matchedUser = $this->ssoUserManager->matchUser(UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN, $googleUserId, $userEmail);
+
+        /** @var GoogleSignInDataProviderInterface[] $providers */
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
+        foreach ($providers as $sorting => $provider) {
+             $provider->provide(['user' => $matchedUser, 'gsiAccessToken' => $client->getAccessToken()['access_token'], 'userEmail' => $userEmail]);
+        }
+
         // Match google user to CRM user
-        return $this->ssoUserManager->getUser(
+        return $this->ssoUserManager->matchOrCreateUser(
             $googleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,

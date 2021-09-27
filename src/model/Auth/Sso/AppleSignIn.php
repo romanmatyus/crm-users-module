@@ -157,7 +157,7 @@ class AppleSignIn
         $appleUserId = $idToken->sub;
 
         // Match apple user to CRM user
-        return $this->ssoUserManager->getUser(
+        return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN,
@@ -207,7 +207,7 @@ class AppleSignIn
         $appleUserId = $idToken->sub;
 
         // Match apple user to CRM user
-        return $this->ssoUserManager->getUser(
+        return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN,

@@ -48,6 +48,7 @@ class GoogleTokenSignInHandler extends ApiHandler
             new InputParam(InputParam::TYPE_POST, 'id_token', InputParam::REQUIRED),
             new InputParam(InputParam::TYPE_POST, 'create_access_token', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'gsi_auth_code', InputParam::OPTIONAL),
         ];
     }
 
@@ -58,7 +59,7 @@ class GoogleTokenSignInHandler extends ApiHandler
         if ($error) {
             $response = new JsonResponse([
                 'status' => 'error',
-                'code' => 'invalid_id_token',
+                'code' => 'wrong_input',
                 'message' => 'Wrong input - ' . $error
             ]);
             $response->setHttpCode(Response::S400_BAD_REQUEST);
@@ -67,7 +68,8 @@ class GoogleTokenSignInHandler extends ApiHandler
         $params = $paramsProcessor->getValues();
         $idToken = $params['id_token'];
         $createAccessToken = filter_var($params['create_access_token'], FILTER_VALIDATE_BOOLEAN) ?? false;
-
+        $gsiAuthCode = $params['gsi_auth_code'] ?? null;
+        
         $deviceToken = null;
         if (!empty($params['device_token'])) {
             if (!$createAccessToken) {
@@ -92,7 +94,25 @@ class GoogleTokenSignInHandler extends ApiHandler
             }
         }
 
-        $user = $this->googleSignIn->signInUsingIdToken($idToken);
+        // If user provides auth_code, use it to load Google access_token and id_token (replaces one from parameters)
+        $gsiAccessToken = null;
+        if ($gsiAuthCode) {
+            $creds = $this->googleSignIn->exchangeAuthCode($gsiAuthCode);
+            if (!isset($creds['id_token']) || !isset($creds['access_token'])) {
+                $response = new JsonResponse([
+                    'status' => 'error',
+                    'code' => 'invalid_auth_code',
+                    'message' => 'Unable to exchange auth code for access_token and id_token',
+                ]);
+                $response->setHttpCode(Response::S400_BAD_REQUEST);
+                return $response;
+            }
+            
+            $idToken = $creds['id_token'];
+            $gsiAccessToken = $creds['access_token'];
+        }
+        
+        $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken);
 
         if (!$user) {
             $response = new JsonResponse([

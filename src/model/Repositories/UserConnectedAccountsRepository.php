@@ -75,4 +75,20 @@ class UserConnectedAccountsRepository extends Repository
             ])
             ->delete();
     }
+
+    public function connectUser(IRow $user, $type, $externalId, $email, $meta = null)
+    {
+        $connectedAccount = $this->getForUser($user, $type);
+        if (!$connectedAccount) {
+            $connectedAccount = $this->add(
+                $user,
+                $type,
+                $externalId,
+                $email,
+                $meta
+            );
+        }
+
+        return $connectedAccount;
+    }
 }
