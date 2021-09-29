@@ -322,6 +322,9 @@ admin:
 		is_confirmed:
 			label: Is confirmed
 			param: User's account is confirmed
+		address_type:
+			label: Address type
+			param: Address type
 
 	user_groups_form:
 		user_added: User was added to the group

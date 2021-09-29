@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Repository;
 
+use Crm\ApplicationModule\Hermes\HermesMessage;
 use Crm\ApplicationModule\Repository;
 use Crm\UsersModule\Events\AddressChangedEvent;
 use Crm\UsersModule\Events\NewAddressEvent;
@@ -10,6 +11,7 @@ use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Utils\DateTime;
+use Tomaj\Hermes\Emitter as HermesEmitter;
 
 class AddressChangeRequestsRepository extends Repository
 {
@@ -29,13 +31,16 @@ class AddressChangeRequestsRepository extends Repository
 
     private $emitter;
 
+    private $hermesEmitter;
+
     public function __construct(
         Context $database,
         UsersRepository $usersRepository,
         AddressesRepository $addressesRepository,
         CountriesRepository $countriesRepository,
         AddressesMetaRepository $addressesMetaRepository,
-        Emitter $emitter
+        Emitter $emitter,
+        HermesEmitter $hermesEmitter
     ) {
         parent::__construct($database);
         $this->usersRepository = $usersRepository;
@@ -43,6 +48,7 @@ class AddressChangeRequestsRepository extends Repository
         $this->countriesRepository = $countriesRepository;
         $this->addressesMetaRepository = $addressesMetaRepository;
         $this->emitter = $emitter;
+        $this->hermesEmitter = $hermesEmitter;
     }
 
     final public function add(
@@ -151,6 +157,9 @@ class AddressChangeRequestsRepository extends Repository
                 'updated_at' => new DateTime(),
             ]);
             $this->emitter->emit(new AddressChangedEvent($address, $asAdmin));
+            $this->hermesEmitter->emit(new HermesMessage('address-changed', [
+                'address_id' => $address->id
+            ]));
         } else {
             /** @var ActiveRow $address */
             $address = $this->addressesRepository->add(
@@ -170,6 +179,9 @@ class AddressChangeRequestsRepository extends Repository
                 $addressChangeRequest->company_vat_id
             );
             $this->emitter->emit(new NewAddressEvent($address, $asAdmin));
+            $this->hermesEmitter->emit(new HermesMessage('new-address', [
+                'address_id' => $address->id
+            ]));
         }
 
         if (!$addressChangeRequest->address_id) {

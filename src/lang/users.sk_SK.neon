@@ -324,6 +324,9 @@ admin:
 		is_confirmed:
 			label: Je potvrdený
 			param: Používateľove konto je potvrdené
+		address_type:
+			label: Typ adresy
+			param: Typ adresy
 
 	user_groups_form:
 		user_added: Používateľ bol pridaný do skupiny

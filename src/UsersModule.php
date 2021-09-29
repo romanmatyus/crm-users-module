@@ -19,6 +19,7 @@ use Crm\ApplicationModule\Menu\MenuItem;
 use Crm\ApplicationModule\SeederManager;
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\ApplicationModule\Widget\WidgetManagerInterface;
+use Crm\UsersModule\Scenarios\AddressScenarioConditionModel;
 use Crm\UsersModule\Api\EmailValidationApiHandler;
 use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Crm\UsersModule\Auth\Permissions;
@@ -27,6 +28,7 @@ use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Scenarios\IsConfirmedCriteria;
+use Crm\UsersModule\Scenarios\AddressTypeCriteria;
 use Crm\UsersModule\Scenarios\UserHasAddressCriteria;
 use Crm\UsersModule\Scenarios\UserSourceCriteria;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
@@ -286,6 +288,12 @@ class UsersModule extends CrmModule
         $scenariosCriteriaStorage->register('user', 'source', $this->getInstance(UserSourceCriteria::class));
         $scenariosCriteriaStorage->register('user', UserHasAddressCriteria::KEY, $this->getInstance(UserHasAddressCriteria::class));
         $scenariosCriteriaStorage->register('user', IsConfirmedCriteria::KEY, $this->getInstance(IsConfirmedCriteria::class));
+
+        $scenariosCriteriaStorage->registerConditionModel(
+            'address',
+            $this->getInstance(AddressScenarioConditionModel::class)
+        );
+        $scenariosCriteriaStorage->register('address', AddressTypeCriteria::KEY, $this->getInstance(AddressTypeCriteria::class));
     }
 
     public function registerApiCalls(ApiRoutersContainerInterface $apiRoutersContainer)
@@ -451,7 +459,7 @@ class UsersModule extends CrmModule
 
     public function registerEvents(EventsStorage $eventsStorage)
     {
-        $eventsStorage->register('address_changed', Events\AddressChangedEvent::class);
+        $eventsStorage->register('address_changed', Events\AddressChangedEvent::class, true);
         $eventsStorage->register('login_attempt', Events\LoginAttemptEvent::class);
         $eventsStorage->register('new_access_token', Events\NewAccessTokenEvent::class);
         $eventsStorage->register('new_address', Events\NewAddressEvent::class);

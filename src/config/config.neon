@@ -81,6 +81,8 @@ services:
 	- Crm\UsersModule\Scenarios\UserSourceCriteria
 	- Crm\UsersModule\Scenarios\UserHasAddressCriteria
 	- Crm\UsersModule\Scenarios\IsConfirmedCriteria
+	- Crm\UsersModule\Scenarios\AddressTypeCriteria
+	- Crm\UsersModule\Scenarios\AddressScenarioConditionModel
 	- Crm\UsersModule\Auth\AutoLogin\AutoLogin
 	- Crm\UsersModule\Auth\UserManager
 	- Crm\UsersModule\Auth\PasswordGenerator

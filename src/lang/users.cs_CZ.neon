@@ -323,6 +323,9 @@ admin:
 		is_confirmed:
 			label: Je potvrzen
 			param: Uživatelove konto je potvrzeno
+		address_type:
+			label: Typ adresy
+			param: Typ adresy
 
 	user_groups_form:
 		user_added: Uživatel byl přidán do skupiny
