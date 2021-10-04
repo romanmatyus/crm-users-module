@@ -2,7 +2,7 @@
 
 <style>
     .sign-sso-btn {
-        display: block;
+        display: inline-block;
         width: 100%;
         font-family: Roboto, sans-serif;
         color: #fff;
@@ -17,6 +17,7 @@
         text-transform: none;
         transition: all .218s;
         margin-bottom: 10px;
+        max-width: 390px;
     }
 
     .sign-sso-btn:hover {
@@ -56,12 +57,26 @@
         background: #fff center/18px 18px no-repeat url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' width='18px' height='18px' viewBox='0 0 48 48' class='abcRioButtonSvg'%3E%3Cg%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'%3E%3C/path%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'%3E%3C/path%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'%3E%3C/path%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'%3E%3C/path%3E%3Cpath fill='none' d='M0 0h48v48H0z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
     }
 
+    .signout-sso-btn-link {
+        display: inline-block;
+        margin-left: 10px;
+    }
+
     .sign-sso-apple {
         background-color: #000;
     }
 
     .sign-sso-apple:before {
         background: #000 center/18px 18px no-repeat url("data:image/svg+xml,%3Csvg class='svg-icon mr-s' xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 1000 1187.198'%3E%3Cpath fill='%23fff' d='m 979.04184,925.18785 c -17.95397,41.47737 -39.20563,79.65705 -63.82824,114.75895 -33.56298,47.8528 -61.04356,80.9761 -82.22194,99.3698 -32.83013,30.192 -68.00529,45.6544 -105.67203,46.5338 -27.04089,0 -59.6512,-7.6946 -97.61105,-23.3035 -38.08442,-15.5358 -73.08371,-23.2303 -105.08578,-23.2303 -33.56296,0 -69.55888,7.6945 -108.06101,23.2303 -38.5608,15.6089 -69.62484,23.7432 -93.37541,24.5493 -36.12049,1.5389 -72.1237,-14.3632 -108.06101,-47.7796 -22.93711,-20.0059 -51.62684,-54.3017 -85.99592,-102.8874 C 92.254176,984.54592 61.937588,924.38175 38.187028,855.7902 12.750995,781.70252 0,709.95986 0,640.50361 0,560.94181 17.191859,492.32094 51.626869,434.81688 78.689754,388.62753 114.69299,352.19192 159.75381,325.44413 c 45.06086,-26.74775 93.74914,-40.37812 146.18212,-41.25019 28.68971,0 66.3125,8.8744 113.06613,26.31542 46.62174,17.49964 76.55727,26.37404 89.68198,26.37404 9.8124,0 43.06758,-10.37669 99.4431,-31.06405 53.31237,-19.18512 98.30724,-27.12887 135.16787,-23.99975 99.8828,8.06098 174.92313,47.43518 224.82789,118.37174 -89.33023,54.12578 -133.51903,129.93556 -132.63966,227.18753 0.8061,75.75115 28.28668,138.78795 82.2952,188.8393 24.47603,23.23022 51.81008,41.18421 82.22186,53.93522 -6.59525,19.12648 -13.557,37.44688 -20.95846,55.03446 z M 749.96366,23.751237 c 0,59.37343 -21.69138,114.810233 -64.92748,166.121963 -52.17652,60.99961 -115.28658,96.24803 -183.72426,90.68597 -0.87204,-7.12298 -1.37769,-14.61967 -1.37769,-22.49743 0,-56.99843 24.81315,-117.99801 68.87738,-167.873453 21.99909,-25.25281 49.978,-46.25018 83.90738,-63.00018 C 686.57507,10.688027 718.59913,1.5631274 748.71783,5.2734376e-4 749.59727,7.9378274 749.96366,15.875627 749.96366,23.750467 Z'%3E%3C/path%3E%3C/svg%3E");
+    }
+
+    @media(max-width: 487px) {
+        .signout-sso-btn-link {
+            margin-bottom: 15px;
+        }
+        .sign-sso-btn {
+            margin-bottom: 5px;
+        }
     }
 </style>
 
@@ -104,12 +119,14 @@
       {control snippet 'linked-accounts'}
     </div>
 
-    <div class="col-md-5">
+    <div class="col-md-8">
       {if $googleSignIn}
         {if $googleConnectedAccount}
-          <a n:href="unlinkConnectedAccount! $googleConnectedAccount->id" class="sign-sso-btn sign-sso-google" title="Google">
+          <div class="sign-sso-btn sign-sso-google" title="Google">
             <span>{$googleConnectedAccount->email}</span>
-            <span class="action">{_users.frontend.settings.linked_accounts.unlink} ×</i></span>
+          </div>
+          <a n:href="unlinkConnectedAccount! $googleConnectedAccount->id" class="signout-sso-btn-link">
+            <span class="action"><i class="fa fa-close"></i>&nbsp;{_users.frontend.settings.linked_accounts.unlink}</i></span>
           </a>
         {else}
           <a href="{$googleSignIn}" class="sign-sso-btn sign-sso-google" title="Google" target="_top" rel="noopener">
@@ -117,12 +134,16 @@
           </a>
         {/if}
       {/if}
+    </div>
+    <div class="col-md-8">
 
       {if $appleSignIn}
         {if $appleConnectedAccount}
-          <a n:href="unlinkConnectedAccount! $appleConnectedAccount->id" class="sign-sso-btn sign-sso-apple" title="Apple">
-            <span>{$appleConnectedAccount->email}</span>
-            <span class="action">{_users.frontend.settings.linked_accounts.unlink} <i class="fa fa-close"></i></span>
+          <div class="sign-sso-btn sign-sso-apple" title="Apple">
+              <span>{$appleConnectedAccount->email}</span>
+          </div>
+          <a n:href="unlinkConnectedAccount! $appleConnectedAccount->id" class="signout-sso-btn-link">
+            <span class="action"><i class="fa fa-close"></i>&nbsp;{_users.frontend.settings.linked_accounts.unlink}</i></span>
           </a>
         {else}
           <a href="{$appleSignIn}" class="sign-sso-btn sign-sso-apple" title="Apple" target="_top" rel="noopener">
