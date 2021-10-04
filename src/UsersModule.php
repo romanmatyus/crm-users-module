@@ -369,7 +369,7 @@ class UsersModule extends CrmModule
                 \Crm\ApiModule\Authorization\NoAuthorization::class
             )
         );
-  
+
         $apiRoutersContainer->attachRouter(
             new ApiRoute(
                 new ApiIdentifier('1', 'users', 'set-email-validated'),
@@ -388,7 +388,7 @@ class UsersModule extends CrmModule
 
     public function registerUserData(UserDataRegistrator $dataRegistrator)
     {
-        $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\BasicUserDataProvider::class));
+        $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\BasicUserDataProvider::class), 10); // low priority; should be executed last
         $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\AddressesUserDataProvider::class));
         $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\AutoLoginTokensUserDataProvider::class));
         $dataRegistrator->addUserDataProvider($this->getInstance(\Crm\UsersModule\User\UserMetaUserDataProvider::class));
