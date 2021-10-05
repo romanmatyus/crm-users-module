@@ -13,6 +13,9 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\IRow;
 use Nette\Http\Response;
+use Nette\Utils\Json;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Implements validation of Google Token ID
@@ -99,17 +102,12 @@ class GoogleTokenSignInHandler extends ApiHandler
         if ($gsiAuthCode) {
             $creds = $this->googleSignIn->exchangeAuthCode($gsiAuthCode);
             if (!isset($creds['id_token']) || !isset($creds['access_token'])) {
-                $response = new JsonResponse([
-                    'status' => 'error',
-                    'code' => 'invalid_auth_code',
-                    'message' => 'Unable to exchange auth code for access_token and id_token',
-                ]);
-                $response->setHttpCode(Response::S400_BAD_REQUEST);
-                return $response;
+                // do not break login process if access_token is invalid (and id_token possibly valid)
+                Debugger::log('Unable to exchange auth code for access_token and id_token, creds: ' . Json::encode($creds), ILogger::ERROR);
+            } else {
+                $idToken = $creds['id_token'];
+                $gsiAccessToken = $creds['access_token'];
             }
-            
-            $idToken = $creds['id_token'];
-            $gsiAccessToken = $creds['access_token'];
         }
         
         $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken);
