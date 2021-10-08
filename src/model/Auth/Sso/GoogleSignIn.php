@@ -8,7 +8,6 @@ use Crm\UsersModule\DataProvider\GoogleSignInDataProviderInterface;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google_Client;
 use Google_Service_Oauth2;
-use GuzzleHttp\Client;
 use Nette\Database\Table\IRow;
 use Nette\Http\Session;
 use Nette\Security\User;
@@ -41,6 +40,8 @@ class GoogleSignIn
     private $user;
 
     private $dataProviderManager;
+    
+    private $googleClient;
 
     public function __construct(
         ?string $clientId,
@@ -65,6 +66,10 @@ class GoogleSignIn
         return (boolean) ($this->configsRepository->loadByName('google_sign_in_enabled')->value ?? false);
     }
 
+    public function setGoogleClient(Google_Client $googleClient): void
+    {
+        $this->googleClient = $googleClient;
+    }
 
     /**
      * Implements validation of ID token (JWT token) as described in:
@@ -255,7 +260,11 @@ class GoogleSignIn
         /** @var GoogleSignInDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
-             $provider->provide(['user' => $matchedUser, 'gsiAccessToken' => $client->getAccessToken()['access_token'], 'userEmail' => $userEmail]);
+             $provider->provide([
+                 'user' => $matchedUser,
+                 'gsiAccessToken' => $client->getAccessToken()['access_token'],
+                 'userEmail' => $userEmail
+             ]);
         }
 
         // Match google user to CRM user
@@ -272,6 +281,10 @@ class GoogleSignIn
 
     private function getClient(?string $redirectUri = null): Google_Client
     {
+        if ($this->googleClient) {
+            return $this->googleClient;
+        }
+        
         if (!$this->clientId || !$this->clientSecret) {
             throw new \Exception("Google Sign In Client ID and Secret not configured, please configure 'users.sso.google' parameter based on the README file.");
         }

@@ -74,7 +74,7 @@ class AccessTokensRepository extends Repository
         }
         $this->emitter->emit(new BeforeRemoveAccessTokenEvent($tokenRow));
         $result = $this->delete($tokenRow);
-        $this->emitter->emit(new RemovedAccessTokenEvent($tokenRow->user_id, $token));
+        $this->emitter->emit(new RemovedAccessTokenEvent($tokenRow->user_id, $token, $tokenRow->source));
         return $result;
     }
 
