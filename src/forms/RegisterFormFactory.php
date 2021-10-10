@@ -60,7 +60,7 @@ class RegisterFormFactory
         return $form;
     }
 
-    public function formSucceeded($form, $values)
+    public function formSucceeded(Form $form, $values)
     {
         if ($this->userManager->loadUserByEmail($values->email)) {
             if ($this->onUserExists) {
@@ -71,7 +71,7 @@ class RegisterFormFactory
         }
 
         try {
-            $user = $this->userManager->addNewUser($form->values['email']);
+            $user = $this->userManager->addNewUser($form->getValues()['email']);
         } catch (InvalidEmailException $e) {
             $form->addError('users.frontend.sign_up.error.invalid_email');
             return;
