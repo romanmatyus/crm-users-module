@@ -19,7 +19,7 @@ class AddressesMetaRepository extends Repository
      * @return \Nette\Database\Table\IRow
      * @throws \Exception
      */
-    final public function add(ActiveRow $address, ?Activerow $addressChangeRequest, $key, $value, $override = true)
+    final public function add(ActiveRow $address, ?ActiveRow $addressChangeRequest, $key, $value, $override = true)
     {
         if ($override && $this->exists($address, $addressChangeRequest, $key)) {
             $meta = $this->getTable()->where([
@@ -57,7 +57,7 @@ class AddressesMetaRepository extends Repository
      * @param array $keys
      * @return Selection
      */
-    final public function values(ActiveRow $address, ?Activerow $addressChangeRequest, ...$keys)
+    final public function values(ActiveRow $address, ?ActiveRow $addressChangeRequest, ...$keys)
     {
         $values = $this->getTable()->where([
             'address_id' => $address->id,
@@ -75,7 +75,7 @@ class AddressesMetaRepository extends Repository
      * @param string $key
      * @return bool
      */
-    final public function exists(ActiveRow $address, ?Activerow $addressChangeRequest, $key)
+    final public function exists(ActiveRow $address, ?ActiveRow $addressChangeRequest, $key)
     {
         return $this->getTable()->where([
                 'address_id' => $address->id,
@@ -90,7 +90,7 @@ class AddressesMetaRepository extends Repository
      * @param string $key
      * @return int
      */
-    final public function remove(ActiveRow $address, ?Activerow $addressChangeRequest, $key)
+    final public function remove(ActiveRow $address, ?ActiveRow $addressChangeRequest, $key)
     {
         return $this->getTable()->where([
             'address_id' => $address->id,
