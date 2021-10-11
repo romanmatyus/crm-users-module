@@ -3,9 +3,9 @@
 namespace Crm\UsersModule\Auth\Rate;
 
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
+use DateInterval;
 use Nette\Database\Table\IRow;
 use Nette\Utils\DateTime;
-use DateInterval;
 
 class WrongPasswordRateLimit
 {

@@ -3,8 +3,8 @@
 namespace Crm\UsersModule\Auth\Rate;
 
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
-use Nette\Utils\DateTime;
 use DateInterval;
+use Nette\Utils\DateTime;
 
 class IpRateLimit
 {

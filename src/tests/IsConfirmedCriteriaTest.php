@@ -4,8 +4,8 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\UserManager;
-use Crm\UsersModule\Scenarios\IsConfirmedCriteria;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\Scenarios\IsConfirmedCriteria;
 
 class IsConfirmedCriteriaTest extends DatabaseTestCase
 {

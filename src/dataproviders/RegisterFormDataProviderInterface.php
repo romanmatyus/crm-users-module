@@ -3,8 +3,8 @@
 namespace Crm\UsersModule\DataProvider;
 
 use Crm\ApplicationModule\DataProvider\DataProviderInterface;
-use Nette\Database\Table\IRow;
 use Nette\Application\UI\Form;
+use Nette\Database\Table\IRow;
 
 interface RegisterFormDataProviderInterface extends DataProviderInterface
 {

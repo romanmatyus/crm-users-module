@@ -9,8 +9,8 @@ use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AddressChangeRequestsRepository;
-use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\AddressTypesRepository;
+use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\CountriesRepository;
 use Nette\Http\Response;
 
