@@ -8,11 +8,7 @@ use Nette\Database\Table\IRow;
 interface ClaimUserDataProviderInterface extends DataProviderInterface
 {
     /**
-     * @param array $params {
-     *   @type IRow $unclaimedUser
-     *   @type IRow $loggedUser
-     * }
-     * @return void
+     * @param array{unclaimedUser: IRow, loggedUser: IRow} $params
      */
     public function provide(array $params): void;
 }
