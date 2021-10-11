@@ -3,7 +3,7 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Sinergi\BrowserDetector\Browser;
 use Sinergi\BrowserDetector\Device;
 use Sinergi\BrowserDetector\Os;
@@ -26,7 +26,7 @@ class LoginAttemptsRepository extends Repository
     const STATUS_LOGIN_AFTER_SIGN_UP = 'login_after_sign_up';
     const RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded';
 
-    /** @var Context */
+    /** @var Explorer */
     protected $tableName = 'login_attempts';
 
     final public function okStatuses(): array

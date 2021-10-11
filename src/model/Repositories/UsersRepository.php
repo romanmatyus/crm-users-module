@@ -9,7 +9,7 @@ use Crm\ApplicationModule\Repository\AuditLogRepository;
 use Crm\UsersModule\Events\UserDisabledEvent;
 use Crm\UsersModule\Events\UserUpdatedEvent;
 use League\Event\Emitter;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Security\Passwords;
@@ -35,7 +35,7 @@ class UsersRepository extends Repository
     private $passwords;
 
     public function __construct(
-        Context $database,
+        Explorer $database,
         Emitter $emitter,
         AuditLogRepository $auditLogRepository,
         CacheRepository $cacheRepository,

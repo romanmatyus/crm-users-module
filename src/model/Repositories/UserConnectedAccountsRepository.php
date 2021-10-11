@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\AuditLogRepository;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\IRow;
 use Nette\Utils\Json;
 
@@ -17,7 +17,7 @@ class UserConnectedAccountsRepository extends Repository
     protected $tableName = 'user_connected_accounts';
 
     public function __construct(
-        Context $database,
+        Explorer $database,
         AuditLogRepository $auditLogRepository
     ) {
         parent::__construct($database);

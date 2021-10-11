@@ -7,7 +7,7 @@ use Crm\ApplicationModule\Repository;
 use Crm\UsersModule\Events\AddressChangedEvent;
 use Crm\UsersModule\Events\NewAddressEvent;
 use League\Event\Emitter;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Utils\DateTime;
@@ -34,7 +34,7 @@ class AddressChangeRequestsRepository extends Repository
     private $hermesEmitter;
 
     public function __construct(
-        Context $database,
+        Explorer $database,
         UsersRepository $usersRepository,
         AddressesRepository $addressesRepository,
         CountriesRepository $countriesRepository,

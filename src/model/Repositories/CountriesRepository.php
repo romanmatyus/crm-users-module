@@ -3,7 +3,7 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 
 class CountriesRepository extends Repository
 {
@@ -15,7 +15,7 @@ class CountriesRepository extends Repository
 
     public function __construct(
         $defaultCountryISO,
-        Context $database
+        Explorer $database
     ) {
         parent::__construct($database);
         $this->setDefaultCountry($defaultCountryISO);

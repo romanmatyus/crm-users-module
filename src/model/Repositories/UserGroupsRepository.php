@@ -3,7 +3,7 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\IRow;
 
 class UserGroupsRepository extends Repository
@@ -14,7 +14,7 @@ class UserGroupsRepository extends Repository
 
     private $groupsRepository;
 
-    public function __construct(Context $database, UsersRepository $usersRepository, GroupsRepository $groupsRepository)
+    public function __construct(Explorer $database, UsersRepository $usersRepository, GroupsRepository $groupsRepository)
     {
         parent::__construct($database);
         $this->usersRepository = $usersRepository;

@@ -8,7 +8,7 @@ use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Events\UserCreatedEvent;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Security\Passwords;
 
 class UserBuilder extends Builder
@@ -30,7 +30,7 @@ class UserBuilder extends Builder
     private $passwords;
 
     public function __construct(
-        Context $database,
+        Explorer $database,
         Emitter $emitter,
         \Tomaj\Hermes\Emitter $hermesEmitter,
         AccessToken $accessToken,

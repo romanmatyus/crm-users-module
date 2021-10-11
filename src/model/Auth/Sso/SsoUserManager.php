@@ -7,12 +7,12 @@ use Crm\UsersModule\Auth\PasswordGenerator;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\IRow;
 
 class SsoUserManager
 {
-    private Context $dbContext;
+    private Explorer $dbContext;
 
     private UserConnectedAccountsRepository $connectedAccountsRepository;
 
@@ -25,7 +25,7 @@ class SsoUserManager
     public function __construct(
         PasswordGenerator $passwordGenerator,
         UserBuilder $userBuilder,
-        Context $dbContext,
+        Explorer $dbContext,
         UserConnectedAccountsRepository $connectedAccountsRepository,
         UsersRepository $usersRepository
     ) {

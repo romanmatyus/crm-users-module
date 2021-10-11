@@ -15,7 +15,7 @@ use Crm\UsersModule\Events\UnpairDeviceAccessTokensEvent;
 use Crm\UsersModule\User\UnclaimedUser;
 use DateTime;
 use League\Event\Emitter;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\IRow;
 
 class AccessTokensRepository extends Repository
@@ -29,7 +29,7 @@ class AccessTokensRepository extends Repository
     private $dataProviderManager;
 
     public function __construct(
-        Context $database,
+        Explorer $database,
         Emitter $emitter,
         UserMetaRepository $userMetaRepository,
         DataProviderManager $dataProviderManager

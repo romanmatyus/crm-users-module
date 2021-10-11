@@ -7,7 +7,7 @@ use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\AuditLogRepository;
 use Crm\UsersModule\DataProvider\CanDeleteAddressDataProviderInterface;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Utils\DateTime;
@@ -19,7 +19,7 @@ class AddressesRepository extends Repository
     private $dataProviderManager;
 
     public function __construct(
-        Context $database,
+        Explorer $database,
         AuditLogRepository $auditLogRepository,
         DataProviderManager $dataProviderManager
     ) {

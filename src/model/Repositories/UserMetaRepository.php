@@ -7,7 +7,7 @@ use Crm\UsersModule\Events\UserMetaEvent;
 use DateTime;
 use League\Event\Emitter;
 use Nette\Caching\Storage;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 
@@ -17,7 +17,7 @@ class UserMetaRepository extends Repository
 
     protected $tableName = 'user_meta';
 
-    public function __construct(Context $database, Emitter $emitter, Storage $cacheStorage = null)
+    public function __construct(Explorer $database, Emitter $emitter, Storage $cacheStorage = null)
     {
         parent::__construct($database, $cacheStorage);
         $this->emitter = $emitter;
