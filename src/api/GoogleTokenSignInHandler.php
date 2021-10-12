@@ -11,6 +11,7 @@ use Crm\UsersModule\Auth\Sso\GoogleSignIn;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Nette\Application\LinkGenerator;
 use Nette\Database\Table\IRow;
 use Nette\Http\Response;
 use Nette\Utils\Json;
@@ -33,16 +34,20 @@ class GoogleTokenSignInHandler extends ApiHandler
 
     private $usersRepository;
 
+    private $linkGenerator;
+
     public function __construct(
         GoogleSignIn $googleSignIn,
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
-        UsersRepository $usersRepository
+        UsersRepository $usersRepository,
+        LinkGenerator $linkGenerator
     ) {
         $this->googleSignIn = $googleSignIn;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
         $this->usersRepository = $usersRepository;
+        $this->linkGenerator = $linkGenerator;
     }
 
     public function params()
@@ -52,6 +57,7 @@ class GoogleTokenSignInHandler extends ApiHandler
             new InputParam(InputParam::TYPE_POST, 'create_access_token', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'gsi_auth_code', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'is_web', InputParam::OPTIONAL),
         ];
     }
 
@@ -72,6 +78,7 @@ class GoogleTokenSignInHandler extends ApiHandler
         $idToken = $params['id_token'];
         $createAccessToken = filter_var($params['create_access_token'], FILTER_VALIDATE_BOOLEAN) ?? false;
         $gsiAuthCode = $params['gsi_auth_code'] ?? null;
+        $isWeb = filter_var($params['is_web'], FILTER_VALIDATE_BOOLEAN) ?? false;
         
         $deviceToken = null;
         if (!empty($params['device_token'])) {
@@ -100,13 +107,23 @@ class GoogleTokenSignInHandler extends ApiHandler
         // If user provides auth_code, use it to load Google access_token and id_token (replaces one from parameters)
         $gsiAccessToken = null;
         if ($gsiAuthCode) {
-            $creds = $this->googleSignIn->exchangeAuthCode($gsiAuthCode);
-            if (!isset($creds['id_token']) || !isset($creds['access_token'])) {
-                // do not break login process if access_token is invalid (and id_token possibly valid)
-                Debugger::log('Unable to exchange auth code for access_token and id_token, creds: ' . Json::encode($creds), ILogger::ERROR);
-            } else {
-                $idToken = $creds['id_token'];
-                $gsiAccessToken = $creds['access_token'];
+            // 'postmessage' is a reserved URI string in Google-land. Use it in case auth_code was requested from web surface.
+            // Otherwise, use standard callback URI also used in Google presenter.
+            // @see https://github.com/googleapis/google-auth-library-php/blob/21dd478e77b0634ed9e3a68613f74ed250ca9347/src/OAuth2.php#L777
+            $redirectUri = $isWeb ? 'postmessage' : $this->linkGenerator->link('Users:Google:Callback');
+            
+            try {
+                $creds = $this->googleSignIn->exchangeAuthCode($gsiAuthCode, $redirectUri);
+                if (!isset($creds['id_token']) || !isset($creds['access_token'])) {
+                    // do not break login process if access_token is invalid (and id_token possibly valid)
+                    Debugger::log('Unable to exchange auth code for access_token and id_token, creds: ' . Json::encode($creds), ILogger::ERROR);
+                } else {
+                    $idToken = $creds['id_token'];
+                    $gsiAccessToken = $creds['access_token'];
+                }
+            } catch (\Exception $e) {
+                // do not break login process if e.g. network call fails
+                Debugger::log($e->getMessage(), Debugger::EXCEPTION);
             }
         }
         

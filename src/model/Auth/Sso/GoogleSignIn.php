@@ -129,7 +129,7 @@ class GoogleSignIn
             self::USER_GOOGLE_REGISTRATION_CHANNEL
         );
     }
-
+    
     /**
      * Exchanges one-time auth code for credentials, containing id_token, access_token, ...
      * Useful e.g. for offline access for users logged in apps.
@@ -137,17 +137,18 @@ class GoogleSignIn
      * - https://developers.google.com/identity/sign-in/android/offline-access
      * - https://developers.google.com/identity/sign-in/ios/offline-access
      *
-     * @param string $gsiAuthCode
+     * @param string      $gsiAuthCode
+     * @param string      $redirectUri redirectUri depends on how auth_code was initially requested.
+     *                                 In case of web surface, one may use 'postmessage' redirectUri,
+     *                                 which is a reserved URI string in Google-land.
+     *                                 Otherwise, use standard callback URI registered for OAuth client.
      *
      * @return array keys 'access_token', 'scope', 'id_token', 'token_type', 'refresh_token', 'expires_in', 'created'
      * @throws \Exception
      */
-    public function exchangeAuthCode(string $gsiAuthCode): array
+    public function exchangeAuthCode(string $gsiAuthCode, string $redirectUri): array
     {
-        // "postmessage" is a reserved URI string in Google-land (kind-of undocumented)
-        // it is required for server side workflow
-        // @see https://github.com/googleapis/google-auth-library-php/blob/21dd478e77b0634ed9e3a68613f74ed250ca9347/src/OAuth2.php#L777
-        $client = $this->getClient('postmessage');
+        $client = $this->getClient($redirectUri);
         return $client->fetchAccessTokenWithAuthCode($gsiAuthCode);
     }
 
