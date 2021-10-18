@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApplicationModule\ApplicationManager;
+use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Auth\AutoLogin\AutoLogin;
@@ -14,7 +14,6 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\IRow;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
-use Nette\Utils\DateTime;
 
 class UserAuthenticatorTest extends DatabaseTestCase
 {
@@ -64,8 +63,24 @@ class UserAuthenticatorTest extends DatabaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        // ApplicationManager initialization required to register Authenticators
-        $this->inject(ApplicationManager::class);
+
+        $authenticatorManager = $this->inject(AuthenticatorManagerInterface::class);
+        $authenticatorManager->registerAuthenticator(
+            $this->inject(\Crm\UsersModule\Authenticator\AutoLoginAuthenticator::class),
+            700
+        );
+        $authenticatorManager->registerAuthenticator(
+            $this->inject(\Crm\UsersModule\Authenticator\UsersAuthenticator::class),
+            500
+        );
+        $authenticatorManager->registerAuthenticator(
+            $this->inject(\Crm\UsersModule\Authenticator\AccessTokenAuthenticator::class),
+            200
+        );
+        $authenticatorManager->registerAuthenticator(
+            $this->inject(\Crm\UsersModule\Authenticator\AutoLoginTokenAuthenticator::class),
+            800
+        );
 
         $this->userAuthenticator = $this->inject(UserAuthenticator::class);
         $this->userManager = $this->inject(UserManager::class);
@@ -110,41 +125,6 @@ class UserAuthenticatorTest extends DatabaseTestCase
             'password' => $this->testUserPassword,
         ]);
         $this->assertEquals(($userIdentity->getData())["email"], $this->testUserEmail);
-    }
-
-    public function testUsernamePasswordTyzden()
-    {
-        // backup password
-        $pwdBak = $this->user->password;
-        $credentials = [
-            'username' => $this->testUserEmail,
-            'password' => $this->testUserPassword,
-        ];
-
-        // check SHA256 hash
-        $pwdNew = '{SHA256}' . \hash('sha256', $this->testUserPassword);
-        $this->usersRepository->update($this->user, ['password' => $pwdNew]);
-
-        $userIdentity = $this->userAuthenticator->authenticate($credentials);
-        $this->assertEquals(($userIdentity->getData())["email"], $this->testUserEmail);
-
-        // check SHA1 hash
-        $pwdNew = '{SHA1}' . \hash('sha1', $this->testUserPassword);
-        $this->usersRepository->update($this->user, ['password' => $pwdNew]);
-
-        $userIdentity = $this->userAuthenticator->authenticate($credentials);
-        $this->assertEquals(($userIdentity->getData())["email"], $this->testUserEmail);
-
-        // check PHPASS hash
-        $hasher = new \PHPassLib\Hash\Portable;
-        $pwdNew = '{PHPASS}' . $hasher->hash($this->testUserPassword);
-        $this->usersRepository->update($this->user, ['password' => $pwdNew]);
-
-        $userIdentity = $this->userAuthenticator->authenticate($credentials);
-        $this->assertEquals(($userIdentity->getData())["email"], $this->testUserEmail);
-
-        // revert password change
-        $this->usersRepository->update($this->user, ['password' => $pwdBak]);
     }
 
     public function testIncorrectUsername()
@@ -210,68 +190,6 @@ class UserAuthenticatorTest extends DatabaseTestCase
             'user' => $this->user,
             'autoLogin' => false,
         ]);
-    }
-
-
-    /* **************************************************************
-     * MAIL TOKEN
-     */
-
-    public function testMailToken()
-    {
-        $startDate = new DateTime();
-        $startDate->setTimestamp(strtotime('-1 hour'));
-        $endDate = new DateTime();
-        $endDate->setTimestamp(strtotime('+1 hour'));
-        $autoLoginToken = $this->autoLogin->addUserToken($this->getUser(), $startDate, $endDate);
-
-        $userIdentity = $this->userAuthenticator->authenticate(['mailToken' => $autoLoginToken->token]);
-        $this->assertEquals(($userIdentity->getData())["email"], $this->testUserEmail);
-    }
-
-    public function testMailTokenAdmin()
-    {
-        $startDate = new DateTime();
-        $startDate->setTimestamp(strtotime('-1 hour'));
-        $endDate = new DateTime();
-        $endDate->setTimestamp(strtotime('+1 hour'));
-        $autoLoginToken = $this->autoLogin->addUserToken($this->getAdmin(), $startDate, $endDate);
-
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Autologin for this account is disabled");
-        $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
-
-        $this->userAuthenticator->authenticate(['mailToken' => $autoLoginToken->token]);
-    }
-
-    public function testMailTokenExpired()
-    {
-        $startDate = new DateTime();
-        $startDate->setTimestamp(strtotime('-2 hour'));
-        $endDate = new DateTime();
-        $endDate->setTimestamp(strtotime('-1 hour'));
-        $autoLoginToken = $this->autoLogin->addUserToken($this->getUser(), $startDate, $endDate);
-
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Token je neplatny");
-        $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
-
-        $this->userAuthenticator->authenticate(['mailToken' => $autoLoginToken->token]);
-    }
-
-    public function testMailTokenUsed()
-    {
-        $startDate = new DateTime();
-        $startDate->setTimestamp(strtotime('-1 hour'));
-        $endDate = new DateTime();
-        $endDate->setTimestamp(strtotime('+1 hour'));
-        $autoLoginToken = $this->autoLogin->addUserToken($this->getUser(), $startDate, $endDate, 0);
-
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Token dosiahol maximalny pocet pouziti");
-        $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
-
-        $this->userAuthenticator->authenticate(['mailToken' => $autoLoginToken->token]);
     }
 
     /* **************************************************************

@@ -44,6 +44,7 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
 
     public function setUp(): void
     {
+        $this->refreshContainer();
         parent::setUp();
 
         $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
@@ -51,7 +52,7 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
         $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
         $this->userMetaRepository = $this->getRepository(UserMetaRepository::class);
 
-        $this->deviceTokenAuthorization = $this->container->getByType(DeviceTokenAuthorization::class);
+        $this->deviceTokenAuthorization = $this->inject(DeviceTokenAuthorization::class);
     }
 
     public function testNotExistingDeviceToken()

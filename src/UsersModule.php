@@ -49,19 +49,15 @@ class UsersModule extends CrmModule
 
     private $permissions;
 
-    private $usersRepository;
-
     public function __construct(
         Container $container,
         Translator $translator,
         User $user,
-        Permissions $permissions,
-        UsersRepository $usersRepository
+        Permissions $permissions
     ) {
         parent::__construct($container, $translator);
         $this->user = $user;
         $this->permissions = $permissions;
-        $this->usersRepository = $usersRepository;
     }
 
     public function registerAuthenticators(AuthenticatorManagerInterface $authenticatorManager)
