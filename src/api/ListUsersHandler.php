@@ -57,20 +57,21 @@ class ListUsersHandler extends ApiHandler
             return $response;
         }
 
+        try {
+            $userIds = Json::decode($params['user_ids'], Json::FORCE_ARRAY);
+        } catch (JsonException $e) {
+            $response = new JsonResponse(['status' => 'error', 'message' => 'user_ids should be valid JSON array']);
+            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            return $response;
+        }
+
         $query = $this->usersRepository->all()
             ->where('active = ?', true)
             ->select('id, email')
             ->order('id ASC');
 
-        try {
-            $userIds = Json::decode($params['user_ids'], Json::FORCE_ARRAY);
-            if (!empty($userIds)) {
-                $query->where(['id' => $userIds]);
-            }
-        } catch (JsonException $e) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'user_ids should be valid JSON array']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
-            return $response;
+        if (!empty($userIds)) {
+            $query->where(['id' => $userIds]);
         }
 
         $users = (clone($query))
