@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Auth\Rate;
 
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use DateInterval;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
 
 class WrongPasswordRateLimit
@@ -22,7 +22,7 @@ class WrongPasswordRateLimit
         $this->timeout = $timeout;
     }
 
-    public function reachLimit(IRow $user): bool
+    public function reachLimit(ActiveRow $user): bool
     {
         $lastAccess = $this->loginAttemptsRepository->lastUserAttempt($user->id, $this->attempts);
         if (count($lastAccess) < $this->attempts) {

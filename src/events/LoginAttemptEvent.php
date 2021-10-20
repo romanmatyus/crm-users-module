@@ -3,7 +3,7 @@
 namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Security\User;
 
 class LoginAttemptEvent extends AbstractEvent
@@ -24,7 +24,7 @@ class LoginAttemptEvent extends AbstractEvent
      * LoginAttemptEvent constructor.
      *
      * @param string $email
-     * @param IRow|User|null $user
+     * @param ActiveRow|User|null $user
      * @param string $source
      * @param string $status
      * @param string|null $message

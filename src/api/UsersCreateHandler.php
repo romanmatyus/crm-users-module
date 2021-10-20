@@ -13,7 +13,7 @@ use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Response;
 use Nette\Utils\Validators;
 
@@ -161,7 +161,7 @@ class UsersCreateHandler extends ApiHandler
         return $response;
     }
 
-    private function formatResponse(IRow $user, IRow $lastToken): array
+    private function formatResponse(ActiveRow $user, ActiveRow $lastToken): array
     {
         $user = $this->usersRepository->find($user->id);
         $result = [

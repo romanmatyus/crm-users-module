@@ -14,7 +14,6 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Exception;
 use League\Event\Emitter;
 use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\IRow;
 use Nette\Utils\JsonException;
 use Ramsey\Uuid\Uuid;
 
@@ -101,7 +100,7 @@ class UnclaimedUser
         return $uuid . '@unclaimed';
     }
 
-    public function claimUser(IRow $unclaimedUser, IRow $loggedUser, ?IRow $deviceToken = null): void
+    public function claimUser(ActiveRow $unclaimedUser, ActiveRow $loggedUser, ?ActiveRow $deviceToken = null): void
     {
         if (!$this->isUnclaimedUser($unclaimedUser)) {
             throw new ClaimedUserException("User {$unclaimedUser->id} is claimed");

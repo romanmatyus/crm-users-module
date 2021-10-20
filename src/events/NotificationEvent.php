@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
 use League\Event\Emitter;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 
 /**
  * NotificationEvent serves for sending notification (e.g. emails, push notifications) to users.
@@ -56,7 +56,7 @@ class NotificationEvent extends AbstractEvent
 
     public function __construct(
         Emitter $emitter,
-        ?IRow $user,
+        ?ActiveRow $user,
         string $templateCode,
         array $params = [],
         string $context = null,
@@ -74,7 +74,7 @@ class NotificationEvent extends AbstractEvent
         $emitter->emit(new PreNotificationEvent($this, $notificationContext));
     }
 
-    public function getUser(): ?IRow
+    public function getUser(): ?ActiveRow
     {
         return $this->user;
     }
@@ -104,7 +104,7 @@ class NotificationEvent extends AbstractEvent
         return $this->scheduleAt;
     }
 
-    public function setUser(?IRow $user): void
+    public function setUser(?ActiveRow $user): void
     {
         $this->user = $user;
     }

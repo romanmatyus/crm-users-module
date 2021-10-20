@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Forms;
 
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Form;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Localization\ITranslator;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 
@@ -17,7 +17,7 @@ class UserNoteFormFactory
     /* callback function */
     public $onUpdate;
 
-    /** @var IRow */
+    /** @var ActiveRow */
     private $user;
 
     public function __construct(
@@ -32,7 +32,7 @@ class UserNoteFormFactory
      * @params $user
      * @return Form
      */
-    public function create(IRow $user)
+    public function create(ActiveRow $user)
     {
         $form = new Form;
         $this->user = $user;

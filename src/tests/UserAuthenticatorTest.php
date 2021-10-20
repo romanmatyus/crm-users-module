@@ -14,7 +14,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use Kdyby\Translation\Translator;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 
@@ -38,10 +38,10 @@ class UserAuthenticatorTest extends DatabaseTestCase
     /** @var AutoLogin $autoLogin */
     private $autoLogin;
 
-    /** @var IRow $user */
+    /** @var ActiveRow $user */
     private $user;
 
-    /** @var IRow $admin */
+    /** @var ActiveRow $admin */
     private $admin;
 
     /** @var UnclaimedUser $unclaimedUser */
@@ -258,7 +258,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
      * Helpers
      */
 
-    private function getUser() : IRow
+    private function getUser() : ActiveRow
     {
         if (!$this->user) {
             $this->user = $this->loadUser($this->testUserEmail, $this->testUserPassword, UsersRepository::ROLE_USER);
@@ -267,7 +267,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
         return $this->user;
     }
 
-    private function getAdmin() : IRow
+    private function getAdmin() : ActiveRow
     {
         if (!$this->admin) {
             $this->admin = $this->loadUser($this->testAdminEmail, $this->testAdminPassword, UsersRepository::ROLE_ADMIN);
@@ -276,7 +276,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
         return $this->admin;
     }
 
-    private function loadUser($email, $password, $role = UsersRepository::ROLE_USER, $active = true) : IRow
+    private function loadUser($email, $password, $role = UsersRepository::ROLE_USER, $active = true) : ActiveRow
     {
         $user = $this->userManager->loadUserByEmail($email);
         if (!$user) {

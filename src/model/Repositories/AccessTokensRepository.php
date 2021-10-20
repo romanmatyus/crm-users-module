@@ -16,7 +16,7 @@ use Crm\UsersModule\User\UnclaimedUser;
 use DateTime;
 use League\Event\Emitter;
 use Nette\Database\Explorer;
-use Nette\Database\IRow;
+use Nette\Database\Table\ActiveRow;
 
 class AccessTokensRepository extends Repository
 {
@@ -46,7 +46,7 @@ class AccessTokensRepository extends Repository
         return $this->getTable()->order('created_at DESC')->limit($limit);
     }
 
-    final public function add(IRow $user, int $version = 3, ?string $source = null)
+    final public function add(ActiveRow $user, int $version = 3, ?string $source = null)
     {
         $token = TokenGenerator::generate();
 
@@ -92,7 +92,7 @@ class AccessTokensRepository extends Repository
         return $this->allUserTokens($userId)->where(['source' => $source]);
     }
 
-    final public function findAllByDeviceToken(IRow $deviceToken)
+    final public function findAllByDeviceToken(ActiveRow $deviceToken)
     {
         return $this->getTable()->where('device_token_id', $deviceToken->id)->fetchAll();
     }
@@ -173,7 +173,7 @@ class AccessTokensRepository extends Repository
         return $result;
     }
 
-    final public function existsForUserDeviceToken(IRow $user, IRow $deviceToken) : bool
+    final public function existsForUserDeviceToken(ActiveRow $user, ActiveRow $deviceToken) : bool
     {
         return $this->getTable()->where([
             'device_token_id' => $deviceToken->id,

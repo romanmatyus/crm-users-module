@@ -4,12 +4,12 @@ namespace Crm\UsersModule\DataProvider;
 
 use Crm\ApplicationModule\DataProvider\DataProviderException;
 use Crm\ApplicationModule\DataProvider\DataProviderInterface;
-use Nette\Database\IRow;
+use Nette\Database\Table\ActiveRow;
 
 interface CanDeleteAddressDataProviderInterface extends DataProviderInterface
 {
     /**
-     * @param array{address: IRow} $params
+     * @param array{address: ActiveRow} $params
      * @return array [
      *   'canDelete' => @type bool,
      *   'message' => @type string (Optional) Use for can't delete messages

@@ -7,7 +7,7 @@ use Crm\ApplicationModule\Authenticator\BaseAuthenticator;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 
 /**
@@ -23,7 +23,7 @@ class AutoLoginAuthenticator extends BaseAuthenticator
     /** @var UsersRepository */
     private $usersRepository;
 
-    /** @var IRow */
+    /** @var ActiveRow */
     private $user = null;
 
     /** @var bool */

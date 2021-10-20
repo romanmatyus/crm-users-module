@@ -9,7 +9,7 @@ use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Security\AuthenticationException;
 
@@ -62,7 +62,7 @@ class AutoLoginTokenAuthenticator extends BaseAuthenticator
     /**
      * @throws AuthenticationException
      */
-    private function process() : IRow
+    private function process() : ActiveRow
     {
         $tokenRow = $this->autoLogin->getToken($this->autologinToken);
 

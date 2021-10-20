@@ -9,7 +9,7 @@ use Crm\UsersModule\DataProvider\GoogleSignInDataProviderInterface;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google_Client;
 use Google_Service_Oauth2;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Http\Response;
 use Nette\Security\User;
@@ -36,7 +36,7 @@ class GoogleSignIn
     private ?string $clientId;
 
     private ?string $clientSecret;
-    
+
     private ConfigsRepository $configsRepository;
 
     private SsoUserManager $ssoUserManager;
@@ -44,7 +44,7 @@ class GoogleSignIn
     private User $user;
 
     private DataProviderManager $dataProviderManager;
-    
+
     private ?Google_Client $googleClient = null;
 
     private Response $response;
@@ -91,11 +91,11 @@ class GoogleSignIn
      * @param string      $idToken
      * @param string|null $gsiAccessToken
      *
-     * @return IRow|null created/matched user
+     * @return ActiveRow|null created/matched user
      * @throws AlreadyLinkedAccountSsoException
      * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null, int $loggedUserId = null): ?IRow
+    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null, int $loggedUserId = null): ?ActiveRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -128,7 +128,7 @@ class GoogleSignIn
                  'gsiAccessToken' => $gsiAccessToken,
              ]);
         }
-        
+
         $userBuilder = $this->ssoUserManager->createUserBuilder(
             $userEmail,
             self::USER_SOURCE_GOOGLE_SSO,
@@ -145,7 +145,7 @@ class GoogleSignIn
             $loggedUserId
         );
     }
-    
+
     /**
      * Exchanges one-time auth code for credentials, containing id_token, access_token, ...
      * Useful e.g. for offline access for users logged in apps.
@@ -232,12 +232,12 @@ class GoogleSignIn
      * @param string      $redirectUri
      * @param string|null $referer to save with user if user is created
      *
-     * @return IRow user row
+     * @return ActiveRow user row
      * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInCallback(string $redirectUri, string $referer = null): IRow
+    public function signInCallback(string $redirectUri, string $referer = null): ActiveRow
     {
         $gsiState = $this->request->getCookie(self::COOKIE_GSI_STATE);
         $gsiUserId = $this->request->getCookie(self::COOKIE_GSI_USER_ID);
@@ -313,7 +313,7 @@ class GoogleSignIn
             self::USER_GOOGLE_REGISTRATION_CHANNEL,
             $referer
         );
-        
+
         // Match google user to CRM user
         return $this->ssoUserManager->matchOrCreateUser(
             $googleUserId,
@@ -330,7 +330,7 @@ class GoogleSignIn
         if ($this->googleClient) {
             return $this->googleClient;
         }
-        
+
         if (!$this->clientId || !$this->clientSecret) {
             throw new \Exception("Google Sign In Client ID and Secret not configured, please configure 'users.sso.google' parameter based on the README file.");
         }

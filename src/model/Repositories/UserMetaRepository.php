@@ -8,7 +8,7 @@ use DateTime;
 use League\Event\Emitter;
 use Nette\Caching\Storage;
 use Nette\Database\Explorer;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
 class UserMetaRepository extends Repository
@@ -23,12 +23,12 @@ class UserMetaRepository extends Repository
         $this->emitter = $emitter;
     }
 
-    final public function exists(IRow $user, $key)
+    final public function exists(ActiveRow $user, $key)
     {
         return $this->getTable()->where(['user_id' => $user->id, 'key' => $key])->count('*') > 0;
     }
 
-    final public function add(IRow $user, $key, $value, ?DateTime $createdAt = null, $isPublic = false)
+    final public function add(ActiveRow $user, $key, $value, ?DateTime $createdAt = null, $isPublic = false)
     {
         if ($this->exists($user, $key)) {
             $result = $this->getTable()->where(['user_id' => $user, 'key' => $key])
@@ -54,13 +54,13 @@ class UserMetaRepository extends Repository
         return $result;
     }
 
-    final public function update(IRow &$row, $data)
+    final public function update(ActiveRow &$row, $data)
     {
         $data['updated_at'] = new DateTime();
         return parent::update($row, $data);
     }
 
-    final public function setMeta(IRow $user, array $metas, $isPublic = false)
+    final public function setMeta(ActiveRow $user, array $metas, $isPublic = false)
     {
         foreach ($metas as $key => $value) {
             $this->add($user, $key, $value, null, $isPublic);
@@ -87,16 +87,21 @@ class UserMetaRepository extends Repository
         return $this->userMetaRows($user)->fetchPairs('key', 'value');
     }
 
-    final public function userMetaValueByKey(IRow $user, string $key): ?string
+    final public function userMetaValueByKey(ActiveRow $user, string $key): ?string
     {
-        return $this->userMetaRows($user)
+        $value = $this->userMetaRows($user)
             ->where('key = ?', $key)
             ->fetchField('value');
+
+        if (!$value) {
+            return null;
+        }
+        return $value;
     }
 
     final public function userMetaRows($user)
     {
-        if ($user instanceof IRow) {
+        if ($user instanceof ActiveRow) {
             $user = $user->id;
         }
         return $this->getTable()->where(['user_id' => $user])->order('key ASC');

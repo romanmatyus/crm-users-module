@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Scenarios;
 use Crm\ApplicationModule\Criteria\ScenarioParams\StringLabeledArrayParam;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
 use Crm\UsersModule\Repository\UsersRepository;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Localization\ITranslator;
 
@@ -31,7 +31,7 @@ class UserSourceCriteria implements ScenariosCriteriaInterface
         ];
     }
 
-    public function addConditions(Selection $selection, array $paramValues, IRow $criterionItemRow): bool
+    public function addConditions(Selection $selection, array $paramValues, ActiveRow $criterionItemRow): bool
     {
         $values = $paramValues['source'];
         $selection->where('users.source IN (?)', $values->selection);

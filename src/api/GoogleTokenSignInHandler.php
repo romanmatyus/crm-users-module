@@ -12,7 +12,7 @@ use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\LinkGenerator;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Response;
 use Nette\Utils\Json;
 use Tracy\Debugger;
@@ -153,7 +153,7 @@ class GoogleTokenSignInHandler extends ApiHandler
         return $response;
     }
 
-    private function formatResponse(IRow $user, ?IRow $accessToken): array
+    private function formatResponse(ActiveRow $user, ?ActiveRow $accessToken): array
     {
         $user = $this->usersRepository->find($user->id);
         $result = [

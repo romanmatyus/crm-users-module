@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Repository;
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\AuditLogRepository;
 use Nette\Database\Explorer;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Utils\Json;
 
 class UserConnectedAccountsRepository extends Repository
@@ -26,7 +26,7 @@ class UserConnectedAccountsRepository extends Repository
     }
 
     final public function add(
-        IRow $user,
+        ActiveRow $user,
         string $type,
         string $externalId,
         ?string $email,
@@ -51,7 +51,7 @@ class UserConnectedAccountsRepository extends Repository
         ])->fetch();
     }
 
-    final public function getForUser(IRow $user, string $type)
+    final public function getForUser(ActiveRow $user, string $type)
     {
         return $this->getTable()->where([
             'user_id' => $user->id,
@@ -59,14 +59,14 @@ class UserConnectedAccountsRepository extends Repository
         ])->fetch();
     }
 
-    public function removeAccountsForUser(IRow $user): int
+    public function removeAccountsForUser(ActiveRow $user): int
     {
         return $this->getTable()
             ->where(['user_id' => $user->id])
             ->delete();
     }
 
-    public function removeAccountForUser(IRow $user, int $id): int
+    public function removeAccountForUser(ActiveRow $user, int $id): int
     {
         return $this->getTable()
             ->where([
@@ -76,7 +76,7 @@ class UserConnectedAccountsRepository extends Repository
             ->delete();
     }
 
-    public function connectUser(IRow $user, $type, $externalId, $email, $meta = null)
+    public function connectUser(ActiveRow $user, $type, $externalId, $email, $meta = null)
     {
         $connectedAccount = $this->getForUser($user, $type);
         if (!$connectedAccount) {

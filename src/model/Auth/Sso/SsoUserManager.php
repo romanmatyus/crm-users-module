@@ -8,7 +8,7 @@ use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Explorer;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 
 class SsoUserManager
 {
@@ -43,7 +43,7 @@ class SsoUserManager
         UserBuilder $userBuilder,
         $connectedAccountMeta = null,
         $loggedUserId = null
-    ): IRow {
+    ): ActiveRow {
         $this->dbContext->beginTransaction();
         try {
             if ($loggedUserId) {
@@ -94,7 +94,7 @@ class SsoUserManager
             ->setAddTokenOption(false);
     }
 
-    public function matchUser(string $connectedAccountType, string $externalId, string $email): ?IRow
+    public function matchUser(string $connectedAccountType, string $externalId, string $email): ?ActiveRow
     {
         // external ID has priority over email
         $connectedAccount = $this->connectedAccountsRepository->getByExternalId($connectedAccountType, $externalId);

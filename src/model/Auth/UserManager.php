@@ -17,7 +17,6 @@ use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
-use Nette\Database\IRow;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\UniqueConstraintViolationException;
 use Nette\Security\Passwords;
@@ -166,12 +165,12 @@ class UserManager
         return true;
     }
 
-    public function setPublicName(IRow $user, string $publicName)
+    public function setPublicName(ActiveRow $user, string $publicName)
     {
         $this->usersRepository->update($user, ['public_name' => $publicName]);
     }
 
-    public function resetPassword(IRow $user, $password = null, $notify = true)
+    public function resetPassword(ActiveRow $user, $password = null, $notify = true)
     {
         $oldPassword = $user->password;
 
@@ -199,17 +198,17 @@ class UserManager
     /**
      * Log out user on all devices
      *
-     * @param IRow  $user
+     * @param ActiveRow $user
      * @param array $exceptTokens access_tokens you want to exclude
      *
      * @return bool if user was logged out on at least one device
      */
-    public function logoutUser(IRow $user, array $exceptTokens = []): bool
+    public function logoutUser(ActiveRow $user, array $exceptTokens = []): bool
     {
         return $this->accessTokensRepository->removeAllUserTokens($user->id, $exceptTokens) > 0;
     }
 
-    public function suspiciousUser(IRow $user)
+    public function suspiciousUser(ActiveRow $user)
     {
         $oldPassword = $user->password;
 
@@ -248,7 +247,7 @@ class UserManager
         return true;
     }
 
-    public function confirmUser(IRow $user, ?DateTime $date = null, $byAdmin = false)
+    public function confirmUser(ActiveRow $user, ?DateTime $date = null, $byAdmin = false)
     {
         if ($user->confirmed_at) {
             return;

@@ -8,7 +8,7 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Localization\ITranslator;
 use Nette\Security\AuthenticationException;
@@ -66,7 +66,7 @@ class AccessTokenAuthenticator extends BaseAuthenticator
     /**
      * @throws AuthenticationException
      */
-    private function process() : IRow
+    private function process() : ActiveRow
     {
         $tokenRow = $this->accessTokensRepository->loadToken($this->accessToken);
         if (!$tokenRow) {

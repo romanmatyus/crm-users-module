@@ -6,7 +6,7 @@ use Crm\ApplicationModule\Criteria\ScenarioParams\StringLabeledArrayParam;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
 use Crm\UsersModule\Repository\AddressTypesRepository;
 use Kdyby\Translation\Translator;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
 class AddressTypeCriteria implements ScenariosCriteriaInterface
@@ -39,7 +39,7 @@ class AddressTypeCriteria implements ScenariosCriteriaInterface
         ];
     }
 
-    public function addConditions(Selection $selection, array $paramValues, IRow $criterionItemRow): bool
+    public function addConditions(Selection $selection, array $paramValues, ActiveRow $criterionItemRow): bool
     {
         $addressTypes = $paramValues[self::KEY]->selection;
 

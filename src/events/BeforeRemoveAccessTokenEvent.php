@@ -3,18 +3,18 @@
 namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
-use Nette\Database\IRow;
+use Nette\Database\Table\ActiveRow;
 
 class BeforeRemoveAccessTokenEvent extends AbstractEvent
 {
-    private $accessToken;
+    private ActiveRow $accessToken;
 
-    public function __construct(IRow $accessToken)
+    public function __construct(ActiveRow $accessToken)
     {
         $this->accessToken = $accessToken;
     }
 
-    public function getAccessToken(): IRow
+    public function getAccessToken(): ActiveRow
     {
         return $this->accessToken;
     }

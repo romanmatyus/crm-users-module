@@ -12,7 +12,7 @@ use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Localization\ITranslator;
 use Nette\Security\AuthenticationException;
@@ -90,7 +90,7 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
     /**
      * @throws AuthenticationException
      */
-    private function process() : IRow
+    private function process() : ActiveRow
     {
         if ($this->ipRateLimit->reachLimit(\Crm\ApplicationModule\Request::getIp())) {
             $this->addAttempt($this->username, null, $this->source, LoginAttemptsRepository::RATE_LIMIT_EXCEEDED, 'Rate limit exceeded.');

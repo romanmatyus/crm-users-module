@@ -16,7 +16,7 @@ class AddressesMetaRepository extends Repository
      * @param string $key
      * @param string $value
      * @param bool $override
-     * @return \Nette\Database\Table\IRow
+     * @return ActiveRow
      * @throws \Exception
      */
     final public function add(ActiveRow $address, ?ActiveRow $addressChangeRequest, $key, $value, $override = true)

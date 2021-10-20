@@ -4,7 +4,6 @@ namespace Crm\UsersModule\Auth\Repository;
 
 use Crm\ApplicationModule\Repository;
 use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\DateTime;
 
@@ -13,7 +12,7 @@ class AdminAccessRepository extends Repository
     protected $tableName = 'admin_access';
 
     /**
-     * @return bool|int|\Nette\Database\Table\IRow
+     * @return bool|int|ActiveRow
      */
     final public function add(string $resource, string $action, string $type, string $level = null)
     {
@@ -28,7 +27,7 @@ class AdminAccessRepository extends Repository
         ]);
     }
 
-    final public function update(IRow &$row, $data): bool
+    final public function update(ActiveRow &$row, $data): bool
     {
         $data['updated_at'] = new DateTime();
         return parent::update($row, $data);

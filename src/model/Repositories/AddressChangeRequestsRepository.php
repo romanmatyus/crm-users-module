@@ -9,7 +9,6 @@ use Crm\UsersModule\Events\NewAddressEvent;
 use League\Event\Emitter;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\IRow;
 use Nette\Utils\DateTime;
 use Tomaj\Hermes\Emitter as HermesEmitter;
 
@@ -129,7 +128,7 @@ class AddressChangeRequestsRepository extends Repository
         return $changeRequest;
     }
 
-    final public function changeStatus(IRow $addressChangeRequest, $status)
+    final public function changeStatus(ActiveRow $addressChangeRequest, $status)
     {
         return $this->update($addressChangeRequest, [
             'updated_at' => new \DateTime(),
@@ -193,7 +192,7 @@ class AddressChangeRequestsRepository extends Repository
         return $address;
     }
 
-    final public function rejectRequest(IRow $addressChangeRequest)
+    final public function rejectRequest(ActiveRow $addressChangeRequest)
     {
         return $this->changeStatus($addressChangeRequest, self::STATUS_REJECTED);
     }

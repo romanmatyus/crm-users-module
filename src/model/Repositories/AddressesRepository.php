@@ -9,7 +9,6 @@ use Crm\ApplicationModule\Repository\AuditLogRepository;
 use Crm\UsersModule\DataProvider\CanDeleteAddressDataProviderInterface;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\IRow;
 use Nette\Utils\DateTime;
 
 class AddressesRepository extends Repository
@@ -64,7 +63,7 @@ class AddressesRepository extends Repository
         ]);
     }
 
-    final public function address(IRow $user, $type)
+    final public function address(ActiveRow $user, $type)
     {
         return $this->getTable()
             ->where(['user_id' => $user->id, 'type' => $type])
@@ -77,7 +76,7 @@ class AddressesRepository extends Repository
         return $this->getTable()->where('deleted_at IS NULL');
     }
 
-    final public function addresses(IRow $user, $type = false)
+    final public function addresses(ActiveRow $user, $type = false)
     {
         $where = ['user_id' => $user->id];
         if ($type) {
@@ -89,7 +88,7 @@ class AddressesRepository extends Repository
             ->fetchAll();
     }
 
-    final public function addressesSelect(IRow $user, $type)
+    final public function addressesSelect(ActiveRow $user, $type)
     {
         $rows = $this->addresses($user, $type);
         $result = [];
@@ -99,7 +98,7 @@ class AddressesRepository extends Repository
         return $result;
     }
 
-    final public function update(IRow &$row, $data)
+    final public function update(ActiveRow &$row, $data)
     {
         $data['updated_at'] = new DateTime();
         return parent::update($row, $data);
@@ -134,11 +133,11 @@ class AddressesRepository extends Repository
     }
 
     /**
-     * @param IRow $address
+     * @param ActiveRow $address
      * @return array
      * @throws DataProviderException
      */
-    public function canDelete(IRow $address)
+    public function canDelete(ActiveRow $address)
     {
         /** @var CanDeleteAddressDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders(
@@ -161,11 +160,11 @@ class AddressesRepository extends Repository
     }
 
     /**
-     * @param IRow $address
+     * @param ActiveRow $address
      * @param bool $force
      * @throws \Exception
      */
-    public function softDelete(IRow $address, $force = false)
+    public function softDelete(ActiveRow $address, $force = false)
     {
         if (!$force) {
             $check = $this->canDelete($address);

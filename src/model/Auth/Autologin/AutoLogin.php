@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Auth\AutoLogin;
 
 use Crm\UsersModule\Auth\Access\TokenGenerator;
 use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
-use Nette\Database\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
 
 class AutoLogin
@@ -32,12 +32,12 @@ class AutoLogin
         ])->fetch();
     }
 
-    public function incrementTokenUse(IRow $token)
+    public function incrementTokenUse(ActiveRow $token)
     {
         return $this->autoLoginTokensRepository->update($token, ['used_count+=' => 1]);
     }
 
-    public function addUserToken(IRow $user, DateTime $validFrom, DateTime $validTo, $maxCount = 1)
+    public function addUserToken(ActiveRow $user, DateTime $validFrom, DateTime $validTo, $maxCount = 1)
     {
         $token = TokenGenerator::generate();
         return $this->autoLoginTokensRepository->add(

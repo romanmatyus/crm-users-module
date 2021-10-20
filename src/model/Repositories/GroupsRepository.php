@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
 use DateTime;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
 class GroupsRepository extends Repository
@@ -34,7 +34,7 @@ class GroupsRepository extends Repository
         return $this->getTable()->order('sorting');
     }
 
-    final public function update(IRow &$row, $data)
+    final public function update(ActiveRow &$row, $data)
     {
         $data['updated_at'] = new DateTime();
         return parent::update($row, $data);

@@ -10,7 +10,7 @@ use Crm\UsersModule\Events\UserDisabledEvent;
 use Crm\UsersModule\Events\UserUpdatedEvent;
 use League\Event\Emitter;
 use Nette\Database\Explorer;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Security\Passwords;
 use Nette\Utils\DateTime;
@@ -151,7 +151,7 @@ class UsersRepository extends Repository
         return $table;
     }
 
-    final public function update(IRow &$row, $data)
+    final public function update(ActiveRow &$row, $data)
     {
         $email = $data['email'] ?? null;
         if ($email !== null) {

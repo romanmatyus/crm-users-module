@@ -3,7 +3,7 @@
 namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
 use Ramsey\Uuid\Uuid;
 
@@ -11,7 +11,7 @@ class PasswordResetTokensRepository extends Repository
 {
     protected $tableName = 'password_reset_tokens';
 
-    final public function add(IRow $user, $source = null, $expire = '+5 hours')
+    final public function add(ActiveRow $user, $source = null, $expire = '+5 hours')
     {
         return $this->insert([
             'user_id' => $user->id,

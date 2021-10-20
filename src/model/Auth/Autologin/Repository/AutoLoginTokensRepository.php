@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Auth\AutoLogin\Repository;
 
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\RetentionData;
-use Nette\Database\IRow;
+use Nette\Database\Table\ActiveRow;
 
 class AutoLoginTokensRepository extends Repository
 {
@@ -12,7 +12,7 @@ class AutoLoginTokensRepository extends Repository
 
     use RetentionData;
 
-    final public function add($token, IRow $user, $validFrom, $validTo, $maxCount = 1)
+    final public function add($token, ActiveRow $user, $validFrom, $validTo, $maxCount = 1)
     {
         return $this->insert([
             'token' => $token,

@@ -8,7 +8,7 @@ use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
-use Nette\Database\Table\IRow;
+use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Http\Response;
 use Nette\Http\Url;
@@ -120,7 +120,7 @@ class AppleSignIn
         $this->setLoginCookie(self::COOKIE_ASI_STATE, $state);
         $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
         $this->setLoginCookie(self::COOKIE_ASI_NONCE, $nonce);
-        
+
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
 
@@ -135,11 +135,11 @@ class AppleSignIn
      *
      * @param string|null $referer to save with user if user is created
      *
-     * @return IRow user row
+     * @return ActiveRow user row
      * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      */
-    public function signInCallback(string $referer = null): IRow
+    public function signInCallback(string $referer = null): ActiveRow
     {
         $asiState = $this->request->getCookie(self::COOKIE_ASI_STATE);
         $asiUserId = $this->request->getCookie(self::COOKIE_ASI_USER_ID);
@@ -202,7 +202,7 @@ class AppleSignIn
             self::USER_APPLE_REGISTRATION_CHANNEL,
             $referer
         );
-        
+
         return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
@@ -221,10 +221,10 @@ class AppleSignIn
      *
      * @param string $idTokenInput
      *
-     * @return IRow|null created/matched user
+     * @return ActiveRow|null created/matched user
      * @throws \Exception
      */
-    public function signInUsingIdToken(string $idTokenInput): ?IRow
+    public function signInUsingIdToken(string $idTokenInput): ?ActiveRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -257,7 +257,7 @@ class AppleSignIn
             self::USER_SOURCE_APPLE_SSO,
             self::USER_APPLE_REGISTRATION_CHANNEL
         );
-        
+
         return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
