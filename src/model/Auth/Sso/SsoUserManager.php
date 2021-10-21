@@ -12,32 +12,38 @@ use Nette\Database\Table\IRow;
 
 class SsoUserManager
 {
-    private $dbContext;
+    private Context $dbContext;
 
-    private $passwordGenerator;
+    private UserConnectedAccountsRepository $connectedAccountsRepository;
 
-    private $userBuilder;
+    private UsersRepository $usersRepository;
 
-    private $connectedAccountsRepository;
+    private PasswordGenerator $passwordGenerator;
 
-    private $usersRepository;
+    private UserBuilder $userBuilder;
 
     public function __construct(
-        Context                         $dbContext,
-        PasswordGenerator               $passwordGenerator,
-        UserBuilder                     $userBuilder,
+        PasswordGenerator $passwordGenerator,
+        UserBuilder $userBuilder,
+        Context $dbContext,
         UserConnectedAccountsRepository $connectedAccountsRepository,
-        UsersRepository                 $usersRepository
+        UsersRepository $usersRepository
     ) {
         $this->dbContext = $dbContext;
-        $this->passwordGenerator = $passwordGenerator;
-        $this->userBuilder = $userBuilder;
         $this->connectedAccountsRepository = $connectedAccountsRepository;
         $this->usersRepository = $usersRepository;
+        $this->passwordGenerator = $passwordGenerator;
+        $this->userBuilder = $userBuilder;
     }
 
-    public function matchOrCreateUser(string $externalId, string $email, string $type, string $source, $meta = null, $loggedUserId = null, $registrationChannel = null): IRow
-    {
+    public function matchOrCreateUser(
+        string $externalId,
+        string $email,
+        string $type,
+        UserBuilder $userBuilder,
+        $connectedAccountMeta = null,
+        $loggedUserId = null
+    ): IRow {
         $this->dbContext->beginTransaction();
         try {
             if ($loggedUserId) {
@@ -48,27 +54,12 @@ class SsoUserManager
 
                 $user = $this->usersRepository->find($loggedUserId);
             } else {
-                $user = $this->matchUser(
-                    $type,
-                    $externalId,
-                    $email
-                );
+                $user = $this->matchUser($type, $externalId, $email);
 
                 if (!$user) {
                     // if user is not in our DB, create him/her
                     // our access_token is not automatically created
-                    $password = $this->passwordGenerator->generatePassword();
-                    $user = $this->userBuilder->createNew()
-                        ->setEmail($email)
-                        ->setPassword($password)
-                        ->setPublicName($email)
-                        ->setRole('user')
-                        ->setActive(true)
-                        ->setIsInstitution(false)
-                        ->setSource($source)
-                        ->setRegistrationChannel($registrationChannel ?? UsersRepository::DEFAULT_REGISTRATION_CHANNEL)
-                        ->setAddTokenOption(false)
-                        ->save();
+                    $user = $userBuilder->save();
                 }
             }
 
@@ -77,7 +68,7 @@ class SsoUserManager
                 $type,
                 $externalId,
                 $email,
-                $meta
+                $connectedAccountMeta
             );
         } catch (\Exception $e) {
             $this->dbContext->rollBack();
@@ -86,6 +77,21 @@ class SsoUserManager
         $this->dbContext->commit();
 
         return $user;
+    }
+    
+    public function createUserBuilder(string $email, ?string $source = null, ?string $registrationChannel = null, ?string $referer = null): UserBuilder
+    {
+        return $this->userBuilder->createNew()
+            ->setEmail($email)
+            ->setPasswordLazy(fn() => $this->passwordGenerator->generatePassword())
+            ->setPublicName($email)
+            ->setRole('user')
+            ->setActive(true)
+            ->setIsInstitution(false)
+            ->setSource($source)
+            ->setReferer($referer)
+            ->setRegistrationChannel($registrationChannel ?? UsersRepository::DEFAULT_REGISTRATION_CHANNEL)
+            ->setAddTokenOption(false);
     }
 
     public function matchUser(string $connectedAccountType, string $externalId, string $email): ?IRow

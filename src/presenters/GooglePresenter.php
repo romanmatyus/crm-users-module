@@ -34,18 +34,23 @@ class GooglePresenter extends FrontendPresenter
 
         $session = $this->getSession(self::SESSION_SECTION);
         unset($session->finalUrl);
+        unset($session->referer);
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
+        $refererUrl = $this->getHttpRequest()->getReferer();
         if ($finalUrl) {
-            $refererUrl = $this->getHttpRequest()->getReferer();
-
             if ($this->signInRedirectValidator->isAllowed($finalUrl)) {
                 $session->finalUrl = $finalUrl;
             } elseif ($refererUrl && $this->signInRedirectValidator->isAllowed($refererUrl->getAbsoluteUrl())) {
                 // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
                 $session->finalUrl = $refererUrl->getAbsoluteUrl();
             }
+        }
+        
+        // Save referer
+        if ($refererUrl) {
+            $session->referer = $refererUrl->getAbsoluteUrl();
         }
 
         $source = $this->getParameter('n_source');
@@ -68,10 +73,11 @@ class GooglePresenter extends FrontendPresenter
             $this->redirect('Sign:in');
         }
 
+        $session = $this->getSession(self::SESSION_SECTION);
+        $referer = $session->referer;
+
         try {
-            $user = $this->googleSignIn->signInCallback(
-                $this->link('//callback')
-            );
+            $user = $this->googleSignIn->signInCallback($this->link('//callback'), $referer);
 
             if (!$this->getUser()->isLoggedIn()) {
                 // AutoLogin will log in user - create access token and set user flag (in session) to authenticated
@@ -92,7 +98,6 @@ class GooglePresenter extends FrontendPresenter
             $this->redirect('Users:settings');
         }
 
-        $session = $this->getSession(self::SESSION_SECTION);
         $finalUrl = $session->finalUrl;
 
         if ($finalUrl) {

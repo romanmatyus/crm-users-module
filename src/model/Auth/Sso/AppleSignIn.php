@@ -101,11 +101,13 @@ class AppleSignIn
      *
      * Note: Access token is not automatically created
      *
+     * @param string|null $referer to save with user if user is created
+     *
      * @return IRow user row
      * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      */
-    public function signInCallback(): IRow
+    public function signInCallback(string $referer = null): IRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -156,15 +158,20 @@ class AppleSignIn
         // Note: Use 'sub' to identify users, email can change or be private
         $appleUserId = $idToken->sub;
 
-        // Match apple user to CRM user
+        $userBuilder = $this->ssoUserManager->createUserBuilder(
+            $userEmail,
+            $sessionSection->source ?? self::USER_SOURCE_APPLE_SSO,
+            self::USER_APPLE_REGISTRATION_CHANNEL,
+            $referer
+        );
+        
         return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN,
-            $sessionSection->source ?? self::USER_SOURCE_APPLE_SSO,
+            $userBuilder,
             null,
-            $loggedUserId,
-            self::USER_APPLE_REGISTRATION_CHANNEL
+            $loggedUserId
         );
     }
 
@@ -207,11 +214,17 @@ class AppleSignIn
         $appleUserId = $idToken->sub;
 
         // Match apple user to CRM user
+        $userBuilder = $this->ssoUserManager->createUserBuilder(
+            $userEmail,
+            self::USER_SOURCE_APPLE_SSO,
+            self::USER_APPLE_REGISTRATION_CHANNEL
+        );
+        
         return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
             UserConnectedAccountsRepository::TYPE_APPLE_SIGN_IN,
-            self::USER_SOURCE_APPLE_SSO
+            $userBuilder
         );
     }
 

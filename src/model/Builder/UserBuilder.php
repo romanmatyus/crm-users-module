@@ -24,6 +24,8 @@ class UserBuilder extends Builder
     protected $tableName = 'users';
 
     private $sendEmail = false;
+    
+    private $passwordLazyParams = [];
 
     public function __construct(
         Context $database,
@@ -108,6 +110,20 @@ class UserBuilder extends Builder
         }
         return $this->set('password', $password);
     }
+    
+    /**
+     * This does not immediately generate a password, only when save() is called.
+     *
+     * @param callable $getPasswordFunc
+     * @param bool     $generateHash
+     *
+     * @return $this
+     */
+    public function setPasswordLazy(callable $getPasswordFunc, bool $generateHash = true): self
+    {
+        $this->passwordLazyParams = [$getPasswordFunc, $generateHash];
+        return $this;
+    }
 
     public function setActive($active)
     {
@@ -173,6 +189,16 @@ class UserBuilder extends Builder
     public function setAddTokenOption(bool $addToken)
     {
         return $this->setOption('add_user_token', $addToken);
+    }
+
+    public function save()
+    {
+        if ($this->passwordLazyParams) {
+            [$getPasswordFunc, $generateHash]= $this->passwordLazyParams;
+            $this->setPassword($getPasswordFunc(), $generateHash);
+        }
+        
+        return parent::save();
     }
 
     protected function store($tableName)
