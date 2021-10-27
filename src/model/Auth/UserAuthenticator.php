@@ -13,7 +13,7 @@ use Nette\Localization\ITranslator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\IIdentity;
-use Nette\Security\Identity;
+use Nette\Security\SimpleIdentity;
 use Nette\SmartObject;
 
 class UserAuthenticator implements IAuthenticator
@@ -41,7 +41,7 @@ class UserAuthenticator implements IAuthenticator
     /**
      * Performs an authentication.
      *
-     * @return Identity
+     * @return SimpleIdentity
      * @throws AuthenticationException
      */
     public function authenticate(array $credentials): IIdentity
@@ -94,7 +94,7 @@ class UserAuthenticator implements IAuthenticator
         return $this->getIdentity($user);
     }
 
-    public function getIdentity(ActiveRow $user): Identity
+    public function getIdentity(ActiveRow $user): SimpleIdentity
     {
         $arr = $user->toArray();
         unset($arr[self::COLUMN_PASSWORD_HASH]);
@@ -107,6 +107,6 @@ class UserAuthenticator implements IAuthenticator
             }
         }
 
-        return new Identity($user['id'], $groups, $arr);
+        return new SimpleIdentity($user['id'], $groups, $arr);
     }
 }
