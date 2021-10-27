@@ -422,11 +422,11 @@ class UsersModule extends CrmModule
 
     public function registerRoutes(RouteList $router)
     {
-        $router[] = new Route('sign/in/', 'Users:Sign:in');
-        $router[] = new Route('sign/up/', 'Users:Sign:up');
+        $router->addRoute('sign/in/', 'Users:Sign:in');
+        $router->addRoute('sign/up/', 'Users:Sign:up');
 
-        $router[] = new Route('users/users/request-password', 'Users:Users:settings', Route::ONE_WAY);
-        $router[] = new Route('users/users/change-password', 'Users:Users:settings', Route::ONE_WAY);
+        $router->addRoute('users/users/request-password', 'Users:Users:settings', Route::ONE_WAY);
+        $router->addRoute('users/users/change-password', 'Users:Users:settings', Route::ONE_WAY);
     }
 
     public function registerSeeders(SeederManager $seederManager)
