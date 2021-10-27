@@ -7,7 +7,7 @@ use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\DataProvider\RegisterFormDataProviderInterface;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\User;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
@@ -28,7 +28,7 @@ class RegisterFormFactory
     public function __construct(
         UserManager $userManager,
         DataProviderManager $dataProviderManager,
-        ITranslator $translator,
+        Translator $translator,
         User $user
     ) {
         $this->userManager = $userManager;

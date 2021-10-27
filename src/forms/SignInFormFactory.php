@@ -6,7 +6,7 @@ use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\UsersModule\Auth\Authorizator;
 use Crm\UsersModule\Auth\UserManager;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IUserStorage;
 use Nette\Security\User;
@@ -29,7 +29,7 @@ class SignInFormFactory
     public function __construct(
         UserManager $userManager,
         DataProviderManager $dataProviderManager,
-        ITranslator $translator,
+        Translator $translator,
         Authorizator $authorizator,
         User $user
     ) {

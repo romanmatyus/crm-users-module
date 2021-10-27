@@ -10,7 +10,7 @@ use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\Passwords;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
@@ -38,7 +38,7 @@ class UserFormFactory
     public function __construct(
         UsersRepository $userRepository,
         UserBuilder $userBuilder,
-        ITranslator $translator,
+        Translator $translator,
         DataProviderManager $dataProviderManager,
         AdminUserGroupsRepository $adminUserGroupsRepository,
         Passwords $passwords

@@ -6,7 +6,7 @@ use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\IAuthenticator;
 
 class UserDeleteFormFactory
@@ -26,7 +26,7 @@ class UserDeleteFormFactory
         UsersRepository $usersRepository,
         DeleteUserData $deleteUserData,
         IAuthenticator $authenticator,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->deleteUserData = $deleteUserData;
         $this->usersRepository = $usersRepository;

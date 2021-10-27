@@ -8,7 +8,7 @@ use Crm\UsersModule\Repository\UserGroupsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 class UserGroupsFormFactory
 {
@@ -28,7 +28,7 @@ class UserGroupsFormFactory
         UsersRepository $userRepository,
         GroupsRepository $groupsRepository,
         UserGroupsRepository $userGroupsRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->userRepository = $userRepository;
         $this->groupsRepository = $groupsRepository;

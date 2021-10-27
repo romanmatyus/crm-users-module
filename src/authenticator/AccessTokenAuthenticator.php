@@ -10,7 +10,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 
@@ -35,7 +35,7 @@ class AccessTokenAuthenticator extends BaseAuthenticator
         \Tomaj\Hermes\Emitter $hermesEmitter,
         Request $request,
         AccessTokensRepository $accessTokensRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         parent::__construct($emitter, $hermesEmitter, $request);
         $this->translator = $translator;

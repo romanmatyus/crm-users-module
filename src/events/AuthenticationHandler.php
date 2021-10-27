@@ -10,7 +10,7 @@ use League\Event\AbstractListener;
 use League\Event\EventInterface;
 use Nette\Http\Request;
 use Nette\Http\Response;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 
 class AuthenticationHandler extends AbstractListener
@@ -33,7 +33,7 @@ class AuthenticationHandler extends AbstractListener
         AccessTokensRepository $accessTokensRepository,
         Request $request,
         Response $response,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->usersRepository = $usersRepository;
         $this->accessToken = $accessToken;

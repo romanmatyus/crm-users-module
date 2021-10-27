@@ -6,7 +6,7 @@ use Crm\ApplicationModule\Criteria\ScenarioParams\BooleanParam;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 class IsConfirmedCriteria implements ScenariosCriteriaInterface
 {
@@ -14,7 +14,7 @@ class IsConfirmedCriteria implements ScenariosCriteriaInterface
 
     private $translator;
 
-    public function __construct(ITranslator $translator)
+    public function __construct(Translator $translator)
     {
         $this->translator = $translator;
     }

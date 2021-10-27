@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Forms;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class ResetPasswordFormFactory
@@ -22,7 +22,7 @@ class ResetPasswordFormFactory
     public function __construct(
         UserManager $userManager,
         PasswordResetTokensRepository $passwordResetTokensRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->userManager = $userManager;
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;

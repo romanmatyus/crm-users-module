@@ -6,7 +6,7 @@ use Crm\ApiModule\Repository\UserSourceAccessesRepository;
 use Crm\ApplicationModule\Widget\WidgetInterface;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Nette\Application\UI\Control;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\DateTime;
 
 /**
@@ -28,7 +28,7 @@ class UserLoginAttempts extends Control implements WidgetInterface
     public function __construct(
         LoginAttemptsRepository $loginAttemptsRepository,
         UserSourceAccessesRepository $userSourceAccessesRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->loginAttemptsRepository = $loginAttemptsRepository;
         $this->userSourceAccessesRepository = $userSourceAccessesRepository;

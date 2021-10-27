@@ -9,7 +9,7 @@ use Crm\UsersModule\Events\UserSignInEvent;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Database\Table\ActiveRow;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\IIdentity;
@@ -31,7 +31,7 @@ class UserAuthenticator implements IAuthenticator
     public function __construct(
         Emitter $emitter,
         AuthenticatorManager $authenticatorManager,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->emitter = $emitter;
         $this->authenticatorManager = $authenticatorManager;

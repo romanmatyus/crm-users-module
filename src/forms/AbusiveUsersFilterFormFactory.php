@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Forms;
 
 use League\Event\Emitter;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class AbusiveUsersFilterFormFactory
@@ -19,7 +19,7 @@ class AbusiveUsersFilterFormFactory
 
     public function __construct(
         Emitter $emitter,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->emitter = $emitter;
         $this->translator = $translator;

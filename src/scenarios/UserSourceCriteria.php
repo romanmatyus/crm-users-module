@@ -7,7 +7,7 @@ use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 class UserSourceCriteria implements ScenariosCriteriaInterface
 {
@@ -15,7 +15,7 @@ class UserSourceCriteria implements ScenariosCriteriaInterface
 
     private $translator;
 
-    public function __construct(UsersRepository $usersRepository, ITranslator $translator)
+    public function __construct(UsersRepository $usersRepository, Translator $translator)
     {
         $this->usersRepository = $usersRepository;
         $this->translator = $translator;

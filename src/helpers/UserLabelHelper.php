@@ -2,13 +2,13 @@
 
 namespace Crm\UsersModule\Helpers;
 
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 class UserLabelHelper
 {
     private $translator;
 
-    public function __construct(ITranslator $translator)
+    public function __construct(Translator $translator)
     {
         $this->translator = $translator;
     }

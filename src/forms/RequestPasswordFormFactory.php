@@ -6,7 +6,7 @@ use Crm\ApplicationModule\Config\ApplicationConfig;
 use Crm\UsersModule\Auth\UserManager;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\TextInput;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class RequestPasswordFormFactory
@@ -23,7 +23,7 @@ class RequestPasswordFormFactory
     public function __construct(
         ApplicationConfig $applicationConfig,
         UserManager $userManager,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->applicationConfig = $applicationConfig;
         $this->userManager = $userManager;

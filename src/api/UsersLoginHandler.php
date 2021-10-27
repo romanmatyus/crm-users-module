@@ -11,7 +11,7 @@ use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 
 class UsersLoginHandler extends ApiHandler
@@ -28,7 +28,7 @@ class UsersLoginHandler extends ApiHandler
         UserAuthenticator $userAuthenticator,
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->userAuthenticator = $userAuthenticator;
         $this->accessTokensRepository = $accessTokensRepository;

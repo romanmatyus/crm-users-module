@@ -6,7 +6,7 @@ use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\User;
 use Tomaj\Form\Renderer\BootstrapVerticalRenderer;
 
@@ -28,7 +28,7 @@ class ChangePasswordFormFactory
 
     public function __construct(
         UserManager $userManager,
-        ITranslator $translator,
+        Translator $translator,
         UsersRepository $usersRepository,
         AccessToken $accessToken
     ) {

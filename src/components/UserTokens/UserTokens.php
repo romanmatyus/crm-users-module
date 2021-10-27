@@ -9,7 +9,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UserData;
 use League\Event\Emitter;
 use Nette\Application\UI\Control;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 /**
  * This widget fetches users tokens and renders bootstrap styled listing.
@@ -37,7 +37,7 @@ class UserTokens extends Control implements WidgetInterface
         AccessToken $accessToken,
         Emitter $emitter,
         UserData $userData,
-        ITranslator $translator,
+        Translator $translator,
         UsersRepository $usersRepository
     ) {
         $this->accessTokensRepository = $accessTokensRepository;

@@ -11,7 +11,7 @@ use Crm\UsersModule\Repository\CountriesRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class AddressFormFactory
@@ -43,7 +43,7 @@ class AddressFormFactory
         AddressTypesRepository $addressTypesRepository,
         AddressChangeRequestsRepository $addressChangeRequestsRepository,
         Emitter $emitter,
-        ITranslator $translator,
+        Translator $translator,
         DataProviderManager $dataProviderManager
     ) {
         $this->userRepository = $userRepository;

@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Forms;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Form;
 use Nette\Database\Table\ActiveRow;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 
 class UserNoteFormFactory
@@ -21,7 +21,7 @@ class UserNoteFormFactory
     private $user;
 
     public function __construct(
-        ITranslator $translator,
+        Translator $translator,
         UsersRepository $usersRepository
     ) {
         $this->usersRepository = $usersRepository;

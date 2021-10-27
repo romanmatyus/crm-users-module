@@ -7,7 +7,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapInlineRenderer;
 
 /**
@@ -33,7 +33,7 @@ class UserMeta extends Control implements WidgetInterface
     public function __construct(
         UserMetaRepository $userMetaRepository,
         UsersRepository $usersRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->userMetaRepository = $userMetaRepository;
         $this->usersRepository = $usersRepository;

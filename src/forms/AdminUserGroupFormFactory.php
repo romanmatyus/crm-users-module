@@ -7,7 +7,7 @@ use Crm\UsersModule\Auth\Repository\AdminGroupsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\DateTime;
 
 class AdminUserGroupFormFactory
@@ -27,7 +27,7 @@ class AdminUserGroupFormFactory
     public function __construct(
         UsersRepository $usersRepository,
         AdminGroupsRepository $adminGroupsRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         $this->usersRepository = $usersRepository;
         $this->adminGroupsRepository = $adminGroupsRepository;

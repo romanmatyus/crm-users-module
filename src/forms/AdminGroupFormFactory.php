@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Forms;
 
 use Crm\UsersModule\Auth\Repository\AdminGroupsRepository;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class AdminGroupFormFactory
@@ -19,7 +19,7 @@ class AdminGroupFormFactory
 
     public $onUpdate;
 
-    public function __construct(AdminGroupsRepository $adminGroupsRepository, ITranslator $translator)
+    public function __construct(AdminGroupsRepository $adminGroupsRepository, Translator $translator)
     {
         $this->adminGroupsRepository = $adminGroupsRepository;
         $this->translator = $translator;

@@ -14,7 +14,7 @@ use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Passwords;
 
@@ -52,7 +52,7 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
         \Tomaj\Hermes\Emitter $hermesEmitter,
         Request $request,
         UsersRepository $usersRepository,
-        ITranslator $translator,
+        Translator $translator,
         WrongPasswordRateLimit $wrongPasswordRateLimit,
         IpRateLimit $ipRateLimit,
         UnclaimedUser $unclaimedUser,
