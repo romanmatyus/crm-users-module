@@ -9,7 +9,7 @@ use Crm\UsersModule\Events\UserLastAccessEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use DateTime;
 use League\Event\Emitter;
-use Nette\Security\IAuthorizator;
+use Nette\Security\Authorizator;
 
 class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
@@ -37,7 +37,7 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, A
         $this->applicationConfig = $applicationConfig;
     }
 
-    public function authorized($resource = IAuthorizator::ALL)
+    public function authorized($resource = Authorizator::ALL)
     {
         $tokenParser = new TokenParser();
         if (!$tokenParser->isOk()) {

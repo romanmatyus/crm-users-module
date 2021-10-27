@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Auth;
 
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use League\Event\Emitter;
-use Nette\Security\IAuthorizator;
+use Nette\Security\Authorizator;
 
 class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
@@ -39,7 +39,7 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
         ];
     }
 
-    public function authorized($resource = IAuthorizator::ALL)
+    public function authorized($resource = Authorizator::ALL)
     {
         foreach ($this->authorizators as $authDef) {
             if ($authDef['useAlways'] || (isset($_GET['source']) && $authDef['source'] === $_GET['source'])) {

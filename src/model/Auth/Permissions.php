@@ -3,7 +3,7 @@
 namespace Crm\UsersModule\Auth;
 
 use Crm\UsersModule\Auth\Repository\AdminGroupsRepository;
-use Nette\Security\IAuthorizator;
+use Nette\Security\Authorizator;
 use Nette\Security\Permission;
 use Tracy\Debugger;
 
@@ -25,7 +25,7 @@ class Permissions
         if (!$this->acl) {
             $this->init();
         }
-        if ($resource === IAuthorizator::ALLOW && $privilege === IAuthorizator::ALLOW) {
+        if ($resource === Authorizator::ALLOW && $privilege === Authorizator::ALLOW) {
             return true;
         }
         if (!$this->acl->hasResource($resource)) {

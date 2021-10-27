@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Auth;
 use Crm\ApiModule\Authorization\BearerTokenAuthorization;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Http\IRequest;
-use Nette\Security\IAuthorizator;
+use Nette\Security\Authorizator;
 
 class ServiceTokenAuthorization implements UsersApiAuthorizationInterface
 {
@@ -34,7 +34,7 @@ class ServiceTokenAuthorization implements UsersApiAuthorizationInterface
         $this->request = $request;
     }
 
-    public function authorized($resource = IAuthorizator::ALL)
+    public function authorized($resource = Authorizator::ALL)
     {
         $userId = $this->request->getQuery('user_id');
         if ($userId) {

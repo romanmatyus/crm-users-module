@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\UsersModule\Auth\AccessTokensApiAuthorizationInterface;
 use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
-use Nette\Security\IAuthorizator;
+use Nette\Security\Authorizator;
 
 class TestUserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
@@ -21,7 +21,7 @@ class TestUserTokenAuthorization implements UsersApiAuthorizationInterface, Acce
         }
     }
 
-    public function authorized($resource = IAuthorizator::ALL)
+    public function authorized($resource = Authorizator::ALL)
     {
         return true;
     }

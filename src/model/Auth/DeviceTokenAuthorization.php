@@ -9,7 +9,7 @@ use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use DateTime;
 use League\Event\Emitter;
-use Nette\Security\IAuthorizator;
+use Nette\Security\Authorizator;
 
 class DeviceTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
@@ -37,7 +37,7 @@ class DeviceTokenAuthorization implements UsersApiAuthorizationInterface, Access
         $this->emitter = $emitter;
     }
 
-    public function authorized($resource = IAuthorizator::ALL)
+    public function authorized($resource = Authorizator::ALL)
     {
         $this->authorizedData = [];
         $this->authorizedUsers = [];

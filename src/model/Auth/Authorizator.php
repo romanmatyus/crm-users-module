@@ -2,9 +2,7 @@
 
 namespace Crm\UsersModule\Auth;
 
-use Nette\Security\IAuthorizator;
-
-class Authorizator implements IAuthorizator
+class Authorizator implements \Nette\Security\Authorizator
 {
     private $permissions;
 
