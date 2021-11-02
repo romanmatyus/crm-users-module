@@ -85,7 +85,7 @@ class GoogleSignIn
      * @throws AlreadyLinkedAccountSsoException
      * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null): ?IRow
+    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null, int $loggedUserId = null): ?IRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -131,6 +131,7 @@ class GoogleSignIn
             UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN,
             $userBuilder,
             $payload,
+            $loggedUserId
         );
     }
     
