@@ -33,6 +33,7 @@ class ListUsersHandler extends ApiHandler
         return [
             new InputParam(InputParam::TYPE_POST, 'user_ids', InputParam::REQUIRED),
             new InputParam(InputParam::TYPE_POST, 'page', InputParam::REQUIRED),
+            new InputParam(InputParam::TYPE_POST, 'include_deactivated', InputParam::OPTIONAL),
         ];
     }
 
@@ -57,6 +58,8 @@ class ListUsersHandler extends ApiHandler
             return $response;
         }
 
+        $includeDeactivated = filter_var($params['include_deactivated'], FILTER_VALIDATE_BOOLEAN) ?? false;
+
         try {
             $userIds = Json::decode($params['user_ids'], Json::FORCE_ARRAY);
         } catch (JsonException $e) {
@@ -66,9 +69,13 @@ class ListUsersHandler extends ApiHandler
         }
 
         $query = $this->usersRepository->all()
-            ->where('active = ?', true)
             ->select('id, email')
+            ->where('deleted_at IS NULL') // never list anonymized users
             ->order('id ASC');
+
+        if (!$includeDeactivated) {
+            $query->where('active = ?', true);
+        }
 
         if (!empty($userIds)) {
             $query->where(['id' => $userIds]);

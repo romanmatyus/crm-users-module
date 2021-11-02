@@ -728,8 +728,9 @@ If the address with given type doesn't exist yet, HTTP 400 is returned with foll
 
 #### POST `/api/v1/users/list`
 
-Lists information of requested users (identified by user IDs). Endpoint requires pagination parameter to be included
-and paginates the result by 1000 users in one response.
+Lists information of requested users (identified by user IDs). Endpoint requires pagination parameter to be included and paginates the result by 1000 users in one response.
+
+Anonymized users are excluded from list. Deactivated users can be included by using `include_deactivated` flag.
 
 ##### *Headers:*
 
@@ -743,6 +744,7 @@ and paginates the result by 1000 users in one response.
 | --- |---| --- | --- |
 | user_ids | *String* | yes | JSON-encoded array of requested user IDs. |
 | page | *Integer* | yes | Page number to retrieve (starting with 1). |
+| include_deactivated | *Boolean* | no | Flag indicating that deactivated users should be listed too. Doesn't affect anonymized users - they are always excluded. |
 
 
 ##### *Example:*
