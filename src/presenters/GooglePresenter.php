@@ -35,6 +35,7 @@ class GooglePresenter extends FrontendPresenter
         $session = $this->getSession(self::SESSION_SECTION);
         unset($session->finalUrl);
         unset($session->referer);
+        unset($session->back);
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
@@ -47,7 +48,10 @@ class GooglePresenter extends FrontendPresenter
                 $session->finalUrl = $refererUrl->getAbsoluteUrl();
             }
         }
-        
+        if ($this->getParameter('back')) {
+            $session->back = $this->getParameter('back');
+        }
+
         // Save referer
         if ($refererUrl) {
             $session->referer = $refererUrl->getAbsoluteUrl();
@@ -98,7 +102,12 @@ class GooglePresenter extends FrontendPresenter
             $this->redirect('Users:settings');
         }
 
+        $back = $session->back;
         $finalUrl = $session->finalUrl;
+
+        if ($back) {
+            $this->restoreRequest($back);
+        }
 
         if ($finalUrl) {
             $this->redirectUrl($finalUrl);

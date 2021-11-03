@@ -21,6 +21,7 @@ class ApplePresenter extends FrontendPresenter
         AppleSignIn $appleSignIn,
         SignInRedirectValidator $signInRedirectValidator
     ) {
+        parent::__construct();
         $this->appleSignIn = $appleSignIn;
         $this->signInRedirectValidator = $signInRedirectValidator;
     }
@@ -34,6 +35,7 @@ class ApplePresenter extends FrontendPresenter
         $session = $this->getSession(self::SESSION_SECTION);
         unset($session->finalUrl);
         unset($session->referer);
+        unset($session->back);
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
@@ -45,6 +47,9 @@ class ApplePresenter extends FrontendPresenter
                 // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
                 $session->finalUrl = $refererUrl->getAbsoluteUrl();
             }
+        }
+        if ($this->getParameter('back')) {
+            $session->back = $this->getParameter('back');
         }
 
         // Save referer
@@ -71,7 +76,7 @@ class ApplePresenter extends FrontendPresenter
         if (!$this->appleSignIn->isEnabled()) {
             $this->redirect('Sign:in');
         }
-        
+
         $session = $this->getSession(self::SESSION_SECTION);
         $referer = $session->referer;
 
@@ -96,6 +101,11 @@ class ApplePresenter extends FrontendPresenter
         }
 
         $finalUrl = $session->finalUrl;
+        $back = $session->back;
+
+        if ($back) {
+            $this->restoreRequest($back);
+        }
 
         if ($finalUrl) {
             $this->redirectUrl($finalUrl);
