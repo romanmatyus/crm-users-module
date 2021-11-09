@@ -240,7 +240,7 @@ class GoogleSignIn
         if ($loggedUserId !== $sessionSection->loggedUserId) {
             // State is invalid, possible user change between login request and callback
             unset($sessionSection->loggedUserId);
-            throw new SsoException('Google SignIn error: invalid user state');
+            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', session userId: ' . $sessionSection->loggedUserId . ')');
         }
 
         // Get OAuth access token
