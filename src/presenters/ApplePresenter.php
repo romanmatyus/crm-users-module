@@ -39,22 +39,21 @@ class ApplePresenter extends FrontendPresenter
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
-        $refererUrl = $this->getHttpRequest()->getReferer();
-        if ($finalUrl) {
-            if ($this->signInRedirectValidator->isAllowed($finalUrl)) {
-                $session->finalUrl = $finalUrl;
-            } elseif ($refererUrl && $this->signInRedirectValidator->isAllowed($refererUrl->getAbsoluteUrl())) {
-                // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
-                $session->finalUrl = $refererUrl->getAbsoluteUrl();
-            }
+        $referer = $this->getReferer();
+        
+        if ($finalUrl && $this->signInRedirectValidator->isAllowed($finalUrl)) {
+            $session->finalUrl = $finalUrl;
+        } elseif ($referer && $this->signInRedirectValidator->isAllowed($referer)) {
+            // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
+            $session->finalUrl = $referer;
         }
         if ($this->getParameter('back')) {
             $session->back = $this->getParameter('back');
         }
 
         // Save referer
-        if ($refererUrl) {
-            $session->referer = $refererUrl->getAbsoluteUrl();
+        if ($referer) {
+            $session->referer = $referer;
         }
 
         $source = $this->getParameter('n_source');
