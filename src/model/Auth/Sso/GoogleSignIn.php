@@ -112,8 +112,9 @@ class GoogleSignIn
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
              $provider->provide([
-                 'user' => $matchedUser,
-                 'userEmail' => $userEmail,
+                 'matchedUser' => $matchedUser,
+                 'googleUserEmail' => $userEmail,
+                 'googleUserId' => $googleUserId,
                  'gsiAccessToken' => $gsiAccessToken,
              ]);
         }
@@ -270,9 +271,10 @@ class GoogleSignIn
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
              $provider->provide([
-                 'user' => $matchedUser,
+                 'matchedUser' => $matchedUser,
+                 'googleUserEmail' => $userEmail,
+                 'googleUserId' => $googleUserId,
                  'gsiAccessToken' => $client->getAccessToken()['access_token'],
-                 'userEmail' => $userEmail
              ]);
         }
 
