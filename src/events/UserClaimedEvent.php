@@ -12,7 +12,7 @@ class UserClaimedEvent extends AbstractEvent
 
     private $deviceToken;
 
-    public function __construct($unclaimedUser, $loggedUser, $deviceToken)
+    public function __construct($unclaimedUser, $loggedUser, $deviceToken = null)
     {
         $this->unclaimedUser = $unclaimedUser;
         $this->loggedUser = $loggedUser;

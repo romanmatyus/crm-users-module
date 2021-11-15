@@ -101,7 +101,7 @@ class UnclaimedUser
         return $uuid . '@unclaimed';
     }
 
-    public function claimUser(IRow $unclaimedUser, IRow $loggedUser, IRow $deviceToken): void
+    public function claimUser(IRow $unclaimedUser, IRow $loggedUser, ?IRow $deviceToken = null): void
     {
         if (!$this->isUnclaimedUser($unclaimedUser)) {
             throw new ClaimedUserException("User {$unclaimedUser->id} is claimed");
@@ -110,7 +110,8 @@ class UnclaimedUser
             throw new UnclaimedUserException("User {$loggedUser->id} is unclaimed");
         }
 
-        if (!$this->accessTokensRepository->existsForUserDeviceToken($loggedUser, $deviceToken)) {
+        // Device token is not required, since unclaimed user may exist without any access token (e.g. user created via pub/sub notification)
+        if ($deviceToken && !$this->accessTokensRepository->existsForUserDeviceToken($loggedUser, $deviceToken)) {
             throw new AccessTokenNotFoundException("There is no access token for user {$loggedUser->id} and device token {$deviceToken->id}");
         }
 
