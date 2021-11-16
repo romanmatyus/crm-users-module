@@ -25,7 +25,7 @@ class AppleSignIn
 
     private $clientId;
 
-    private $trustedClientIds;
+    private $trustedClientIds = [];
 
     private $configsRepository;
 
@@ -44,11 +44,17 @@ class AppleSignIn
         User $user
     ) {
         $this->clientId = $clientId;
-        $this->trustedClientIds = array_flip(array_merge([$clientId], array_filter($trustedClientIds)));
         $this->configsRepository = $configsRepository;
         $this->session = $session;
         $this->ssoUserManager = $ssoUserManager;
         $this->user = $user;
+
+        if ($clientId !== null) {
+            $this->trustedClientIds[$clientId] = true;
+        }
+        foreach (array_filter($trustedClientIds) as $trustedClientId) {
+            $this->trustedClientIds[$trustedClientId] = true;
+        }
     }
 
     public function isEnabled(): bool
