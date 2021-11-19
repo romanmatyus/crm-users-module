@@ -74,6 +74,16 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->authenticatorManager->registerAuthenticator($this->inject(UsersAuthenticator::class));
     }
 
+    protected function tearDown(): void
+    {
+        $this->emitter->removeListener(
+            \Crm\UsersModule\Events\UserSignInEvent::class,
+            $this->inject(\Crm\UsersModule\Events\SignEventHandler::class)
+        );
+
+        parent::tearDown();
+    }
+
     public function testNotExistingUser()
     {
         $response = $this->handler->handle(new NoAuthorization());
