@@ -87,16 +87,11 @@ class UserMetaRepository extends Repository
         return $this->userMetaRows($user)->fetchPairs('key', 'value');
     }
 
-    final public function userMetaValueByKey(IRow $user, string $key)
+    final public function userMetaValueByKey(IRow $user, string $key): ?string
     {
-        $value = $this->userMetaRows($user)
+        return $this->userMetaRows($user)
             ->where('key = ?', $key)
             ->fetchField('value');
-
-        if (!$value) {
-            return null;
-        }
-        return $value;
     }
 
     final public function userMetaRows($user)

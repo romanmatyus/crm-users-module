@@ -54,7 +54,7 @@ class UsersRepository extends Repository
     }
 
     /**
-     * @return bool|mixed|IRow
+     * @inheritDoc
      */
     final public function getByEmail($email)
     {

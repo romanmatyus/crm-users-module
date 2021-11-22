@@ -68,9 +68,9 @@ class UserHasAddressCriteriaTest extends DatabaseTestCase
         $criteria->addConditions($userSelection, [UserHasAddressCriteria::KEY => $values], $userRow);
 
         if ($expectedResult) {
-            $this->assertNotFalse($userSelection->fetch());
+            $this->assertNotNull($userSelection->fetch());
         } else {
-            $this->assertFalse($userSelection->fetch());
+            $this->assertNull($userSelection->fetch());
         }
     }
 
