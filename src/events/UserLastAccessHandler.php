@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Events;
 
 use Crm\ApiModule\Repository\UserSourceAccessesRepository;
+use Crm\ApplicationModule\Config\ApplicationConfig;
 use Crm\UsersModule\Repository\UsersRepository;
 use Detection\MobileDetect;
 use League\Event\AbstractListener;
@@ -14,10 +15,16 @@ class UserLastAccessHandler extends AbstractListener
 
     private $userSourceAccessesRepository;
 
-    public function __construct(UsersRepository $usersRepository, UserSourceAccessesRepository $userSourceAccessesRepository)
-    {
+    private $applicationConfig;
+
+    public function __construct(
+        UsersRepository $usersRepository,
+        UserSourceAccessesRepository $userSourceAccessesRepository,
+        ApplicationConfig $applicationConfig
+    ) {
         $this->usersRepository = $usersRepository;
         $this->userSourceAccessesRepository = $userSourceAccessesRepository;
+        $this->applicationConfig = $applicationConfig;
     }
 
     public function handle(EventInterface $event)
@@ -32,7 +39,11 @@ class UserLastAccessHandler extends AbstractListener
             return true;
         }
 
-        $this->userSourceAccessesRepository->upsert($user->id, $source, $event->getDateTime());
+        $usersTokenTimeStatsEnabled = $this->applicationConfig->get('api_user_token_tracking');
+        if ($usersTokenTimeStatsEnabled) {
+            $this->userSourceAccessesRepository->upsert($user->id, $source, $event->getDateTime());
+        }
+
         return true;
     }
 

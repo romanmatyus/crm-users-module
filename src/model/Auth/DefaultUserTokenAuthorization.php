@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Auth;
 
 use Crm\ApiModule\Authorization\TokenParser;
+use Crm\ApplicationModule\Config\ApplicationConfig;
 use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Events\UserLastAccessEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -24,12 +25,16 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, A
 
     protected $accessTokens = [];
 
+    protected $applicationConfig;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
-        Emitter $emitter
+        Emitter $emitter,
+        ApplicationConfig $applicationConfig
     ) {
         $this->accessTokensRepository = $accessTokensRepository;
         $this->emitter = $emitter;
+        $this->applicationConfig = $applicationConfig;
     }
 
     public function authorized($resource = IAuthorizator::ALL)
@@ -49,7 +54,10 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, A
 
         $source = isset($_GET['source']) ? 'api+' . $_GET['source'] : null;
         $accessDate = new DateTime();
-        $this->accessTokensRepository->update($token, ['last_used_at' => $accessDate]);
+        $usersTokenTimeStatsEnabled = $this->applicationConfig->get('api_user_token_tracking');
+        if ($usersTokenTimeStatsEnabled) {
+            $this->accessTokensRepository->update($token, ['last_used_at' => $accessDate]);
+        }
         $this->emitter->emit(new UserLastAccessEvent(
             $token->user,
             $accessDate,

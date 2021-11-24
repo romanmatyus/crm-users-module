@@ -3,32 +3,30 @@
 namespace Crm\UsersModule\Auth;
 
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
-use Crm\UsersModule\Repositories\DeviceTokensRepository;
-use Crm\UsersModule\Repository\AccessTokensRepository;
 use League\Event\Emitter;
 use Nette\Security\IAuthorizator;
 
 class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTokensApiAuthorizationInterface
 {
-    protected $accessTokensRepository;
-
-    protected $deviceTokensRepository;
-
     /** @var UsersApiAuthorizationInterface */
     protected $authorizator = null;
 
     /** @var UsersApiAuthorizationInterface[] */
     protected $authorizators = [];
 
-    protected $emitter;
+    protected DefaultUserTokenAuthorization $defaultUserTokenAuthorization;
+
+    protected DeviceTokenAuthorization $deviceTokenAuthorization;
+
+    protected Emitter $emitter;
 
     public function __construct(
-        AccessTokensRepository $accessTokensRepository,
-        DeviceTokensRepository $deviceTokensRepository,
+        DefaultUserTokenAuthorization $defaultUserTokenAuthorization,
+        DeviceTokenAuthorization $deviceTokenAuthorization,
         Emitter $emitter
     ) {
-        $this->accessTokensRepository = $accessTokensRepository;
-        $this->deviceTokensRepository = $deviceTokensRepository;
+        $this->defaultUserTokenAuthorization = $defaultUserTokenAuthorization;
+        $this->deviceTokenAuthorization = $deviceTokenAuthorization;
         $this->emitter = $emitter;
     }
 
@@ -49,20 +47,15 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
                 if ($this->authorizator->authorized($resource)) {
                     return true;
                 }
-                continue;
             }
         }
 
-        $this->authorizator = new DefaultUserTokenAuthorization($this->accessTokensRepository, $this->emitter);
+        $this->authorizator = clone $this->defaultUserTokenAuthorization;
         if ($this->authorizator->authorized($resource)) {
             return true;
         }
 
-        $this->authorizator = new DeviceTokenAuthorization(
-            $this->accessTokensRepository,
-            $this->deviceTokensRepository,
-            $this->emitter
-        );
+        $this->authorizator = clone $this->deviceTokenAuthorization;
         return $this->authorizator->authorized($resource);
     }
 

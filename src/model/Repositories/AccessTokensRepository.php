@@ -62,7 +62,6 @@ class AccessTokensRepository extends Repository
         ]);
 
         $this->emitter->emit(new NewAccessTokenEvent($user->id, $token));
-
         return $row;
     }
 
