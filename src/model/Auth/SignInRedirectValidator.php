@@ -4,6 +4,7 @@ namespace Crm\UsersModule\Auth;
 
 use Nette\Http\Request;
 use Nette\Http\Url;
+use Nette\InvalidArgumentException;
 use Nette\Utils\Strings;
 
 class SignInRedirectValidator
@@ -32,14 +33,28 @@ class SignInRedirectValidator
         $allowedDomains = $this->allowedDomains;
         $allowedDomains[] = $firstAndSecondLevelDomain;
 
+        try {
+            $urlHost = $this->getHost($url);
+        } catch (InvalidArgumentException $iae) {
+            return false;
+        }
+
+
         foreach ($allowedDomains as $domain) {
-            if (Strings::endsWith($this->getHost($url), $this->getHost($domain))) {
-                return true;
+            try {
+                if (Strings::endsWith($urlHost, $this->getHost($domain))) {
+                    return true;
+                }
+            } catch (InvalidArgumentException $iae) {
+                return false;
             }
         }
         return false;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     private function getHost(string $urlString): string
     {
         if (!Strings::startsWith($urlString, 'https://') && !Strings::startsWith($urlString, 'http://')) {
