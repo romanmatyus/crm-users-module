@@ -270,7 +270,7 @@ class GoogleSignIn
         $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         if ($loggedUserId !== $gsiUserId) {
             // State is invalid, possible user change between login request and callback
-            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', session userId: ' . $gsiUserId . ')');
+            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', cookie userId: ' . $gsiUserId . ')');
         }
 
         // Get OAuth access token
