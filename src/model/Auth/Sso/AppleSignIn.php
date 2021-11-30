@@ -3,12 +3,14 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
+use Crm\ApplicationModule\Request as CrmRequest;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use Nette\Database\Table\IRow;
-use Nette\Http\Session;
+use Nette\Http\Request;
+use Nette\Http\Response;
 use Nette\Http\Url;
 use Nette\Security\User;
 use Nette\Utils\Json;
@@ -17,11 +19,17 @@ class AppleSignIn
 {
     public const ACCESS_TOKEN_SOURCE_WEB_APPLE_SSO = 'web+apple_sso';
 
-    private const SESSION_SECTION = 'apple_sign_in';
-
     public const USER_SOURCE_APPLE_SSO = "apple_sso";
 
     public const USER_APPLE_REGISTRATION_CHANNEL = "apple";
+
+    private const COOKIE_ASI_STATE = 'asi_state';
+
+    private const COOKIE_ASI_SOURCE = 'asi_source';
+
+    private const COOKIE_ASI_USER_ID = 'asi_user_id';
+
+    private const COOKIE_ASI_NONCE = 'asi_nonce';
 
     private $clientId;
 
@@ -29,25 +37,29 @@ class AppleSignIn
 
     private $configsRepository;
 
-    private $session;
-
     private $ssoUserManager;
 
     private $user;
+
+    private Response $response;
+
+    private Request $request;
 
     public function __construct(
         ?string $clientId,
         array $trustedClientIds,
         ConfigsRepository $configsRepository,
-        Session $session,
         SsoUserManager $ssoUserManager,
-        User $user
+        User $user,
+        Response $response,
+        Request $request
     ) {
         $this->clientId = $clientId;
         $this->configsRepository = $configsRepository;
-        $this->session = $session;
         $this->ssoUserManager = $ssoUserManager;
         $this->user = $user;
+        $this->response = $response;
+        $this->request = $request;
 
         if ($clientId !== null) {
             $this->trustedClientIds[$clientId] = true;
@@ -60,6 +72,20 @@ class AppleSignIn
     public function isEnabled(): bool
     {
         return (boolean)($this->configsRepository->loadByName('apple_sign_in_enabled')->value ?? false);
+    }
+
+    private function setLoginCookie(string $key, $value)
+    {
+        $this->response->setCookie(
+            $key,
+            $value,
+            strtotime('+1 hour'),
+            '/',
+            CrmRequest::getDomain(),
+            true,
+            true,
+            'None' // Lax cannot be used with POST request (response from Apple is POST)
+        );
     }
 
     /**
@@ -90,13 +116,13 @@ class AppleSignIn
             'nonce' => $nonce
         ]);
 
-
-        // save state and nonce to session for later verification
-        $sessionSection = $this->session->getSection(self::SESSION_SECTION);
-        $sessionSection->oauth2state = $state;
-        $sessionSection->nonce = $nonce;
-        $sessionSection->loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        $sessionSection->source = $source;
+        //save cookie for later verification
+        $this->setLoginCookie(self::COOKIE_ASI_STATE, $state);
+        $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
+        $this->setLoginCookie(self::COOKIE_ASI_NONCE, $nonce);
+        
+        $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
+        $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
 
         return $url->getAbsoluteUrl();
     }
@@ -115,6 +141,16 @@ class AppleSignIn
      */
     public function signInCallback(string $referer = null): IRow
     {
+        $asiState = $this->request->getCookie(self::COOKIE_ASI_STATE);
+        $asiUserId = $this->request->getCookie(self::COOKIE_ASI_USER_ID);
+        $asiSource = $this->request->getCookie(self::COOKIE_ASI_SOURCE);
+        $asiNonce = $this->request->getCookie(self::COOKIE_ASI_NONCE);
+
+        $this->response->deleteCookie(self::COOKIE_ASI_STATE);
+        $this->response->deleteCookie(self::COOKIE_ASI_USER_ID);
+        $this->response->deleteCookie(self::COOKIE_ASI_SOURCE);
+        $this->response->deleteCookie(self::COOKIE_ASI_NONCE);
+
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
@@ -124,20 +160,16 @@ class AppleSignIn
             throw new SsoException('Apple SignIn error: ' . htmlspecialchars($_POST['error']));
         }
 
-        $sessionSection = $this->session->getSection(self::SESSION_SECTION);
-
         // Check internal state
-        if ($_POST['state'] !== $sessionSection->oauth2state) {
+        if ($_POST['state'] !== $asiState) {
             // State is invalid, possible CSRF attack in progress
-            unset($sessionSection->oauth2state);
             throw new SsoException('Apple SignIn error: invalid state');
         }
 
         // Check user state
         $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        if ($loggedUserId !== $sessionSection->loggedUserId) {
+        if ($loggedUserId !== $asiUserId) {
             // State is invalid, possible user change between login request and callback
-            unset($sessionSection->loggedUserId);
             throw new SsoException('Apple SignIn error: invalid user state');
         }
 
@@ -148,7 +180,7 @@ class AppleSignIn
         }
 
         // Check id token
-        if (!$this->isIdTokenValid($idToken, $sessionSection->nonce)) {
+        if (!$this->isIdTokenValid($idToken, $asiNonce)) {
             // Id token is invalid
             throw new SsoException('Apple SignIn error: invalid id token');
         }
@@ -166,7 +198,7 @@ class AppleSignIn
 
         $userBuilder = $this->ssoUserManager->createUserBuilder(
             $userEmail,
-            $sessionSection->source ?? self::USER_SOURCE_APPLE_SSO,
+            $asiSource ?? self::USER_SOURCE_APPLE_SSO,
             self::USER_APPLE_REGISTRATION_CHANNEL,
             $referer
         );

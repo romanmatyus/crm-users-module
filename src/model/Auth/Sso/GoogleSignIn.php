@@ -4,12 +4,14 @@ namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
+use Crm\ApplicationModule\Request as CrmRequest;
 use Crm\UsersModule\DataProvider\GoogleSignInDataProviderInterface;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google_Client;
 use Google_Service_Oauth2;
 use Nette\Database\Table\IRow;
-use Nette\Http\Session;
+use Nette\Http\Request;
+use Nette\Http\Response;
 use Nette\Security\User;
 
 class GoogleSignIn
@@ -20,7 +22,11 @@ class GoogleSignIn
 
     public const USER_GOOGLE_REGISTRATION_CHANNEL = "google";
 
-    private const SESSION_SECTION = 'google_sign_in';
+    private const COOKIE_GSI_STATE = 'gsi_state';
+
+    private const COOKIE_GSI_SOURCE = 'gsi_source';
+
+    private const COOKIE_GSI_USER_ID = 'gsi_user_id';
 
     // Default scopes MUST be included for OpenID Connect.
     private const DEFAULT_SCOPES =  [
@@ -30,8 +36,6 @@ class GoogleSignIn
     private ?string $clientId;
 
     private ?string $clientSecret;
-    
-    private Session $session;
     
     private ConfigsRepository $configsRepository;
 
@@ -43,22 +47,28 @@ class GoogleSignIn
     
     private ?Google_Client $googleClient = null;
 
+    private Response $response;
+
+    private Request $request;
+
     public function __construct(
         ?string $clientId,
         ?string $clientSecret,
         ConfigsRepository $configsRepository,
-        Session $session,
         SsoUserManager $ssoUserManager,
         User $user,
-        DataProviderManager $dataProviderManager
+        DataProviderManager $dataProviderManager,
+        Response $response,
+        Request $request
     ) {
         $this->configsRepository = $configsRepository;
-        $this->session = $session;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->ssoUserManager = $ssoUserManager;
         $this->user = $user;
         $this->dataProviderManager = $dataProviderManager;
+        $this->response = $response;
+        $this->request = $request;
     }
 
     public function isEnabled(): bool
@@ -158,6 +168,20 @@ class GoogleSignIn
         return $client->fetchAccessTokenWithAuthCode($gsiAuthCode);
     }
 
+    private function setLoginCookie(string $key, $value)
+    {
+        $this->response->setCookie(
+            $key,
+            $value,
+            strtotime('+1 hour'),
+            '/',
+            CrmRequest::getDomain(),
+            false,
+            true,
+            'Lax'
+        );
+    }
+
     /**
      * First step of OAuth2 authorization flow
      * Method returns url to redirect to and sets 'state' to verify later in callback
@@ -188,11 +212,12 @@ class GoogleSignIn
         $state = bin2hex(random_bytes(128/8));
         $client->setState($state);
 
-        // save state to session for later verification
-        $sessionSection = $this->session->getSection(self::SESSION_SECTION);
-        $sessionSection->oauth2state = $state;
-        $sessionSection->loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        $sessionSection->source = $source;
+        //save cookie for later verification
+        $this->setLoginCookie(self::COOKIE_GSI_STATE, $state);
+        $this->setLoginCookie(self::COOKIE_GSI_SOURCE, $source);
+
+        $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
+        $this->setLoginCookie(self::COOKIE_GSI_USER_ID, $userId);
 
         return $client->createAuthUrl();
     }
@@ -214,6 +239,14 @@ class GoogleSignIn
      */
     public function signInCallback(string $redirectUri, string $referer = null): IRow
     {
+        $gsiState = $this->request->getCookie(self::COOKIE_GSI_STATE);
+        $gsiUserId = $this->request->getCookie(self::COOKIE_GSI_USER_ID);
+        $gsiSource = $this->request->getCookie(self::COOKIE_GSI_SOURCE);
+
+        $this->response->deleteCookie(self::COOKIE_GSI_STATE);
+        $this->response->deleteCookie(self::COOKIE_GSI_USER_ID);
+        $this->response->deleteCookie(self::COOKIE_GSI_SOURCE);
+
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
@@ -227,21 +260,17 @@ class GoogleSignIn
             throw new SsoException('Google SignIn error: missing code');
         }
 
-        $sessionSection = $this->session->getSection(self::SESSION_SECTION);
-
         // Check internal state
-        if (empty($_GET['state']) || ($_GET['state'] !== $sessionSection->oauth2state)) {
+        if (empty($_GET['state']) || ($_GET['state'] !== $gsiState)) {
             // State is invalid, possible CSRF attack in progress
-            unset($sessionSection->oauth2state);
             throw new SsoException('Google SignIn error: invalid state');
         }
 
         // Check user state
         $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        if ($loggedUserId !== $sessionSection->loggedUserId) {
+        if ($loggedUserId !== $gsiUserId) {
             // State is invalid, possible user change between login request and callback
-            unset($sessionSection->loggedUserId);
-            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', session userId: ' . $sessionSection->loggedUserId . ')');
+            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', session userId: ' . $gsiUserId . ')');
         }
 
         // Get OAuth access token
@@ -280,7 +309,7 @@ class GoogleSignIn
 
         $userBuilder = $this->ssoUserManager->createUserBuilder(
             $userEmail,
-            $sessionSection->source ?? self::USER_SOURCE_GOOGLE_SSO,
+            $gsiSource ?? self::USER_SOURCE_GOOGLE_SSO,
             self::USER_GOOGLE_REGISTRATION_CHANNEL,
             $referer
         );
