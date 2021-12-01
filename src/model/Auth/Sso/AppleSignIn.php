@@ -168,7 +168,7 @@ class AppleSignIn
 
         // Check user state
         $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        if ($loggedUserId !== $asiUserId) {
+        if ((string) $loggedUserId !== (string) $asiUserId) {
             // State is invalid, possible user change between login request and callback
             throw new SsoException('Apple SignIn error: invalid user state');
         }
