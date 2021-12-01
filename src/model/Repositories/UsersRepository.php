@@ -28,8 +28,6 @@ class UsersRepository extends Repository
 
     private $hermesEmitter;
 
-    private $addressesRepository;
-
     private $accessTokensRepository;
 
     private $cacheRepository;
@@ -40,7 +38,6 @@ class UsersRepository extends Repository
         AuditLogRepository $auditLogRepository,
         CacheRepository $cacheRepository,
         \Tomaj\Hermes\Emitter $hermesEmmiter,
-        AddressesRepository $addressesRepository,
         AccessTokensRepository $accessTokensRepository
     ) {
         parent::__construct($database);
@@ -48,7 +45,6 @@ class UsersRepository extends Repository
         $this->emitter = $emitter;
         $this->auditLogRepository = $auditLogRepository;
         $this->hermesEmitter = $hermesEmmiter;
-        $this->addressesRepository = $addressesRepository;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->cacheRepository = $cacheRepository;
     }
