@@ -9,6 +9,7 @@ use Crm\UsersModule\Api\EmailValidationApiHandler;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
+use Crm\UsersModule\User\UnclaimedUser;
 
 class EmailValidationApiHandlerTest extends DatabaseTestCase
 {
@@ -17,6 +18,9 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
 
     /** @var EmailValidationApiHandler */
     private $handler;
+
+    /** @var UnclaimedUser */
+    private $unclaimedUser;
 
     protected function requiredSeeders(): array
     {
@@ -39,6 +43,7 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
 
         $this->usersRepository = $this->getRepository(UsersRepository::class);
         $this->handler = $this->inject(EmailValidationApiHandler::class);
+        $this->unclaimedUser = $this->inject(UnclaimedUser::class);
     }
 
     public function testSetEmailValidatedExistingUser()
@@ -99,6 +104,20 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 400);
         $this->assertEquals('invalid_param', $response->getPayload()['code']);
+    }
+
+    public function testUnclaimedUser()
+    {
+        $email = 'unclaimed@unclaimed.sk';
+        $this->unclaimedUser->createUnclaimedUser($email);
+        $_POST['email'] = $email;
+
+        $this->handler->setAction('validate');
+        $response = $this->handler->handle(new NoAuthorization());
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals($response->getHttpCode(), 404);
+        $this->assertEquals('email_not_found', $response->getPayload()['code']);
     }
 
     private function getUser($email)
