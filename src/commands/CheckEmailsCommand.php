@@ -30,7 +30,7 @@ class CheckEmailsCommand extends Command
             ->setDescription('Validate emails')
             ->addArgument(
                 'email',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'User email'
             );
     }
@@ -38,18 +38,34 @@ class CheckEmailsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getArgument('email')) {
-            $output->write("Checking email: <comment>{$input->getArgument('email')}</comment> ... ");
-            $result = $this->emailValidator->isValid($input->getArgument('email'));
-            if ($result) {
-                $output->writeln("<info>VALID</info>");
-            } else {
-                $validator = get_class($this->emailValidator->lastValidator());
-                $output->writeln("<error>INVALID</error> - ({$validator})");
-            }
+            $this->checkEmail($output, $input->getArgument('email'));
             return Command::SUCCESS;
         }
 
-        // todo - doplnit validaciu vsetkych emailov
+        $step = 1000;
+        $offset = 0;
+        while (true) {
+            $users = $this->userRepository->all()->limit($step, $offset);
+            foreach ($users as $user) {
+                $this->checkEmail($output, $user->email);
+            }
+            if (count($users) < $step) {
+                break;
+            }
+        }
+
         return Command::SUCCESS;
+    }
+
+    private function checkEmail(OutputInterface $output, string $email): void
+    {
+        $output->write("Checking email: <comment>{$email}</comment> ... ");
+        $result = $this->emailValidator->isValid($email);
+        if ($result) {
+            $output->writeln("<info>VALID</info>");
+        } else {
+            $validator = get_class($this->emailValidator->lastValidator());
+            $output->writeln("<error>INVALID</error> - ({$validator})");
+        }
     }
 }
