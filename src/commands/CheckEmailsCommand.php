@@ -11,9 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckEmailsCommand extends Command
 {
-    private $userRepository;
+    private UsersRepository $userRepository;
 
-    private $emailValidator;
+    private EmailValidator $emailValidator;
 
     public function __construct(
         UsersRepository $userRepository,
@@ -45,11 +45,15 @@ class CheckEmailsCommand extends Command
         $step = 1000;
         $offset = 0;
         while (true) {
-            $users = $this->userRepository->all()->limit($step, $offset);
+            $users = $this->userRepository->all()->where(['active' => true])->limit($step, $offset);
             foreach ($users as $user) {
                 $this->checkEmail($output, $user->email);
+                $offset++;
             }
-            if (count($users) < $step) {
+
+            $count = count($users);
+            $offset += $count;
+            if ($count < $step) {
                 break;
             }
         }
@@ -64,8 +68,15 @@ class CheckEmailsCommand extends Command
         if ($result) {
             $output->writeln("<info>VALID</info>");
         } else {
-            $validator = get_class($this->emailValidator->lastValidator());
-            $output->writeln("<error>INVALID</error> - ({$validator})");
+            $output->writeln("<error>INVALID</error> - ({$this->getErrorValidator()})");
         }
+    }
+
+    private function getErrorValidator(): string
+    {
+        if ($this->emailValidator->lastValidator()) {
+            return get_class($this->emailValidator->lastValidator());
+        }
+        return "";
     }
 }

@@ -27,7 +27,7 @@ class EmailValidator
         return $this;
     }
 
-    public function lastValidator()
+    public function lastValidator(): ?ValidatorInterface
     {
         return $this->lastValidator;
     }
