@@ -6,6 +6,7 @@ use Nette\Http\Request;
 use Nette\Http\Url;
 use Nette\InvalidArgumentException;
 use Nette\Utils\Strings;
+use Tracy\Debugger;
 
 class SignInRedirectValidator
 {
@@ -36,6 +37,7 @@ class SignInRedirectValidator
         try {
             $urlHost = $this->getHost($url);
         } catch (InvalidArgumentException $iae) {
+            // no need to log it; this can be issue on client side
             return false;
         }
 
@@ -46,6 +48,7 @@ class SignInRedirectValidator
                     return true;
                 }
             } catch (InvalidArgumentException $iae) {
+                Debugger::log('Invalid allowed domain [' . $domain . ' ]', Debugger::ERROR);
                 return false;
             }
         }
