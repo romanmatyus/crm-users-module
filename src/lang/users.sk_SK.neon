@@ -490,6 +490,7 @@ authenticator:
 	invalid_credentials: Heslo je nesprávne.
 	inactive_account: Konto je neaktívne.
 	rate_limit_exceeded: Príliš veľa pokusov o prihlásenie. Skúste to neskôr.
+	unclaimed_user: Konto je predregistrované.
 
 	access_token:
 		invalid_token: Token je neplatný

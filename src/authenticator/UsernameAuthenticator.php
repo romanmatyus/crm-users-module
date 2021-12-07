@@ -8,9 +8,9 @@ use Crm\UsersModule\Auth\Rate\IpRateLimit;
 use Crm\UsersModule\Auth\Rate\RateLimitException;
 use Crm\UsersModule\Auth\Rate\WrongPasswordRateLimit;
 use Crm\UsersModule\Auth\UserAuthenticator;
-use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
 use Nette\Database\Table\IRow;
 use Nette\Http\Request;
@@ -28,8 +28,6 @@ use Nette\Security\Passwords;
  */
 abstract class UsernameAuthenticator extends BaseAuthenticator
 {
-    private $userManager;
-
     private $usersRepository;
 
     private $translator;
@@ -43,24 +41,25 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
 
     /** @var string */
     private $password = null;
+    private UnclaimedUser $unclaimedUser;
 
     public function __construct(
         Emitter $emitter,
         \Tomaj\Hermes\Emitter $hermesEmitter,
         Request $request,
-        UserManager $userManager,
         UsersRepository $usersRepository,
         ITranslator $translator,
         WrongPasswordRateLimit $wrongPasswordRateLimit,
-        IpRateLimit $ipRateLimit
+        IpRateLimit $ipRateLimit,
+        UnclaimedUser $unclaimedUser
     ) {
         parent::__construct($emitter, $hermesEmitter, $request);
 
-        $this->userManager = $userManager;
         $this->usersRepository = $usersRepository;
         $this->translator = $translator;
         $this->wrongPasswordRateLimit = $wrongPasswordRateLimit;
         $this->ipRateLimit = $ipRateLimit;
+        $this->unclaimedUser = $unclaimedUser;
     }
 
     public function authenticate()
@@ -97,6 +96,9 @@ abstract class UsernameAuthenticator extends BaseAuthenticator
         if (!$user) {
             $this->addAttempt($this->username, null, $this->source, LoginAttemptsRepository::STATUS_NOT_FOUND_EMAIL, 'Nesprávne meno.');
             throw new AuthenticationException($this->translator->translate('users.authenticator.identity_not_found'), UserAuthenticator::IDENTITY_NOT_FOUND);
+        } elseif ($this->unclaimedUser->isUnclaimedUser($user)) {
+            $this->addAttempt($this->username, $user, $this->source, LoginAttemptsRepository::STATUS_UNCLAIMED_USER, 'Account is unclaimed.');
+            throw new AuthenticationException($this->translator->translate('users.authenticator.unclaimed_user'), UserAuthenticator::NOT_APPROVED);
         } elseif ($this->wrongPasswordRateLimit->reachLimit($user)) {
             $this->addAttempt($this->username, $user, $this->source, LoginAttemptsRepository::RATE_LIMIT_EXCEEDED, 'Rate limit exceeded.');
             throw new RateLimitException($this->translator->translate('users.authenticator.rate_limit_exceeded'), UserAuthenticator::FAILURE);

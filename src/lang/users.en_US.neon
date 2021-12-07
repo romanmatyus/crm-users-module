@@ -488,6 +488,7 @@ authenticator:
 	invalid_credentials: Invalid password.
 	inactive_account: Account is disabled.
 	rate_limit_exceeded: Too many unsuccessful login attempts. Try it later.
+	unclaimed_user: Account is unclaimed.
 
 	access_token:
 		invalid_token: Invalid token

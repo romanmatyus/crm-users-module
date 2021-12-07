@@ -15,6 +15,7 @@ class LoginAttemptsRepository extends Repository
     const STATUS_OK = 'ok';
     const STATUS_API_OK = 'api_ok';
     const STATUS_NOT_FOUND_EMAIL = 'not_found_email';
+    const STATUS_UNCLAIMED_USER = 'unclaimed_user';
     const STATUS_WRONG_PASS = 'wrong_pass';
     const STATUS_INACTIVE_USER = 'inactive_user';
     const STATUS_TOKEN_DATE_EXPIRED = 'token_date_expired';

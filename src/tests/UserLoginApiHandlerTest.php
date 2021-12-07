@@ -13,6 +13,7 @@ use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
 
 class UserLoginApiHandlerTest extends DatabaseTestCase
@@ -34,6 +35,9 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
     /** @var AuthenticatorManagerInterface */
     private $authenticatorManager;
+
+    /** @var UnclaimedUser */
+    private $unclaimedUser;
 
     private $emitter;
 
@@ -62,6 +66,7 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->usersRepository = $this->getRepository(UsersRepository::class);
         $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
 
+        $this->unclaimedUser = $this->inject(UnclaimedUser::class);
         $this->handler = $this->inject(UsersLoginHandler::class);
 
         $this->emitter = $this->inject(Emitter::class);
@@ -96,6 +101,23 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->assertEquals('no_email', $payload['error']);
     }
 
+    public function testUnclaimedUser()
+    {
+        $this->unclaimedUser->createUnclaimedUser(self::LOGIN);
+
+        $_POST['email'] = self::LOGIN;
+        $_POST['password'] = self::PASSWORD;
+
+        $response = $this->handler->handle(new NoAuthorization());
+
+        $this->assertEquals(JsonResponse::class, get_class($response));
+        $this->assertEquals(400, $response->getHttpCode());
+
+        $payload = $response->getPayload();
+        $this->assertEquals('error', $payload['status']);
+        $this->assertEquals('auth_failed', $payload['error']);
+    }
+
     public function testLoginUser()
     {
         $user = $this->getUser();
@@ -116,7 +138,7 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
     public function testPairAccessAndDeviceTokens()
     {
-        $user = $this->getUser();
+        $this->getUser();
 
         $deviceToken = $this->deviceTokensRepository->generate('poiqwe123');
 

@@ -10,7 +10,9 @@ use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
+use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\User\UnclaimedUser;
 use Nette\Database\Table\IRow;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -41,6 +43,9 @@ class UserAuthenticatorTest extends DatabaseTestCase
     /** @var IRow $admin */
     private $admin;
 
+    /** @var UnclaimedUser $unclaimedUser */
+    private $unclaimedUser;
+
     private $testUserEmail = "test@test.test";
     private $testUserPassword = "nbusr123";
     private $testAdminEmail = "admin@test.test";
@@ -50,6 +55,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     {
         return [
             UsersRepository::class,
+            UserMetaRepository::class,
             AccessTokensRepository::class,
             LoginAttemptsRepository::class,
         ];
@@ -85,6 +91,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
         $this->userAuthenticator = $this->inject(UserAuthenticator::class);
         $this->userManager = $this->inject(UserManager::class);
         $this->autoLogin = $this->inject(AutoLogin::class);
+        $this->unclaimedUser = $this->inject(UnclaimedUser::class);
 
         $this->usersRepository = $this->getRepository(UsersRepository::class);
         $this->accessTokenRepository = $this->getRepository(AccessTokensRepository::class);
@@ -164,6 +171,22 @@ class UserAuthenticatorTest extends DatabaseTestCase
         $this->userAuthenticator->authenticate([
             'username' => $testInactiveEmail,
             'password' => $testInactivePassword,
+        ]);
+    }
+
+    public function testUnclaimedUser()
+    {
+        $testUnclaimedEmail = "unclaimed@test.test";
+        $testUnclaimedPassword = "nbusr123";
+        $this->unclaimedUser->createUnclaimedUser($testUnclaimedEmail);
+
+        $this->expectException(AuthenticationException::class);
+        $this->expectExceptionMessage("Konto je predregistrované.");
+        $this->expectExceptionCode(IAuthenticator::NOT_APPROVED);
+
+        $this->userAuthenticator->authenticate([
+            'username' => $testUnclaimedEmail,
+            'password' => $testUnclaimedPassword,
         ]);
     }
 

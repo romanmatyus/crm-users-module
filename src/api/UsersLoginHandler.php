@@ -94,9 +94,9 @@ class UsersLoginHandler extends ApiHandler
             ]);
         } catch (AuthenticationException $authException) {
             $message = $authException->getMessage();
-            if ($authException->getCode() == UserAuthenticator::IDENTITY_NOT_FOUND) {
+            if (in_array($authException->getCode(), [UserAuthenticator::IDENTITY_NOT_FOUND, UserAuthenticator::NOT_APPROVED], true)) {
                 $message = $this->translator->translate('users.api.users_login_handler.identity_not_found');
-            } elseif ($authException->getCode() == UserAuthenticator::INVALID_CREDENTIAL) {
+            } elseif ($authException->getCode() === UserAuthenticator::INVALID_CREDENTIAL) {
                 $message = $this->translator->translate('users.api.users_login_handler.invalid_credentials');
             }
             $response = new JsonResponse(['status' => 'error', 'error' => 'auth_failed', 'message' => $message]);
