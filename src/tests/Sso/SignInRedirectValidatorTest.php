@@ -35,6 +35,7 @@ class SignInRedirectValidatorTest extends TestCase
             // invalid - different domain, different subdomain in allowed URLs
             ['https://predplatne.dennikn.sk', [], 'example.com', false],
             ['https://predplatne.dennikn.sk', ['sub1.example.com'], 'sub2.example.com', false],
+            ['https://predplatne.dennikn.sk', [], 'https:///undefined', false],
         ];
     }
 }
