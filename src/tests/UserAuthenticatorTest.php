@@ -13,6 +13,7 @@ use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
+use Kdyby\Translation\Translator;
 use Nette\Database\Table\IRow;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -45,6 +46,9 @@ class UserAuthenticatorTest extends DatabaseTestCase
 
     /** @var UnclaimedUser $unclaimedUser */
     private $unclaimedUser;
+
+    /** @var Translator */
+    private $translator;
 
     private $testUserEmail = "test@test.test";
     private $testUserPassword = "nbusr123";
@@ -100,6 +104,8 @@ class UserAuthenticatorTest extends DatabaseTestCase
         $accessToken = $this->inject(AccessToken::class);
         $this->accessTokenLastVersion = $accessToken->lastVersion();
 
+        $this->translator = $this->inject(Translator::class);
+
         $this->getUser();
         $this->getAdmin();
     }
@@ -137,7 +143,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     public function testIncorrectUsername()
     {
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Nesprávne meno.");
+        $this->expectExceptionMessage($this->translator->translate('users.authenticator.identity_not_found'));
         $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
 
         $this->userAuthenticator->authenticate([
@@ -149,7 +155,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     public function testIncorrectPassword()
     {
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Heslo je nesprávne.");
+        $this->expectExceptionMessage($this->translator->translate('users.authenticator.invalid_credentials'));
         $this->expectExceptionCode(IAuthenticator::INVALID_CREDENTIAL);
 
         $this->userAuthenticator->authenticate([
@@ -165,7 +171,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
         $this->loadUser($testInactiveEmail, $testInactivePassword, UsersRepository::ROLE_USER, false);
 
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Konto je neaktívne.");
+        $this->expectExceptionMessage($this->translator->translate('users.authenticator.inactive_account'));
         $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
 
         $this->userAuthenticator->authenticate([
@@ -181,7 +187,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
         $this->unclaimedUser->createUnclaimedUser($testUnclaimedEmail);
 
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Konto je predregistrované.");
+        $this->expectExceptionMessage($this->translator->translate('users.authenticator.unclaimed_user'));
         $this->expectExceptionCode(IAuthenticator::NOT_APPROVED);
 
         $this->userAuthenticator->authenticate([
@@ -232,7 +238,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
         $token = $this->accessTokenRepository->add($this->getAdmin(), $this->accessTokenLastVersion);
 
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Automatické prihlásenie pre Vaše konto nie je povolené, prosím prihláste sa znovu");
+        $this->expectExceptionMessage($this->translator->translate('users.authenticator.access_token.autologin_disabled'));
         $this->expectExceptionCode(IAuthenticator::FAILURE);
 
         $this->userAuthenticator->authenticate(['accessToken' => $token->token]);
@@ -241,7 +247,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     public function testAccessTokenInvalid()
     {
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage("Token je neplatný");
+        $this->expectExceptionMessage($this->translator->translate('users.authenticator.access_token.invalid_token'));
         $this->expectExceptionCode(IAuthenticator::FAILURE);
 
         $this->userAuthenticator->authenticate(['accessToken' => "invalid_token"]);
