@@ -826,6 +826,41 @@ If the user with given email doesn't exist , HTTP 404 is returned with following
 ```
 
 ---
+
+#### POST `/api/v1/user/delete`
+
+Deletes personal data and makes an account anonymous. If the account cannot be deleted, HTTP 403 is returned.
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | User token. |
+
+##### *Example:*
+
+```shell
+curl -X POST \
+  http://crm.press/api/v1/user/delete \
+  -H 'Authorization: Bearer XXX' \
+  -H 'Cache-Control: no-cache'
+```
+
+Response:
+
+- `204`: Returned when the user was deleted. No body is returned.
+- `403`: Returned when the user cannot be deleted:
+
+  ```json5
+  {
+    "status": "error",
+    "code": "user_delete_protected",
+    "message": "Unable to delete user due to system protection configuration",
+    "reason": "Account cannot be deleted automatically. Please contact customer support." // reason why the deletion wasn't executed, can be displayed to the user (it's translated)
+  }
+  ```
+
+---
 ### USER META INFORMATION API
 
 The concept of meta user's information is to provide the way how to store user related data without need of the database structure changes.

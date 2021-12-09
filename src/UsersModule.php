@@ -351,6 +351,9 @@ class UsersModule extends CrmModule
         $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'apple-token-sign-in'), \Crm\UsersModule\Api\AppleTokenSignInHandler::class, \Crm\ApiModule\Authorization\NoAuthorization::class)
         );
+        $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'user', 'delete'), \Crm\UsersModule\Api\DeleteUserApiHandler::class, \Crm\UsersModule\Auth\UserTokenAuthorization::class)
+        );
 
         $apiRoutersContainer->attachRouter(new ApiRoute(
             new ApiIdentifier('1', 'users', 'data'),
