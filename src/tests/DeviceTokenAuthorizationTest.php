@@ -79,15 +79,15 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
 
     public function testAuthorizedUnclaimedAndClaimedUsers()
     {
-        $user1 = $this->usersRepository->add('test1@user.com', 'nbusr123', '', '');
+        $user1 = $this->usersRepository->add('test1@user.com', 'nbusr123');
         $this->userMetaRepository->add($user1, UnclaimedUser::META_KEY, true);
         $accessToken1 = $this->accessTokensRepository->add($user1, 3);
 
-        $user2 = $this->usersRepository->add('test2@user.com', 'nbusr123', '', '');
+        $user2 = $this->usersRepository->add('test2@user.com', 'nbusr123');
         $this->userMetaRepository->add($user2, UnclaimedUser::META_KEY, true);
         $accessToken2 = $this->accessTokensRepository->add($user2, 3);
 
-        $user3 = $this->usersRepository->add('test3@user.com', 'nbusr123', '', '');
+        $user3 = $this->usersRepository->add('test3@user.com', 'nbusr123');
         $accessToken3 = $this->accessTokensRepository->add($user3, 3);
         $accessToken4 = $this->accessTokensRepository->add($user3, 3);
 
@@ -111,13 +111,13 @@ class DeviceTokenAuthorizationTest extends DatabaseTestCase
 
     public function testAuthorizedOnlyClaimedUsers()
     {
-        $user1 = $this->usersRepository->add('test1@user.com', 'nbusr123', '', '');
+        $user1 = $this->usersRepository->add('test1@user.com', 'nbusr123');
         $accessToken1 = $this->accessTokensRepository->add($user1, 3);
 
-        $user2 = $this->usersRepository->add('test2@user.com', 'nbusr123', '', '');
+        $user2 = $this->usersRepository->add('test2@user.com', 'nbusr123');
         $accessToken2 = $this->accessTokensRepository->add($user2, 3);
 
-        $user3 = $this->usersRepository->add('test3@user.com', 'nbusr123', '', '');
+        $user3 = $this->usersRepository->add('test3@user.com', 'nbusr123');
         $accessToken3 = $this->accessTokensRepository->add($user3, 3);
         $accessToken4 = $this->accessTokensRepository->add($user3, 3);
 

@@ -5,10 +5,13 @@ namespace Crm\UsersModule\Builder;
 use Crm\ApplicationModule\Builder\Builder;
 use Crm\ApplicationModule\Hermes\HermesMessage;
 use Crm\UsersModule\Auth\Access\AccessToken;
-use Crm\UsersModule\Events\UserCreatedEvent;
+use Crm\UsersModule\Events\NewUserEvent;
+use Crm\UsersModule\Events\UserRegisteredEvent;
+use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
 use Nette\Database\Context;
+use Nette\Localization\ITranslator;
 use Nette\Security\Passwords;
 
 class UserBuilder extends Builder
@@ -23,37 +26,48 @@ class UserBuilder extends Builder
 
     protected $tableName = 'users';
 
-    private $sendEmail = false;
-    
-    private $passwordLazyParams = [];
+    private bool $sendEmail;
+
+    private array $metaItems;
+
+    private bool $emitUserRegisteredEvent;
+
+    private array $passwordLazyParams;
+
+    private UserMetaRepository $userMetaRepository;
+    private ITranslator $translator;
 
     public function __construct(
         Context $database,
         Emitter $emitter,
         \Tomaj\Hermes\Emitter $hermesEmitter,
-        AccessToken $accessToken
+        AccessToken $accessToken,
+        UserMetaRepository $userMetaRepository,
+        ITranslator $translator
     ) {
         parent::__construct($database);
         $this->emitter = $emitter;
         $this->hermesEmitter = $hermesEmitter;
         $this->accessToken = $accessToken;
+        $this->userMetaRepository = $userMetaRepository;
+        $this->translator = $translator;
     }
 
     public function isValid()
     {
         if (strlen($this->get('email')) < 1) {
-            $this->addError('Nebol zadaný email');
+            $this->addError($this->translator->translate('users.model.user_builder.error.email_missing'));
         }
         $user = $this->database->table($this->tableName)->where(['email' => $this->get('email')])->fetch();
         if ($user) {
-            $this->addError("Email '{$this->get('email')}' je už registrovaný");
+            $this->addError($this->translator->translate('users.model.user_builder.error.email_taken', ['email' => $this->get('email')]));
         }
         $password = $this->get('password');
         if (strlen($password) < 6) {
-            $this->addError('Heslo musí byť dlhé aspon 6 znakov');
+            $this->addError($this->translator->translate('users.model.user_builder.error.password_short', ['length' => 6]));
         }
         if (strlen($this->get('public_name')) < 1) {
-            $this->addError('Missing public_name');
+            $this->addError($this->translator->translate('users.model.user_builder.error.public_name_missing'));
         }
 
         if (count($this->getErrors()) > 0) {
@@ -75,6 +89,11 @@ class UserBuilder extends Builder
         $this->set('invoice', false);
         $this->set('registration_channel', UsersRepository::DEFAULT_REGISTRATION_CHANNEL);
         $this->setOption('add_user_token', true);
+
+        $this->sendEmail = false;
+        $this->metaItems = [];
+        $this->emitUserRegisteredEvent = true;
+        $this->passwordLazyParams = [];
     }
 
     public function setEmail($email)
@@ -191,6 +210,18 @@ class UserBuilder extends Builder
         return $this->setOption('add_user_token', $addToken);
     }
 
+    public function setUserMeta(array $userMeta)
+    {
+        $this->metaItems = $userMeta;
+        return $this;
+    }
+
+    public function setEmitUserRegisteredEvent(bool $emitUserRegisteredEvent)
+    {
+        $this->emitUserRegisteredEvent = $emitUserRegisteredEvent;
+        return $this;
+    }
+
     public function save()
     {
         if ($this->passwordLazyParams) {
@@ -203,17 +234,26 @@ class UserBuilder extends Builder
 
     protected function store($tableName)
     {
-        $row = parent::store($tableName);
-        $this->emitter->emit(new UserCreatedEvent($row, $this->originalPassword, $this->sendEmail));
+        $user = parent::store($tableName);
 
-        if ($this->getOption('add_user_token')) {
-            $this->accessToken->addUserToken($row, null, null, $this->get('source'));
+        $this->emitter->emit(new NewUserEvent($user));
+
+        foreach ($this->metaItems as $key => $value) {
+            $this->userMetaRepository->add($user, $key, $value);
         }
 
-        $this->hermesEmitter->emit(new HermesMessage('user-created', [
-            'user_id' => $row->id,
-            'password' => $this->originalPassword
-        ]), HermesMessage::PRIORITY_HIGH);
-        return $row;
+        if ($this->emitUserRegisteredEvent) {
+            $this->emitter->emit(new UserRegisteredEvent($user, $this->originalPassword, $this->sendEmail));
+            $this->hermesEmitter->emit(new HermesMessage('user-registered', [
+                'user_id' => $user->id,
+                'password' => $this->originalPassword
+            ]), HermesMessage::PRIORITY_HIGH);
+        }
+
+        if ($this->getOption('add_user_token')) {
+            $this->accessToken->addUserToken($user, null, null, $this->get('source'));
+        }
+
+        return $user;
     }
 }

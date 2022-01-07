@@ -625,3 +625,11 @@ config:
 		name: Google Sign-In povolené
 	apple_sign_in_enabled:
 		name: Apple Sign-In povolené
+
+model:
+	user_builder:
+		error:
+			email_missing: Nebol zadaný email
+			email_taken: Email %email% je už registrovaný
+			password_short: Heslo musí byť dlhé aspoň %length% znakov
+			public_name_missing: Nebolo zadané verejné meno

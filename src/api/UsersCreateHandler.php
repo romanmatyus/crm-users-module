@@ -13,6 +13,7 @@ use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\User\UnclaimedUser;
 use Nette\Database\Table\IRow;
 use Nette\Http\Response;
 use Nette\Utils\Validators;
@@ -27,16 +28,20 @@ class UsersCreateHandler extends ApiHandler
 
     private $usersRepository;
 
+    private UnclaimedUser $unclaimedUser;
+
     public function __construct(
         UserManager $userManager,
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
-        UsersRepository $usersRepository
+        UsersRepository $usersRepository,
+        UnclaimedUser $unclaimedUser
     ) {
         $this->userManager = $userManager;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
         $this->usersRepository = $usersRepository;
+        $this->unclaimedUser = $unclaimedUser;
     }
 
     public function params()
@@ -53,6 +58,7 @@ class UsersCreateHandler extends ApiHandler
             new InputParam(InputParam::TYPE_POST, 'send_email', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'disable_email_validation', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'unclaimed', InputParam::OPTIONAL),
         ];
     }
 
@@ -77,8 +83,11 @@ class UsersCreateHandler extends ApiHandler
             return $response;
         }
 
+        $unclaimed = filter_var($params['unclaimed'], FILTER_VALIDATE_BOOLEAN);
         $user = $this->userManager->loadUserByEmail($email);
-        if ($user) {
+
+        // if user found allow only unclaimed user to get registered
+        if ($user && ($unclaimed || !$this->unclaimedUser->isUnclaimedUser($user))) {
             $response = new JsonResponse(['status' => 'error', 'message' => 'Email is already taken', 'code' => 'email_taken']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
@@ -104,7 +113,7 @@ class UsersCreateHandler extends ApiHandler
             $checkEmail = false;
         }
 
-        $deviceToken = false;
+        $deviceToken = null;
         if (!empty($params['device_token'])) {
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
@@ -118,8 +127,16 @@ class UsersCreateHandler extends ApiHandler
             }
         }
 
+        $password = $params['password'] ?? null;
+
         try {
-            $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $params['password'] ?? null);
+            if ($user) {
+                $user = $this->unclaimedUser->makeUnclaimedUserRegistered($user, $sendEmail, $source, $referer, $checkEmail, $password, $deviceToken);
+            } elseif ($unclaimed) {
+                $user = $this->unclaimedUser->createUnclaimedUser($email, $source);
+            } else {
+                $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password);
+            }
         } catch (InvalidEmailException $e) {
             $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
@@ -149,7 +166,7 @@ class UsersCreateHandler extends ApiHandler
 
         $this->usersRepository->update($user, $userData);
 
-        $lastToken = $this->accessTokensRepository->allUserTokens($user->id)->limit(1)->fetch();
+        $lastToken = $this->accessTokensRepository->allUserTokens($user->id)->limit(1)->fetch() ?: null;
         if ($lastToken && $deviceToken) {
             $this->accessTokensRepository->pairWithDeviceToken($lastToken, $deviceToken);
         }
@@ -161,7 +178,7 @@ class UsersCreateHandler extends ApiHandler
         return $response;
     }
 
-    private function formatResponse(IRow $user, IRow $lastToken): array
+    private function formatResponse(IRow $user, ?IRow $lastToken): array
     {
         $user = $this->usersRepository->find($user->id);
         $result = [

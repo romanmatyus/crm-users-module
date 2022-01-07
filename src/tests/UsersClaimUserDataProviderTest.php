@@ -9,6 +9,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Crm\UsersModule\User\UnclaimedUser;
+use Nette\Database\Table\ActiveRow;
 
 class UsersClaimUserDataProviderTest extends DatabaseTestCase
 {
@@ -80,7 +81,6 @@ class UsersClaimUserDataProviderTest extends DatabaseTestCase
 
     public function testClaimUserNote(): void
     {
-
         $this->dataProvider->provide(['unclaimedUser' => $this->unclaimedUserObj, 'loggedUser' => $this->loggedUser]);
 
         // empty note
@@ -95,5 +95,15 @@ class UsersClaimUserDataProviderTest extends DatabaseTestCase
         $this->dataProvider->provide(['unclaimedUser' => $this->unclaimedUserObj, 'loggedUser' => $this->loggedUser]);
 
         $this->assertEquals("note\ntest", $this->usersRepository->getByEmail($this->loggedUser->email)->note);
+    }
+
+    private function loadUser(string $email, string $password, $role = UsersRepository::ROLE_USER, $active = true): ActiveRow
+    {
+        $user = $this->usersRepository->getByEmail($email);
+        if (!$user) {
+            $user = $this->usersRepository->add($email, $password, $role, $active);
+        }
+
+        return $user;
     }
 }

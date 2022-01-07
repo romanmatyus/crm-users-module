@@ -4,6 +4,9 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\Access\AccessTokenNotFoundException;
+use Crm\UsersModule\Auth\UserManager;
+use Crm\UsersModule\Events\NewUserEvent;
+use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
@@ -12,6 +15,8 @@ use Crm\UsersModule\Seeders\UsersSeeder;
 use Crm\UsersModule\User\ClaimedUserException;
 use Crm\UsersModule\User\UnclaimedUser;
 use Crm\UsersModule\User\UnclaimedUserException;
+use League\Event\AbstractListener;
+use League\Event\Emitter;
 use Nette\Database\Table\ActiveRow;
 
 class UnclaimedUserTest extends DatabaseTestCase
@@ -19,14 +24,8 @@ class UnclaimedUserTest extends DatabaseTestCase
     /** @var UnclaimedUser */
     private $unclaimedUser;
 
-    /** @var AccessTokensRepository */
-    private $accessTokensRepository;
-
-    /** @var DeviceTokensRepository */
-    private $deviceTokensRepository;
-
-    /** @var UsersRepository */
-    private $usersRepository;
+    /** @var Emitter */
+    private $emitter;
 
     private $unclaimedUserObj;
 
@@ -56,13 +55,20 @@ class UnclaimedUserTest extends DatabaseTestCase
         parent::setUp();
 
         $this->unclaimedUser = $this->inject(UnclaimedUser::class);
-        $this->usersRepository = $this->getRepository(UsersRepository::class);
-        $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
-        $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
+        $deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
+        $userManager = $this->inject(UserManager::class);
+        $this->emitter = $this->inject(Emitter::class);
 
         $this->unclaimedUserObj = $this->unclaimedUser->createUnclaimedUser();
-        $this->loggedUser = $this->usersRepository->getByEmail('admin@admin.sk');
-        $this->deviceToken = $this->deviceTokensRepository->add('test_device_id', 'test_device_token');
+        $this->loggedUser = $userManager->addNewUser('example@example.com');
+        $this->deviceToken = $deviceTokensRepository->add('test_device_id', 'test_device_token');
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        \Mockery::close();
     }
 
     public function testCreateUnclaimedUserWithoutEmail()
@@ -77,6 +83,12 @@ class UnclaimedUserTest extends DatabaseTestCase
     public function testCreateUnclaimedUserWithEmail()
     {
         $email = 'unclaimed@user.com';
+
+        $newUserEventListener = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
+        $this->emitter->addListener(NewUserEvent::class, $newUserEventListener);
+        $userRegisteredEventListener = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->never()->getMock();
+        $this->emitter->addListener(UserRegisteredEvent::class, $userRegisteredEventListener);
+
         $user = $this->unclaimedUser->createUnclaimedUser($email);
 
         $this->assertIsObject($user);

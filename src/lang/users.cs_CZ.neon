@@ -618,3 +618,11 @@ config:
 		name: Google Sign-In povoleno
 	apple_sign_in_enabled:
 		name: Apple Sign-In povoleno
+
+model:
+	user_builder:
+		error:
+			email_missing: Nebyl zadán email
+			email_taken: Email %email% je již registrován
+			password_short: Heslo musí mít alespoň %length% znaků
+			public_name_missing: Nebylo zadáno veřejné jméno

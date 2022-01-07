@@ -13,6 +13,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Exception;
 use League\Event\Emitter;
+use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\IRow;
 use Nette\Utils\JsonException;
@@ -40,6 +41,8 @@ class UnclaimedUser
 
     private $userData;
 
+    private Context $dbContext;
+
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
         DataProviderManager $dataProviderManager,
@@ -47,7 +50,8 @@ class UnclaimedUser
         UserManager $userManager,
         UserMetaRepository $userMetaRepository,
         UsersRepository $usersRepository,
-        UserData $userData
+        UserData $userData,
+        Context $dbContext
     ) {
         $this->userManager = $userManager;
         $this->userMetaRepository = $userMetaRepository;
@@ -56,6 +60,7 @@ class UnclaimedUser
         $this->emitter = $emitter;
         $this->usersRepository = $usersRepository;
         $this->userData = $userData;
+        $this->dbContext = $dbContext;
     }
 
     /**
@@ -73,9 +78,17 @@ class UnclaimedUser
             $email = $this->generateUnclaimedUserEmail();
         }
 
-        $user = $this->userManager->addNewUser($email, false, $source, null, false, null, false);
-        $this->userMetaRepository->add($user, self::META_KEY, 1);
-        return $user;
+        return $this->userManager->addNewUser(
+            $email,
+            false,
+            $source,
+            null,
+            false,
+            null,
+            false,
+            [self::META_KEY => 1],
+            false
+        );
     }
 
     /**
@@ -152,5 +165,31 @@ class UnclaimedUser
             return null;
         }
         return $this->usersRepository->find($claimedUserId);
+    }
+
+    public function makeUnclaimedUserRegistered(
+        $unclaimedUser,
+        $sendEmail = true,
+        $source = 'unknown',
+        $referer = null,
+        $checkEmail = true,
+        $password = null,
+        $deviceToken = null
+    ) {
+        $this->dbContext->beginTransaction();
+        try {
+            $email = $unclaimedUser->email;
+            $this->usersRepository->update($unclaimedUser, ['email' => $this->generateUnclaimedUserEmail()]);
+
+            $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password);
+            $this->claimUser($unclaimedUser, $user, $deviceToken);
+        } catch (Exception $exception) {
+            $this->dbContext->rollback();
+            throw $exception;
+        }
+
+        $this->dbContext->commit();
+
+        return $user;
     }
 }

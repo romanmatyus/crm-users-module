@@ -122,6 +122,6 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
 
     private function getUser($email)
     {
-        return $this->usersRepository->add($email, 'secret', '', '');
+        return $this->usersRepository->add($email, 'secret');
     }
 }

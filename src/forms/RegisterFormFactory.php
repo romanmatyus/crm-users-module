@@ -23,7 +23,7 @@ class RegisterFormFactory
 
     public $onUserExists;
 
-    public $onUserCreated;
+    public $onUserRegistered;
 
     public function __construct(
         UserManager $userManager,
@@ -85,8 +85,8 @@ class RegisterFormFactory
             $form = $provider->submit($user, $form);
         }
 
-        if ($this->onUserCreated) {
-            ($this->onUserCreated)($form, $values, $user);
+        if ($this->onUserRegistered) {
+            ($this->onUserRegistered)($form, $values, $user);
         }
     }
 }

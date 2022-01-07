@@ -13,7 +13,6 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
-use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
@@ -45,11 +44,8 @@ class UserManager
 
     private $userMetaRepository;
 
-    private $userConnectedAccountsRepository;
-
     public function __construct(
         UsersRepository $usersRepository,
-        UserConnectedAccountsRepository $userConnectedAccountsRepository,
         PasswordGenerator $passwordGenerator,
         Emitter $emitter,
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
@@ -68,25 +64,25 @@ class UserManager
         $this->passwordResetTokensRepository = $passwordResetTokensRepository;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->userMetaRepository = $userMetaRepository;
-        $this->userConnectedAccountsRepository = $userConnectedAccountsRepository;
     }
 
     /**
-     * @param string $email
-     * @param bool $sendEmail
-     * @param string $source
-     * @param null $referer
-     * @param bool $checkEmail
-     * @param string $password
-     * @param bool $addToken
-     *
      * @return @var ActiveRow|bool $user
      * @throws InvalidEmailException
      * @throws UserAlreadyExistsException
      * @throws \Nette\Utils\JsonException
      */
-    public function addNewUser($email, $sendEmail = true, $source = 'unknown', $referer = null, $checkEmail = true, $password = null, $addToken = true)
-    {
+    public function addNewUser(
+        string $email,
+        bool $sendEmail = true,
+        string $source = 'unknown',
+        ?string $referer = null,
+        bool $checkEmail = true,
+        ?string $password = null,
+        bool $addToken = true,
+        array $userMeta = [],
+        bool $emitUserRegisteredEvent = true
+    ) {
         if ($checkEmail && !$this->emailValidator->isValid($email)) {
             throw new InvalidEmailException($email);
         }
@@ -108,6 +104,8 @@ class UserManager
                 ->setReferer($referer)
                 ->setSource($source)
                 ->setAddTokenOption($addToken)
+                ->setUserMeta($userMeta)
+                ->setEmitUserRegisteredEvent($emitUserRegisteredEvent)
                 ->save();
         } catch (UniqueConstraintViolationException $e) {
             throw new UserAlreadyExistsException("Cannot create user, unique constraint triggered: " . $e->getMessage());

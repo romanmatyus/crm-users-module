@@ -280,7 +280,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     {
         $user = $this->userManager->loadUserByEmail($email);
         if (!$user) {
-            $user = $this->usersRepository->add($email, $password, '', '', $role, (int)$active);
+            $user = $this->usersRepository->add($email, $password, $role, (int)$active);
         }
         return $user;
     }

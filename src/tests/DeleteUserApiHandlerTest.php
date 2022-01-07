@@ -93,7 +93,7 @@ class DeleteUserApiHandlerTest extends DatabaseTestCase
     private function getUser()
     {
         if (!$this->user) {
-            $this->user = $this->usersRepository->add(self::EMAIL, 'nbusr123', '', '');
+            $this->user = $this->usersRepository->add(self::EMAIL, 'nbusr123');
         }
         return $this->user;
     }

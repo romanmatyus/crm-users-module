@@ -4,8 +4,12 @@ namespace Crm\UsersModule\Tests;
 
 use Crm\UsersModule\Auth\InvalidEmailException;
 use Crm\UsersModule\Auth\UserManager;
+use Crm\UsersModule\Events\NewUserEvent;
+use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
+use League\Event\AbstractListener;
+use League\Event\Emitter;
 
 class UserManagerTest extends BaseTestCase
 {
@@ -14,6 +18,9 @@ class UserManagerTest extends BaseTestCase
 
     /** @var UserManager */
     private $userManager;
+
+    /** @var Emitter */
+    private $emitter;
 
     public function requiredSeeders(): array
     {
@@ -26,11 +33,25 @@ class UserManagerTest extends BaseTestCase
 
         $this->usersRepository = $this->getRepository(UsersRepository::class);
         $this->userManager = $this->inject(UserManager::class);
+        $this->emitter = $this->inject(Emitter::class);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        \Mockery::close();
     }
 
     public function testAddingNewUser()
     {
+        $newUserEventListener = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
+        $this->emitter->addListener(NewUserEvent::class, $newUserEventListener);
+        $userRegisteredEventListener = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
+        $this->emitter->addListener(UserRegisteredEvent::class, $userRegisteredEventListener);
+
         $user = $this->userManager->addNewUser("admin@example.com");
+
         $this->assertEquals("admin@example.com", $user->email);
         $user = $this->usersRepository->getByEmail("admin@example.com");
         $this->assertEquals("admin@example.com", $user->email);

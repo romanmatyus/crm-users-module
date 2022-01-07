@@ -104,8 +104,6 @@ class ListUsersHandlerTest extends DatabaseTestCase
             $user = $this->usersRepository->add(
                 $email,
                 'password',
-                '',
-                '',
                 UsersRepository::ROLE_USER,
                 $activated
             );

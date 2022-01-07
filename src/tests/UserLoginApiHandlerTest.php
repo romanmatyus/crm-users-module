@@ -170,7 +170,7 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     private function getUser()
     {
         if (!$this->user) {
-            $this->user = $this->usersRepository->add(self::LOGIN, self::PASSWORD, '', '');
+            $this->user = $this->usersRepository->add(self::LOGIN, self::PASSWORD);
         }
         return $this->user;
     }

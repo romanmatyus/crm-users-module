@@ -6,7 +6,9 @@ use Crm\ApplicationModule\Cache\CacheRepository;
 use Crm\ApplicationModule\Hermes\HermesMessage;
 use Crm\ApplicationModule\Repository;
 use Crm\ApplicationModule\Repository\AuditLogRepository;
+use Crm\UsersModule\Events\NewUserEvent;
 use Crm\UsersModule\Events\UserDisabledEvent;
+use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Events\UserUpdatedEvent;
 use League\Event\Emitter;
 use Nette\Database\Context;
@@ -65,12 +67,10 @@ class UsersRepository extends Repository
     final public function add(
         $email,
         $password,
-        $firstName,
-        $lastName,
         $role = self::ROLE_USER,
         $active = true,
-        $address = '',
-        $extId = null
+        $extId = null,
+        $preregistration = false
     ) {
         $user = $this->getByEmail($email);
         if ($user) {
@@ -79,19 +79,28 @@ class UsersRepository extends Repository
         if (strlen($password) < 5) {
             throw new ShortPasswordException('Heslo je príliš krátke');
         }
-        return $this->insert([
+        $row = $this->insert([
             'email' => $email,
             'public_name' => $email,
             'password' => Passwords::hash($password),
-            'first_name' => $firstName,
-            'last_name' => $lastName,
             'role' => $role,
             'created_at' => new \DateTime(),
             'modified_at' => new \DateTime(),
-            'active' => intval($active),
+            'active' => (int)$active,
             'ext_id' => $extId,
             'registration_channel' => self::DEFAULT_REGISTRATION_CHANNEL
         ]);
+
+        $this->emitter->emit(new NewUserEvent($row));
+        if (!$preregistration) {
+            $this->emitter->emit(new UserRegisteredEvent($row, $password));
+            $this->hermesEmitter->emit(new HermesMessage('user-registered', [
+                'user_id' => $row->id,
+                'password' => $password
+            ]), HermesMessage::PRIORITY_HIGH);
+        }
+
+        return $row;
     }
 
     final public function totalCount($allowCached = false, $forceCacheUpdate = false)
