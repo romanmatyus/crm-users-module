@@ -35,7 +35,7 @@ class UserGroupApiHandler extends ApiHandler
         $this->userGroupsRepository = $userGroupsRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),

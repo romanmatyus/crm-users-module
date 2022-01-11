@@ -41,7 +41,7 @@ class CreateAddressHandler extends ApiHandler
         $this->emitter = $emitter;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),

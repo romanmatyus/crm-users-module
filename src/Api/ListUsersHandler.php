@@ -28,7 +28,7 @@ class ListUsersHandler extends ApiHandler
         $this->usersRepository = $usersRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'user_ids', InputParam::REQUIRED),

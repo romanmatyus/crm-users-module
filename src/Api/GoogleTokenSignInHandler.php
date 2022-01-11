@@ -50,7 +50,7 @@ class GoogleTokenSignInHandler extends ApiHandler
         $this->linkGenerator = $linkGenerator;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'id_token', InputParam::REQUIRED),
@@ -79,7 +79,7 @@ class GoogleTokenSignInHandler extends ApiHandler
         $createAccessToken = filter_var($params['create_access_token'], FILTER_VALIDATE_BOOLEAN) ?? false;
         $gsiAuthCode = $params['gsi_auth_code'] ?? null;
         $isWeb = filter_var($params['is_web'], FILTER_VALIDATE_BOOLEAN) ?? false;
-        
+
         $deviceToken = null;
         if (!empty($params['device_token'])) {
             if (!$createAccessToken) {
@@ -111,7 +111,7 @@ class GoogleTokenSignInHandler extends ApiHandler
             // Otherwise, use standard callback URI also used in Google presenter.
             // @see https://github.com/googleapis/google-auth-library-php/blob/21dd478e77b0634ed9e3a68613f74ed250ca9347/src/OAuth2.php#L777
             $redirectUri = $isWeb ? 'postmessage' : $this->linkGenerator->link('Users:Google:Callback');
-            
+
             try {
                 $creds = $this->googleSignIn->exchangeAuthCode($gsiAuthCode, $redirectUri);
                 if (!isset($creds['id_token']) || !isset($creds['access_token'])) {
@@ -126,7 +126,7 @@ class GoogleTokenSignInHandler extends ApiHandler
                 Debugger::log($e->getMessage(), Debugger::EXCEPTION);
             }
         }
-        
+
         $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken);
 
         if (!$user) {

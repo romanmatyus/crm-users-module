@@ -21,7 +21,7 @@ class UserDataHandler extends ApiHandler
         $this->userData = $userData;
     }
 
-    public function params()
+    public function params(): array
     {
         return [];
     }

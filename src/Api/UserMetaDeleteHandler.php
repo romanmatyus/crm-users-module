@@ -26,7 +26,7 @@ class UserMetaDeleteHandler extends ApiHandler
         $this->usersRepository = $usersRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [];
     }

@@ -32,7 +32,7 @@ class EmailValidationApiHandler extends ApiHandler
         $this->unclaimedUser = $unclaimedUser;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),
@@ -51,7 +51,7 @@ class EmailValidationApiHandler extends ApiHandler
     public function handle(ApiAuthorizationInterface $authorization)
     {
         $paramsProcessor = new ParamsProcessor($this->params());
-    
+
         $error = $paramsProcessor->isError();
         if ($error) {
             $response = new JsonResponse([
@@ -62,7 +62,7 @@ class EmailValidationApiHandler extends ApiHandler
             $response->setHttpCode(IResponse::S400_BAD_REQUEST);
             return $response;
         }
-    
+
         $params = $paramsProcessor->getValues();
         if (!Validators::isEmail($params['email'])) {
             $response = new JsonResponse([
@@ -73,7 +73,7 @@ class EmailValidationApiHandler extends ApiHandler
             $response->setHttpCode(IResponse::S400_BAD_REQUEST);
             return $response;
         }
-        
+
         $user = $this->usersRepository->getByEmail($params['email']);
         if (!$user || $this->unclaimedUser->isUnclaimedUser($user)) {
             $result = [

@@ -9,7 +9,7 @@ use Nette\Http\Response;
 
 class UserInfoHandler extends ApiHandler
 {
-    public function params()
+    public function params(): array
     {
         return [];
     }

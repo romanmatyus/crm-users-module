@@ -25,7 +25,7 @@ class GetDeviceTokenApiHandler extends ApiHandler
         $this->deviceTokensRepository = $deviceTokensRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'device_id', InputParam::REQUIRED),

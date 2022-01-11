@@ -25,7 +25,7 @@ class UsersLogoutHandler extends ApiHandler
         $this->emitter = $emitter;
     }
 
-    public function params()
+    public function params(): array
     {
         return [];
     }

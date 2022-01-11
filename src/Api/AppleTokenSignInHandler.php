@@ -36,7 +36,7 @@ class AppleTokenSignInHandler extends ApiHandler
         $this->usersRepository = $usersRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'id_token', InputParam::REQUIRED),

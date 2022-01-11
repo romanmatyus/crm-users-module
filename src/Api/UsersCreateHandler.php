@@ -44,7 +44,7 @@ class UsersCreateHandler extends ApiHandler
         $this->unclaimedUser = $unclaimedUser;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),

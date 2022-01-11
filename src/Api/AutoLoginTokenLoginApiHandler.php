@@ -33,7 +33,7 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
         $this->deviceTokensRepository = $deviceTokensRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'autologin_token', InputParam::REQUIRED),

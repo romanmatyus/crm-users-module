@@ -21,7 +21,7 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
         $this->userManager = $userManager;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),

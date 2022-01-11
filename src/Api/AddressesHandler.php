@@ -25,7 +25,7 @@ class AddressesHandler extends ApiHandler
         $this->addressesRepository = $addressesRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_GET, 'email', InputParam::REQUIRED),

@@ -24,7 +24,7 @@ class UserMetaListHandler extends ApiHandler
         $this->userMetaRepository = $userMetaRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_GET, 'key', InputParam::OPTIONAL),

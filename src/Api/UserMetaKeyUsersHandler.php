@@ -20,7 +20,7 @@ class UserMetaKeyUsersHandler extends ApiHandler
         $this->userMetaRepository = $userMetaRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [];
     }

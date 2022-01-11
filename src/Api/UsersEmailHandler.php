@@ -33,7 +33,7 @@ class UsersEmailHandler extends ApiHandler
         $this->userAuthenticator = $userAuthenticator;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),

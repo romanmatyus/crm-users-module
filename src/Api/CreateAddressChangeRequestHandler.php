@@ -40,7 +40,7 @@ class CreateAddressChangeRequestHandler extends ApiHandler
         $this->countriesRepository = $countriesRepository;
     }
 
-    public function params()
+    public function params(): array
     {
         return [
             new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),
