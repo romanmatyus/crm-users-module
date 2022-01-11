@@ -29,7 +29,7 @@ class UserUpdatedHandler extends AbstractListener
 
         // If updated user is currently logged user, update his/her session data
         if ($this->user->isLoggedIn() && $updatedUser->id == $this->user->getId()) {
-            $this->user->getStorage()->setIdentity($this->userAuthenticator->getIdentity($updatedUser));
+            $this->user->getStorage()->saveAuthentication($this->userAuthenticator->getIdentity($updatedUser));
         }
     }
 }
