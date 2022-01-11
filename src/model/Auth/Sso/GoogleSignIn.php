@@ -214,7 +214,9 @@ class GoogleSignIn
 
         //save cookie for later verification
         $this->setLoginCookie(self::COOKIE_GSI_STATE, $state);
-        $this->setLoginCookie(self::COOKIE_GSI_SOURCE, $source);
+        if ($source) {
+            $this->setLoginCookie(self::COOKIE_GSI_SOURCE, $source);
+        }
 
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         $this->setLoginCookie(self::COOKIE_GSI_USER_ID, $userId);

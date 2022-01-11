@@ -118,7 +118,9 @@ class AppleSignIn
 
         //save cookie for later verification
         $this->setLoginCookie(self::COOKIE_ASI_STATE, $state);
-        $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
+        if ($source) {
+            $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
+        }
         $this->setLoginCookie(self::COOKIE_ASI_NONCE, $nonce);
 
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
