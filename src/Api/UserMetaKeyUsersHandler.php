@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Api;
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Api\JsonValidationTrait;
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
+use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Nette\Http\Response;
 
@@ -25,7 +25,7 @@ class UserMetaKeyUsersHandler extends ApiHandler
         return [];
     }
 
-    public function handle(ApiAuthorizationInterface $authorization)
+    public function handle(array $params): ApiResponseInterface
     {
         $result = $this->validateInput(__DIR__ . '/user-meta-key-users.schema.json');
         if ($result->hasErrorResponse()) {

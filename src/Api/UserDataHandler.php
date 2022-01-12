@@ -4,8 +4,8 @@ namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Authorization\TokenParser;
+use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\User\UserData;
 use Nette\Http\Response;
 
@@ -26,7 +26,7 @@ class UserDataHandler extends ApiHandler
         return [];
     }
 
-    public function handle(ApiAuthorizationInterface $authorization)
+    public function handle(array $params): ApiResponseInterface
     {
         $tokenParser = new TokenParser();
         if (!$tokenParser->isOk()) {

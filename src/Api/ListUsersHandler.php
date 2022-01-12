@@ -4,9 +4,9 @@ namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
+use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
@@ -37,11 +37,8 @@ class ListUsersHandler extends ApiHandler
         ];
     }
 
-    /**
-     * @param ApiAuthorizationInterface $authorization
-     * @return \Nette\Application\Response
-     */
-    public function handle(ApiAuthorizationInterface $authorization)
+
+    public function handle(array $params): ApiResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $params = $paramsProcessor->getValues();

@@ -5,7 +5,7 @@ namespace Crm\UsersModule\Api;
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\EmptyResponse;
 use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
+use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
 use Kdyby\Translation\Translator;
@@ -30,7 +30,7 @@ class DeleteUserApiHandler extends ApiHandler
         return [];
     }
 
-    public function handle(ApiAuthorizationInterface $authorization)
+    public function handle(array $params): ApiResponseInterface
     {
         if (!($authorization instanceof UsersApiAuthorizationInterface)) {
             throw new \Exception("Wrong authorization service used. Should be 'UsersApiAuthorizationInterface'");

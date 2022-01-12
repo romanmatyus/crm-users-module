@@ -4,7 +4,7 @@ namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
+use Crm\ApiModule\Response\ApiResponseInterface;
 use Nette\Http\Response;
 
 class UserInfoHandler extends ApiHandler
@@ -14,7 +14,7 @@ class UserInfoHandler extends ApiHandler
         return [];
     }
 
-    public function handle(ApiAuthorizationInterface $authorization)
+    public function handle(array $params): ApiResponseInterface
     {
         $data = $authorization->getAuthorizedData();
         if (!isset($data['token']) || !isset($data['token']->user) || empty($data['token']->user)) {
