@@ -16,6 +16,7 @@ class UserInfoHandler extends ApiHandler
 
     public function handle(array $params): ApiResponseInterface
     {
+        $authorization = $this->getAuthorization();
         $data = $authorization->getAuthorizedData();
         if (!isset($data['token']) || !isset($data['token']->user) || empty($data['token']->user)) {
             $response = new JsonResponse(['status' => 'error', 'message' => 'Cannot authorize user']);
