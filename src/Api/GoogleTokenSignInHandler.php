@@ -34,8 +34,6 @@ class GoogleTokenSignInHandler extends ApiHandler
 
     private $usersRepository;
 
-    private $linkGenerator;
-
     public function __construct(
         GoogleSignIn $googleSignIn,
         AccessTokensRepository $accessTokensRepository,
