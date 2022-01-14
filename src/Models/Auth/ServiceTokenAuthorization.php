@@ -34,7 +34,7 @@ class ServiceTokenAuthorization implements UsersApiAuthorizationInterface
         $this->request = $request;
     }
 
-    public function authorized($resource = Authorizator::ALL)
+    public function authorized($resource = Authorizator::ALL): bool
     {
         $userId = $this->request->getQuery('user_id');
         if ($userId) {
@@ -63,7 +63,7 @@ class ServiceTokenAuthorization implements UsersApiAuthorizationInterface
      * @return mixed
      * @throws \Exception
      */
-    public function getErrorMessage()
+    public function getErrorMessage(): ?string
     {
         if (is_null($this->authorizator)) {
             throw new \Exception('Authorize token first - use `authorized` method.');

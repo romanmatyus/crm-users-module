@@ -21,12 +21,12 @@ class TestUserTokenAuthorization implements UsersApiAuthorizationInterface, Acce
         }
     }
 
-    public function authorized($resource = Authorizator::ALL)
+    public function authorized($resource = Authorizator::ALL): bool
     {
         return true;
     }
 
-    public function getErrorMessage()
+    public function getErrorMessage(): ?string
     {
         return false;
     }

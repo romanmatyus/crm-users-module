@@ -37,7 +37,7 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, A
         $this->applicationConfig = $applicationConfig;
     }
 
-    public function authorized($resource = Authorizator::ALL)
+    public function authorized($resource = Authorizator::ALL): bool
     {
         $tokenParser = new TokenParser();
         if (!$tokenParser->isOk()) {
@@ -71,7 +71,7 @@ class DefaultUserTokenAuthorization implements UsersApiAuthorizationInterface, A
         return true;
     }
 
-    public function getErrorMessage()
+    public function getErrorMessage(): ?string
     {
         return $this->errorMessage;
     }

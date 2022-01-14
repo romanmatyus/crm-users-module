@@ -39,7 +39,7 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
         ];
     }
 
-    public function authorized($resource = Authorizator::ALL)
+    public function authorized($resource = Authorizator::ALL): bool
     {
         foreach ($this->authorizators as $authDef) {
             if ($authDef['useAlways'] || (isset($_GET['source']) && $authDef['source'] === $_GET['source'])) {
@@ -59,7 +59,7 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
         return $this->authorizator->authorized($resource);
     }
 
-    public function getErrorMessage()
+    public function getErrorMessage(): ?string
     {
         if (is_null($this->authorizator)) {
             throw new \Exception('Authorize token first - use `authorized` method.');

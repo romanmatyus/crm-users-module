@@ -37,7 +37,7 @@ class DeviceTokenAuthorization implements UsersApiAuthorizationInterface, Access
         $this->emitter = $emitter;
     }
 
-    public function authorized($resource = Authorizator::ALL)
+    public function authorized($resource = Authorizator::ALL): bool
     {
         $this->authorizedData = [];
         $this->authorizedUsers = [];
@@ -76,7 +76,7 @@ class DeviceTokenAuthorization implements UsersApiAuthorizationInterface, Access
         return true;
     }
 
-    public function getErrorMessage()
+    public function getErrorMessage(): ?string
     {
         return $this->errorMessage;
     }
