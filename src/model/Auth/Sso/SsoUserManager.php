@@ -7,12 +7,12 @@ use Crm\UsersModule\Auth\PasswordGenerator;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
-use Nette\Database\Context;
+//use Nette\Database\Context;
 use Nette\Database\Table\IRow;
 
 class SsoUserManager
 {
-    private Context $dbContext;
+//    private Context $dbContext;
 
     private UserConnectedAccountsRepository $connectedAccountsRepository;
 
@@ -25,11 +25,11 @@ class SsoUserManager
     public function __construct(
         PasswordGenerator $passwordGenerator,
         UserBuilder $userBuilder,
-        Context $dbContext,
+        //        Context $dbContext,
         UserConnectedAccountsRepository $connectedAccountsRepository,
         UsersRepository $usersRepository
     ) {
-        $this->dbContext = $dbContext;
+//        $this->dbContext = $dbContext;
         $this->connectedAccountsRepository = $connectedAccountsRepository;
         $this->usersRepository = $usersRepository;
         $this->passwordGenerator = $passwordGenerator;
@@ -44,24 +44,26 @@ class SsoUserManager
         $connectedAccountMeta = null,
         $loggedUserId = null
     ): IRow {
-        $this->dbContext->beginTransaction();
-        try {
-            if ($loggedUserId) {
-                $connectedAccount = $this->connectedAccountsRepository->getByExternalId($type, $externalId);
-                if ($connectedAccount && $connectedAccount->user->id !== $loggedUserId) {
-                    throw new AlreadyLinkedAccountSsoException($externalId, $email);
-                }
-
-                $user = $this->usersRepository->find($loggedUserId);
-            } else {
-                $user = $this->matchUser($type, $externalId, $email);
-
-                if (!$user) {
-                    // if user is not in our DB, create him/her
-                    // our access_token is not automatically created
-                    $user = $userBuilder->save();
-                }
+        // Transaction may cause hermes event handlers to fail occasionally because the data is not committed into db at the time of event handling.
+        // TODO: Return transaction with remp/crm#2218 implementation
+//        $this->dbContext->beginTransaction();
+//        try {
+        if ($loggedUserId) {
+            $connectedAccount = $this->connectedAccountsRepository->getByExternalId($type, $externalId);
+            if ($connectedAccount && $connectedAccount->user->id !== $loggedUserId) {
+                throw new AlreadyLinkedAccountSsoException($externalId, $email);
             }
+
+            $user = $this->usersRepository->find($loggedUserId);
+        } else {
+            $user = $this->matchUser($type, $externalId, $email);
+
+            if (!$user) {
+                // if user is not in our DB, create him/her
+                // our access_token is not automatically created
+                $user = $userBuilder->save();
+            }
+        }
 
             $this->connectedAccountsRepository->connectUser(
                 $user,
@@ -70,11 +72,11 @@ class SsoUserManager
                 $email,
                 $connectedAccountMeta
             );
-        } catch (\Exception $e) {
-            $this->dbContext->rollBack();
-            throw $e;
-        }
-        $this->dbContext->commit();
+//        } catch (\Exception $e) {
+//            $this->dbContext->rollBack();
+//            throw $e;
+//        }
+//        $this->dbContext->commit();
 
         return $user;
     }
