@@ -63,7 +63,8 @@ class UsersLogoutHandlerTest extends DatabaseTestCase
         $accessToken2 = $this->accessTokenRepository->add($user1, 3);
         $this->assertEquals(2, $this->accessTokenRepository->all()->count());
 
-        $response = $this->logoutHandler->handle(new TestUserTokenAuthorization($accessToken1, $user1));
+        $this->logoutHandler->setAuthorization(new TestUserTokenAuthorization($accessToken1, $user1));
+        $response = $this->logoutHandler->handle([]); // TODO: fix params
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());
 
@@ -91,7 +92,8 @@ class UsersLogoutHandlerTest extends DatabaseTestCase
         $accessToken2 = $this->accessTokenRepository->add($user2, 3);
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $deviceToken->token;
-        $response = $this->logoutHandler->handle($this->getUserTokenAuthorization());
+        $this->logoutHandler->setAuthorization($this->getUserTokenAuthorization());
+        $response = $this->logoutHandler->handle([]); // TODO: fix params
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());
 

@@ -83,7 +83,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
 
     public function testNoEmail()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
@@ -97,7 +98,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     {
          $_POST['email'] = '0test@user';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
@@ -112,7 +114,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $email = 'example@example.com';
         $_POST['email'] = $email;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonResponse::class, get_class($response));
@@ -131,7 +134,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $email = 'user@user.sk';
         $_POST['email'] = $email;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonResponse::class, get_class($response));
@@ -153,7 +157,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST['email'] = $email;
         $_POST['password'] = 'invalid';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonResponse::class, get_class($response));
@@ -175,7 +180,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST['email'] = $email;
         $_POST['password'] = 'password';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonResponse::class, get_class($response));
@@ -197,7 +203,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $this->unclaimedUser->createUnclaimedUser($email);
         $_POST['email'] = $email;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonResponse::class, get_class($response));

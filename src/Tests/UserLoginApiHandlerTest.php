@@ -91,7 +91,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
     public function testNotExistingUser()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(400, $response->getHttpCode());
@@ -108,7 +109,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = self::LOGIN;
         $_POST['password'] = self::PASSWORD;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(400, $response->getHttpCode());
@@ -125,7 +127,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = self::LOGIN;
         $_POST['password'] = self::PASSWORD;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(200, $response->getHttpCode());
@@ -146,7 +149,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $_POST['password'] = self::PASSWORD;
         $_POST['device_token'] = $deviceToken->token;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(200, $response->getHttpCode());

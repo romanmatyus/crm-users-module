@@ -61,7 +61,8 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 
     public function testRequiredMissing()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -75,7 +76,8 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = '0test@user.site';
         $_POST['type'] = 'test';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getHttpCode());
@@ -90,7 +92,8 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = '@test';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -107,7 +110,8 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 
         $_POST['country_iso'] = 'QQQ';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -122,7 +126,8 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = 'test';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getHttpCode());
@@ -145,7 +150,8 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $user = $this->userManager->loadUserByEmail($_POST['email']);
         $this->addressesRepository->add($user, $_POST['type'], null, null, $_POST['address'], null, $_POST['city'], $_POST['zip'], null, null);
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());

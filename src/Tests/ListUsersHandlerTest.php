@@ -48,7 +48,8 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $_POST['user_ids'] = Json::encode([$activated->getPrimary(),$deactivated->getPrimary()]);
         $_POST['page'] = 1;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(200, $response->getHttpCode());
@@ -78,7 +79,8 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $_POST['page'] = 1;
         $_POST['include_deactivated'] = true;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(200, $response->getHttpCode());

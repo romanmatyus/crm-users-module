@@ -61,7 +61,8 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
     {
         $_POST['device_id'] = 'asd123';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $this->assertEquals(JsonResponse::class, get_class($response));
 
         $payload = $response->getPayload();
@@ -70,7 +71,8 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
 
     public function testMissingDeviceIdParam()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
         $this->assertEquals(JsonResponse::class, get_class($response));
 
         $payload = $response->getPayload();
@@ -83,7 +85,8 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
         $_POST['device_id'] = 'asd123';
         $_POST['access_token'] = '1478';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -101,7 +104,8 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
         $accessTokenRow = $this->accessTokensRepository->add($user, 1);
         $_POST['access_token'] = $accessTokenRow->token;
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());

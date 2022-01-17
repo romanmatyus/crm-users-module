@@ -43,7 +43,8 @@ class CreateAddressHandlerTest extends BaseTestCase
 
     public function testRequiredMissing()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -57,7 +58,8 @@ class CreateAddressHandlerTest extends BaseTestCase
         $_POST['email'] = '0test@user.site';
         $_POST['type'] = 'test';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getHttpCode());
@@ -72,7 +74,8 @@ class CreateAddressHandlerTest extends BaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = '@test';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -89,7 +92,8 @@ class CreateAddressHandlerTest extends BaseTestCase
 
         $_POST['country_iso'] = 'QQQ';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -109,7 +113,8 @@ class CreateAddressHandlerTest extends BaseTestCase
         $_POST['zip'] = '98745';
         $_POST['country_iso'] = 'AU';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());

@@ -52,7 +52,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'test@example.com';
 
         $this->handler->setAction('validate');
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 200);
@@ -63,7 +64,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         // invalidate right away, sunny day scenario
 
         $this->handler->setAction('invalidate');
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 200);
@@ -77,7 +79,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'foo@bar.baz';
 
         $this->handler->setAction('validate');
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 404);
@@ -87,7 +90,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
     public function testSetEmailValidatedNoEmail()
     {
         $this->handler->setAction('validate');
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 400);
@@ -99,7 +103,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'non_email';
 
         $this->handler->setAction('validate');
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 400);
@@ -113,7 +118,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = $email;
 
         $this->handler->setAction('validate');
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getHttpCode(), 404);

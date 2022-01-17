@@ -38,7 +38,8 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
 
     public function testConfirmUserNoEmail()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
@@ -51,7 +52,8 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = '0test@user.site';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getHttpCode());
@@ -65,7 +67,8 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = 'admin@admin.sk';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getHttpCode());

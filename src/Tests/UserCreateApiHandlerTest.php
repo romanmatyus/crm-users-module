@@ -6,16 +6,10 @@ use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
-use Crm\UsersModule\Events\NewUserEvent;
-use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
-use Crm\UsersModule\User\UnclaimedUser;
-use League\Event\AbstractListener;
-use League\Event\Emitter;
-use Nette\Http\IResponse;
 
 class UserCreateApiHandlerTest extends DatabaseTestCase
 {
@@ -31,12 +25,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
     /** @var AccessTokensRepository */
     private $accessTokensRepository;
 
-    /** @var UnclaimedUser */
-    private $unclaimedUser;
-
-    /** @var Emitter */
-    private $emitter;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -44,17 +32,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $this->deviceTokensRepository = $this->getRepository(DeviceTokensRepository::class);
         $this->usersRepository = $this->getRepository(UsersRepository::class);
         $this->accessTokensRepository = $this->getRepository(AccessTokensRepository::class);
-        $this->unclaimedUser = $this->inject(UnclaimedUser::class);
-        $this->emitter = $this->inject(Emitter::class);
 
         $this->handler = $this->inject(UsersCreateHandler::class);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        \Mockery::close();
     }
 
     protected function requiredSeeders(): array
@@ -74,10 +53,11 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
     public function testCreateUserEmailError()
     {
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S404_NOT_FOUND, $response->getHttpCode());
+        $this->assertEquals(404, $response->getHttpCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -87,15 +67,11 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = '0test@user.site';
 
-        $listenerNewUser = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(NewUserEvent::class, $listenerNewUser);
-        $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
-
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals($response->getHttpCode(), 200);
 
         $payload = $response->getPayload();
         $this->assertEquals('ok', $payload['status']);
@@ -103,8 +79,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
         $user = $this->usersRepository->find($payload['user']['id']);
         $this->assertNotEmpty($user);
-
-        $this->assertFalse($this->unclaimedUser->isUnclaimedUser($user));
 
         unset($_POST['email']);
     }
@@ -116,15 +90,11 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = '0test2@user.site';
         $_POST['device_token'] = $deviceToken->token;
 
-        $listenerNewUser = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(NewUserEvent::class, $listenerNewUser);
-        $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
-
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals($response->getHttpCode(), 200);
 
         $payload = $response->getPayload();
         $this->assertEquals('ok', $payload['status']);
@@ -141,8 +111,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
         $this->assertNotEmpty($pair);
 
-        $this->assertFalse($this->unclaimedUser->isUnclaimedUser($user));
-
         unset($_POST['email'], $_POST['device_token']);
     }
 
@@ -151,110 +119,16 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = '0test2@user.site';
         $_POST['device_token'] = 'devtok_sd8a907sas987du';
 
-        $response = $this->handler->handle(new NoAuthorization());
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S400_BAD_REQUEST, $response->getHttpCode());
+        $this->assertEquals($response->getHttpCode(), 400);
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
         $this->assertEquals('device_token_doesnt_exist', $payload['code']);
 
         unset($_POST['email'], $_POST['device_token']);
-    }
-
-    public function testCreateUnclaimedUser()
-    {
-        $_POST['email'] = '0test2@user.site';
-        $_POST['unclaimed'] = true;
-
-        $listenerNewUser = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(NewUserEvent::class, $listenerNewUser);
-        $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->never()->getMock();
-        $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
-
-        $response = $this->handler->handle(new NoAuthorization());
-
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
-
-        $payload = $response->getPayload();
-        $this->assertEquals('ok', $payload['status']);
-        $this->assertArrayHasKey('user', $payload);
-
-        $user = $this->usersRepository->find($payload['user']['id']);
-        $this->assertNotEmpty($user);
-
-        $this->assertTrue($this->unclaimedUser->isUnclaimedUser($user));
-
-        unset($_POST['email'], $_POST['unclaimed']);
-    }
-
-    public function testUnclaimedUserAlreadyExists()
-    {
-        $email = '0test2@user.site';
-        $this->unclaimedUser->createUnclaimedUser($email);
-
-        $_POST['email'] = $email;
-        $_POST['unclaimed'] = true;
-
-        $response = $this->handler->handle(new NoAuthorization());
-
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S404_NOT_FOUND, $response->getHttpCode());
-
-        $payload = $response->getPayload();
-        $this->assertEquals('error', $payload['status']);
-        $this->assertEquals('email_taken', $payload['code']);
-
-        unset($_POST['email'], $_POST['unclaimed']);
-    }
-
-    public function testStandardUserAlreadyExists()
-    {
-        $email = '0test2@user.site';
-        $this->usersRepository->add($email, '123456');
-
-        $_POST['email'] = $email;
-
-        $response = $this->handler->handle(new NoAuthorization());
-
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S404_NOT_FOUND, $response->getHttpCode());
-
-        $payload = $response->getPayload();
-        $this->assertEquals('error', $payload['status']);
-        $this->assertEquals('email_taken', $payload['code']);
-
-        unset($_POST['email']);
-    }
-
-    public function testRegisterUnclaimedUser()
-    {
-        $email = '0test2@user.site';
-        $this->unclaimedUser->createUnclaimedUser($email);
-
-        $_POST['email'] = $email;
-
-        $listenerNewUser = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(NewUserEvent::class, $listenerNewUser);
-        $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
-
-        $response = $this->handler->handle(new NoAuthorization());
-
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
-
-        $payload = $response->getPayload();
-        $this->assertEquals('ok', $payload['status']);
-        $this->assertArrayHasKey('user', $payload);
-
-        $user = $this->usersRepository->find($payload['user']['id']);
-        $this->assertNotEmpty($user);
-
-        $this->assertFalse($this->unclaimedUser->isUnclaimedUser($user));
-
-        unset($_POST['email'], $_POST['unclaimed']);
     }
 }
