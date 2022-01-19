@@ -429,6 +429,15 @@ admin:
 		data: Data
 		no_records: No actions found
 
+	user_connected_accounts_list_widget:
+	    title: Connected user accounts
+	    not_found: Account is not connected with any service.
+	    type: Type
+	    email: Email
+	    created_at: Created at
+	    action_button: Disconnect
+	    flash_message: Account was disconnected
+
 	admin_group_admin:
 		title: Admin rights
 		groups: Admin groups

@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+    <div class="panel-heading">{_users.admin.user_connected_accounts_list_widget.title}</div>
+    <div class="panel-body">
+        {foreach $connectedAccounts as $connectedAccount}
+            <div class="row" style="margin-bottom: 1.5em">
+                <div class="col-lg-4 col-md-12 col-xs-4" style="margin-bottom: 0.3em">
+                    <label class="label label-default">{$connectedAccount->type}</label><br>
+                </div>
+                <div class="col-lg-8 col-md-12 col-xs-8">
+                    {$connectedAccount->email}<br>
+                    <span class="text text-muted">{$connectedAccount->created_at|userDate}</span>
+                </div>
+                <div class="col-lg-8 col-lg-offset-4 col-md-12 col-md-offset-0 col-xs-8 col-xs-offset-4">
+                    <a n:href="disconnect! $connectedAccount->id" class="btn btn-default" data-confirm="{_system.confirm_delete}">
+                        <i class="fa fa-trash"></i> {_users.admin.user_connected_accounts_list_widget.action_button}<br>
+                    </a>
+                </div>
+            </div>
+        {/foreach}
+        {if empty($connectedAccounts)}
+            <p class="bg-warning">{_users.admin.user_connected_accounts_list_widget.not_found}</p>
+        {/if}
+    </div>
+</div>

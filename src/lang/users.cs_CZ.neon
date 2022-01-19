@@ -431,6 +431,15 @@ admin:
 		data: Data
 		no_records: Nebyly nalezeny žádné události
 
+	user_connected_accounts_list_widget:
+	    title: Propojené konta užívatele
+	    not_found: Konto není přepojeno se žádnou službou.
+	    type: Typ
+	    email: Email
+	    created_at: Vytvořeno
+	    action_button: Odstránit propojení
+	    flash_message: Propojení konta bylo odstráněno
+
 	admin_group_admin:
 		title: Admin práva
 		groups: Admin skupiny

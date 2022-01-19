@@ -237,6 +237,11 @@ class UsersModule extends CrmModule
             580
         );
         $widgetManager->registerWidget(
+            'admin.user.detail.left',
+            $this->getInstance(\Crm\UsersModule\Components\UserConnectedAccountsListWidget::class),
+            710
+        );
+        $widgetManager->registerWidget(
             'dashboard.singlestat.totals',
             $this->getInstance(\Crm\UsersModule\Components\ActiveRegisteredUsersStatWidget::class),
             500
