@@ -50,6 +50,7 @@ frontend:
 			required: Please enter your current password
 			placeholder: current password
 			description: "If you don't remember your old password, <a href=\"%url%\" class=\"link\">click here</a> and we'll send you new password to your email address."
+			confirm: "Are you sure you want to reset password?"
 		new_password:
 			label: 'New password:'
 			required: Please enter new password

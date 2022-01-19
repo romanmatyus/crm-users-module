@@ -50,6 +50,7 @@ frontend:
 			required: Zadejte prosím Vaše aktuální heslo
 			placeholder: aktuální heslo
 			description: 'Pokud si nepamatujete své staré heslo, <a href="%url%" class="link">klikněte sem</a>, vygenerujeme vám nové a zašleme vám ho emailem.'
+			confirm: 'Opravdu chcete resetovat heslo?'
 		new_password:
 			label: 'Nové heslo:'
 			required: Zadejte prosím Vaše nové heslo

@@ -116,11 +116,12 @@ class UsersPresenter extends FrontendPresenter
     public function createComponentChangePasswordForm()
     {
         $form = $this->changePasswordFormFactory->create($this->getUser());
+        $confirmReset = $this->translator->translate('users.frontend.change_password.actual_password.confirm');
 
         $form['actual_password']
             ->setOption(
                 'description',
-                Html::el('span', ['class' => 'help-block'])
+                Html::el('span', ['class' => 'help-block', 'onclick' => "return confirm('$confirmReset')"])
                     ->setHtml(
                         $this->translator->translate(
                             'users.frontend.change_password.actual_password.description',
