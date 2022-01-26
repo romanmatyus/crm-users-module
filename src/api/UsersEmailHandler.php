@@ -7,6 +7,7 @@ use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
+use Crm\UsersModule\Auth\Rate\RateLimitException;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Email\EmailValidator;
@@ -65,6 +66,10 @@ class UsersEmailHandler extends ApiHandler
             ]);
             $status = 'taken';
             $passwordStatus = true;
+        } catch (RateLimitException $e) {
+            $response = new JsonResponse(['status' => 'error', 'message' => 'Rate limit exceeded', 'code' => 'rate_limit_exceeded']);
+            $response->setHttpCode(IResponse::S200_OK);
+            return $response;
         } catch (AuthenticationException $authException) {
             if ($authException->getCode() === UserAuthenticator::IDENTITY_NOT_FOUND) {
                 $status = 'available';
