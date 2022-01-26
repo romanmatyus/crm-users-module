@@ -190,7 +190,7 @@ userActionsLogRepository:
 
 UsersModule generates an access token for every successful user authentication. This token can be used to authenticate the user in API calls.
 
-You can log the user into the CRM automatically if you have such token thanks to the [`AccessTokenAuthenticator`](src/authenticator/AccessTokenAuthenticator.php).
+You can log the user into the CRM automatically if you have such token thanks to the [`AccessTokenAuthenticator`](src/Authenticator/AccessTokenAuthenticator.php).
 
 
 ### How to use
