@@ -29,6 +29,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Scenarios\AddressScenarioConditionModel;
 use Crm\UsersModule\Scenarios\AddressTypeCriteria;
 use Crm\UsersModule\Scenarios\IsConfirmedCriteria;
+use Crm\UsersModule\Scenarios\LocaleCriteria;
 use Crm\UsersModule\Scenarios\UserHasAddressCriteria;
 use Crm\UsersModule\Scenarios\UserSourceCriteria;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
@@ -289,12 +290,13 @@ class UsersModule extends CrmModule
         $scenariosCriteriaStorage->register('user', 'source', $this->getInstance(UserSourceCriteria::class));
         $scenariosCriteriaStorage->register('user', UserHasAddressCriteria::KEY, $this->getInstance(UserHasAddressCriteria::class));
         $scenariosCriteriaStorage->register('user', IsConfirmedCriteria::KEY, $this->getInstance(IsConfirmedCriteria::class));
+        $scenariosCriteriaStorage->register('address', AddressTypeCriteria::KEY, $this->getInstance(AddressTypeCriteria::class));
+        $scenariosCriteriaStorage->register('user', LocaleCriteria::KEY, $this->getInstance(LocaleCriteria::class));
 
         $scenariosCriteriaStorage->registerConditionModel(
             'address',
             $this->getInstance(AddressScenarioConditionModel::class)
         );
-        $scenariosCriteriaStorage->register('address', AddressTypeCriteria::KEY, $this->getInstance(AddressTypeCriteria::class));
     }
 
     public function registerApiCalls(ApiRoutersContainerInterface $apiRoutersContainer)

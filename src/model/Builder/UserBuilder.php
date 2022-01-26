@@ -9,9 +9,9 @@ use Crm\UsersModule\Events\NewUserEvent;
 use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Kdyby\Translation\Translator;
 use League\Event\Emitter;
 use Nette\Database\Context;
-use Nette\Localization\ITranslator;
 use Nette\Security\Passwords;
 
 class UserBuilder extends Builder
@@ -35,7 +35,8 @@ class UserBuilder extends Builder
     private array $passwordLazyParams;
 
     private UserMetaRepository $userMetaRepository;
-    private ITranslator $translator;
+
+    private Translator $translator;
 
     public function __construct(
         Context $database,
@@ -43,7 +44,7 @@ class UserBuilder extends Builder
         \Tomaj\Hermes\Emitter $hermesEmitter,
         AccessToken $accessToken,
         UserMetaRepository $userMetaRepository,
-        ITranslator $translator
+        Translator $translator
     ) {
         parent::__construct($database);
         $this->emitter = $emitter;
@@ -87,6 +88,7 @@ class UserBuilder extends Builder
         $this->set('ext_id', null);
         $this->set('role', UsersRepository::ROLE_USER);
         $this->set('invoice', false);
+        $this->set('locale', $this->translator->getDefaultLocale());
         $this->set('registration_channel', UsersRepository::DEFAULT_REGISTRATION_CHANNEL);
         $this->setOption('add_user_token', true);
 
@@ -114,6 +116,11 @@ class UserBuilder extends Builder
     public function setPublicName($publicName)
     {
         return $this->set('public_name', $publicName);
+    }
+
+    public function setLocale($locale)
+    {
+        return $this->set('locale', $locale);
     }
 
     public function setRole($role)

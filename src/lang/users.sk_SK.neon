@@ -328,6 +328,8 @@ admin:
 		address_type:
 			label: Typ adresy
 			param: Typ adresy
+		locale:
+			label: Jazyk
 
 	user_groups_form:
 		user_added: Používateľ bol pridaný do skupiny

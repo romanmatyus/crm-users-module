@@ -35,6 +35,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
             'created_at' => $user->created_at->getTimestamp(),
             'confirmed_at' => $user->confirmed_at ? $user->confirmed_at->getTimestamp() : null,
             'hashed_id' => UserManager::hashedUserId($user->id),
+            'locale' => $user->locale,
         ];
     }
 

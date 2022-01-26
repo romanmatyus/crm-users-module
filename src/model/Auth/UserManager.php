@@ -81,7 +81,8 @@ class UserManager
         ?string $password = null,
         bool $addToken = true,
         array $userMeta = [],
-        bool $emitUserRegisteredEvent = true
+        bool $emitUserRegisteredEvent = true,
+        ?string $locale = null
     ) {
         if ($checkEmail && !$this->emailValidator->isValid($email)) {
             throw new InvalidEmailException($email);
@@ -96,7 +97,7 @@ class UserManager
 
         try {
             /** @var ActiveRow|bool $user */
-            $user = $this->userBuilder->createNew()
+            $builder = $this->userBuilder->createNew()
                 ->sendEmail($sendEmail)
                 ->setEmail($email)
                 ->setPassword($password)
@@ -105,8 +106,13 @@ class UserManager
                 ->setSource($source)
                 ->setAddTokenOption($addToken)
                 ->setUserMeta($userMeta)
-                ->setEmitUserRegisteredEvent($emitUserRegisteredEvent)
-                ->save();
+                ->setEmitUserRegisteredEvent($emitUserRegisteredEvent);
+
+            if ($locale) {
+                $builder->setLocale($locale);
+            }
+
+            $user = $builder->save();
         } catch (UniqueConstraintViolationException $e) {
             throw new UserAlreadyExistsException("Cannot create user, unique constraint triggered: " . $e->getMessage());
         }

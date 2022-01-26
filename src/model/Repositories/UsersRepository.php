@@ -10,6 +10,7 @@ use Crm\UsersModule\Events\NewUserEvent;
 use Crm\UsersModule\Events\UserDisabledEvent;
 use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Events\UserUpdatedEvent;
+use Kdyby\Translation\Translator;
 use League\Event\Emitter;
 use Nette\Database\Context;
 use Nette\Database\Table\IRow;
@@ -34,13 +35,16 @@ class UsersRepository extends Repository
 
     private $cacheRepository;
 
+    private Translator $translator;
+
     public function __construct(
         Context $database,
         Emitter $emitter,
         AuditLogRepository $auditLogRepository,
         CacheRepository $cacheRepository,
         \Tomaj\Hermes\Emitter $hermesEmmiter,
-        AccessTokensRepository $accessTokensRepository
+        AccessTokensRepository $accessTokensRepository,
+        Translator $translator
     ) {
         parent::__construct($database);
         $this->database = $database;
@@ -49,6 +53,7 @@ class UsersRepository extends Repository
         $this->hermesEmitter = $hermesEmmiter;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->cacheRepository = $cacheRepository;
+        $this->translator = $translator;
     }
 
     /**
@@ -70,7 +75,8 @@ class UsersRepository extends Repository
         $role = self::ROLE_USER,
         $active = true,
         $extId = null,
-        $preregistration = false
+        $preregistration = false,
+        ?string $locale = null
     ) {
         $user = $this->getByEmail($email);
         if ($user) {
@@ -79,6 +85,10 @@ class UsersRepository extends Repository
         if (strlen($password) < 5) {
             throw new ShortPasswordException('Heslo je príliš krátke');
         }
+        if ($locale === null) {
+            $locale = $this->translator->getDefaultLocale();
+        }
+
         $row = $this->insert([
             'email' => $email,
             'public_name' => $email,
@@ -88,7 +98,8 @@ class UsersRepository extends Repository
             'modified_at' => new \DateTime(),
             'active' => (int)$active,
             'ext_id' => $extId,
-            'registration_channel' => self::DEFAULT_REGISTRATION_CHANNEL
+            'registration_channel' => self::DEFAULT_REGISTRATION_CHANNEL,
+            'locale' => $locale,
         ]);
 
         $this->emitter->emit(new NewUserEvent($row));
