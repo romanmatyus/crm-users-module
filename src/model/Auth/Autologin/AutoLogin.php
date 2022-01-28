@@ -26,7 +26,7 @@ class AutoLogin
     {
         return $this->autoLoginTokensRepository->getTable()->where([
             'token' => $token,
-            'valid_from <' => new DateTime(),
+            'valid_from <=' => new DateTime(),
             'valid_to >' => new DateTime(),
             'used_count < max_count'
         ])->fetch();
