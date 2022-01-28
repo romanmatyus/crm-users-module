@@ -62,7 +62,7 @@ class GoogleTokenSignInHandler extends ApiHandler
     public function handle(array $params): ApiResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
-        $error = $paramsProcessor->isError();
+        $error = $paramsProcessor->hasError();
         if ($error) {
             $response = new JsonResponse([
                 'status' => 'error',

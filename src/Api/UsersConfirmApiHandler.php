@@ -32,7 +32,7 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
     public function handle(array $params): ApiResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
-        if ($err = $paramsProcessor->isError()) {
+        if ($err = $paramsProcessor->hasError()) {
             $response = new JsonResponse(['status' => 'error', 'message' => 'wrong request parameters: ' . $err]);
             $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
@@ -55,7 +55,7 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
     public function idempotentHandle(ApiAuthorizationInterface $authorization)
     {
         $paramsProcessor = new ParamsProcessor($this->params());
-        if ($err = $paramsProcessor->isError()) {
+        if ($err = $paramsProcessor->hasError()) {
             $response = new JsonResponse(['status' => 'error', 'message' => 'wrong request parameters: ' . $err]);
             $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
