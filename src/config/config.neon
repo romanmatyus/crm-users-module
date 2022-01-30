@@ -65,6 +65,8 @@ services:
 	signInRedirectValidator:
 		factory: Crm\UsersModule\Auth\SignInRedirectValidator
 
+	userDataLocaleResolver: Crm\UsersModule\Locale\UserDataLocaleResolver
+
 	- Crm\UsersModule\Forms\ChangePasswordFormFactory
 	- Crm\UsersModule\Forms\RequestPasswordFormFactory
 	- Crm\UsersModule\Forms\ResetPasswordFormFactory
@@ -79,6 +81,7 @@ services:
 	- Crm\UsersModule\Forms\RegisterFormFactory
 	- Crm\UsersModule\Forms\SignInFormFactory
 	- Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory
+	- Crm\UsersModule\Scenarios\LocaleCriteria
 	- Crm\UsersModule\Scenarios\UserSourceCriteria
 	- Crm\UsersModule\Scenarios\UserHasAddressCriteria
 	- Crm\UsersModule\Scenarios\IsConfirmedCriteria
@@ -168,3 +171,4 @@ services:
 
 	- Crm\UsersModule\Api\GetDeviceTokenApiHandler
 	- Crm\UsersModule\Repositories\DeviceTokensRepository
+	- Crm\UsersModule\Components\UserConnectedAccountsListWidget

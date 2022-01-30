@@ -50,6 +50,7 @@ frontend:
 			required: Zadejte prosím Vaše aktuální heslo
 			placeholder: aktuální heslo
 			description: 'Pokud si nepamatujete své staré heslo, <a href="%url%" class="link">klikněte sem</a>, vygenerujeme vám nové a zašleme vám ho emailem.'
+			confirm: 'Opravdu chcete resetovat heslo?'
 		new_password:
 			label: 'Nové heslo:'
 			required: Zadejte prosím Vaše nové heslo
@@ -430,6 +431,15 @@ admin:
 		data: Data
 		no_records: Nebyly nalezeny žádné události
 
+	user_connected_accounts_list_widget:
+	    title: Propojené konta užívatele
+	    not_found: Konto není přepojeno se žádnou službou.
+	    type: Typ
+	    email: Email
+	    created_at: Vytvořeno
+	    action_button: Odstránit propojení
+	    flash_message: Propojení konta bylo odstráněno
+
 	admin_group_admin:
 		title: Admin práva
 		groups: Admin skupiny
@@ -618,3 +628,11 @@ config:
 		name: Google Sign-In povoleno
 	apple_sign_in_enabled:
 		name: Apple Sign-In povoleno
+
+model:
+	user_builder:
+		error:
+			email_missing: Nebyl zadán email
+			email_taken: Email %email% je již registrován
+			password_short: Heslo musí mít alespoň %length% znaků
+			public_name_missing: Nebylo zadáno veřejné jméno

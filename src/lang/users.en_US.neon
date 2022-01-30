@@ -50,6 +50,7 @@ frontend:
 			required: Please enter your current password
 			placeholder: current password
 			description: "If you don't remember your old password, <a href=\"%url%\" class=\"link\">click here</a> and we'll send you new password to your email address."
+			confirm: "Are you sure you want to reset password?"
 		new_password:
 			label: 'New password:'
 			required: Please enter new password
@@ -428,6 +429,15 @@ admin:
 		data: Data
 		no_records: No actions found
 
+	user_connected_accounts_list_widget:
+	    title: Connected user accounts
+	    not_found: Account is not connected with any service.
+	    type: Type
+	    email: Email
+	    created_at: Created at
+	    action_button: Disconnect
+	    flash_message: Account was disconnected
+
 	admin_group_admin:
 		title: Admin rights
 		groups: Admin groups
@@ -616,3 +626,12 @@ config:
 		name: Google Sign-In enabled
 	apple_sign_in_enabled:
 		name: Apple Sign-In enabled
+
+model:
+	user_builder:
+		error:
+			email_missing: Email missing
+			email_taken: Email %email% is already taken
+			password_short: Password must be at least %length% characters long
+			public_name_missing: Public name missing
+

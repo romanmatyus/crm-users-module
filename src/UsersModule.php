@@ -29,6 +29,7 @@ use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Scenarios\AddressScenarioConditionModel;
 use Crm\UsersModule\Scenarios\AddressTypeCriteria;
 use Crm\UsersModule\Scenarios\IsConfirmedCriteria;
+use Crm\UsersModule\Scenarios\LocaleCriteria;
 use Crm\UsersModule\Scenarios\UserHasAddressCriteria;
 use Crm\UsersModule\Scenarios\UserSourceCriteria;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
@@ -237,6 +238,11 @@ class UsersModule extends CrmModule
             580
         );
         $widgetManager->registerWidget(
+            'admin.user.detail.left',
+            $this->getInstance(\Crm\UsersModule\Components\UserConnectedAccountsListWidget::class),
+            710
+        );
+        $widgetManager->registerWidget(
             'dashboard.singlestat.totals',
             $this->getInstance(\Crm\UsersModule\Components\ActiveRegisteredUsersStatWidget::class),
             500
@@ -284,12 +290,13 @@ class UsersModule extends CrmModule
         $scenariosCriteriaStorage->register('user', 'source', $this->getInstance(UserSourceCriteria::class));
         $scenariosCriteriaStorage->register('user', UserHasAddressCriteria::KEY, $this->getInstance(UserHasAddressCriteria::class));
         $scenariosCriteriaStorage->register('user', IsConfirmedCriteria::KEY, $this->getInstance(IsConfirmedCriteria::class));
+        $scenariosCriteriaStorage->register('address', AddressTypeCriteria::KEY, $this->getInstance(AddressTypeCriteria::class));
+        $scenariosCriteriaStorage->register('user', LocaleCriteria::KEY, $this->getInstance(LocaleCriteria::class));
 
         $scenariosCriteriaStorage->registerConditionModel(
             'address',
             $this->getInstance(AddressScenarioConditionModel::class)
         );
-        $scenariosCriteriaStorage->register('address', AddressTypeCriteria::KEY, $this->getInstance(AddressTypeCriteria::class));
     }
 
     public function registerApiCalls(ApiRoutersContainerInterface $apiRoutersContainer)
@@ -467,7 +474,7 @@ class UsersModule extends CrmModule
         $eventsStorage->register('user_change_password', Events\UserChangePasswordEvent::class);
         $eventsStorage->register('user_change_password_request', Events\UserChangePasswordRequestEvent::class);
         $eventsStorage->register('user_confirmed', Events\UserConfirmedEvent::class);
-        $eventsStorage->register('user_created', Events\UserCreatedEvent::class, true);
+        $eventsStorage->register('user_registered', Events\UserRegisteredEvent::class, true);
         $eventsStorage->register('user_disabled', Events\UserDisabledEvent::class);
         $eventsStorage->register('user_last_access', Events\UserLastAccessEvent::class);
         $eventsStorage->register('user_meta', Events\UserMetaEvent::class);
