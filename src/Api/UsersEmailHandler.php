@@ -79,6 +79,7 @@ class UsersEmailHandler extends ApiHandler
                 $status = 'taken';
                 $passwordStatus = ($params['password']) ? false : null;
             } elseif ($authException->getCode() ===  UserAuthenticator::NOT_APPROVED) {
+                $user = null;
                 $status = 'available';
             } else {
                 $status = 'taken';

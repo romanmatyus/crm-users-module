@@ -208,8 +208,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
 
         $this->assertEquals('available', $payload['status']);
         $this->assertEquals($email, $payload['email']);
-        $this->assertEquals($user->id, $payload['id']);
-        $this->assertEquals(null, $payload['password']);
+        $this->assertNull($payload['id']);
+        $this->assertNull($payload['password']);
         $this->assertEquals(LoginAttemptsRepository::STATUS_UNCLAIMED_USER, $lastAttempt->status);
     }
 
