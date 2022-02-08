@@ -10,6 +10,7 @@ use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\Rate\RateLimitException;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Auth\UserManager;
+use Crm\UsersModule\Authenticator\UsersAuthenticator;
 use Crm\UsersModule\Email\EmailValidator;
 use Nette\Http\IResponse;
 use Nette\Security\AuthenticationException;
@@ -21,16 +22,16 @@ class UsersEmailHandler extends ApiHandler
 
     private EmailValidator $emailValidator;
 
-    private $userAuthenticator;
+    private UsersAuthenticator $usersAuthenticator;
 
     public function __construct(
         UserManager $userManager,
         EmailValidator $emailValidator,
-        UserAuthenticator $userAuthenticator
+        UsersAuthenticator $usersAuthenticator
     ) {
         $this->userManager = $userManager;
         $this->emailValidator = $emailValidator;
-        $this->userAuthenticator = $userAuthenticator;
+        $this->usersAuthenticator = $usersAuthenticator;
     }
 
     public function params(): array
@@ -60,10 +61,11 @@ class UsersEmailHandler extends ApiHandler
                 return $response;
             }
 
-            $this->userAuthenticator->authenticate([
+            $this->usersAuthenticator->setCredentials([
                 'username' => $params['email'],
                 'password' => $params['password'] ?? ''
             ]);
+            $this->usersAuthenticator->authenticate();
             $status = 'taken';
             $passwordStatus = true;
         } catch (RateLimitException $e) {
@@ -77,6 +79,7 @@ class UsersEmailHandler extends ApiHandler
                 $status = 'taken';
                 $passwordStatus = ($params['password']) ? false : null;
             } elseif ($authException->getCode() ===  UserAuthenticator::NOT_APPROVED) {
+                $user = null;
                 $status = 'available';
             } else {
                 $status = 'taken';
