@@ -453,6 +453,10 @@ authenticator:
 	inactive_account: Fiók inaktív.
 	rate_limit_exceeded: Túl sok sikertelen próbálkozás. Próbálja újra később.
 
+	access_token:
+		invalid_token: Hibás token
+		autologin_disabled: Automata bejelentkezés kikapcsolva admin felhasználóknak
+
 user_source_accesses_component:
 	title: Utolsó hozzáférések
 	no_data: Nincs rögzített adat
