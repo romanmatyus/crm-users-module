@@ -280,7 +280,7 @@ admin:
 			label: 'Heslo:'
 			placeholder: heslo musí mít alespoň 6 znaků
 			required: Heslo musí být zadáno
-			description:  Nechat prázdné pokud nechceme měnit heslo
+			description: Nechat prázdné pokud nechceme měnit heslo
 		source:
 			label: 'Zdroj'
 			required: Zdroj je povinen
@@ -312,7 +312,7 @@ admin:
 			admin: Admin
 		active: Aktivovaný
 		submit: Ulož
-		user_created:  Uživatel byl vytvořen.
+		user_created: Uživatel byl vytvořen.
 		user_updated: Uživatel byl aktualizován.
 
 	scenarios:

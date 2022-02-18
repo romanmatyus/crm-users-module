@@ -159,7 +159,7 @@ frontend:
 			success: "Kijelentkeztél minden más eszközről"
 		account_delete:
 			title: Felhasználó törlése
-			info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon.  <strong>Ez a múvelet visszafordíthatatlam.</strong>'
+			info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon. <strong>Ez a múvelet visszafordíthatatlam.</strong>'
 			password:
 				label: 'Jelszó:'
 				required: Jelszó kötelező
