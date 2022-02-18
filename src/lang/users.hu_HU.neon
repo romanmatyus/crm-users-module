@@ -36,7 +36,7 @@ frontend:
 			required: Kérjük add meg a jelszavad.
 			placeholder: Jelszó
 		toc:
-		    required: El kell fogadnia a felhasználói feltételeket
+			required: El kell fogadnia a felhasználói feltételeket
 		submit: Fiók létrehozása
 		error:
 			already_registered: 'E-mail cím foglalt. Kérjük adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>'
