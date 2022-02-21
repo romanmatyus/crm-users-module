@@ -117,9 +117,6 @@ class SignPresenter extends FrontendPresenter
 
             $this->getUser()->setAuthorizator($this->authorizator);
 
-            $session = $this->getSession('success_login');
-            $session->success = 'success';
-
             if ($this->getParameter('back') !== null) {
                 $this->restoreRequest($this->getParameter('back'));
             }

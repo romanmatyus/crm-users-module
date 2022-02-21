@@ -24,7 +24,7 @@ frontend:
 			placeholder: Your password
 		remember: Remember me
 		submit: Sign in
-		signed_out: You've been signed out.
+		signed_out: "You've been signed out."
 	sign_up:
 		title: Registration
 		username:
@@ -36,11 +36,11 @@ frontend:
 			required: Please enter your password
 			placeholder: Your password
 		toc:
-		    required: You have to agree with terms of use
+			required: You have to agree with terms of use
 		submit: Create account
 		error:
-		    already_registered: 'E-mail is already registered. Please sign in by entering your password or reset your password <a href="/users/users/reset-password" style="text-decoration:underline">here</a>'
-		    invalid_email: E-mail is not valid. Please check the email you entered.
+			already_registered: 'E-mail is already registered. Please sign in by entering your password or reset your password <a href="/users/users/reset-password" style="text-decoration:underline">here</a>'
+			invalid_email: E-mail is not valid. Please check the email you entered.
 	change_password:
 		title: Change password
 		submit: Change password
@@ -61,9 +61,9 @@ frontend:
 			required: Please enter your new password again
 			placeholder: new password again
 			description: Please enter your new password again for confirmation
-			not_matching: Passwords don't match
+			not_matching: "Passwords don't match"
 		errors:
-			could_not_authenticate: We coudn't verify your credentials.
+			could_not_authenticate: "We coudn't verify your credentials."
 			invalid_credentials: Invalid password.
 		success: Password was successfully changed.
 		success_with_logout: "Password was successfully changed, you were signed out of other devices."
@@ -136,7 +136,7 @@ frontend:
 		new_password_confirm:
 			label: 'New password again:'
 			required: Please enter your new password again
-			not_matching: Passwords don't match
+			not_matching: "Passwords don't match"
 			placeholder: new password again
 			description: Please enter your new password again for confirmation
 		submit: Change password
@@ -184,6 +184,7 @@ frontend:
 		fail: "Unable to log in using Apple Sign-in, please contact our support."
 		sign_using_apple: Sign in using Apple
 		used_account: "Unable to link accounts. Apple account %email% was already linked with another account."
+
 admin:
 	actions:
 		deactivate: Deactivate
@@ -279,7 +280,7 @@ admin:
 			label: 'Password:'
 			placeholder: password needs to be at least 6 characters long
 			required: Password is required
-			description: Leave empty if you don't want to change password
+			description: "Leave empty if you don't want to change password"
 		source:
 			label: 'Source'
 			required: Source is required
@@ -322,10 +323,12 @@ admin:
 			label: Registration source
 		is_confirmed:
 			label: Is confirmed
-			param: User's account is confirmed
+			param: "User's account is confirmed"
 		address_type:
 			label: Address type
 			param: Address type
+		locale:
+			label: Language
 
 	user_groups_form:
 		user_added: User was added to the group
@@ -430,13 +433,13 @@ admin:
 		no_records: No actions found
 
 	user_connected_accounts_list_widget:
-	    title: Connected user accounts
-	    not_found: Account is not connected with any service.
-	    type: Type
-	    email: Email
-	    created_at: Created at
-	    action_button: Disconnect
-	    flash_message: Account was disconnected
+		title: Connected user accounts
+		not_found: Account is not connected with any service.
+		type: Type
+		email: Email
+		created_at: Created at
+		action_button: Disconnect
+		flash_message: Account was disconnected
 
 	admin_group_admin:
 		title: Admin rights
@@ -530,12 +533,18 @@ form:
 		send: Add
 		error:
 			insufficient_rights: Insufficient rights for group manipulation
-			no_group: Selected group doesn't exist
-			no_user: Selected user doesn't exist
+			no_group: "Selected group doesn't exist"
+			no_user: "Selected user doesn't exist"
 	user_group:
 		group_id:
 			prompt: Select group
 		send: Add
+	register:
+		email:
+			label: E-mail
+			required: Enter your email please
+			placeholder: E.g. email@example.com
+		submit: Submit
 
 component:
 	user_login_attempts:
@@ -634,4 +643,3 @@ model:
 			email_taken: Email %email% is already taken
 			password_short: Password must be at least %length% characters long
 			public_name_missing: Public name missing
-

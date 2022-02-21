@@ -36,11 +36,11 @@ frontend:
 			required: Prosím zadejte Vaše heslo.
 			placeholder: Vaše heslo
 		toc:
-		    required: Musíte souhlasit s podmínkami používání
+			required: Musíte souhlasit s podmínkami používání
 		submit: Vytvořit účet
 		error:
-		    already_registered: 'E-mail je již registrován. Prosím přihlašte se zadáním hesla nebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>'
-		    invalid_email: E-mail není platný. Prosím zkontroluje zadaný email.
+			already_registered: 'E-mail je již registrován. Prosím přihlašte se zadáním hesla nebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>'
+			invalid_email: E-mail není platný. Prosím zkontroluje zadaný email.
 	change_password:
 		title: Změna hesla
 		submit: Změnit heslo
@@ -280,7 +280,7 @@ admin:
 			label: 'Heslo:'
 			placeholder: heslo musí mít alespoň 6 znaků
 			required: Heslo musí být zadáno
-			description:  Nechat prázdné pokud nechceme měnit heslo
+			description: Nechat prázdné pokud nechceme měnit heslo
 		source:
 			label: 'Zdroj'
 			required: Zdroj je povinen
@@ -312,7 +312,7 @@ admin:
 			admin: Admin
 		active: Aktivovaný
 		submit: Ulož
-		user_created:  Uživatel byl vytvořen.
+		user_created: Uživatel byl vytvořen.
 		user_updated: Uživatel byl aktualizován.
 
 	scenarios:
@@ -432,13 +432,13 @@ admin:
 		no_records: Nebyly nalezeny žádné události
 
 	user_connected_accounts_list_widget:
-	    title: Propojené konta užívatele
-	    not_found: Konto není přepojeno se žádnou službou.
-	    type: Typ
-	    email: Email
-	    created_at: Vytvořeno
-	    action_button: Odstránit propojení
-	    flash_message: Propojení konta bylo odstráněno
+		title: Propojené konta užívatele
+		not_found: Konto není přepojeno se žádnou službou.
+		type: Typ
+		email: Email
+		created_at: Vytvořeno
+		action_button: Odstránit propojení
+		flash_message: Propojení konta bylo odstráněno
 
 	admin_group_admin:
 		title: Admin práva

@@ -36,7 +36,7 @@ frontend:
 			required: Kérjük add meg a jelszavad.
 			placeholder: Jelszó
 		toc:
-		    required: El kell fogadnia a felhasználói feltételeket
+			required: El kell fogadnia a felhasználói feltételeket
 		submit: Fiók létrehozása
 		error:
 			already_registered: 'E-mail cím foglalt. Kérjük adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>'
@@ -159,7 +159,7 @@ frontend:
 			success: "Kijelentkeztél minden más eszközről"
 		account_delete:
 			title: Felhasználó törlése
-			info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon.  <strong>Ez a múvelet visszafordíthatatlam.</strong>'
+			info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon. <strong>Ez a múvelet visszafordíthatatlam.</strong>'
 			password:
 				label: 'Jelszó:'
 				required: Jelszó kötelező
@@ -183,6 +183,7 @@ frontend:
 		fail: "Apple bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
 		sign_using_apple: Bejelentkezés Apple-el
 		used_account: "Fiók csatolás sikertelen. Apple fiók már csatolva van más felhasználóhoz."
+
 admin:
 	actions:
 		deactivate: Inaktiválás
@@ -452,6 +453,10 @@ authenticator:
 	invalid_credentials: Érvénytelen jelszó.
 	inactive_account: Fiók inaktív.
 	rate_limit_exceeded: Túl sok sikertelen próbálkozás. Próbálja újra később.
+
+	access_token:
+		invalid_token: Hibás token
+		autologin_disabled: Automata bejelentkezés kikapcsolva admin felhasználóknak
 
 user_source_accesses_component:
 	title: Utolsó hozzáférések
