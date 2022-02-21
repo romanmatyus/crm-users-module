@@ -326,6 +326,8 @@ admin:
 		address_type:
 			label: Address type
 			param: Address type
+		locale:
+			label: Language
 
 	user_groups_form:
 		user_added: User was added to the group
@@ -536,6 +538,12 @@ form:
 		group_id:
 			prompt: Select group
 		send: Add
+	register:
+		email:
+			label: E-mail
+			required: Enter your email please
+			placeholder: E.g. email@example.com
+		submit: Submit
 
 component:
 	user_login_attempts:
