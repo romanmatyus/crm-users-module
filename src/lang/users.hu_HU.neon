@@ -183,6 +183,7 @@ frontend:
 		fail: "Apple bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
 		sign_using_apple: Bejelentkezés Apple-el
 		used_account: "Fiók csatolás sikertelen. Apple fiók már csatolva van más felhasználóhoz."
+
 admin:
 	actions:
 		deactivate: Inaktiválás

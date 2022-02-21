@@ -184,6 +184,7 @@ frontend:
 		fail: "Unable to log in using Apple Sign-in, please contact our support."
 		sign_using_apple: Sign in using Apple
 		used_account: "Unable to link accounts. Apple account %email% was already linked with another account."
+
 admin:
 	actions:
 		deactivate: Deactivate
