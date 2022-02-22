@@ -160,7 +160,7 @@ frontend:
 			success: "Byli jste odhlášen z ostatních zařízení."
 		account_delete:
 			title: Zrušení konta
-			info: 'Pokud chcete nenávratně smazat uživatelský účet, zadejte heslo a stiskněte "Odstranit účet". <Strong> Tato akce je nevratná. </ Strong> '
+			info: 'Pokud chcete nenávratně smazat uživatelský účet, zadejte heslo a stiskněte "Odstranit účet". <strong>Tato akce je nevratná.</strong>'
 			password:
 				label: 'Heslo:'
 				required: Heslo musí být zadáno
