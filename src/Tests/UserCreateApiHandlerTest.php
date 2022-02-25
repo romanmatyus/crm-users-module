@@ -10,6 +10,7 @@ use Crm\UsersModule\Events\NewUserEvent;
 use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\RegistrationAttemptsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
@@ -69,6 +70,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             UsersRepository::class,
             AccessTokensRepository::class,
             UserMetaRepository::class,
+            RegistrationAttemptsRepository::class,
         ];
     }
 
