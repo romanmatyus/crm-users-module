@@ -5,12 +5,16 @@ namespace Crm\UsersModule\Api;
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
+use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
+use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Auth\InvalidEmailException;
+use Crm\UsersModule\Auth\Rate\RegistrationIpRateLimit;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\RegistrationAttemptsRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
@@ -20,28 +24,30 @@ use Nette\Utils\Validators;
 
 class UsersCreateHandler extends ApiHandler
 {
-    private $userManager;
-
-    private $accessTokensRepository;
-
-    private $deviceTokensRepository;
-
-    private $usersRepository;
-
+    private UserManager $userManager;
+    private AccessTokensRepository $accessTokensRepository;
+    private DeviceTokensRepository $deviceTokensRepository;
+    private UsersRepository $usersRepository;
     private UnclaimedUser $unclaimedUser;
+    private RegistrationIpRateLimit $registrationIpRateLimit;
+    private RegistrationAttemptsRepository $registrationAttemptsRepository;
 
     public function __construct(
         UserManager $userManager,
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
         UsersRepository $usersRepository,
-        UnclaimedUser $unclaimedUser
+        UnclaimedUser $unclaimedUser,
+        RegistrationIpRateLimit $registrationIpRateLimit,
+        RegistrationAttemptsRepository $registrationAttemptsRepository
     ) {
         $this->userManager = $userManager;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
         $this->usersRepository = $usersRepository;
         $this->unclaimedUser = $unclaimedUser;
+        $this->registrationIpRateLimit = $registrationIpRateLimit;
+        $this->registrationAttemptsRepository = $registrationAttemptsRepository;
     }
 
     public function params()
@@ -71,23 +77,36 @@ class UsersCreateHandler extends ApiHandler
             $params['source'] = $_GET['source'];
         }
 
+        if ($authorization instanceof NoAuthorization) {
+            if ($this->registrationIpRateLimit->reachLimit(Request::getIp())) {
+                $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_RATE_LIMIT_EXCEEDED);
+
+                $response = new JsonResponse(['status' => 'error', 'message' => 'Limit reached', 'code' => 'limit_reached']);
+                $response->setHttpCode(Response::S429_TOO_MANY_REQUESTS);
+                return $response;
+            }
+        }
+
         $email = $params['email'];
         if (!$email) {
+            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
             $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
         }
         if (!Validators::isEmail($email)) {
+            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
             $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
         }
 
         $unclaimed = filter_var($params['unclaimed'], FILTER_VALIDATE_BOOLEAN);
-        $user = $this->userManager->loadUserByEmail($email);
+        $user = $this->userManager->loadUserByEmail($email) ?: null;
 
         // if user found allow only unclaimed user to get registered
         if ($user && ($unclaimed || !$this->unclaimedUser->isUnclaimedUser($user))) {
+            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_TAKEN_EMAIL);
             $response = new JsonResponse(['status' => 'error', 'message' => 'Email is already taken', 'code' => 'email_taken']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
@@ -117,6 +136,7 @@ class UsersCreateHandler extends ApiHandler
         if (!empty($params['device_token'])) {
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
+                $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_DEVICE_TOKEN_NOT_FOUND);
                 $response = new JsonResponse([
                     'status' => 'error',
                     'message' => 'Device token doesn\'t exist',
@@ -138,10 +158,12 @@ class UsersCreateHandler extends ApiHandler
                 $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password);
             }
         } catch (InvalidEmailException $e) {
+            $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
             $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
         } catch (UserAlreadyExistsException $e) {
+            $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_TAKEN_EMAIL);
             $response = new JsonResponse(['status' => 'error', 'message' => 'Email is already taken', 'code' => 'email_taken']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
@@ -171,6 +193,7 @@ class UsersCreateHandler extends ApiHandler
             $this->accessTokensRepository->pairWithDeviceToken($lastToken, $deviceToken);
         }
 
+        $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_OK);
         $result = $this->formatResponse($user, $lastToken);
 
         $response = new JsonResponse($result);
@@ -200,5 +223,18 @@ class UsersCreateHandler extends ApiHandler
             $result['access']['token'] = $lastToken->token;
         }
         return $result;
+    }
+
+    private function addAttempt($email, $user, $source, $status): void
+    {
+        $this->registrationAttemptsRepository->insertAttempt(
+            $email,
+            $user,
+            $source,
+            $status,
+            Request::getIp(),
+            Request::getUserAgent(),
+            new \DateTime()
+        );
     }
 }
