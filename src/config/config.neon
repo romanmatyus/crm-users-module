@@ -17,6 +17,7 @@ services:
 	groupsRepository: Crm\UsersModule\Repository\GroupsRepository
 	userGroupsRepository: Crm\UsersModule\Repository\UserGroupsRepository
 	loginAttemptsRepository: Crm\UsersModule\Repository\LoginAttemptsRepository
+	registrationAttemptsRepository: Crm\UsersModule\Repository\RegistrationAttemptsRepository
 	changePasswordsLogsRepository:
 		factory: Crm\UsersModule\Repository\ChangePasswordsLogsRepository
 		setup:
@@ -167,6 +168,8 @@ services:
 	- Crm\UsersModule\Components\UserTokens
 	- Crm\UsersModule\Auth\Rate\WrongPasswordRateLimit
 	- Crm\UsersModule\Auth\Rate\IpRateLimit
+	registrationIpRateLimit:
+		class: Crm\UsersModule\Auth\Rate\RegistrationIpRateLimit
 	- Crm\UsersModule\AdminFilterFormData
 
 	- Crm\UsersModule\Api\GetDeviceTokenApiHandler
