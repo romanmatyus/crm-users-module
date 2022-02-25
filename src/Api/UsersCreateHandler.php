@@ -4,10 +4,8 @@ namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Authorization\ApiAuthorizationInterface;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Auth\InvalidEmailException;
@@ -71,8 +69,7 @@ class UsersCreateHandler extends ApiHandler
 
     public function handle(array $params): ApiResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-        $params = $paramsProcessor->getValues();
+        $authorization = $this->getAuthorization();
 
         if (!isset($params['source']) && isset($_GET['source'])) {
             $params['source'] = $_GET['source'];
