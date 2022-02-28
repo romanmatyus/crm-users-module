@@ -3,9 +3,9 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
+use Crm\ApiModule\Api\ApiParamsValidatorInterface;
 use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\Rate\RateLimitException;
 use Crm\UsersModule\Auth\UserAuthenticator;
@@ -16,7 +16,7 @@ use Nette\Http\IResponse;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\Validators;
 
-class UsersEmailHandler extends ApiHandler
+class UsersEmailHandler extends ApiHandler implements ApiParamsValidatorInterface
 {
     private UserManager $userManager;
 
@@ -44,22 +44,10 @@ class UsersEmailHandler extends ApiHandler
 
     public function handle(array $params): ApiResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-        $params = $paramsProcessor->getValues();
-
         $passwordStatus = null;
         $user = $this->userManager->loadUserByEmail($params['email']);
         try {
-            if (!$params['email']) {
-                 $response = new JsonResponse(['status' => 'error', 'message' => 'No valid email', 'code' => 'email_missing']);
-                 $response->setHttpCode(IResponse::S200_OK);
-                 return $response;
-                // Validate email format only if user email does not exist in our DB, since external services may be slow
-            } elseif (!Validators::isEmail($params['email']) || !$this->emailValidator->isValid($params['email'])) {
-                $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email format', 'code' => 'invalid_email']);
-                $response->setHttpCode(IResponse::S200_OK);
-                return $response;
-            }
+            $this->validateParams($params);
 
             $this->usersAuthenticator->setCredentials([
                 'username' => $params['email'],
@@ -75,6 +63,13 @@ class UsersEmailHandler extends ApiHandler
         } catch (AuthenticationException $authException) {
             if ($authException->getCode() === UserAuthenticator::IDENTITY_NOT_FOUND) {
                 $status = 'available';
+
+                // Validate email format only if user email does not exist in our DB, since external services may be slow
+                if (!Validators::isEmail($params['email']) || !$this->emailValidator->isValid($params['email'])) {
+                    $response = new JsonResponse(['status' => 'error', 'message' => 'Invalid email format', 'code' => 'invalid_email']);
+                    $response->setHttpCode(IResponse::S200_OK);
+                    return $response;
+                }
             } elseif ($authException->getCode() === UserAuthenticator::INVALID_CREDENTIAL) {
                 $status = 'taken';
                 $passwordStatus = ($params['password']) ? false : null;
@@ -96,5 +91,16 @@ class UsersEmailHandler extends ApiHandler
         $response = new JsonResponse($result);
         $response->setHttpCode(IResponse::S200_OK);
         return $response;
+    }
+
+    public function validateParams(array $params): ?ApiResponseInterface
+    {
+        if (!$params['email']) {
+            $response = new JsonResponse(['status' => 'error', 'message' => 'No valid email', 'code' => 'email_missing']);
+            $response->setHttpCode(IResponse::S200_OK);
+            return $response;
+        }
+
+        return null;
     }
 }
