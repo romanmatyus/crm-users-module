@@ -39,8 +39,8 @@ frontend:
             required: Pre registráciu musíte súhlasiť s podmienkami používania.
         submit: Vytvoriť účet
         error:
-            already_registered: 'Email je už registrovaný. Prosím prihláste sa zadaním hesla alebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>'
-            invalid_email: Zadaný email je neplatný
+            already_registered: 'Email je už registrovaný. Prosím prihláste sa zadaním hesla alebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>.'
+            invalid_email: Zadaný email je neplatný.
     change_password:
         title: Zmena hesla
         submit: Zmeň heslo
@@ -67,7 +67,7 @@ frontend:
             invalid_credentials: Nesprávne heslo.
         success: Úspešná zmena hesla.
         success_with_logout: 'Zmenili sme vám heslo a odhlásili sme vás na ostatných zariadeniach.'
-        reset_success: 'Heslo sme zmenili a poslali sme vám ho na mailovú adresu %email%'
+        reset_success: 'Heslo sme zmenili a poslali sme vám ho na mailovú adresu %email%.'
     address:
         type:
             label: Typ adresy
@@ -160,7 +160,7 @@ frontend:
             success: Odhlásili sme vás z ostatných zariadení.
         account_delete:
             title: Zrušenie konta
-            info: 'Ak si želáte nenávratne zmazať používateľské konto, zadajte Vaše heslo a stlačte "Odstrániť účet". <strong>Táto akcia je nezvratná.</strong>'
+            info: 'Ak si želáte nenávratne zmazať používateľské konto, zadajte Vaše heslo a stlačte "Odstrániť účet". <strong>Táto akcia je nezvratná</strong>.'
             password:
                 label: 'Heslo:'
                 required: Heslo musí byť zadané
@@ -441,7 +441,7 @@ admin:
         email: Email
         created_at: Prepojenie vytvorené
         action_button: Zrušiť prepojenie
-        flash_message: Prepojenie konta bolo zrušené
+        flash_message: Prepojenie konta bolo zrušené.
 
     admin_group_admin:
         title: Admin práva
@@ -507,7 +507,7 @@ authenticator:
 
     access_token:
         invalid_token: Token je neplatný
-        autologin_disabled: 'Automatické prihlásenie pre Vaše konto nie je povolené, prosím prihláste sa znovu'
+        autologin_disabled: 'Automatické prihlásenie pre Vaše konto nie je povolené, prosím prihláste sa znovu.'
 
 user_source_accesses_component:
     title: Posledné prístupy
