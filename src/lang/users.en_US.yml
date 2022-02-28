@@ -1,0 +1,645 @@
+menu:
+    stats: User stats
+    settings: Settings
+    sign_out: Sign out
+    people: People
+    users: Users
+    groups: Groups
+    login_attempts: Login attempts
+    events: Events
+    cheaters: Cheaters
+    admin_rights: Admin rights
+    actions_log: Actions log
+
+frontend:
+    sign_in:
+        title: Sign in
+        username:
+            label: 'E-mail:'
+            required: Please enter your email
+            placeholder: e.g. moj@email.sk
+        password:
+            label: 'Password:'
+            required: Please enter your password.
+            placeholder: Your password
+        remember: Remember me
+        submit: Sign in
+        signed_out: "You've been signed out."
+    sign_up:
+        title: Registration
+        username:
+            label: 'E-mail:'
+            required: Please enter your email
+            placeholder: E.g. moj@email.sk
+        password:
+            label: Password
+            required: Please enter your password
+            placeholder: Your password
+        toc:
+            required: You have to agree with terms of use
+        submit: Create account
+        error:
+            already_registered: 'E-mail is already registered. Please sign in by entering your password or reset your password <a href="/users/users/reset-password" style="text-decoration:underline">here</a>'
+            invalid_email: E-mail is not valid. Please check the email you entered.
+    change_password:
+        title: Change password
+        submit: Change password
+        submit_with_devices_logout: Change password and sign out of other devices
+        actual_password:
+            label: 'Current password:'
+            required: Please enter your current password
+            placeholder: current password
+            description: "If you don't remember your old password, <a href=\"%url%\" class=\"link\">click here</a> and we'll send you new password to your email address."
+            confirm: "Are you sure you want to reset password?"
+        new_password:
+            label: 'New password:'
+            required: Please enter new password
+            placeholder: new password
+            minlength: Password has to be at least %d characters long
+        new_password_confirm:
+            label: 'New password again:'
+            required: Please enter your new password again
+            placeholder: new password again
+            description: Please enter your new password again for confirmation
+            not_matching: "Passwords don't match"
+        errors:
+            could_not_authenticate: "We coudn't verify your credentials."
+            invalid_credentials: Invalid password.
+        success: Password was successfully changed.
+        success_with_logout: "Password was successfully changed, you were signed out of other devices."
+        reset_success: 'Password was successfully changed and sent to your email %email%.'
+    address:
+        type:
+            label: Address type
+        first_name:
+            label: 'First name:'
+            placeholder: first name
+        last_name:
+            label: 'Last name:'
+            placeholder: last name
+        phone_number:
+            label: 'Phone number:'
+            placeholder: e.g. 0915 123 456
+        address:
+            label: 'Street:'
+            placeholder: enter street
+        number:
+            label: 'House number:'
+            placeholder: e.g. 14/A
+        zip:
+            label: 'ZIP:'
+            placeholder: e.g. 08102
+        city:
+            label: 'City:'
+            placeholder: e.g. Trnava
+        country:
+            label: 'Country:'
+        company_name:
+            label: 'Company name:'
+            placeholder: 'e.g. Firma s.r.o.'
+        company_id:
+            label: 'Company ID:'
+            placeholder: e.g. 38598283
+        company_tax_id:
+            label: 'Tax ID:'
+            placeholder: e.g. 2359023591
+        company_vat_id:
+            label: 'VAT ID:'
+            placeholder: e.g. SK2359023591
+        submit: Save
+    request_password:
+        title: Trouble logging in
+        info: "If you don't remember your password, we'll send a special link to your email which you can use to reset the password."
+        login:
+            text: "If you know your password, "
+            link: "sign in here - click"
+        email:
+            label: 'Your email:'
+            required: Please enter your email
+            placeholder: email you used to register
+        submit: Send new password
+        invalid_email: Invalid email
+        inactive_user: Your user account has been deactivated. Please use another email or contact support on %contactEmail%.
+        success:
+            email: "The password change link has been send to your email"
+            spam: "Please check your email inbox and also folders Propagation / Advertisment / Spam."
+    reset_password:
+        title: Reset password
+        info: You can now change your password
+        errors:
+            invalid_password_reset_token: The password reset link has expired. Please request a new link.
+        new_password:
+            label: 'New password:'
+            required: Please enter your new password
+            placeholder: new password
+            min_length: Password has to be at least %d characters long
+        new_password_confirm:
+            label: 'New password again:'
+            required: Please enter your new password again
+            not_matching: "Passwords don't match"
+            placeholder: new password again
+            description: Please enter your new password again for confirmation
+        submit: Change password
+        could_not_set: Could not set the new password
+        success: Your password was successfully changed
+    email_confirm:
+        title: Email verification
+        success: Your email adrress was successfully verified.
+        fail: "Unfortunately, your email adrress verification was not successful. Please contact customer support."
+        back: Back
+    settings:
+        title: System settings
+        personal_data:
+            title: Personal data
+            info: "You can download and browse all personal data system stores."
+            download: Download
+        devices_logout:
+            title: Device management
+            logout: Sign out from other devices
+            confirm: "Do you wish to sign out from all devices except the current one?"
+            success: "You have been signed out of other devices."
+        account_delete:
+            title: Delete account
+            info: 'If you wish to permanently delete user account, please enter your password and press "Delete account". <strong>This action is irrevertible.</strong>'
+            password:
+                label: 'Password:'
+                required: Password needs to be entered
+            submit: Delete account
+            invalid_password: Invalid password
+            cannot_delete: Account cannot be deleted automatically. Please contact customer support.
+            confirm: Deleting the account is irreversible. Are you sure you want to proceed?
+            success: Your account was deleted.
+        linked_accounts:
+            title: Linked account management
+            connect: Link account with
+            connected: Account linked
+            unlink: cancel
+            unlink_success: Connected account has been removed
+    google:
+        fail: "Unable to log in using Google Sign-in, please contact our support."
+        sign_using_google: Sign in using Google
+        or: or
+        used_account: "Unable to link accounts. Google account %email% was already linked with another account."
+    apple:
+        fail: "Unable to log in using Apple Sign-in, please contact our support."
+        sign_using_apple: Sign in using Apple
+        used_account: "Unable to link accounts. Apple account %email% was already linked with another account."
+
+admin:
+    actions:
+        deactivate: Deactivate
+        activate: Activate
+        show: Show
+        edit: Edit
+
+    default:
+        title: Users
+        total: Total
+        filtered: filtered
+        new_user: New user
+        email: Email
+        first_name: First name
+        last_name: Last name
+        addresses: Addresses
+        source: Source
+        status: Status
+        created_at: Created at
+        actions: Actions
+        invoice: Invoice
+        institution: Institution
+        admin: Admin
+        no_results: 'No records found. Please alter your filter'
+        export: Export
+
+    show:
+        back_to_list: back to list
+        edit: Edit user
+        groups: Groups
+        note: Note
+        admin_groups: "Admin groups (access rights)"
+        user_actions: User actions
+        log_out_devices: Log out on all devices
+        suspicious: Suspicious account
+        last_market_at: Last market at
+        basic_info: Basic info
+        email: E-mail
+        first_name: First name
+        last_name: Last name
+        unconfirmed: Unconfirmed
+        created_at: Created at
+        modified_at: Updated at
+        active: Active
+        deactivate: Deactivate
+        activate: Activate
+        external_id: External ID
+        source: Source
+        funnel: Registration funnel
+        referer: Registration referer
+        no_print_address: No delivery address
+        invoice_address: Invoice address
+        add_address: Add address
+        address_last_change: Last change
+        disabled_auto_invoice: Automatic invoice generation is disabled
+        last_login: Last login
+        no_login: No login record yet
+        personal_info: Personal info
+        anonymize_alert: "Anonymization of user account is irreversible. User won't be able to log in again and all personal data will be erased. Do you really want to proceed?"
+        anonymize: Anonymize user
+        company_id: Company ID
+        company_tax_id: Tax ID
+        company_vat_id: VAT ID
+        address: Address
+
+    edit:
+        title: Edit user
+        back_to_detail: back to detail
+
+    admin_filter_form:
+        text:
+            label: Email / Name
+            placeholder: Email / Name
+        address:
+            label: Address / Invoice details
+            placeholder: Address / Invoice details
+        group:
+            label: Group
+        source:
+            label: Source
+        submit: Filter
+        cancel_filter: Cancel filter
+
+    user_form:
+        title: New user
+        back_to_list: back to the list
+        credentials: Credentials
+        email:
+            label: 'E-mail*:'
+            required: E-mail is required
+            placeholder: enter email
+        password:
+            label: 'Password:'
+            placeholder: password needs to be at least 6 characters long
+            required: Password is required
+            description: "Leave empty if you don't want to change password"
+        source:
+            label: 'Source'
+            required: Source is required
+        personal_information: Personal information
+        first_name:
+            label: 'First name:'
+            placeholder: first name
+        last_name:
+            label: 'Last name:'
+            placeholder: last name
+        public_name:
+            label: 'Public name:'
+            placeholder: public name
+            description: 'Public name shown to user (if not set, email will be used)'
+        institution: Institution
+        is_institution: Is institution
+        institution_name:
+            label: 'Institution name:'
+            placeholder: e.g. city library of Martin Bell
+            required: 'If the institution is checked, you have to enter also institution name'
+        other: Other
+        external_id:
+            label: 'External ID:'
+            placeholder: numeric external ID
+            integer: External ID has to be a number
+        role:
+            label: 'Role:'
+            user: User
+            admin: Admin
+        active: Active
+        submit: Save
+        user_created: User was created.
+        user_updated: User was updated.
+
+    scenarios:
+        user_has_address_criteria:
+            label: User has address
+            param: User has address of type
+        source:
+            label: Registration source
+        is_confirmed:
+            label: Is confirmed
+            param: "User's account is confirmed"
+        address_type:
+            label: Address type
+            param: Address type
+        locale:
+            label: Language
+
+    user_groups_form:
+        user_added: User was added to the group
+        user_removed: User was removed from the group
+
+    change_activation:
+        activated: User was updated
+
+    delete_user:
+        deleted: User was deleted.
+
+    logout_user:
+        all_devices: 'The user has been logged out on all devices'
+
+    reset_password:
+        button: Reset password
+        confirm: Do you really want to reset password?
+        success: The password has been successfully reset and email with information for user has been sent.
+
+    confirm:
+        button: Confirm
+        confirm: Do you really want to confirm user?
+        success: User was successfully confirmed
+
+    user_note_form:
+        note_updated: Note was changed
+        note:
+            placeholder: Add user note
+            validation:
+                maximum: Note is too long. Allowed text length is %d characters.
+
+    groups_admin:
+        title: Admin groups
+        groups: Groups
+        total: Total
+        new_group: New group
+        name: Name
+        user_count: User count
+        sorting: Sorting
+        created_at: Created at
+        actions: Actions
+        no_groups: No groups found
+        edit: Edit
+        back_to_list: back to list
+        editing_group: Edit admin group
+        admin_group: Admin group
+        edit_group: Edit group
+        total_users: Total users
+        view: view
+
+    group_form:
+        name:
+            label: Group name
+            placeholder: group name
+        sorting:
+            label: Sorting
+            placeholder: sorting
+        submit: Save
+
+    login_attempts:
+        title: Login attempts
+        total: total
+        filtered: filtered
+        email: E-mail
+        status: Status
+        source: Source
+        attempt_time: Time of attempt
+        user_agent: User agent
+        message: Message
+        no_records: No records found
+
+    login_attempts_form:
+        email:
+            label: E-mail
+            placeholder: E-mail
+        status:
+            label: Status
+        source:
+            label: Source
+        created_at_from:
+            label: Time from
+            placeholder: e.g. 2016-02-29 12:34
+        created_at_to:
+            label: Time to
+            placeholder: e.g. 2020-02-29 12:34
+        user_agent:
+            label: User agent
+            placeholder: e.g. Chrome
+        submit: Filter
+
+    user_actions_log:
+        title: User actions log
+        total: total
+        back_to_list: back to list
+        logaction:
+            label: Action
+        submit: Filter
+        user: User
+        created_at: Created at
+        action: Action
+        data: Data
+        no_records: No actions found
+
+    user_connected_accounts_list_widget:
+        title: Connected user accounts
+        not_found: Account is not connected with any service.
+        type: Type
+        email: Email
+        created_at: Created at
+        action_button: Disconnect
+        flash_message: Account was disconnected
+
+    admin_group_admin:
+        title: Admin rights
+        groups: Admin groups
+        total: total
+        new_group: New admin group
+        name: Name
+        user_count: User count
+        rights: Rights
+        created_at: Created at
+        actions: Actions
+        no_records: No admin groups found
+        edit: Edit
+        back_to_list: Back to list
+        editing_group: Edit group
+        empty_group: No users in the group
+        group_created: Group was created.
+        group_updated: Group was updated.
+        rights_updated: Access rights for group were configured.
+        privileges:
+            global_settings: Global settings
+            all: All privileges
+            read_only: Read only
+            none: No privileges
+            custom: Custom
+        submit: Save
+
+    admin_group_form:
+        name:
+            label: Group name
+            placeholder: group name
+        sorting:
+            label: Sorting
+            placeholder: sorting
+        submit: Save
+
+    abusive:
+        title: Users with lots of active devices
+        subtitle: Table displayes number of unique tokens created during login and used within the timespan selected in filter.
+        date_from: From
+        date_to: To
+        number_of_logins: Number of logins
+        number_of_devices: Number of devices
+        submit: Show
+        no_records: No records found matching filter
+        email: E-mail
+        name: Name
+        active_logins: Number of active logins
+        active_devices: Number of active devices
+        time_ip_last_login: Time / IP address of last login
+        additional_info: Additional information
+        actions: Actions
+        cancel_filter: Cancel filter
+    stats:
+        title: User stats
+
+authenticator:
+    identity_not_found: Invalid email.
+    invalid_credentials: Invalid password.
+    inactive_account: Account is disabled.
+    rate_limit_exceeded: Too many unsuccessful login attempts. Try it later.
+    unclaimed_user: Account is unclaimed.
+
+    access_token:
+        invalid_token: Invalid token
+        autologin_disabled: 'Automatic login is disabled for this account, please use your email and password'
+
+user_source_accesses_component:
+    title: Last accesses
+    no_data: No data recorded
+
+detail_widget_component:
+    other: Other
+
+month_users_small_bar_graph_widget:
+    title: Users
+
+deletion_note:
+    user_deleted_account: 'User has deleted himself/herself'
+    admin_deleted_account: 'User was deleted by admin'
+
+api:
+    users_login_handler:
+        identity_not_found: "Email you entered doesn't match our records. Please log in as you would on Dennik N website."
+        invalid_credentials: "Password you entered doesn't match our records. Please log in as you would on Dennik N website."
+
+form:
+    admin_user_group:
+        group_id:
+            prompt: Select group
+        send: Add
+        error:
+            insufficient_rights: Insufficient rights for group manipulation
+            no_group: "Selected group doesn't exist"
+            no_user: "Selected user doesn't exist"
+    user_group:
+        group_id:
+            prompt: Select group
+        send: Add
+    register:
+        email:
+            label: E-mail
+            required: Enter your email please
+            placeholder: E.g. email@example.com
+        submit: Submit
+
+component:
+    user_login_attempts:
+        title: Last login attempts
+        today: Today
+        no_record_heading: No record
+        no_record: "It seems that this user haven't logged into the system yet."
+        total_stats: Total stats
+        ip_count: Number of IPs
+        browser_count: Number of browsers
+        web_logins: Web logins
+        mobile_app_logins: Mobile app logins
+        last_access_by_source: Last access by source
+        status: Status
+        attempted_at: Attempted at
+        source: Source
+        message: Message
+        ip_address: IP
+        user_agent: Browser / Referer
+
+    user_meta:
+        header: Custom settings
+        value_removed: Value was removed
+        value_added: Value was added
+        form:
+            key:
+                label: Key
+                required: Key is required
+            value:
+                label: Value
+                required: Value is required
+            is_public:
+                label: Public
+            submit: Save
+        no_record: No record available
+        no_record_description: There is no record stored for this user.
+        key: Key
+        value: Value
+        created_at: Created at
+        actions: Actions
+        public: Public
+
+    user_tokens:
+        header: User tokens
+        no_tokens: No token
+        no_tokens_description: There is no token for this user.
+        created: Created
+        code: Token
+        version: Version
+        last_used: Last used
+        ip_agent: IP / Browser
+        source: Source
+        actions: Actions
+        delete_all: Delete all
+        delete_single: Delete token
+        token_deleted: Token was deleted
+        all_tokens_deleted: All access tokens were deleted
+
+    autologin_tokens:
+        created: Created at
+        from: Valid from
+        to: Valid to
+        code: Code
+        used: Used
+        max: Max count
+        empty_title: No entry
+        empty_text: This user currently has no login codes.
+
+    user_password_changes:
+        title: Changes
+        title_requests: Requests for changes
+        empty_title: No entry
+        empty_entry_text: "This user hasn't changed their password yet."
+        empty_request_text: This user has not yet requested a change.
+        type: Type
+        when: When
+        expire_at: Expire at
+        state: State
+        token: Token
+
+config:
+    category: Users
+    category_authentication: Authentication
+    not_logged_in_route:
+        name: 'Page for not logged in users'
+        description: 'Nette route, where to redirect user after hitting URL only for logged in users (e.g. :Users:Sign:in)'
+    google_sign_in_enabled:
+        name: Google Sign-In enabled
+    apple_sign_in_enabled:
+        name: Apple Sign-In enabled
+
+model:
+    user_builder:
+        error:
+            email_missing: Email missing
+            email_taken: Email %email% is already taken
+            password_short: Password must be at least %length% characters long
+            public_name_missing: Public name missing

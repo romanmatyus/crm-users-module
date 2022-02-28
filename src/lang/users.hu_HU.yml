@@ -1,0 +1,570 @@
+menu:
+    stats: Stats
+    settings: Beállítások
+    sign_out: Kijelentkezés
+    people: Felhasználók
+    users: Felhasználók
+    groups: Csoportok
+    login_attempts: Bejelentkezési kísérletek
+    events: Események
+    cheaters: Cheaters
+    admin_rights: Admin jogok
+    actions_log: Actions log
+
+frontend:
+    sign_in:
+        title: Bejelentkezés
+        username:
+            label: 'E-mail cím:'
+            required: Kérjük add meg az e-mail címed
+            placeholder: E-mail cím
+        password:
+            label: 'Jelszó:'
+            required: Kérjük add meg a jelszavad.
+            placeholder: Jelszó
+        remember: Maradjon bejelentkezve
+        submit: Bejelentkezés
+        signed_out: Sikeresen kijelentkezett.
+    sign_up:
+        title: Regisztráció
+        username:
+            label: 'E-mail cím:'
+            required: Kérjük add meg az e-mail címed
+            placeholder: Pl. kiss.jozsef@email.sk
+        password:
+            label: 'Jelszó:'
+            required: Kérjük add meg a jelszavad.
+            placeholder: Jelszó
+        toc:
+            required: El kell fogadnia a felhasználói feltételeket
+        submit: Fiók létrehozása
+        error:
+            already_registered: 'E-mail cím foglalt. Kérjük adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>'
+            invalid_email: Hibás e-mail cím. Kérjük ellenőrizze a megadott e-mail címét.
+    change_password:
+        title: Jelszó módosítás
+        info: "A jelenlegi jelszavad segítségével új jelszót állíthatsz be."
+        submit: Jelszó módosítás
+        submit_with_devices_logout: Jelszó módosítás és más eszközökről való kijelentkezés
+        actual_password:
+            label: 'Jelenlegi jelszó:'
+            required: Kérjük add meg a jelenlegi jelszavad
+            placeholder: Jelenlegi jelszó
+            description: "Elfelejtetted a jelszavad? Semmi gond, <a href=\"%url%\" class=\"link\"><strong>kattints ide</strong></a> és küldünk egy újat az e-mail címedre."
+        new_password:
+            label: 'Új jelszó:'
+            required: Kérjük add meg az új jelszavad
+            placeholder: Új jelszó
+            minlength: Jelszavadak legalább %d karakterből kell állnia.
+        new_password_confirm:
+            label: 'Új jelszó ismét:'
+            required: Kérjük add meg az új jelszavad még egyszer
+            placeholder: Új jelszó ismét
+            description: Kérjük megerősítés céljából add meg az új jelszavad még egyszer.
+        errors:
+            could_not_authenticate: Sikertelen próbálkozás.
+            invalid_credentials: Hibás jelszó.
+        success: Jelszavad sikeresen módosítottad.
+        success_with_logout: "Jelszó sikeresen módosítva, kijelentkeztettünk a többi eszközről."
+        reset_success: 'Jelszó sikeresen módosítva és elküldve emailben a %email% címre.'
+    address:
+        type:
+            label: Cím típusa
+        first_name:
+            label: 'Keresztnév:'
+            placeholder: keresztnév
+        last_name:
+            label: 'Vezetéknév:'
+            placeholder: vezetéknév
+        phone_number:
+            label: 'Telefonszám:'
+            placeholder: pl. 0915 123 456
+        address:
+            label: 'Utca:'
+            placeholder: adja meg az utca nevét
+        number:
+            label: 'Szám:'
+            placeholder: pl. 14/A
+        zip:
+            label: 'Irányítószám:'
+            placeholder: pl. 08102
+        city:
+            label: 'Város:'
+            placeholder: pl. Trnava
+        country:
+            label: 'Ország:'
+        company_name:
+            label: 'Cégnév:'
+            placeholder: 'pl. Cég s.r.o.'
+        company_id:
+            label: 'Cég azonosító:'
+            placeholder: pl. 9238598283
+        company_tax_id:
+            label: 'Adó azonosító:'
+            placeholder: pl. 2359023591
+        company_vat_id:
+            label: 'Áfa azonosító:'
+            placeholder: pl. SK2359023591
+        submit: Mentés
+    request_password:
+        title: Elfelejtetted a jelszavad?
+        info: "Az új jelszó igényléséhez kérjük add meg a jelenleg használt jelszavad, majd az újat, amit a továbbiakban használni szeretnél:"
+        login:
+            text: "Ha tudod a jelszavad, "
+            link: "jelentkezz be itt"
+        email:
+            label: 'E-mail cím:'
+            required: Kérjük add meg az e-mail címed
+            placeholder: "Az e-mail címed, amellyel regisztráltál"
+        submit: Küldés
+        invalid_email: Hibás e-mail cím
+
+        success:
+            email: "A jelszóváltoztatási linket elküldtük erre a címre:"
+            spam: "Kérjük, ellenőrizd az e-mail postafiókod, valamint a spam mappát is."
+    reset_password:
+        title: Jelszó módosítás
+        info: Ezen az oldalon módosíthatod a jelszavad.
+        errors:
+            invalid_password_reset_token: Jelszó módosításhoz használt link érvényessége lejárt. Igényelj új linket.
+        new_password:
+            label: 'Új jelszó:'
+            required: Add meg az új jelszavad
+            placeholder: Új jelszó
+            min_length: Jelszavadnak legalább %count% karakterből kell állnia.
+        new_password_confirm:
+            label: 'Új jelszó még egyszer:'
+            required: Kérjük add meg az új jelszavad még egyszer
+            not_matching: Jelszavak nem egyeznek
+            placeholder: Új jelszó még egyszer
+            description: Kérjük add meg az új jelszavad még egyszer megerősités céljából
+        submit: Beállítás
+        could_not_set: Jelszó módosítás sikertelen
+        success: Sikeresen módosítottad a jelszavad!
+    email_confirm:
+        title: Email ellenőrzés
+        success: Emailcím ellenőrzés sikeres.
+        fail: "Emailcím ellenőrzés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
+        back: Vissza
+    settings:
+        title: Rendszer beállítások
+        personal_data:
+            title: Személyes adatok letöltése
+            info: "Itt tudod letölteni a tárolt személyes adataid"
+            download: Letöltés
+        devices_logout:
+            title: Eszközkezelés
+            logout: Kijelentkeztetés minden más eszközről
+            confirm: "Ki szeretnél jelentkezni minden más eszközről?"
+            success: "Kijelentkeztél minden más eszközről"
+        account_delete:
+            title: Felhasználó törlése
+            info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon. <strong>Ez a múvelet visszafordíthatatlam.</strong>'
+            password:
+                label: 'Jelszó:'
+                required: Jelszó kötelező
+            submit: Felhasználó törlése
+            invalid_password: Hibás jelszó
+            cannot_delete: "Felhasználó nem törölhető automatikusan. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
+            confirm: Felhasználó törlése visszafordíthatatlan. Biztos folytatod?
+            success: Felhasználó sikeresen törölve.
+        linked_accounts:
+            title: Csatolt fiókok kezelése
+            connect: Fikók csatolás
+            connected: Fiók csatolva
+            unlink: megszüntet
+            unlink_success: Fiók csatolás megszüntetve
+    google:
+        fail: "Google bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
+        sign_using_google: Bejelentkezés Google-al
+        or: vagy
+        used_account: "Fiók csatolás sikertelen. Google fiók már csatolva van más felhasználóhoz."
+    apple:
+        fail: "Apple bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
+        sign_using_apple: Bejelentkezés Apple-el
+        used_account: "Fiók csatolás sikertelen. Apple fiók már csatolva van más felhasználóhoz."
+
+admin:
+    actions:
+        deactivate: Inaktiválás
+        activate: Aktiválás
+        show: Megjelenítés
+        edit: Szerkesztés
+
+    default:
+        title: Felhasználók
+        total: Összesen
+        filtered: szűrt
+        new_user: Új felhasználó
+        email: E-mail cím
+        first_name: Keresztnév
+        last_name: Vezetéknév
+        addresses: Címek
+        source: Forrás
+        status: Állapot
+        created_at: Létrehozva
+        actions: Műveletek
+        invoice: Számla
+        institution: Intézmény
+        admin: Admin
+        no_results: 'Nincs találat. Állítson a szűrőkön'
+        export: Exportálás
+
+    show:
+        back_to_list: vissza a listához
+        edit: Felhasználó szerkesztése
+        groups: Csoportok
+        note: Megjegyzés
+        admin_groups: "Admin groups (access rights)"
+        user_actions: Felhasználó műveletek
+        log_out_devices: Kijelentkezés minden eszközről
+        suspicious: Gyanús felhasználók
+        last_market_at: Last market at
+        basic_info: Általános információk
+        email: E-mail cím
+        first_name: Keresztnév
+        last_name: Vezetéknév
+        unconfirmed: Nem megerősített
+        created_at: Létrehozva
+        modified_at: Frissítve
+        active: Aktív
+        deactivate: Inaktív
+        activate: Aktiválás
+        external_id: Külső azonosító
+        source: Forrás
+        funnel: Regisztrációs csatorna
+        referer: Regisztrációs hivatkozó
+        no_print_address: Nincs szállítási cím
+        invoice_address: Számlázási cím
+        add_address: Cím hozzáadása
+        address_last_change: Utolsó módosítás
+        disabled_auto_invoice: Automatikus számla generálás kikapcsolva
+        last_login: Utolsó bejelentkezés
+        no_login: Nincs bejelentkezési bejegyzés
+        personal_info: Személyes adatok
+        anonymize_alert: "Felhasználói fiók anonimizálása visszafordíthatatlan. Felhasználó többé nem tud bejelentkezni és minden személyes adata törlődik. Biztos folytatod?"
+        anonymize: Felhasználó anonimizálása
+        company_id: Cégnév
+        company_tax_id: Adó azonosító
+        company_vat_id: Áfa azonosító
+        address: Cím
+
+    edit:
+        edit_user: Felhasználó szerkesztése
+        back_to_detail: Vissza a részletekhez
+
+    admin_filter_form:
+        text:
+            label: Szűrő
+            placeholder: E-mail cím / Név / Cím
+        address:
+            label: Cím / Számla adatok
+            placeholder: Cím / Számla adatok
+        group:
+            label: Csoport
+        source:
+            label: Forrás
+        submit: Szűrés
+        cancel_filter: Szűrők törlése
+
+    user_form:
+        title: Új Felhasználó
+        back_to_list: vissza a listához
+        credentials: Hitelesítő adatok
+        email:
+            label: 'E-mail cím*:'
+            required: E-mail cím kötelező
+            placeholder: adja meg az e-mail címét
+        password:
+            label: 'Jelszó:'
+            placeholder: Jelszavátnak legalább 6 karakterből kell állnia.
+            required: Jelszó kötelező
+            description: 'Hagyd üresen, amennyiben nem szeretnéd megváltoztatni'
+        source:
+            label: 'Forrás'
+            required: Forrás kötelező
+        personal_information: Személyes információk
+        first_name:
+            label: 'Keresztnév:'
+            placeholder: keresztnév
+        last_name:
+            label: 'Vezetéknév:'
+            placeholder: vezetéknév
+        institution: Intézmény
+        is_institution: Intézmény
+        institution_name:
+            label: 'Intézmény neve:'
+            placeholder: pl. city library of Martin Bell
+            required: 'Ha Intézmény ki van jelölve, meg kell adni a nevét'
+        other: Egyéb
+        external_id:
+            label: 'Külső azonosító:'
+            placeholder: azonosító szám
+            integer: Külső azonosítónak számnak kell lennie
+        role:
+            label: 'Szerep:'
+            user: Felhasználó
+            admin: Adminisztrátor
+        active: Aktív
+        submit: Mentés
+        user_created: Felhasználó létrehozva.
+        user_updated: Felhasználó frissítve.
+
+    user_groups_form:
+        user_added: Felhasználó hozzáadva a csoporthoz
+        user_removed: Felhasználó eltávolítva a csoportból
+
+    change_activation:
+        activated: Felhasználó frissítve
+
+    delete_user:
+        deleted: Felhasználó törölve.
+
+    logout_user:
+        all_devices: 'Felhasználó kijelentkeztetve minden eszközről'
+
+    user_note_form:
+        note_updated: Megjegyzés frissítve
+        note:
+            placeholder: Megjegyzés
+
+    groups_admin:
+        title: Admin csoportok
+        groups: Csoportok
+        total: Összesen
+        new_group: Új csoport
+        name: Név
+        user_count: Felhasználók száma
+        sorting: Rendezés
+        created_at: Létrehozva
+        actions: Műveletek
+        no_groups: Nincs találat
+        edit: Szerkesztés
+        back_to_list: vissza a listához
+        editing_group: Admin csoport szerkesztése
+        admin_group: Admin csoport
+        edit_group: Csoport szerkesztése
+        total_users: Felhasználók száma
+        view: megjelenítés
+
+    group_form:
+        name:
+            label: Csoport neve
+            placeholder: csoport neve
+        sorting:
+            label: Rendezés
+            placeholder: rendezés
+        submit: Mentés
+
+    login_attempts:
+        title: Bejelentkezési próbálkozások
+        total: Összesen
+        filtered: Szűrt
+        email: E-mail cím
+        status: Állapot
+        source: Forrás
+        attempt_time: Próbálkozás ideje
+        user_agent: Böngésző
+        message: Üzenet
+        no_records: Nincs találat
+
+    login_attempts_form:
+        email:
+            label: E-mail cím
+            placeholder: E-mail cím
+        status:
+            label: Állapot
+        source:
+            label: Forrás
+        created_at_from:
+            label: Mettől
+            placeholder: pl. 2016-02-29 12:34
+        created_at_to:
+            label: Meddig
+            placeholder: pl. 2020-02-29 12:34
+        user_agent:
+            label: Böngésző
+            placeholder: pl. Chrome
+        submit: Szűrés
+
+    user_actions_log:
+        title: Felhasználó műveletek naplója
+        total: összesen
+        back_to_list: vissza a listához
+        logaction:
+            label: Művelet
+        submit: Szűrés
+        user: Felhasználó
+        created_at: Létrehozva
+        action: Művelet
+        data: Adat
+        no_records: Nincs találat
+
+    admin_group_admin:
+        title: Admin jogok
+        groups: Admin csoportok
+        total: összesen
+        new_group: Új admin csoport
+        name: Név
+        user_count: Felhasználók száma
+        rights: Jogok
+        created_at: Létrehozva
+        actions: Műveletek
+        no_records: Nincs találat
+        edit: Szerkesztés
+        back_to_list: Vissza a listához
+        editing_group: Csoport szerkesztése
+        empty_group: No users in the group
+        group_created: Csoport létrehozva.
+        group_updated: Csoport frissítve.
+        rights_updated: Access jogok beállítva a csoporthoz.
+        submit: Mentés
+
+    admin_group_form:
+        name:
+            label: Csoport neve
+            placeholder: csoport neve
+        sorting:
+            label: Rendezés
+            placeholder: rendezés
+        submit: Mentés
+
+    abusive:
+        title: Felhasználók sok aktív eszközzel
+        subtitle: Táblázaton listázva vannak az egyedi hozzáférési tokenek melyek a megadott idő intervallumon belüli bejelentkezésnél jöttek létre.
+        date_from: Mettől
+        date_to: Meddig
+        number_of_logins: Bejelentkezések száma
+        number_of_devices: Eszközök száma
+        submit: Megjelenítés
+        no_records: Nincs találat
+        email: E-mail cím
+        name: Név
+        active_logins: Aktív bejelentkezések száma
+        active_devices: Aktív eszközök száma
+        time_ip_last_login: Legutóbbi bejelentkezés ideje / IP címe
+        additional_info: További információk
+        actions: Műveletek
+    stats:
+        title: Felhasználó statisztikák
+
+authenticator:
+    identity_not_found: Érvénytelen e-mail cím.
+    invalid_credentials: Érvénytelen jelszó.
+    inactive_account: Fiók inaktív.
+    rate_limit_exceeded: Túl sok sikertelen próbálkozás. Próbálja újra később.
+
+    access_token:
+        invalid_token: Hibás token
+        autologin_disabled: Automata bejelentkezés kikapcsolva admin felhasználóknak
+
+user_source_accesses_component:
+    title: Utolsó hozzáférések
+    no_data: Nincs rögzített adat
+
+detail_widget_component:
+    other: Egyéb
+
+month_users_small_bar_graph_widget:
+    title: Felhasználók
+
+api:
+    users_login_handler:
+        identity_not_found: "Megadott e-mail cím nem egyezik a bejegyzéseinkkel. Kérjük jelentkezzen be, ahogy az Újszó weboldalon tenné."
+        invalid_credentials: "Megadott jelszó nem egyezik meg a bejegyzéseinkkel. Kérjük jelentkezzen be, ahogy az Újszó weboldalon tenné."
+
+form:
+    admin_user_group:
+        group_id:
+            prompt: Válasszon csoportot
+        send: Hozzáadás
+        error:
+            insufficient_rights: Nincs joga csoportok szerkesztéséhez
+            no_group: Csoport nem létezik
+            no_user: Felhasználó nem létezik
+    user_group:
+        group_id:
+            prompt: Válasszon csoportot
+        send: Hozzáadás
+
+component:
+    user_login_attempts:
+        title: Legutóbbi bejelentkezési próbálkozások
+        today: Mai nap
+        no_record_heading: Nincs bejegyzés
+        no_record: "Úgy tűnik, ez a felhasználó még nem jelentkezett be a rendszerbe."
+        total_stats: Összes statisztika
+        ip_count: IP címek száma
+        browser_count: Böngészők száma
+        web_logins: Web-es bejelentkezések
+        mobile_app_logins: Mobil alkalmazás bejelentkezések
+        last_access_by_source: Forrás szerinti utolsó bejelentkezések
+        status: Állapot
+        attempted_at: Próbálkozás ideje
+        source: Forrás
+        message: Üzenet
+        ip_address: IP cím
+        user_agent: Böngésző / Hivatkozó
+
+    user_meta:
+        header: Saját beállítások
+        value_removed: Érték törölve
+        value_added: Érték hozzáadva
+        form:
+            key:
+                label: Kulcs
+                required: Kulcs kötelező
+            value:
+                label: Érték
+                required: Érték kötelező
+            is_public:
+                label: Publikus
+            submit: Mentés
+        no_record: Nincs bejegyzés
+        no_record_description: Nincs bejegyzés lementve ehhez a felhasználóhoz.
+        key: Kulcs
+        value: Érték
+        created_at: Létrehozva
+        actions: Műveletek
+        public: Publikus
+
+    user_tokens:
+        header: Felhasználói tokenek
+        no_tokens: Nincs token
+        no_tokens_description: Nincs token ehhez a felhasználóhoz.
+        created: Létrehozva
+        code: Token
+        version: Verzió
+        last_used: Utoljára használva
+        ip_agent: IP cím / Böngésző
+        actions: Műveletek
+        delete_all: Összes törlése
+        delete_single: Token törkése
+
+    autologin_tokens:
+        created: Létrehozva
+        from: Érvényesség kezdete
+        to: Érvényesség vége
+        code: Kód
+        used: Felhasználva
+        max: Max count
+        empty_title: Nincs bejegyzés
+        empty_text: Ennek a felhasználónak nincs bejelentkezési kódja.
+
+    user_password_changes:
+        title: Módosítások
+        title_requests: Módosítások igénylése
+        empty_title: Nincs bejegyzés
+        empty_entry_text: "Ez a felhasználó még nem változtatott kódot."
+        empty_request_text: Ez a Felhasználó még nem igényelt jelszó módosítás.
+        type: Típus
+        when: Mikor
+        expire_at: Érvényesség vége
+        state: Állapot
+        token: Token
+
+config:
+    category: Felhasználók
+    not_logged_in_route:
+        name: 'Nem bejelentkezett felhasználók számára megjelenő oldal'
+        description: 'Nette útvonal, ahová átirányítjuk a csak bejelentkezett felhasználóknak elérhető URL ről (pl. :Users:Sign:in)'
