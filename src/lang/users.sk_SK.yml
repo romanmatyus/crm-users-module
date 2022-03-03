@@ -268,6 +268,7 @@ admin:
             label: Zdroj
         submit: Filter
         cancel_filter: Zruš filter
+        more: Viac možností
 
     user_form:
         title: Nový používateľ
