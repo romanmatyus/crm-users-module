@@ -36,10 +36,10 @@ frontend:
             required: Prosím zadejte Vaše heslo.
             placeholder: Vaše heslo
         toc:
-            required: Musíte souhlasit s podmínkami používání
+            required: Musíte souhlasit s podmínkami používání.
         submit: Vytvořit účet
         error:
-            already_registered: 'E-mail je již registrován. Prosím přihlašte se zadáním hesla nebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>'
+            already_registered: 'E-mail je již registrován. Prosím přihlašte se zadáním hesla nebo si ho <a href="/users/users/reset-password" style="text-decoration:underline">resetujte</a>.'
             invalid_email: E-mail není platný. Prosím zkontroluje zadaný email.
     change_password:
         title: Změna hesla
@@ -160,7 +160,7 @@ frontend:
             success: "Byli jste odhlášen z ostatních zařízení."
         account_delete:
             title: Zrušení konta
-            info: 'Pokud chcete nenávratně smazat uživatelský účet, zadejte heslo a stiskněte "Odstranit účet". <strong>Tato akce je nevratná.</strong>'
+            info: 'Pokud chcete nenávratně smazat uživatelský účet, zadejte heslo a stiskněte "Odstranit účet". <strong>Tato akce je nevratná</strong>.'
             password:
                 label: 'Heslo:'
                 required: Heslo musí být zadáno
@@ -174,7 +174,7 @@ frontend:
             connect: Propojit účet s
             connected: Propojený účet
             unlink: zrušit
-            unlink_success: Propojení účtů bylo zrušeno
+            unlink_success: Propojení účtů bylo zrušeno.
     google:
         fail: "Chyba přihlašování pomocí přihlášení přes Google, prosím kontaktujte naši podporu."
         sign_using_google: Přihlásit přes Google
@@ -235,7 +235,7 @@ admin:
         source: Zdroj
         funnel: Funnel při registraci
         referer: Referer při registraci
-        no_print_address: Žádná adresa pro doručování
+        no_print_address: Žádná adresa pro doručování.
         invoice_address: Fakturační adresa
         add_address: Přidej adresu
         address_last_change: Poslední změna
@@ -398,8 +398,6 @@ admin:
         user_agent: Prohlížeč
         message: Zpráva
         no_records: 'Nebyly nalezeny žádné záznamy, které by odpovídaly filtru'
-        today: Dnes
-
     login_attempts_form:
         email:
             label: E-mail
@@ -439,7 +437,7 @@ admin:
         email: Email
         created_at: Vytvořeno
         action_button: Odstránit propojení
-        flash_message: Propojení konta bylo odstráněno
+        flash_message: Propojení konta bylo odstráněno.
 
     admin_group_admin:
         title: Admin práva

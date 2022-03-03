@@ -32,14 +32,14 @@ frontend:
             required: Please enter your email
             placeholder: E.g. moj@email.sk
         password:
-            label: Password
-            required: Please enter your password
+            label: 'Password:'
+            required: Please enter your password.
             placeholder: Your password
         toc:
-            required: You have to agree with terms of use
+            required: You have to agree with terms of use.
         submit: Create account
         error:
-            already_registered: 'E-mail is already registered. Please sign in by entering your password or reset your password <a href="/users/users/reset-password" style="text-decoration:underline">here</a>'
+            already_registered: 'E-mail is already registered. Please sign in by entering your password or reset your password <a href="/users/users/reset-password" style="text-decoration:underline">here</a>.'
             invalid_email: E-mail is not valid. Please check the email you entered.
     change_password:
         title: Change password
@@ -125,7 +125,7 @@ frontend:
             spam: "Please check your email inbox and also folders Propagation / Advertisment / Spam."
     reset_password:
         title: Reset password
-        info: You can now change your password
+        info: You can now change your password.
         errors:
             invalid_password_reset_token: The password reset link has expired. Please request a new link.
         new_password:
@@ -141,7 +141,7 @@ frontend:
             description: Please enter your new password again for confirmation
         submit: Change password
         could_not_set: Could not set the new password
-        success: Your password was successfully changed
+        success: Your password was successfully changed.
     email_confirm:
         title: Email verification
         success: Your email adrress was successfully verified.
@@ -160,7 +160,7 @@ frontend:
             success: "You have been signed out of other devices."
         account_delete:
             title: Delete account
-            info: 'If you wish to permanently delete user account, please enter your password and press "Delete account". <strong>This action is irrevertible.</strong>'
+            info: 'If you wish to permanently delete user account, please enter your password and press "Delete account". <strong>This action is irrevertible</strong>.'
             password:
                 label: 'Password:'
                 required: Password needs to be entered
@@ -174,7 +174,7 @@ frontend:
             connect: Link account with
             connected: Account linked
             unlink: cancel
-            unlink_success: Connected account has been removed
+            unlink_success: Connected account has been removed.
     google:
         fail: "Unable to log in using Google Sign-in, please contact our support."
         sign_using_google: Sign in using Google
@@ -235,7 +235,7 @@ admin:
         source: Source
         funnel: Registration funnel
         referer: Registration referer
-        no_print_address: No delivery address
+        no_print_address: No delivery address.
         invoice_address: Invoice address
         add_address: Add address
         address_last_change: Last change
@@ -440,7 +440,7 @@ admin:
         email: Email
         created_at: Created at
         action_button: Disconnect
-        flash_message: Account was disconnected
+        flash_message: Account was disconnected.
 
     admin_group_admin:
         title: Admin rights
@@ -506,7 +506,7 @@ authenticator:
 
     access_token:
         invalid_token: Invalid token
-        autologin_disabled: 'Automatic login is disabled for this account, please use your email and password'
+        autologin_disabled: 'Automatic login is disabled for this account, please use your email and password.'
 
 user_source_accesses_component:
     title: Last accesses

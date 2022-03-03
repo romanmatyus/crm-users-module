@@ -36,14 +36,13 @@ frontend:
             required: Kérjük add meg a jelszavad.
             placeholder: Jelszó
         toc:
-            required: El kell fogadnia a felhasználói feltételeket
+            required: El kell fogadnia a felhasználói feltételeket.
         submit: Fiók létrehozása
         error:
-            already_registered: 'E-mail cím foglalt. Kérjük adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>'
+            already_registered: 'E-mail cím foglalt. Kérjük adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>.'
             invalid_email: Hibás e-mail cím. Kérjük ellenőrizze a megadott e-mail címét.
     change_password:
         title: Jelszó módosítás
-        info: "A jelenlegi jelszavad segítségével új jelszót állíthatsz be."
         submit: Jelszó módosítás
         submit_with_devices_logout: Jelszó módosítás és más eszközökről való kijelentkezés
         actual_password:
@@ -55,12 +54,12 @@ frontend:
             label: 'Új jelszó:'
             required: Kérjük add meg az új jelszavad
             placeholder: Új jelszó
-            minlength: Jelszavadak legalább %d karakterből kell állnia.
+            minlength: Jelszavadak legalább %d karakterből kell állnia
         new_password_confirm:
             label: 'Új jelszó ismét:'
             required: Kérjük add meg az új jelszavad még egyszer
             placeholder: Új jelszó ismét
-            description: Kérjük megerősítés céljából add meg az új jelszavad még egyszer.
+            description: Kérjük megerősítés céljából add meg az új jelszavad még egyszer
         errors:
             could_not_authenticate: Sikertelen próbálkozás.
             invalid_credentials: Hibás jelszó.
@@ -107,7 +106,7 @@ frontend:
             placeholder: pl. SK2359023591
         submit: Mentés
     request_password:
-        title: Elfelejtetted a jelszavad?
+        title: Elfelejtetted a jelszavad
         info: "Az új jelszó igényléséhez kérjük add meg a jelenleg használt jelszavad, majd az újat, amit a továbbiakban használni szeretnél:"
         login:
             text: "Ha tudod a jelszavad, "
@@ -120,7 +119,7 @@ frontend:
         invalid_email: Hibás e-mail cím
 
         success:
-            email: "A jelszóváltoztatási linket elküldtük erre a címre:"
+            email: "A jelszóváltoztatási linket elküldtük erre a címre"
             spam: "Kérjük, ellenőrizd az e-mail postafiókod, valamint a spam mappát is."
     reset_password:
         title: Jelszó módosítás
@@ -131,7 +130,7 @@ frontend:
             label: 'Új jelszó:'
             required: Add meg az új jelszavad
             placeholder: Új jelszó
-            min_length: Jelszavadnak legalább %count% karakterből kell állnia.
+            min_length: Jelszavadnak legalább %count% karakterből kell állnia
         new_password_confirm:
             label: 'Új jelszó még egyszer:'
             required: Kérjük add meg az új jelszavad még egyszer
@@ -140,7 +139,7 @@ frontend:
             description: Kérjük add meg az új jelszavad még egyszer megerősités céljából
         submit: Beállítás
         could_not_set: Jelszó módosítás sikertelen
-        success: Sikeresen módosítottad a jelszavad!
+        success: Sikeresen módosítottad a jelszavad.
     email_confirm:
         title: Email ellenőrzés
         success: Emailcím ellenőrzés sikeres.
@@ -150,16 +149,16 @@ frontend:
         title: Rendszer beállítások
         personal_data:
             title: Személyes adatok letöltése
-            info: "Itt tudod letölteni a tárolt személyes adataid"
+            info: "Itt tudod letölteni a tárolt személyes adataid."
             download: Letöltés
         devices_logout:
             title: Eszközkezelés
             logout: Kijelentkeztetés minden más eszközről
             confirm: "Ki szeretnél jelentkezni minden más eszközről?"
-            success: "Kijelentkeztél minden más eszközről"
+            success: "Kijelentkeztél minden más eszközről."
         account_delete:
             title: Felhasználó törlése
-            info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon. <strong>Ez a múvelet visszafordíthatatlam.</strong>'
+            info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon. <strong>Ez a múvelet visszafordíthatatlam</strong>.'
             password:
                 label: 'Jelszó:'
                 required: Jelszó kötelező
@@ -173,7 +172,7 @@ frontend:
             connect: Fikók csatolás
             connected: Fiók csatolva
             unlink: megszüntet
-            unlink_success: Fiók csatolás megszüntetve
+            unlink_success: Fiók csatolás megszüntetve.
     google:
         fail: "Google bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
         sign_using_google: Bejelentkezés Google-al
@@ -234,7 +233,7 @@ admin:
         source: Forrás
         funnel: Regisztrációs csatorna
         referer: Regisztrációs hivatkozó
-        no_print_address: Nincs szállítási cím
+        no_print_address: Nincs szállítási cím.
         invoice_address: Számlázási cím
         add_address: Cím hozzáadása
         address_last_change: Utolsó módosítás
@@ -250,7 +249,6 @@ admin:
         address: Cím
 
     edit:
-        edit_user: Felhasználó szerkesztése
         back_to_detail: Vissza a részletekhez
 
     admin_filter_form:
@@ -278,7 +276,7 @@ admin:
             placeholder: adja meg az e-mail címét
         password:
             label: 'Jelszó:'
-            placeholder: Jelszavátnak legalább 6 karakterből kell állnia.
+            placeholder: Jelszavátnak legalább 6 karakterből kell állnia
             required: Jelszó kötelező
             description: 'Hagyd üresen, amennyiben nem szeretnéd megváltoztatni'
         source:
@@ -457,7 +455,7 @@ authenticator:
 
     access_token:
         invalid_token: Hibás token
-        autologin_disabled: Automata bejelentkezés kikapcsolva admin felhasználóknak
+        autologin_disabled: Automata bejelentkezés kikapcsolva admin felhasználóknak.
 
 user_source_accesses_component:
     title: Utolsó hozzáférések
