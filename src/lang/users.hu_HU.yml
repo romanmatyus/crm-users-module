@@ -266,6 +266,7 @@ admin:
             label: Forrás
         submit: Szűrés
         cancel_filter: Szűrők törlése
+        more: További lehetőségek
 
     user_form:
         title: Új Felhasználó

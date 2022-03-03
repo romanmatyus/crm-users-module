@@ -262,6 +262,7 @@ class UsersAdminPresenter extends AdminPresenter
     {
         $form = new Form;
         $form->setRenderer(new BootstrapRenderer());
+        $form->setTranslator($this->translator);
 
         $mainGroup = $form->addGroup('main')->setOption('label', null);
         $collapseGroup = $form->addGroup('collapse', false)
@@ -302,13 +303,13 @@ class UsersAdminPresenter extends AdminPresenter
             $emptyDefaults = array_fill_keys(array_keys((array) $form->getComponents()), null);
             $presenter->redirect('UsersAdmin:Default', ['formData' => $emptyDefaults]);
         };
-        $form->addButton('more', 'payments.admin.component.admin_filter_form.filter.more')
+        $form->addButton('more')
             ->setHtmlAttribute('data-toggle', 'collapse')
             ->setHtmlAttribute('data-target', '#formCollapse')
             ->setAttribute('class', 'btn btn-info')
             ->getControlPrototype()
             ->setName('button')
-            ->setHtml('<i class="fas fa-caret-down"></i> ' . $this->translator->translate('payments.admin.component.admin_filter_form.filter.more'));
+            ->setHtml('<i class="fas fa-caret-down"></i> ' . $this->translator->translate('users.admin.admin_filter_form.more'));
 
         $form->onSuccess[] = [$this, 'adminFilterSubmitted'];
 

@@ -267,6 +267,7 @@ admin:
             label: Source
         submit: Filter
         cancel_filter: Cancel filter
+        more: More options
 
     user_form:
         title: New user
