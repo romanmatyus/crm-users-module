@@ -25,23 +25,23 @@ use Nette\Utils\Json;
 
 class UserManager
 {
-    private $usersRepository;
+    private UsersRepository $usersRepository;
 
-    private $passwordGenerator;
+    private PasswordGenerator $passwordGenerator;
 
-    private $changePasswordsLogsRepository;
+    private ChangePasswordsLogsRepository $changePasswordsLogsRepository;
 
-    private $userBuilder;
+    private UserBuilder $userBuilder;
 
-    private $emitter;
+    private Emitter $emitter;
 
-    private $emailValidator;
+    private EmailValidator $emailValidator;
 
-    private $accessTokensRepository;
+    private AccessTokensRepository $accessTokensRepository;
 
-    private $passwordResetTokensRepository;
+    private PasswordResetTokensRepository $passwordResetTokensRepository;
 
-    private $userMetaRepository;
+    private UserMetaRepository $userMetaRepository;
 
     /** @var Passwords */
     private $passwords;
