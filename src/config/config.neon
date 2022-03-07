@@ -170,7 +170,7 @@ services:
 	- Crm\UsersModule\Auth\Rate\WrongPasswordRateLimit
 	- Crm\UsersModule\Auth\Rate\IpRateLimit
 	registrationIpRateLimit:
-		class: Crm\UsersModule\Auth\Rate\RegistrationIpRateLimit
+		factory: Crm\UsersModule\Auth\Rate\RegistrationIpRateLimit
 	- Crm\UsersModule\AdminFilterFormData
 
 	- Crm\UsersModule\Api\GetDeviceTokenApiHandler
