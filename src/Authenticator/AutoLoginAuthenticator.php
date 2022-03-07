@@ -15,7 +15,7 @@ use Nette\Http\Request;
  *
  * Required credentials (use `setCredentials()`):
 
- * - \Nette\Database\Table\IRow 'user' - user created after sign up,
+ * - \Nette\Database\Table\ActiveRow 'user' - user created after sign up,
  * - bool 'autoLogin => false' - must be set to true to indicate we want to autologin user.
  */
 class AutoLoginAuthenticator extends BaseAuthenticator
