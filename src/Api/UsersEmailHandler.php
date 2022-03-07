@@ -72,7 +72,7 @@ class UsersEmailHandler extends ApiHandler implements ApiParamsValidatorInterfac
                 }
             } elseif ($authException->getCode() === UserAuthenticator::INVALID_CREDENTIAL) {
                 $status = 'taken';
-                $passwordStatus = ($params['password']) ? false : null;
+                $passwordStatus = isset($params['password']) ? false : null;
             } elseif ($authException->getCode() ===  UserAuthenticator::NOT_APPROVED) {
                 $user = null;
                 $status = 'available';

@@ -4,9 +4,6 @@ namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
 use Nette\Utils\DateTime;
-use Sinergi\BrowserDetector\Device;
-use Sinergi\BrowserDetector\Os;
-use Sinergi\BrowserDetector\UserAgent;
 
 class RegistrationAttemptsRepository extends Repository
 {
@@ -21,18 +18,6 @@ class RegistrationAttemptsRepository extends Repository
 
     final public function insertAttempt($email, $userId, $source, $status, $ip, $userAgent, $dateTime)
     {
-        $os = null;
-        $device = null;
-
-        if ($userAgent) {
-            $ua = new UserAgent($userAgent);
-            $o = new Os($ua);
-            $d = new Device($ua);
-
-            $os = $o->getName();
-            $device = $d->getName();
-        }
-
         return $this->getTable()->insert([
             'email' => $email,
             'user_id' => $userId,
@@ -41,8 +26,6 @@ class RegistrationAttemptsRepository extends Repository
             'source' => $source,
             'ip' => $ip,
             'user_agent' => $userAgent,
-            'os' => $os,
-            'device' => $device,
         ]);
     }
 

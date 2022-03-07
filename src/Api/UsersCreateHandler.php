@@ -99,19 +99,19 @@ class UsersCreateHandler extends ApiHandler
             return $response;
         }
 
-        $unclaimed = filter_var($params['unclaimed'], FILTER_VALIDATE_BOOLEAN);
+        $unclaimed = filter_var($params['unclaimed'] ?? null, FILTER_VALIDATE_BOOLEAN);
         $user = $this->userManager->loadUserByEmail($email) ?: null;
 
         // if user found allow only unclaimed user to get registered
         if ($user && ($unclaimed || !$this->unclaimedUser->isUnclaimedUser($user))) {
-            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_TAKEN_EMAIL);
+            $this->addAttempt($params['email'], null, $params['source'] ?? null, RegistrationAttemptsRepository::STATUS_TAKEN_EMAIL);
             $response = new JsonResponse(['status' => 'error', 'message' => 'Email is already taken', 'code' => 'email_taken']);
             $response->setHttpCode(Response::S404_NOT_FOUND);
             return $response;
         }
 
         $source = 'api';
-        if ($params['source'] && strlen($params['source']) > 0) {
+        if (isset($params['source']) && strlen($params['source']) > 0) {
             $source = $params['source'];
         }
 
@@ -121,7 +121,7 @@ class UsersCreateHandler extends ApiHandler
         }
 
         $sendEmail = true;
-        if ($params['send_email']) {
+        if (isset($params['send_email'])) {
             $sendEmail = filter_var($params['send_email'], FILTER_VALIDATE_BOOLEAN);
         }
 
@@ -134,7 +134,7 @@ class UsersCreateHandler extends ApiHandler
         if (!empty($params['device_token'])) {
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
-                $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_DEVICE_TOKEN_NOT_FOUND);
+                $this->addAttempt($params['email'], $user, $source, RegistrationAttemptsRepository::STATUS_DEVICE_TOKEN_NOT_FOUND);
                 $response = new JsonResponse([
                     'status' => 'error',
                     'message' => 'Device token doesn\'t exist',
@@ -191,7 +191,7 @@ class UsersCreateHandler extends ApiHandler
             $this->accessTokensRepository->pairWithDeviceToken($lastToken, $deviceToken);
         }
 
-        $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_OK);
+        $this->addAttempt($params['email'], $user, $params['source'] ?? null, RegistrationAttemptsRepository::STATUS_OK);
         $result = $this->formatResponse($user, $lastToken);
 
         $response = new JsonResponse($result);
