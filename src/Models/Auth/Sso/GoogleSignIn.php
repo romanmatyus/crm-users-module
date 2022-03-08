@@ -212,14 +212,18 @@ class GoogleSignIn
         $state = bin2hex(random_bytes(128/8));
         $client->setState($state);
 
-        //save cookie for later verification
+        //save cookie for later verification (or delete to remove any stale cookies)
         $this->setLoginCookie(self::COOKIE_GSI_STATE, $state);
         if ($source) {
             $this->setLoginCookie(self::COOKIE_GSI_SOURCE, $source);
+        } else {
+            $this->response->deleteCookie(self::COOKIE_GSI_SOURCE);
         }
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         if ($userId) {
             $this->setLoginCookie(self::COOKIE_GSI_USER_ID, $userId);
+        } else {
+            $this->response->deleteCookie(self::COOKIE_GSI_USER_ID);
         }
 
         return $client->createAuthUrl();

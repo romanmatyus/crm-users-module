@@ -120,12 +120,16 @@ class AppleSignIn
         $this->setLoginCookie(self::COOKIE_ASI_STATE, $state);
         if ($source) {
             $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
+        } else {
+            $this->response->deleteCookie(self::COOKIE_ASI_SOURCE);
         }
         $this->setLoginCookie(self::COOKIE_ASI_NONCE, $nonce);
 
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         if ($userId) {
             $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
+        } else {
+            $this->response->deleteCookie(self::COOKIE_ASI_USER_ID);
         }
 
         return $url->getAbsoluteUrl();
