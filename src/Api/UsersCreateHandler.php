@@ -64,6 +64,7 @@ class UsersCreateHandler extends ApiHandler
             new InputParam(InputParam::TYPE_POST, 'disable_email_validation', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
             new InputParam(InputParam::TYPE_POST, 'unclaimed', InputParam::OPTIONAL),
+            new InputParam(InputParam::TYPE_POST, 'newsletters_subscribe', InputParam::OPTIONAL),
         ];
     }
 
@@ -147,13 +148,15 @@ class UsersCreateHandler extends ApiHandler
 
         $password = $params['password'] ?? null;
 
+        $meta = $this->processMeta($params);
+
         try {
             if ($user) {
                 $user = $this->unclaimedUser->makeUnclaimedUserRegistered($user, $sendEmail, $source, $referer, $checkEmail, $password, $deviceToken);
             } elseif ($unclaimed) {
                 $user = $this->unclaimedUser->createUnclaimedUser($email, $source);
             } else {
-                $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password);
+                $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password, true, $meta);
             }
         } catch (InvalidEmailException $e) {
             $this->addAttempt($params['email'], $user, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
@@ -234,5 +237,14 @@ class UsersCreateHandler extends ApiHandler
             Request::getUserAgent(),
             new \DateTime()
         );
+    }
+
+    private function processMeta($params): array
+    {
+        $newslettersSubscribe = filter_var($params['newsletters_subscribe'], FILTER_VALIDATE_BOOLEAN);
+
+        return array_filter([
+            'newsletters_subscribe' => $newslettersSubscribe
+        ]);
     }
 }
