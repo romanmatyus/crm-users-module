@@ -57,13 +57,13 @@ class UsersLoginHandler extends ApiHandler
         }
 
         if (!$params['email']) {
-            $response = new JsonResponse(['status' => 'error', 'error' => 'no_email', 'message' => 'No valid email']);
+            $response = new JsonResponse(['status' => 'error', 'error' => 'no_email', 'message' => 'No valid email', 'code' => 'invalid_email']);
             $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
         }
 
         if (!$params['password']) {
-            $response = new JsonResponse(['status' => 'error', 'error' => 'no_password', 'message' => 'No valid password']);
+            $response = new JsonResponse(['status' => 'error', 'error' => 'no_password', 'message' => 'No valid password', 'code' => 'invalid_password']);
             $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
         }
@@ -94,12 +94,15 @@ class UsersLoginHandler extends ApiHandler
             ]);
         } catch (AuthenticationException $authException) {
             $message = $authException->getMessage();
+            $code = 'auth_failed';
             if (in_array($authException->getCode(), [UserAuthenticator::IDENTITY_NOT_FOUND, UserAuthenticator::NOT_APPROVED], true)) {
                 $message = $this->translator->translate('users.api.users_login_handler.identity_not_found');
+                $code = 'identity_not_found';
             } elseif ($authException->getCode() === UserAuthenticator::INVALID_CREDENTIAL) {
                 $message = $this->translator->translate('users.api.users_login_handler.invalid_credentials');
+                $code = 'invalid_credential';
             }
-            $response = new JsonResponse(['status' => 'error', 'error' => 'auth_failed', 'message' => $message]);
+            $response = new JsonResponse(['status' => 'error', 'error' => 'auth_failed', 'message' => $message, 'code' => $code]);
             $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
         }
