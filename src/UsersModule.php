@@ -192,6 +192,10 @@ class UsersModule extends CrmModule
             \Crm\UsersModule\Events\RemovedAccessTokenEvent::class,
             $this->getInstance(\Crm\UsersModule\Events\RemovedAccessTokenHandler::class)
         );
+        $emitter->addListener(
+            \Crm\ApplicationModule\Events\FrontendRequestEvent::class,
+            $this->getInstance(\Crm\UsersModule\Events\FrontendRequestAccessTokenAutologinHandler::class)
+        );
     }
 
     public function registerCommands(CommandsContainerInterface $commandsContainer)

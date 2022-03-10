@@ -118,6 +118,7 @@ services:
 	- Crm\UsersModule\Events\NewAccessTokenHandler
 	- Crm\UsersModule\Events\RefreshUserDataTokenHandler
 	- Crm\UsersModule\Events\RemovedAccessTokenHandler
+	- Crm\UsersModule\Events\FrontendRequestAccessTokenAutologinHandler
 	- Crm\UsersModule\Api\UsersEmailHandler
 	- Crm\UsersModule\Api\UsersLoginHandler
 	- Crm\UsersModule\Api\UsersLogoutHandler
