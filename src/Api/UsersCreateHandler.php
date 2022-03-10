@@ -241,7 +241,7 @@ class UsersCreateHandler extends ApiHandler
 
     private function processMeta($params): array
     {
-        $newslettersSubscribe = filter_var($params['newsletters_subscribe'], FILTER_VALIDATE_BOOLEAN);
+        $newslettersSubscribe = filter_var($params['newsletters_subscribe'] ?? null, FILTER_VALIDATE_BOOLEAN);
 
         return array_filter([
             'newsletters_subscribe' => $newslettersSubscribe
