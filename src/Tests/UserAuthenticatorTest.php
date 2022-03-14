@@ -5,7 +5,6 @@ namespace Crm\UsersModule\Tests;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\Access\AccessToken;
-use Crm\UsersModule\Auth\AutoLogin\AutoLogin;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -16,7 +15,7 @@ use Crm\UsersModule\User\UnclaimedUser;
 use Kdyby\Translation\Translator;
 use Nette\Database\Table\ActiveRow;
 use Nette\Security\AuthenticationException;
-use Nette\Security\IAuthenticator;
+use Nette\Security\Authenticator;
 
 class UserAuthenticatorTest extends DatabaseTestCase
 {
@@ -34,9 +33,6 @@ class UserAuthenticatorTest extends DatabaseTestCase
 
     /** @var string $accessTokenLastVersion */
     private $accessTokenLastVersion;
-
-    /** @var AutoLogin $autoLogin */
-    private $autoLogin;
 
     /** @var ActiveRow $user */
     private $user;
@@ -94,7 +90,6 @@ class UserAuthenticatorTest extends DatabaseTestCase
 
         $this->userAuthenticator = $this->inject(UserAuthenticator::class);
         $this->userManager = $this->inject(UserManager::class);
-        $this->autoLogin = $this->inject(AutoLogin::class);
         $this->unclaimedUser = $this->inject(UnclaimedUser::class);
 
         $this->usersRepository = $this->getRepository(UsersRepository::class);
@@ -144,7 +139,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     {
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage($this->translator->translate('users.authenticator.identity_not_found'));
-        $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
+        $this->expectExceptionCode(Authenticator::IDENTITY_NOT_FOUND);
 
         $this->userAuthenticator->authenticate([
             'username' => 'incorrect+' . $this->testUserEmail,
@@ -156,7 +151,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     {
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage($this->translator->translate('users.authenticator.invalid_credentials'));
-        $this->expectExceptionCode(IAuthenticator::INVALID_CREDENTIAL);
+        $this->expectExceptionCode(Authenticator::INVALID_CREDENTIAL);
 
         $this->userAuthenticator->authenticate([
             'username' => $this->testUserEmail,
@@ -172,7 +167,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
 
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage($this->translator->translate('users.authenticator.inactive_account'));
-        $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
+        $this->expectExceptionCode(Authenticator::IDENTITY_NOT_FOUND);
 
         $this->userAuthenticator->authenticate([
             'username' => $testInactiveEmail,
@@ -188,7 +183,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
 
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage($this->translator->translate('users.authenticator.unclaimed_user'));
-        $this->expectExceptionCode(IAuthenticator::NOT_APPROVED);
+        $this->expectExceptionCode(Authenticator::NOT_APPROVED);
 
         $this->userAuthenticator->authenticate([
             'username' => $testUnclaimedEmail,
@@ -213,7 +208,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     public function testAutoLoginFalseFlag()
     {
         $this->expectException(AuthenticationException::class);
-        $this->expectExceptionCode(IAuthenticator::IDENTITY_NOT_FOUND);
+        $this->expectExceptionCode(Authenticator::IDENTITY_NOT_FOUND);
 
         $userIdentity = $this->userAuthenticator->authenticate([
             'user' => $this->user,
@@ -239,7 +234,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
 
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage($this->translator->translate('users.authenticator.access_token.autologin_disabled'));
-        $this->expectExceptionCode(IAuthenticator::FAILURE);
+        $this->expectExceptionCode(Authenticator::NOT_APPROVED);
 
         $this->userAuthenticator->authenticate(['accessToken' => $token->token]);
     }
@@ -248,7 +243,7 @@ class UserAuthenticatorTest extends DatabaseTestCase
     {
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage($this->translator->translate('users.authenticator.access_token.invalid_token'));
-        $this->expectExceptionCode(IAuthenticator::FAILURE);
+        $this->expectExceptionCode(Authenticator::FAILURE);
 
         $this->userAuthenticator->authenticate(['accessToken' => "invalid_token"]);
     }
