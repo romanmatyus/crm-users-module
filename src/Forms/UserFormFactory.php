@@ -6,8 +6,11 @@ use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\UsersModule\Auth\Repository\AdminUserGroupsRepository;
 use Crm\UsersModule\Builder\UserBuilder;
 use Crm\UsersModule\DataProvider\UserFormDataProviderInterface;
+use Crm\UsersModule\Events\UserChangePasswordEvent;
+use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
+use League\Event\Emitter;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Localization\Translator;
@@ -26,6 +29,10 @@ class UserFormFactory
 
     private $adminUserGroupsRepository;
 
+    private $changePasswordsLogsRepository;
+
+    private $emitter;
+
     public $onSave;
 
     public $onUpdate;
@@ -41,7 +48,9 @@ class UserFormFactory
         Translator $translator,
         DataProviderManager $dataProviderManager,
         AdminUserGroupsRepository $adminUserGroupsRepository,
-        Passwords $passwords
+        Passwords $passwords,
+        ChangePasswordsLogsRepository $changePasswordsLogsRepository,
+        Emitter $emitter
     ) {
         $this->userRepository = $userRepository;
         $this->userBuilder = $userBuilder;
@@ -49,6 +58,8 @@ class UserFormFactory
         $this->dataProviderManager = $dataProviderManager;
         $this->adminUserGroupsRepository = $adminUserGroupsRepository;
         $this->passwords = $passwords;
+        $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
+        $this->emitter = $emitter;
     }
 
     public function create($userId): Form
@@ -158,8 +169,10 @@ class UserFormFactory
             unset($values['user_id']);
 
             try {
+                $newPassword = null;
                 if (isset($values['password'])) {
                     if (strlen($values['password']) > 0) {
+                        $newPassword = $values['password'];
                         $values['password'] = $this->passwords->hash($values['password']);
                     } else {
                         unset($values['password']);
@@ -167,9 +180,20 @@ class UserFormFactory
                 }
 
                 $user = $this->userRepository->find($userId);
+                $oldPasswordHash = $user->password;
                 $this->userRepository->update($user, $values);
                 if ($values['role'] === UsersRepository::ROLE_USER) {
                     $this->adminUserGroupsRepository->removeGroupsForUser($user);
+                }
+                if (isset($values['password'])) {
+                    $this->changePasswordsLogsRepository->add(
+                        $user,
+                        ChangePasswordsLogsRepository::TYPE_RESET,
+                        $oldPasswordHash,
+                        $values['password']
+                    );
+
+                    $this->emitter->emit(new UserChangePasswordEvent($user, $newPassword));
                 }
                 $this->onCallback = function () use ($form, $user) {
                     $this->onUpdate->__invoke($form, $user);

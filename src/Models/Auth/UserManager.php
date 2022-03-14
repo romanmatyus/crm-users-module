@@ -152,20 +152,20 @@ class UserManager
             return false;
         }
 
-        $newPassword = $this->passwords->hash($newPassword);
+        $hashedPassword = $this->passwords->hash($newPassword);
 
         $this->changePasswordsLogsRepository->add(
             $user,
             ChangePasswordsLogsRepository::TYPE_CHANGE,
             $user->password,
-            $newPassword
+            $hashedPassword
         );
 
         $this->usersRepository->update($user, [
-            'password' => $newPassword,
+            'password' => $hashedPassword,
         ]);
 
-        $this->emitter->emit(new UserChangePasswordEvent($user));
+        $this->emitter->emit(new UserChangePasswordEvent($user, $newPassword));
 
         return true;
     }
@@ -195,7 +195,7 @@ class UserManager
             $hashedPassword
         );
 
-        $this->emitter->emit(new UserChangePasswordEvent($user, $notify));
+        $this->emitter->emit(new UserChangePasswordEvent($user, $password, $notify));
         return $password;
     }
 
@@ -233,6 +233,8 @@ class UserManager
 
         $this->accessTokensRepository->removeAllUserTokens($user->id);
 
+        // do not notify about password change, suspicous event should send its own mail
+        $this->emitter->emit(new UserChangePasswordEvent($user, $password, false));
         $this->emitter->emit(new UserSuspiciousEvent($user, $password));
 
         return true;

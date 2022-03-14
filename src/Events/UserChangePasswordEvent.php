@@ -8,11 +8,14 @@ class UserChangePasswordEvent extends AbstractEvent
 {
     private $user;
 
+    private $newPassword;
+
     private $notify;
 
-    public function __construct($user, $notify = true)
+    public function __construct($user, $newPassword, $notify = true)
     {
         $this->user = $user;
+        $this->newPassword = $newPassword;
         $this->notify = $notify;
     }
 
@@ -24,5 +27,10 @@ class UserChangePasswordEvent extends AbstractEvent
     public function shouldNotify()
     {
         return $this->notify;
+    }
+
+    public function getNewPassword()
+    {
+        return $this->newPassword;
     }
 }
