@@ -64,7 +64,7 @@ class AccessToken
 
         $token = $this->accessTokenRepository->add($userRow, $this->version, $source);
 
-        if ($response/* && !\Crm\ApplicationModule\Request::isApi()*/) {
+        if ($response && !CrmRequest::isApi()) {
             $response->setCookie(
                 $this->cookieName,
                 $token->token,
