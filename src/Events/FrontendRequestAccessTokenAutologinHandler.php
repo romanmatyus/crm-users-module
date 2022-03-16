@@ -59,7 +59,8 @@ class FrontendRequestAccessTokenAutologinHandler extends AbstractListener
 
         try {
             $this->user->login(['accessToken' => $accessToken]);
-            if ($this->user->isLoggedIn()) {
+            // Do not refresh POST/PUT requests (otherwise data will get lost)
+            if (!in_array($this->httpRequest->getMethod(), ['POST', 'PUT']) && $this->user->isLoggedIn()) {
                 $this->httpResponse->addHeader('Refresh', 0);
                 exit;
             }
