@@ -562,7 +562,7 @@ component:
         mobile_app_logins: "Mobilné prihlásenia (aplikácie)"
         last_access_by_source: Posledný prístup podľa zdroja
         status: Stav
-        attempted_at: Čas príhlasenia
+        attempted_at: Čas prihlásenia
         source: Zdroj
         message: Popis
         ip_address: IP
