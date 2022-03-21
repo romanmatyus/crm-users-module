@@ -8,10 +8,8 @@
       <h1>
           {_users.admin.login_attempts.title}
         <small>
-          / {_users.admin.login_attempts.total} {$totalLoginAttempts}
-          {if $totalLoginAttempts != $filteredCount}
-            , {_users.admin.login_attempts.filtered} {$filteredCount}
-          {/if}
+          / {_users.admin.login_attempts.filtered} {$filteredCount}
+
         </small>
       </h1>
     </div>

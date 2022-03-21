@@ -6,7 +6,8 @@ use Crm\AdminModule\Presenters\AdminPresenter;
 use Crm\ApplicationModule\Components\VisualPaginator;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Nette\Application\UI\Form;
-use Tomaj\Form\Renderer\BootstrapInlineRenderer;
+use Nette\Utils\DateTime;
+use Tomaj\Form\Renderer\BootstrapRenderer;
 
 class LoginAttemptsAdminPresenter extends AdminPresenter
 {
@@ -30,6 +31,13 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
         $this->loginAttemptsRepository = $loginAttemptsRepository;
     }
 
+    public function startup()
+    {
+        parent::startup();
+        $this->created_at_from = $this->created_at_from ?? DateTime::from('-1 months')->format('Y-m-d 00:00:00');
+        $this->created_at_to = $this->created_at_to ?? DateTime::from('today')->format('Y-m-d 23:59:59');
+    }
+
     /**
      * @admin-access-level read
      */
@@ -38,7 +46,6 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
         $filteredLoginAttempts = $this->getFilteredLoginAttempts();
 
         $filteredCount = $filteredLoginAttempts->count('*');
-        $this->template->totalLoginAttempts = $this->loginAttemptsRepository->totalCount();
         $this->template->filteredCount = $filteredCount;
         $this->template->createdAtFrom = $this->created_at_from;
         $this->template->createdAtTo = $this->created_at_to;
@@ -80,30 +87,31 @@ class LoginAttemptsAdminPresenter extends AdminPresenter
     public function createComponentLoginAttemptsForm()
     {
         $form = new Form;
-        $form->setRenderer(new BootstrapInlineRenderer());
+        $form->setRenderer(new BootstrapRenderer());
+        $form->setTranslator($this->translator);
 
-        $form->addText('email', $this->translator->translate('users.admin.login_attempts_form.email.label'))
-            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.email.placeholder'))
+        $form->addText('email', 'users.admin.login_attempts_form.email.label')
+            ->setHtmlAttribute('placeholder', 'users.admin.login_attempts_form.email.placeholder')
             ->setHtmlAttribute('autofocus');
 
-        $statuses = $this->loginAttemptsRepository->getTable()->select("DISTINCT status")->fetchPairs("status", "status");
-        $form->addMultiSelect('status', $this->translator->translate('users.admin.login_attempts_form.status.label'), $statuses)
+        $statuses = $this->loginAttemptsRepository->statuses();
+        $form->addMultiSelect('status', 'users.admin.login_attempts_form.status.label', array_combine($statuses, $statuses))
             ->getControlPrototype()->addAttributes(['class' => 'select2']);
 
         $sources = $this->loginAttemptsRepository->getTable()->select("DISTINCT source")->fetchPairs("source", "source");
-        $form->addMultiSelect('source', $this->translator->translate('users.admin.login_attempts_form.source.label'), $sources)
+        $form->addMultiSelect('source', 'users.admin.login_attempts_form.source.label', $sources)
             ->getControlPrototype()->addAttributes(['class' => 'select2']);
 
-        $form->addText('created_at_from', $this->translator->translate('users.admin.login_attempts_form.created_at_from.label'))
-            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.created_at_from.placeholder'));
+        $form->addText('created_at_from', 'users.admin.login_attempts_form.created_at_from.label')
+            ->setHtmlAttribute('placeholder', 'users.admin.login_attempts_form.created_at_from.placeholder');
 
-        $form->addText('created_at_to', $this->translator->translate('users.admin.login_attempts_form.created_at_to.label'))
-            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.created_at_to.placeholder'));
+        $form->addText('created_at_to', 'users.admin.login_attempts_form.created_at_to.label')
+            ->setHtmlAttribute('placeholder', 'users.admin.login_attempts_form.created_at_to.placeholder');
 
-        $form->addText('user_agent', $this->translator->translate('users.admin.login_attempts_form.user_agent.label'))
-            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.login_attempts_form.user_agent.placeholder'));
+        $form->addText('user_agent', 'users.admin.login_attempts_form.user_agent.label')
+            ->setHtmlAttribute('placeholder', 'users.admin.login_attempts_form.user_agent.placeholder');
 
-        $form->addSubmit('send', $this->translator->translate('users.admin.login_attempts_form.submit'))
+        $form->addSubmit('send', 'users.admin.login_attempts_form.submit')
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fa fa-filter"></i> ' . $this->translator->translate('users.admin.login_attempts_form.submit'));

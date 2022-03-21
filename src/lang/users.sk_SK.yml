@@ -392,7 +392,6 @@ admin:
 
     login_attempts:
         title: Pokusy o prihlásenie
-        total: celkovo
         filtered: vyfiltrovaných
         email: E-mail
         status: Stav prihlásenia

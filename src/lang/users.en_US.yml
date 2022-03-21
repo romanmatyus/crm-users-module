@@ -391,7 +391,6 @@ admin:
 
     login_attempts:
         title: Login attempts
-        total: total
         filtered: filtered
         email: E-mail
         status: Status

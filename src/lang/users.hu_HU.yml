@@ -357,7 +357,6 @@ admin:
 
     login_attempts:
         title: Bejelentkezési próbálkozások
-        total: Összesen
         filtered: Szűrt
         email: E-mail cím
         status: Állapot

@@ -11,20 +11,20 @@ use Sinergi\BrowserDetector\UserAgent;
 
 class LoginAttemptsRepository extends Repository
 {
-    const STATUS_UNKNOWN = 'unknown';
-    const STATUS_OK = 'ok';
-    const STATUS_API_OK = 'api_ok';
-    const STATUS_NOT_FOUND_EMAIL = 'not_found_email';
-    const STATUS_UNCLAIMED_USER = 'unclaimed_user';
-    const STATUS_WRONG_PASS = 'wrong_pass';
-    const STATUS_INACTIVE_USER = 'inactive_user';
-    const STATUS_TOKEN_DATE_EXPIRED = 'token_date_expired';
-    const STATUS_TOKEN_NOT_FOUND = 'token_not_found';
-    const STATUS_TOKEN_COUNT_EXPIRED = 'token_count_expired';
-    const STATUS_TOKEN_OK = 'token_ok';
-    const STATUS_ACCESS_TOKEN_OK = 'access_token_ok';
-    const STATUS_LOGIN_AFTER_SIGN_UP = 'login_after_sign_up';
-    const RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded';
+    public const STATUS_UNKNOWN = 'unknown';
+    public const STATUS_OK = 'ok';
+    public const STATUS_API_OK = 'api_ok';
+    public const STATUS_NOT_FOUND_EMAIL = 'not_found_email';
+    public const STATUS_UNCLAIMED_USER = 'unclaimed_user';
+    public const STATUS_WRONG_PASS = 'wrong_pass';
+    public const STATUS_INACTIVE_USER = 'inactive_user';
+    public const STATUS_TOKEN_DATE_EXPIRED = 'token_date_expired';
+    public const STATUS_TOKEN_NOT_FOUND = 'token_not_found';
+    public const STATUS_TOKEN_COUNT_EXPIRED = 'token_count_expired';
+    public const STATUS_TOKEN_OK = 'token_ok';
+    public const STATUS_ACCESS_TOKEN_OK = 'access_token_ok';
+    public const STATUS_LOGIN_AFTER_SIGN_UP = 'login_after_sign_up';
+    public const RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded';
 
     /** @var Explorer */
     protected $tableName = 'login_attempts';
@@ -32,11 +32,31 @@ class LoginAttemptsRepository extends Repository
     final public function okStatuses(): array
     {
         return [
-            LoginAttemptsRepository::STATUS_OK,
-            LoginAttemptsRepository::STATUS_API_OK,
-            LoginAttemptsRepository::STATUS_TOKEN_OK,
-            LoginAttemptsRepository::STATUS_ACCESS_TOKEN_OK,
-            LoginAttemptsRepository::STATUS_LOGIN_AFTER_SIGN_UP,
+            self::STATUS_OK,
+            self::STATUS_API_OK,
+            self::STATUS_TOKEN_OK,
+            self::STATUS_ACCESS_TOKEN_OK,
+            self::STATUS_LOGIN_AFTER_SIGN_UP,
+        ];
+    }
+
+    final public function statuses(): array
+    {
+        return [
+            self::STATUS_UNKNOWN,
+            self::STATUS_OK,
+            self::STATUS_API_OK,
+            self::STATUS_NOT_FOUND_EMAIL,
+            self::STATUS_UNCLAIMED_USER,
+            self::STATUS_WRONG_PASS,
+            self::STATUS_INACTIVE_USER,
+            self::STATUS_TOKEN_DATE_EXPIRED,
+            self::STATUS_TOKEN_NOT_FOUND,
+            self::STATUS_TOKEN_COUNT_EXPIRED,
+            self::STATUS_TOKEN_OK,
+            self::STATUS_ACCESS_TOKEN_OK,
+            self::STATUS_LOGIN_AFTER_SIGN_UP,
+            self::RATE_LIMIT_EXCEEDED,
         ];
     }
 
