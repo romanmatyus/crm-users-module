@@ -11,6 +11,7 @@ use GuzzleHttp\Client;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Http\Response;
+use Nette\Http\Session;
 use Nette\Http\Url;
 use Nette\Security\User;
 use Nette\Utils\Json;
@@ -31,19 +32,21 @@ class AppleSignIn
 
     private const COOKIE_ASI_NONCE = 'asi_nonce';
 
-    private $clientId;
+    private ?string $clientId;
 
-    private $trustedClientIds = [];
+    private array $trustedClientIds = [];
 
-    private $configsRepository;
+    private ConfigsRepository $configsRepository;
 
-    private $ssoUserManager;
+    private SsoUserManager $ssoUserManager;
 
-    private $user;
+    private User $user;
 
     private Response $response;
 
     private Request $request;
+
+    private Session $session;
 
     public function __construct(
         ?string $clientId,
@@ -52,7 +55,8 @@ class AppleSignIn
         SsoUserManager $ssoUserManager,
         User $user,
         Response $response,
-        Request $request
+        Request $request,
+        Session $session
     ) {
         $this->clientId = $clientId;
         $this->configsRepository = $configsRepository;
@@ -67,6 +71,7 @@ class AppleSignIn
         foreach (array_filter($trustedClientIds) as $trustedClientId) {
             $this->trustedClientIds[$trustedClientId] = true;
         }
+        $this->session = $session;
     }
 
     public function isEnabled(): bool
@@ -128,6 +133,7 @@ class AppleSignIn
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         if ($userId) {
             $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
+            $this->setSessionCookieForCallback($redirectUri);
         } else {
             $this->response->deleteCookie(self::COOKIE_ASI_USER_ID);
         }
@@ -304,6 +310,35 @@ class AppleSignIn
         }
 
         return true;
+    }
+
+    /**
+     * Sets short-lived session cookie having `SameSite: None` flag and callback URI path .
+     *
+     * This is required for session cookie to be sent along with callback (POST) request from Apple after successful SSO login.
+     * Normal session cookie has `SameSite: Lax` flag and therefore is not sent along with POST (cross-origin) requests.
+     *
+     * Session is required to check if user that triggered OAuth flow is the same that we check against in the callback (see `COOKIE_ASI_USER_ID`).
+     *
+     * @param string $redirectUri
+     *
+     * @return void
+     */
+    private function setSessionCookieForCallback(string $redirectUri): void
+    {
+        $url = new Url($redirectUri);
+
+        $cookie = session_get_cookie_params();
+        $this->response->setCookie(
+            $this->session->getName(), //session_name(),
+            $this->session->getId(),
+            strtotime('+5 minutes'), // this is short-lived session cookie
+            $url->getPath(), // valid only for callback path
+            $cookie['domain'],
+            true, // "SameSite: None" requires secure to be set to "true"
+            $cookie['httponly'],
+            'None'
+        );
     }
 
     private function isCodeValid($code, $idToken): bool
