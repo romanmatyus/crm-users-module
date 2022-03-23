@@ -330,7 +330,7 @@ class AppleSignIn
 
         $cookie = session_get_cookie_params();
         $this->response->setCookie(
-            $this->session->getName(), //session_name(),
+            $this->session->getName(),
             $this->session->getId(),
             strtotime('+5 minutes'), // this is short-lived session cookie
             $url->getPath(), // valid only for callback path
