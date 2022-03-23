@@ -4,7 +4,6 @@ namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
-use Crm\ApplicationModule\Request as CrmRequest;
 use Crm\UsersModule\DataProvider\GoogleSignInDataProviderInterface;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google_Client;
@@ -168,24 +167,35 @@ class GoogleSignIn
         return $client->fetchAccessTokenWithAuthCode($gsiAuthCode);
     }
 
-    private function setLoginCookie(string $key, $value)
+    private function setLoginCookie(string $key, $value): void
     {
         $this->response->setCookie(
             $key,
             $value,
             strtotime('+1 hour'),
             '/',
-            CrmRequest::getDomain(),
-            false,
+            null,
+            null,
             true,
             'Lax'
         );
     }
 
+    // Function to delete cookie(s) has to match cookie-domain set in `setLoginCookie()`,
+    // otherwise cookie will not be deleted.
+    private function deleteLoginCookies(string...$keys): void
+    {
+        foreach ($keys as $key) {
+            $this->response->deleteCookie($key, '/');
+        }
+    }
+
     /**
      * First step of OAuth2 authorization flow
      * Method returns url to redirect to and sets 'state' to verify later in callback
-     * @param string $redirectUri
+     *
+     * @param string      $redirectUri
+     * @param string|null $source
      *
      * @return string
      * @throws SsoException
@@ -217,18 +227,17 @@ class GoogleSignIn
         if ($source) {
             $this->setLoginCookie(self::COOKIE_GSI_SOURCE, $source);
         } else {
-            $this->response->deleteCookie(self::COOKIE_GSI_SOURCE);
+            $this->deleteLoginCookies(self::COOKIE_GSI_SOURCE);
         }
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         if ($userId) {
             $this->setLoginCookie(self::COOKIE_GSI_USER_ID, $userId);
         } else {
-            $this->response->deleteCookie(self::COOKIE_GSI_USER_ID);
+            $this->deleteLoginCookies(self::COOKIE_GSI_USER_ID);
         }
 
         return $client->createAuthUrl();
     }
-
 
     /**
      * Second step OAuth authorization flow
@@ -250,9 +259,7 @@ class GoogleSignIn
         $gsiUserId = $this->request->getCookie(self::COOKIE_GSI_USER_ID);
         $gsiSource = $this->request->getCookie(self::COOKIE_GSI_SOURCE);
 
-        $this->response->deleteCookie(self::COOKIE_GSI_STATE);
-        $this->response->deleteCookie(self::COOKIE_GSI_USER_ID);
-        $this->response->deleteCookie(self::COOKIE_GSI_SOURCE);
+        $this->deleteLoginCookies(self::COOKIE_GSI_STATE, self::COOKIE_GSI_USER_ID, self::COOKIE_GSI_SOURCE);
 
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');

@@ -3,7 +3,6 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
-use Crm\ApplicationModule\Request as CrmRequest;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
@@ -86,20 +85,32 @@ class AppleSignIn
             $value,
             strtotime('+1 hour'),
             '/',
-            CrmRequest::getDomain(),
-            true,
+            null,
+            true, // "SameSite: None" has to have "Secure: true"
             true,
             'None' // Lax cannot be used with POST request (response from Apple is POST)
         );
     }
 
+    // Function to delete cookie(s) has to match cookie-domain set in `setLoginCookie()`,
+    // otherwise cookie will not be deleted.
+    private function deleteLoginCookies(string...$keys): void
+    {
+        foreach ($keys as $key) {
+            // Deleting "SameSite: None" cookie has to have "Secure: true" as well
+            $this->response->deleteCookie($key, '/', null, true);
+        }
+    }
+
     /**
      * First step of OAuth2 authorization flow
      * Method returns url to redirect to and sets 'state' and 'nonce' to verify later in callback
-     * @param string $redirectUri
+     *
+     * @param string      $redirectUri
+     * @param string|null $source
      *
      * @return string
-     * @throws SsoException
+     * @throws \Exception
      */
     public function signInRedirect(string $redirectUri, string $source = null): string
     {
@@ -126,7 +137,7 @@ class AppleSignIn
         if ($source) {
             $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
         } else {
-            $this->response->deleteCookie(self::COOKIE_ASI_SOURCE);
+            $this->deleteLoginCookies(self::COOKIE_ASI_SOURCE);
         }
         $this->setLoginCookie(self::COOKIE_ASI_NONCE, $nonce);
 
@@ -135,7 +146,7 @@ class AppleSignIn
             $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
             $this->setSessionCookieForCallback($redirectUri);
         } else {
-            $this->response->deleteCookie(self::COOKIE_ASI_USER_ID);
+            $this->deleteLoginCookies(self::COOKIE_ASI_USER_ID);
         }
 
         return $url->getAbsoluteUrl();
@@ -160,10 +171,7 @@ class AppleSignIn
         $asiSource = $this->request->getCookie(self::COOKIE_ASI_SOURCE);
         $asiNonce = $this->request->getCookie(self::COOKIE_ASI_NONCE);
 
-        $this->response->deleteCookie(self::COOKIE_ASI_STATE);
-        $this->response->deleteCookie(self::COOKIE_ASI_USER_ID);
-        $this->response->deleteCookie(self::COOKIE_ASI_SOURCE);
-        $this->response->deleteCookie(self::COOKIE_ASI_NONCE);
+        $this->deleteLoginCookies(self::COOKIE_ASI_STATE, self::COOKIE_ASI_USER_ID, self::COOKIE_ASI_SOURCE, self::COOKIE_ASI_NONCE);
 
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
