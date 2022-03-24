@@ -124,6 +124,7 @@ services:
 	- Crm\UsersModule\Api\UsersLogoutHandler
 	- Crm\UsersModule\Api\ListUsersHandler
 	- Crm\UsersModule\Api\UsersCreateHandler
+	- Crm\UsersModule\Api\UsersUpdateHandler
 	- Crm\UsersModule\Api\UserGroupApiHandler
 	- Crm\UsersModule\Api\UserInfoHandler
 	- Crm\UsersModule\Api\AddressesHandler

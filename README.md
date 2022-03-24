@@ -489,6 +489,51 @@ Success response:
 
 ---
 
+#### POST `/api/v1/users/update`
+
+API for updating user info.
+
+##### *Headers:*
+
+| Name | Value | Required | Description |
+| --- | --- | --- | --- |
+| Authorization | Bearer *String* | yes | API token |
+
+##### *Params:*
+
+| Name                     | Value     | Required | Description                                                                                               |
+|--------------------------|-----------|----------|-----------------------------------------------------------------------------------------------------------|
+| user_id                  | *String*  | yes      | ID of the user to update                                                                                  |
+| email                    | *String*  | no       | -                                                                                                         |
+| password                 | *String*  | no       | -                                                                                                         |
+| ext_id                   | *Integer* | no       | User identificator from external system                                                                   |
+| disable_email_validation | *Boolean* | no       | Flag whether to bypass email address validation. If not provided, the system will validate email address. |
+
+
+##### *Example:*
+
+```shell
+curl -v –X GET http://crm.press/api/v1/users/update \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'user_id=42&email=user%40user.sk'
+```
+
+Success response:
+
+```json5
+{
+    "status": "ok",
+    "user": {
+        "id": 101,
+        "email": "user@user.sk",
+        "confirmed_at": "2021-01-01T10:00:00+01:00" // RFC3339 date or NULL; user confirmation date
+    }
+}
+```
+
+---
+
 #### GET `/api/v1/users/add-to-group`
 
 Adds user to the provided group. Group serves for artificial user groupping based on your arbitrary criteria.

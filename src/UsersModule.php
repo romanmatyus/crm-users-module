@@ -321,6 +321,9 @@ class UsersModule extends CrmModule
             new ApiRoute(new ApiIdentifier('1', 'users', 'create'), \Crm\UsersModule\Api\UsersCreateHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
         );
         $apiRoutersContainer->attachRouter(
+            new ApiRoute(new ApiIdentifier('1', 'users', 'update'), \Crm\UsersModule\Api\UsersUpdateHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
+        );
+        $apiRoutersContainer->attachRouter(
             new ApiRoute(new ApiIdentifier('1', 'users', 'add-to-group'), \Crm\UsersModule\Api\UserGroupApiHandler::class, \Crm\ApiModule\Authorization\BearerTokenAuthorization::class)
         );
         $apiRoutersContainer->attachRouter(
