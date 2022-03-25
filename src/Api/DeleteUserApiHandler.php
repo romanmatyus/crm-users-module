@@ -4,12 +4,12 @@ namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\EmptyResponse;
-use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
 use Kdyby\Translation\Translator;
 use Nette\Http\IResponse;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class DeleteUserApiHandler extends ApiHandler
 {
@@ -30,7 +30,7 @@ class DeleteUserApiHandler extends ApiHandler
         return [];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $authorization = $this->getAuthorization();
         if (!($authorization instanceof UsersApiAuthorizationInterface)) {
@@ -41,19 +41,18 @@ class DeleteUserApiHandler extends ApiHandler
         $authorizedUser = reset($authorizedUsers);
         [$canBeDeleted, $errors] = $this->deleteUserData->canBeDeleted($authorizedUser->id);
         if (!$canBeDeleted) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(IResponse::S403_FORBIDDEN, [
                 'status' => "error",
                 'code' => "user_delete_protected",
                 'message' => 'Unable to delete user due to system protection configuration',
                 'reason' => $this->translator->translate('users.frontend.settings.account_delete.cannot_delete'),
             ]);
-            $response->setHttpCode(IResponse::S403_FORBIDDEN);
             return $response;
         }
 
         $this->deleteUserData->deleteData($authorizedUser->id);
         $response = new EmptyResponse();
-        $response->setHttpCode(IResponse::S204_NO_CONTENT);
+        $response->setCode(IResponse::S204_NO_CONTENT);
         return $response;
     }
 }

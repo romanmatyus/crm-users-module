@@ -4,12 +4,12 @@ namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\IdempotentHandlerInterface;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\UserManager;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInterface
 {
@@ -28,12 +28,11 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         if ($err = $paramsProcessor->hasError()) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'wrong request parameters: ' . $err]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => 'wrong request parameters: ' . $err]);
             return $response;
         }
 
@@ -41,8 +40,7 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
         $user = $this->userManager->loadUserByEmail($params['email']);
 
         if (!$user) {
-            $response = new JsonResponse(['status' => 'error', 'code' => 'user_not_found']);
-            $response->setHttpCode(Response::S404_NOT_FOUND);
+            $response = new JsonApiResponse(Response::S404_NOT_FOUND, ['status' => 'error', 'code' => 'user_not_found']);
             return $response;
         }
 
@@ -51,12 +49,11 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
         return $this->createResponse();
     }
 
-    public function idempotentHandle(array $params): ApiResponseInterface
+    public function idempotentHandle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         if ($err = $paramsProcessor->hasError()) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'wrong request parameters: ' . $err]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => 'wrong request parameters: ' . $err]);
             return $response;
         }
 
@@ -64,8 +61,7 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
         $user = $this->userManager->loadUserByEmail($params['email']);
 
         if (!$user) {
-            $response = new JsonResponse(['status' => 'ok']);
-            $response->setHttpCode(Response::S200_OK);
+            $response = new JsonApiResponse(Response::S200_OK, ['status' => 'ok']);
             return $response;
         }
 
@@ -74,8 +70,7 @@ class UsersConfirmApiHandler extends ApiHandler implements IdempotentHandlerInte
 
     private function createResponse()
     {
-        $response = new JsonResponse(['status' => 'ok']);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, ['status' => 'ok']);
         return $response;
     }
 }

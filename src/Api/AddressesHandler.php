@@ -3,13 +3,13 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AddressesRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class AddressesHandler extends ApiHandler
 {
@@ -33,15 +33,14 @@ class AddressesHandler extends ApiHandler
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $params = $paramsProcessor->getValues();
 
         $user = $this->userManager->loadUserByEmail($params['email']);
         if (!$user) {
-            $response = new JsonResponse(['status' => 'error', 'message' => "user doesn't exist: {$params['email']}"]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => "user doesn't exist: {$params['email']}"]);
             return $response;
         }
 
@@ -78,8 +77,7 @@ class AddressesHandler extends ApiHandler
             'addresses' => $addressesArray,
         ];
 
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
     }
 }

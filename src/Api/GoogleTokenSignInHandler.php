@@ -3,10 +3,8 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\Sso\GoogleSignIn;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -15,6 +13,8 @@ use Nette\Application\LinkGenerator;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Response;
 use Nette\Utils\Json;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
@@ -59,17 +59,16 @@ class GoogleTokenSignInHandler extends ApiHandler
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $error = $paramsProcessor->hasError();
         if ($error) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'code' => 'wrong_input',
                 'message' => 'Wrong input - ' . $error
             ]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
         }
         $params = $paramsProcessor->getValues();
@@ -81,23 +80,21 @@ class GoogleTokenSignInHandler extends ApiHandler
         $deviceToken = null;
         if (!empty($params['device_token'])) {
             if (!$createAccessToken) {
-                $response = new JsonResponse([
+                $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
                     'status' => 'error',
                     'code' => 'no_access_token_to_pair_device_token',
                     'message' => 'There is no access token to pair with device token. Set parameter "create_access_token=true" in your request payload.'
                 ]);
-                $response->setHttpCode(Response::S400_BAD_REQUEST);
                 return $response;
             }
 
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
-                $response = new JsonResponse([
+                $response = new JsonApiResponse(Response::S404_NOT_FOUND, [
                     'status' => 'error',
                     'message' => 'Device token doesn\'t exist',
                     'code' => 'device_token_doesnt_exist'
                 ]);
-                $response->setHttpCode(Response::S404_NOT_FOUND);
                 return $response;
             }
         }
@@ -128,12 +125,11 @@ class GoogleTokenSignInHandler extends ApiHandler
         $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken);
 
         if (!$user) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'code' => 'error_verifying_id_token',
                 'message' => 'Unable to verify ID token',
             ]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
         }
 
@@ -146,8 +142,7 @@ class GoogleTokenSignInHandler extends ApiHandler
         }
 
         $result = $this->formatResponse($user, $accessToken);
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
     }
 

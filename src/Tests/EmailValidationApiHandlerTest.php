@@ -2,7 +2,6 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\EmailValidationApiHandler;
@@ -10,6 +9,7 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Crm\UsersModule\User\UnclaimedUser;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class EmailValidationApiHandlerTest extends DatabaseTestCase
 {
@@ -55,8 +55,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($response->getHttpCode(), 200);
+        $this->assertInstanceOf(JsonApiResponse::class, $response);
+        $this->assertEquals($response->getCode(), 200);
 
         $user = $this->usersRepository->find($user->id);
         $this->assertNotNull($user->email_validated_at);
@@ -67,8 +67,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($response->getHttpCode(), 200);
+        $this->assertInstanceOf(JsonApiResponse::class, $response);
+        $this->assertEquals($response->getCode(), 200);
 
         $user = $this->usersRepository->find($user->id);
         $this->assertNull($user->email_validated_at);
@@ -82,8 +82,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($response->getHttpCode(), 404);
+        $this->assertInstanceOf(JsonApiResponse::class, $response);
+        $this->assertEquals($response->getCode(), 404);
         $this->assertEquals('email_not_found', $response->getPayload()['code']);
     }
 
@@ -93,8 +93,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($response->getHttpCode(), 400);
+        $this->assertInstanceOf(JsonApiResponse::class, $response);
+        $this->assertEquals($response->getCode(), 400);
         $this->assertEquals('invalid_request', $response->getPayload()['code']);
     }
 
@@ -106,8 +106,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($response->getHttpCode(), 400);
+        $this->assertInstanceOf(JsonApiResponse::class, $response);
+        $this->assertEquals($response->getCode(), 400);
         $this->assertEquals('invalid_param', $response->getPayload()['code']);
     }
 
@@ -121,8 +121,8 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals($response->getHttpCode(), 404);
+        $this->assertInstanceOf(JsonApiResponse::class, $response);
+        $this->assertEquals($response->getCode(), 404);
         $this->assertEquals('email_not_found', $response->getPayload()['code']);
     }
 

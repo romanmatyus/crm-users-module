@@ -3,11 +3,11 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\TokenParser;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\User\UserData;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UserDataHandler extends ApiHandler
 {
@@ -26,26 +26,23 @@ class UserDataHandler extends ApiHandler
         return [];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $tokenParser = new TokenParser();
         if (!$tokenParser->isOk()) {
             $this->errorMessage = $tokenParser->errorMessage();
-            $response = new JsonResponse(['status' => 'error', 'message' => $tokenParser->errorMessage()]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => $tokenParser->errorMessage()]);
             return $response;
         }
 
         $result = $this->userData->getUserToken($tokenParser->getToken());
 
         if (!$result) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'Token not found']);
-            $response->setHttpCode(Response::S404_NOT_FOUND);
+            $response = new JsonApiResponse(Response::S404_NOT_FOUND, ['status' => 'error', 'message' => 'Token not found']);
             return $response;
         }
 
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
     }
 }

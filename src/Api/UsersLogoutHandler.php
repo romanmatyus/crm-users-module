@@ -3,13 +3,13 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\AccessTokensApiAuthorizationInterface;
 use Crm\UsersModule\Events\UserSignOutEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use League\Event\Emitter;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UsersLogoutHandler extends ApiHandler
 {
@@ -30,7 +30,7 @@ class UsersLogoutHandler extends ApiHandler
         return [];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $authorization = $this->getAuthorization();
         if (!($authorization instanceof AccessTokensApiAuthorizationInterface)) {
@@ -46,8 +46,7 @@ class UsersLogoutHandler extends ApiHandler
             $this->emitter->emit(new UserSignOutEvent($user));
         }
 
-        $response = new JsonResponse(['status' => 'ok']);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, ['status' => 'ok']);
         return $response;
     }
 }

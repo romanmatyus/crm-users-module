@@ -3,16 +3,16 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Http\Response;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class ListUsersHandler extends ApiHandler
 {
@@ -38,20 +38,18 @@ class ListUsersHandler extends ApiHandler
     }
 
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $params = $paramsProcessor->getValues();
 
         if (!$params['user_ids']) {
-            $response = new JsonResponse(['status' => 'error', 'error' => 'missing_param', 'message' => 'missing required parameter: user_ids']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'missing_param', 'message' => 'missing required parameter: user_ids']);
             return $response;
         }
 
         if (!$params['page']) {
-            $response = new JsonResponse(['status' => 'error', 'error' => 'missing_param', 'message' => 'missing required parameter: page']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'missing_param', 'message' => 'missing required parameter: page']);
             return $response;
         }
 
@@ -60,8 +58,7 @@ class ListUsersHandler extends ApiHandler
         try {
             $userIds = Json::decode($params['user_ids'], Json::FORCE_ARRAY);
         } catch (JsonException $e) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'user_ids should be valid JSON array']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => 'user_ids should be valid JSON array']);
             return $response;
         }
 
@@ -101,8 +98,7 @@ class ListUsersHandler extends ApiHandler
             'users' => $resultArr,
         ];
 
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
     }
 }

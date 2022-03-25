@@ -2,13 +2,14 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersEmailHandler;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Authenticator\UsersAuthenticator;
+use Crm\UsersModule\Events\LoginAttemptEvent;
+use Crm\UsersModule\Events\LoginAttemptHandler;
 use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -16,6 +17,7 @@ use Crm\UsersModule\Seeders\UsersSeeder;
 use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
 use Nette\Http\IResponse;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UsersEmailHandlerTest extends DatabaseTestCase
 {
@@ -63,8 +65,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
 
         $this->emitter = $this->inject(Emitter::class);
         $this->emitter->addListener(
-            \Crm\UsersModule\Events\LoginAttemptEvent::class,
-            $this->inject(\Crm\UsersModule\Events\LoginAttemptHandler::class)
+            LoginAttemptEvent::class,
+            $this->inject(LoginAttemptHandler::class)
         );
 
         $this->authenticatorManager = $this->inject(AuthenticatorManagerInterface::class);
@@ -74,8 +76,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     protected function tearDown(): void
     {
         $this->emitter->removeListener(
-            \Crm\UsersModule\Events\LoginAttemptEvent::class,
-            $this->inject(\Crm\UsersModule\Events\LoginAttemptHandler::class)
+            LoginAttemptEvent::class,
+            $this->inject(LoginAttemptHandler::class)
         );
 
         parent::tearDown();
@@ -88,7 +90,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
 
         $payload = $response->getPayload();
@@ -103,8 +105,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
             'email' =>'0test@user',
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -121,8 +123,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         ]);
         $lastAttempt = $this->lastLoginAttempt();
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('available', $payload['status']);
@@ -142,8 +144,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         ]);
         $lastAttempt = $this->lastLoginAttempt();
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $user = $this->userManager->loadUserByEmail($email);
@@ -166,8 +168,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         ]);
         $lastAttempt = $this->lastLoginAttempt();
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $user = $this->userManager->loadUserByEmail($email);
@@ -190,8 +192,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         ]);
         $lastAttempt = $this->lastLoginAttempt();
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $user = $this->userManager->loadUserByEmail($email);
@@ -214,8 +216,8 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         ]);
         $lastAttempt = $this->lastLoginAttempt();
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $user = $this->userManager->loadUserByEmail($email);

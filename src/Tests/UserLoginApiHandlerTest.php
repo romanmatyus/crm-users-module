@@ -2,19 +2,21 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Api\UsersLoginHandler;
 use Crm\UsersModule\Authenticator\UsersAuthenticator;
+use Crm\UsersModule\Events\SignEventHandler;
+use Crm\UsersModule\Events\UserSignInEvent;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UserLoginApiHandlerTest extends DatabaseTestCase
 {
@@ -71,8 +73,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
         $this->emitter = $this->inject(Emitter::class);
         $this->emitter->addListener(
-            \Crm\UsersModule\Events\UserSignInEvent::class,
-            $this->inject(\Crm\UsersModule\Events\SignEventHandler::class)
+            UserSignInEvent::class,
+            $this->inject(SignEventHandler::class)
         );
 
         $this->authenticatorManager = $this->inject(AuthenticatorManagerInterface::class);
@@ -82,8 +84,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     protected function tearDown(): void
     {
         $this->emitter->removeListener(
-            \Crm\UsersModule\Events\UserSignInEvent::class,
-            $this->inject(\Crm\UsersModule\Events\SignEventHandler::class)
+            UserSignInEvent::class,
+            $this->inject(SignEventHandler::class)
         );
 
         parent::tearDown();
@@ -94,8 +96,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(400, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(400, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -112,8 +114,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(400, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(400, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -130,8 +132,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(200, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(200, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('user', $payload);
@@ -152,8 +154,8 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(200, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(200, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('access', $payload);

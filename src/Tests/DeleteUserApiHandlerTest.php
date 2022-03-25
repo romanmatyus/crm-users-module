@@ -3,13 +3,13 @@
 namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\EmptyResponse;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\ApplicationModule\User\UserDataProviderInterface;
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\UsersModule\Api\DeleteUserApiHandler;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class DeleteUserApiHandlerTest extends DatabaseTestCase
 {
@@ -67,7 +67,7 @@ class DeleteUserApiHandlerTest extends DatabaseTestCase
         $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(EmptyResponse::class, get_class($response));
-        $this->assertEquals(204, $response->getHttpCode());
+        $this->assertEquals(204, $response->getCode());
     }
 
     public function testDeleteProtectedUserError()
@@ -85,8 +85,8 @@ class DeleteUserApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new TestUserTokenAuthorization($accessToken, $user));
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(403, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(403, $response->getCode());
 
         $userFound = $this->usersRepository->findBy('email', self::EMAIL);
         $this->assertNotEmpty($userFound);

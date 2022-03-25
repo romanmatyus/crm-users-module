@@ -3,12 +3,12 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Api\JsonValidationTrait;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UserMetaUpsertHandler extends ApiHandler
 {
@@ -31,7 +31,7 @@ class UserMetaUpsertHandler extends ApiHandler
         return [];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $result = $this->validateInput(__DIR__ . '/user-meta-upsert.schema.json');
         if ($result->hasErrorResponse()) {
@@ -48,23 +48,21 @@ class UserMetaUpsertHandler extends ApiHandler
         $userRow = $this->usersRepository->find($userId);
 
         if (!$userRow) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(Response::S404_NOT_FOUND, [
                 'status' => 'error',
                 'message' => "User not found: {$userId}",
             ]);
-            $response->setHttpCode(Response::S404_NOT_FOUND);
 
             return $response;
         }
 
         $userMetaRow = $this->userMetaRepository->add($userRow, $key, $value, null, $isPublic);
 
-        $response = new JsonResponse([
+        $response = new JsonApiResponse(Response::S200_OK, [
             'key' => $userMetaRow->key,
             'value' => $userMetaRow->value,
             'is_public' => (bool)$userMetaRow->is_public
         ]);
-        $response->setHttpCode(Response::S200_OK);
 
         return $response;
     }

@@ -3,15 +3,15 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use Nette\Http\IResponse;
 use Nette\Http\Request;
 use Nette\Utils\Validators;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class EmailValidationApiHandler extends ApiHandler
 {
@@ -45,29 +45,27 @@ class EmailValidationApiHandler extends ApiHandler
     }
 
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
 
         $error = $paramsProcessor->hasError();
         if ($error) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'message' => $error,
                 'code' => 'invalid_request',
             ]);
-            $response->setHttpCode(IResponse::S400_BAD_REQUEST);
             return $response;
         }
 
         $params = $paramsProcessor->getValues();
         if (!Validators::isEmail($params['email'])) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'message' => 'Email is not valid',
                 'code' => 'invalid_param',
             ]);
-            $response->setHttpCode(IResponse::S400_BAD_REQUEST);
             return $response;
         }
 
@@ -78,8 +76,7 @@ class EmailValidationApiHandler extends ApiHandler
                 'message' => 'Email isn\'t assigned to any user',
                 'code'    => 'email_not_found',
             ];
-            $response = new JsonResponse($result);
-            $response->setHttpCode(IResponse::S404_NOT_FOUND);
+            $response = new JsonApiResponse(IResponse::S404_NOT_FOUND, $result);
             return $response;
         }
 
@@ -100,8 +97,7 @@ class EmailValidationApiHandler extends ApiHandler
             'code'    => 'success',
         ];
 
-        $response = new JsonResponse($result);
-        $response->setHttpCode(IResponse::S200_OK);
+        $response = new JsonApiResponse(IResponse::S200_OK, $result);
 
         return $response;
     }

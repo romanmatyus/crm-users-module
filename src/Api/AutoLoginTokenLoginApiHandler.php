@@ -3,15 +3,15 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
 use Nette\Security\AuthenticationException;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
@@ -43,7 +43,7 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
     }
 
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $params = $paramsProcessor->getValues();
@@ -52,12 +52,11 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
         if (isset($params['device_token'])) {
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
-                $response = new JsonResponse([
+                $response = new JsonApiResponse(Response::S404_NOT_FOUND, [
                     'status' => 'error',
                     'error' => 'invalid_device_token',
                     'message' => "device token doesn't exist: ". $params['device_token']
                 ]);
-                $response->setHttpCode(Response::S404_NOT_FOUND);
                 return $response;
             }
         }
@@ -72,15 +71,14 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
                 'source' => $source,
             ]);
         } catch (AuthenticationException $e) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(Response::S403_FORBIDDEN, [
                 'status' => 'error',
                 'error' => 'auth_failed',
                 'message' => $e->getMessage()
             ]);
             if ($e->getCode() === UserAuthenticator::NOT_APPROVED) {
-                $response->setHttpCode(Response::S403_FORBIDDEN);
             } else {
-                $response->setHttpCode(Response::S401_UNAUTHORIZED);
+                $response->setCode(Response::S401_UNAUTHORIZED);
             }
             return $response;
         }
@@ -104,12 +102,11 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
         $lastToken = $this->accessTokensRepository->allUserTokens($identity->id)->limit(1)->fetch();
         if (!$lastToken) {
             Debugger::log('Missing access token for user', ILogger::ERROR);
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(Response::S500_INTERNAL_SERVER_ERROR, [
                 'status' => 'error',
                 'error' => 'missing_access_token',
                 'message' => 'Missing access token for user'
             ]);
-            $response->setHttpCode(Response::S500_INTERNAL_SERVER_ERROR);
             return $response;
         }
 
@@ -119,8 +116,7 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
 
         $result['access']['token'] = $lastToken->token;
 
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
     }
 }

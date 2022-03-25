@@ -2,13 +2,13 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\ListUsersHandler;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class ListUsersHandlerTest extends DatabaseTestCase
 {
@@ -51,8 +51,8 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(200, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(200, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('totalCount', $payload);
@@ -82,8 +82,8 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(200, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(200, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('totalCount', $payload);

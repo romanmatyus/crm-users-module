@@ -2,7 +2,6 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\GetDeviceTokenApiHandler;
 use Crm\UsersModule\Api\UsersLogoutHandler;
@@ -13,6 +12,7 @@ use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UsersLogoutHandlerTest extends DatabaseTestCase
 {
@@ -65,8 +65,8 @@ class UsersLogoutHandlerTest extends DatabaseTestCase
 
         $this->logoutHandler->setAuthorization(new TestUserTokenAuthorization($accessToken1, $user1));
         $response = $this->logoutHandler->handle([]); // TODO: fix params
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         // Check that after successful logout, only one access_token is kept
         $this->assertEquals(1, $this->accessTokenRepository->all()->count());
@@ -94,8 +94,8 @@ class UsersLogoutHandlerTest extends DatabaseTestCase
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $deviceToken->token;
         $this->logoutHandler->setAuthorization($this->getUserTokenAuthorization());
         $response = $this->logoutHandler->handle([]); // TODO: fix params
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         // Check that only single token is kept
         $this->assertEquals(1, $this->accessTokenRepository->all()->count());

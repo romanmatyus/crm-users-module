@@ -3,14 +3,14 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Api\JsonValidationTrait;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UserMetaListHandler extends ApiHandler
 {
@@ -31,7 +31,7 @@ class UserMetaListHandler extends ApiHandler
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $authorization = $this->getAuthorization();
         if (!($authorization instanceof UsersApiAuthorizationInterface)) {
@@ -67,8 +67,7 @@ class UserMetaListHandler extends ApiHandler
             ];
         }, array_values($userMetaRows));
 
-        $response = new JsonResponse($meta);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $meta);
         return $response;
     }
 }

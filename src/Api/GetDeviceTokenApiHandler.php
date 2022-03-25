@@ -3,13 +3,13 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class GetDeviceTokenApiHandler extends ApiHandler
 {
@@ -34,16 +34,15 @@ class GetDeviceTokenApiHandler extends ApiHandler
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
         $error = $paramsProcessor->hasError();
         if ($error) {
-            $response = new JsonResponse([
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'message' => 'Wrong input - ' . $error
             ]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
             return $response;
         }
 
@@ -53,11 +52,10 @@ class GetDeviceTokenApiHandler extends ApiHandler
         if (isset($params['access_token'])) {
             $accessToken = $this->accessTokensRepository->loadToken($params['access_token']);
             if (!$accessToken) {
-                $response = new JsonResponse([
+                $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
                     'status' => 'error',
                     'message' => 'Access token not valid'
                 ]);
-                $response->setHttpCode(Response::S400_BAD_REQUEST);
                 return $response;
             }
         }
@@ -67,10 +65,9 @@ class GetDeviceTokenApiHandler extends ApiHandler
             $this->accessTokensRepository->pairWithDeviceToken($accessToken, $deviceToken);
         }
 
-        $response = new JsonResponse([
+        $response = new JsonApiResponse(Response::S200_OK, [
             'device_token' => $deviceToken->token
         ]);
-        $response->setHttpCode(Response::S200_OK);
         return $response;
     }
 }

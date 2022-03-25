@@ -3,16 +3,16 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
 use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UsersLoginHandler extends ApiHandler
 {
@@ -46,7 +46,7 @@ class UsersLoginHandler extends ApiHandler
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
 
@@ -57,14 +57,12 @@ class UsersLoginHandler extends ApiHandler
         }
 
         if (!$params['email']) {
-            $response = new JsonResponse(['status' => 'error', 'error' => 'no_email', 'message' => 'No valid email', 'code' => 'invalid_email']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'no_email', 'message' => 'No valid email', 'code' => 'invalid_email']);
             return $response;
         }
 
         if (!$params['password']) {
-            $response = new JsonResponse(['status' => 'error', 'error' => 'no_password', 'message' => 'No valid password', 'code' => 'invalid_password']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'no_password', 'message' => 'No valid password', 'code' => 'invalid_password']);
             return $response;
         }
 
@@ -72,12 +70,11 @@ class UsersLoginHandler extends ApiHandler
         if (!empty($params['device_token'])) {
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
-                $response = new JsonResponse([
+                $response = new JsonApiResponse(Response::S404_NOT_FOUND, [
                     'status' => 'error',
                     'message' => 'Device token doesn\'t exist',
                     'code' => 'device_token_doesnt_exist'
                 ]);
-                $response->setHttpCode(Response::S404_NOT_FOUND);
                 return $response;
             }
         }
@@ -102,8 +99,7 @@ class UsersLoginHandler extends ApiHandler
                 $message = $this->translator->translate('users.api.users_login_handler.invalid_credentials');
                 $code = 'invalid_credential';
             }
-            $response = new JsonResponse(['status' => 'error', 'error' => 'auth_failed', 'message' => $message, 'code' => $code]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'auth_failed', 'message' => $message, 'code' => $code]);
             return $response;
         }
 
@@ -132,8 +128,7 @@ class UsersLoginHandler extends ApiHandler
             $result['access']['token'] = $lastToken->token;
         }
 
-        $response = new JsonResponse($result);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
     }
 }

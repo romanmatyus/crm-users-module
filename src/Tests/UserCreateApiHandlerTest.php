@@ -2,7 +2,6 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
@@ -17,6 +16,7 @@ use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\AbstractListener;
 use League\Event\Emitter;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UserCreateApiHandlerTest extends DatabaseTestCase
 {
@@ -81,7 +81,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(404, $response->getHttpCode());
 
         $payload = $response->getPayload();
@@ -102,8 +102,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'email' => '0test@user.site',
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('ok', $payload['status']);
@@ -132,8 +132,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'device_token' => $deviceToken->token,
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('ok', $payload['status']);
@@ -160,8 +160,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'device_token' => 'devtok_sd8a907sas987du',
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -183,8 +183,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'unclaimed' => true,
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('ok', $payload['status']);
@@ -207,8 +207,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'unclaimed' => true,
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S404_NOT_FOUND, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -225,8 +225,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'email' => $email,
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S404_NOT_FOUND, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -250,8 +250,8 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'email' => $email,
         ]);
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('ok', $payload['status']);

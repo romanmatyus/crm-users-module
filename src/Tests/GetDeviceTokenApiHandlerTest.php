@@ -2,7 +2,6 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\GetDeviceTokenApiHandler;
@@ -12,16 +11,17 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\Seeders\UsersSeeder;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
 {
-    private $accessTokensRepository;
+    private AccessTokensRepository $accessTokensRepository;
 
-    private $deviceTokensRepository;
+    private DeviceTokensRepository $deviceTokensRepository;
 
-    private $usersRepository;
+    private UsersRepository $usersRepository;
 
-    private $handler;
+    private GetDeviceTokenApiHandler $handler;
 
     protected function requiredSeeders(): array
     {
@@ -63,7 +63,7 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
 
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
-        $this->assertEquals(JsonResponse::class, get_class($response));
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('device_token', $payload);
@@ -73,7 +73,7 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
     {
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
-        $this->assertEquals(JsonResponse::class, get_class($response));
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('status', $payload);
@@ -88,8 +88,8 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S400_BAD_REQUEST, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
@@ -107,8 +107,8 @@ class GetDeviceTokenApiHandlerTest extends DatabaseTestCase
         $this->handler->setAuthorization(new NoAuthorization());
         $response = $this->handler->handle([]); // TODO: fix params
 
-        $this->assertEquals(JsonResponse::class, get_class($response));
-        $this->assertEquals(Response::S200_OK, $response->getHttpCode());
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(Response::S200_OK, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('device_token', $payload);

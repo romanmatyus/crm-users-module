@@ -3,10 +3,8 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Params\InputParam;
 use Crm\ApiModule\Params\ParamsProcessor;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\NewAddressEvent;
 use Crm\UsersModule\Repository\AddressChangeRequestsRepository;
@@ -14,6 +12,8 @@ use Crm\UsersModule\Repository\AddressTypesRepository;
 use Crm\UsersModule\Repository\CountriesRepository;
 use League\Event\Emitter;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class CreateAddressHandler extends ApiHandler
 {
@@ -62,14 +62,13 @@ class CreateAddressHandler extends ApiHandler
         ];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $paramsProcessor = new ParamsProcessor($this->params());
 
         $error = $paramsProcessor->hasError();
         if ($error) {
-            $response = new JsonResponse(['status' => 'error', 'message' => $error]);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => $error]);
             return $response;
         }
 
@@ -77,22 +76,19 @@ class CreateAddressHandler extends ApiHandler
 
         $user = $this->userManager->loadUserByEmail($params['email']);
         if (!$user) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'User not found']);
-            $response->setHttpCode(Response::S404_NOT_FOUND);
+            $response = new JsonApiResponse(Response::S404_NOT_FOUND, ['status' => 'error', 'message' => 'User not found']);
             return $response;
         }
 
         $type = $this->addressTypesRepository->findByType($params['type']);
         if (!$type) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'Address type not found']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => 'Address type not found']);
             return $response;
         }
 
         $country = $this->countriesRepository->findByIsoCode($params['country_iso']);
         if (isset($params['country_iso']) && !$country) {
-            $response = new JsonResponse(['status' => 'error', 'message' => 'Country not found']);
-            $response->setHttpCode(Response::S400_BAD_REQUEST);
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => 'Country not found']);
             return $response;
         }
 
@@ -123,15 +119,13 @@ class CreateAddressHandler extends ApiHandler
                     'id' => $address->id,
                 ],
             ];
-            $response = new JsonResponse($result);
-            $response->setHttpCode(Response::S200_OK);
+            $response = new JsonApiResponse(Response::S200_OK, $result);
         } else {
             $result = [
                 'status' => 'error',
                 'message' => 'Cannot create address',
             ];
-            $response = new JsonResponse($result);
-            $response->setHttpCode(Response::S500_INTERNAL_SERVER_ERROR);
+            $response = new JsonApiResponse(Response::S500_INTERNAL_SERVER_ERROR, $result);
         }
 
         return $response;

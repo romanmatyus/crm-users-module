@@ -3,11 +3,11 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Api\JsonResponse;
 use Crm\ApiModule\Api\JsonValidationTrait;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Response\JsonApiResponse;
+use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UserMetaKeyUsersHandler extends ApiHandler
 {
@@ -25,7 +25,7 @@ class UserMetaKeyUsersHandler extends ApiHandler
         return [];
     }
 
-    public function handle(array $params): ApiResponseInterface
+    public function handle(array $params): ResponseInterface
     {
         $result = $this->validateInput(__DIR__ . '/user-meta-key-users.schema.json');
         if ($result->hasErrorResponse()) {
@@ -45,8 +45,7 @@ class UserMetaKeyUsersHandler extends ApiHandler
                 ];
         }, array_values($userMetaSelection->fetchAll()));
 
-        $response = new JsonResponse($users);
-        $response->setHttpCode(Response::S200_OK);
+        $response = new JsonApiResponse(Response::S200_OK, $users);
 
         return $response;
     }
