@@ -144,10 +144,10 @@ class AppleSignIn
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
         if ($userId) {
             $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
-            $this->setSessionCookieForCallback($redirectUri);
         } else {
             $this->deleteLoginCookies(self::COOKIE_ASI_USER_ID);
         }
+        $this->setSessionCookieForCallback($redirectUri);
 
         return $url->getAbsoluteUrl();
     }
