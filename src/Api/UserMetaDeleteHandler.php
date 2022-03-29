@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
+use Crm\ApiModule\Api\EmptyResponse;
 use Crm\ApiModule\Api\JsonValidationTrait;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -57,8 +58,7 @@ class UserMetaDeleteHandler extends ApiHandler
 
         $this->userMetaRepository->removeMeta($userId, $key, $value);
 
-        $response = new JsonApiResponse(Response::S204_NO_CONTENT, []);
-
+        $response = new EmptyResponse();
         return $response;
     }
 }
