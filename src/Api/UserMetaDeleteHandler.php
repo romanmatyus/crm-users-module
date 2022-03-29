@@ -57,7 +57,7 @@ class UserMetaDeleteHandler extends ApiHandler
 
         $this->userMetaRepository->removeMeta($userId, $key, $value);
 
-        $response = new JsonApiResponse(Response::S204_NO_CONTENT, null);
+        $response = new JsonApiResponse(Response::S204_NO_CONTENT, []);
 
         return $response;
     }
