@@ -5,7 +5,6 @@ namespace Crm\UsersModule\Api;
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\ApiParamsValidatorInterface;
 use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Response\ApiResponseInterface;
 use Crm\UsersModule\Auth\Rate\RateLimitException;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Auth\UserManager;
@@ -91,7 +90,7 @@ class UsersEmailHandler extends ApiHandler implements ApiParamsValidatorInterfac
         return $response;
     }
 
-    public function validateParams(array $params): ?ApiResponseInterface
+    public function validateParams(array $params): ?ResponseInterface
     {
         if (!$params['email']) {
             $response = new JsonApiResponse(IResponse::S200_OK, ['status' => 'error', 'message' => 'No valid email', 'code' => 'email_missing']);
