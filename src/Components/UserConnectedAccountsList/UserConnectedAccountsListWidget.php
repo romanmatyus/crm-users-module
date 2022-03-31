@@ -73,7 +73,7 @@ class UserConnectedAccountsListWidget extends BaseWidget
     {
         $userConnectedAccount = $this->userConnectedAccountsRepository->getTable()->where(['id' => $id])->fetch();
         $this->userConnectedAccountsRepository->removeAccountForUser($userConnectedAccount->user, $id);
-        $this->presenter->flashMessage($this->translator->translate('users.admin.user_connected_accounts_list.flash_message'));
+        $this->presenter->flashMessage($this->translator->translate('users.admin.user_connected_accounts_list_widget.flash_message'));
         $this->presenter->redirect('this');
     }
 }
