@@ -107,15 +107,16 @@ class GoogleSignIn
         }
 
         $userEmail = $payload['email'];
-            // 'sub' represents Google ID in id_token
-            //
-            // Note: A Google account's email address can change, so don't use it to identify a user.
-            // Instead, use the account's ID, which you can get on the client with getBasicProfile().getId(),
-            // and on the backend from the sub claim of the ID token.
-            // https://developers.google.com/identity/sign-in/web/people
+        // 'sub' represents Google ID in id_token
+        //
+        // Note: A Google account's email address can change, so don't use it to identify a user.
+        // Instead, use the account's ID, which you can get on the client with getBasicProfile().getId(),
+        // and on the backend from the sub claim of the ID token.
+        // https://developers.google.com/identity/sign-in/web/people
         $googleUserId = $payload['sub'];
 
-        $matchedUser = $this->ssoUserManager->matchUser(UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN, $googleUserId, $userEmail);
+        // Match only already connected accounts (DO NOT provide email here) before any external matching (via data provider) is done
+        $matchedUser = $this->ssoUserManager->matchUser(UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN, $googleUserId);
 
         /** @var GoogleSignInDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
@@ -300,15 +301,16 @@ class GoogleSignIn
         }
 
         $userEmail =  $userInfo->getEmail();
-            // 'sub' represents Google ID in id_token
-            //
-            // Note: A Google account's email address can change, so don't use it to identify a user.
-            // Instead, use the account's ID, which you can get on the client with getBasicProfile().getId(),
-            // and on the backend from the sub claim of the ID token.
-            // https://developers.google.com/identity/sign-in/web/people
+        // 'sub' represents Google ID in id_token
+        //
+        // Note: A Google account's email address can change, so don't use it to identify a user.
+        // Instead, use the account's ID, which you can get on the client with getBasicProfile().getId(),
+        // and on the backend from the sub claim of the ID token.
+        // https://developers.google.com/identity/sign-in/web/people
         $googleUserId =  $userInfo->getId();
 
-        $matchedUser = $this->ssoUserManager->matchUser(UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN, $googleUserId, $userEmail);
+        // Match only already connected accounts (DO NOT provide email here) before any external matching (via data provider) is done
+        $matchedUser = $this->ssoUserManager->matchUser(UserConnectedAccountsRepository::TYPE_GOOGLE_SIGN_IN, $googleUserId);
 
         /** @var GoogleSignInDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);

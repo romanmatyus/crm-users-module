@@ -96,14 +96,28 @@ class SsoUserManager
             ->setAddTokenOption(false);
     }
 
-    public function matchUser(string $connectedAccountType, string $externalId, string $email): ?ActiveRow
+    /**
+     * Hard matching is done using $externalId (in 'user_connected_accounts' table).
+     * $mail is a backup, it matches account even if no connected account exists (via users.email column).
+     *
+     * @param string      $connectedAccountType
+     * @param string      $externalId
+     * @param string|null $email
+     *
+     * @return ActiveRow|null
+     */
+    public function matchUser(string $connectedAccountType, string $externalId, ?string $email = null): ?ActiveRow
     {
-        // external ID has priority over email
+        // external ID
         $connectedAccount = $this->connectedAccountsRepository->getByExternalId($connectedAccountType, $externalId);
         if ($connectedAccount) {
             return $connectedAccount->user;
         }
 
-        return $this->usersRepository->getByEmail($email) ?: null;
+        // email
+        if ($email) {
+            return $this->usersRepository->getByEmail($email) ?: null;
+        }
+        return null;
     }
 }
