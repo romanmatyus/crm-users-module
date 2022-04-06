@@ -172,6 +172,21 @@ signInRedirectValidator:
     	- addAllowedDomains('another.domain.com', 'some.other.domain.net')
 ```
 
+## Secured admin login
+
+### Required Google Sign-In
+
+To enhance security, one may require all users with admin role to log-in using Google Sign-In, if they want to access admin interface. User verification security then relies on Google security mechanisms to identify potentional abuse.
+
+- To turn on this option (called "**Secured login**"), check Authentication section of CRM settings.
+- After enabling the option, each admin user has to connect Google Sign-In to his/her CRM account.
+- In addition, each such user has to be acknowledged by adding `secure_login_allowed` flag to `user_meta` table.
+
+### Two-factor authentication
+
+Currently, 2FA authentication is not implemented.
+
+
 ## Data retention configuration
 
 You can configure time before which `application:cleanup` deletes old repository data and column which it uses by using (in your project configuration file):

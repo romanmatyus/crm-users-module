@@ -18,6 +18,7 @@ use Crm\UsersModule\Forms\UserDeleteFormFactory;
 use Crm\UsersModule\Repository\PasswordResetTokensRepository;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UserEmailConfirmationsRepository;
+use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\ZipBuilder;
 use Nette\Application\Responses\FileResponse;
 use Nette\Forms\Form;
@@ -170,7 +171,7 @@ class UsersPresenter extends FrontendPresenter
     {
         $this->template->canBeDeleted = false;
         if ($this->getUser()->isLoggedIn()) {
-            list($this->template->canBeDeleted, $_) = $this->deleteUserData->canBeDeleted($this->getUser()->getId());
+            [$this->template->canBeDeleted, $_] = $this->deleteUserData->canBeDeleted($this->getUser()->getId());
 
             $userRow = $this->usersRepository->find($this->getUser()->getId());
 
@@ -226,9 +227,15 @@ class UsersPresenter extends FrontendPresenter
 
         $userRow = $this->usersRepository->find($this->getUser()->getId());
 
-        $this->userConnectedAccountsRepository->removeAccountForUser($userRow, $accountId);
+        // DO NOT allow ADMIN user to unlink their SSO accounts if 'admin_secure_login_check' is turned on,
+        // otherwise attacker might bypass SSO authentication.
+        if ($this->applicationConfig->get('admin_secure_login_check') && $userRow->role === UsersRepository::ROLE_ADMIN) {
+            $this->flashMessage($this->translator->translate('users.frontend.settings.linked_accounts.unlink_disabled_for_admin'), 'error');
+        } else {
+            $this->userConnectedAccountsRepository->removeAccountForUser($userRow, $accountId);
+            $this->flashMessage($this->translator->translate('users.frontend.settings.linked_accounts.unlink_success'));
+        }
 
-        $this->flashMessage($this->translator->translate('users.frontend.settings.linked_accounts.unlink_success'));
         $this->redirect('this');
     }
 

@@ -175,6 +175,7 @@ frontend:
             connected: Account linked
             unlink: cancel
             unlink_success: Connected account has been removed.
+            unlink_disabled_for_admin: "For security reasons, it is not possible for the administrator to unlink the account. Please contact technical support."
     google:
         fail: "Unable to log in using Google Sign-in, please contact our support."
         sign_using_google: Sign in using Google

@@ -175,7 +175,7 @@ frontend:
             connected: Prepojený účet
             unlink: zrušiť
             unlink_success: Zrušili sme prepojenie účtov.
-
+            unlink_disabled_for_admin: "Pre užívateľa s admin právami nie je z bezpečnostných dôvodov možné zrušiť prepojenie účtov. Obráťte sa na technickú podporu."
     google:
         fail: 'Chyba prihlasovania pomocou prihlásenia cez Google; prosím, obráťte sa na našu podporu.'
         sign_using_google: Prihlásiť cez Google
