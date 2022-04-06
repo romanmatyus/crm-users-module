@@ -7,6 +7,7 @@ use Crm\ApplicationModule\Repository\AuditLogRepository;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\Json;
+use Tracy\Debugger;
 
 class UserConnectedAccountsRepository extends Repository
 {
@@ -61,19 +62,36 @@ class UserConnectedAccountsRepository extends Repository
 
     public function removeAccountsForUser(ActiveRow $user): int
     {
-        return $this->getTable()
+        $userAccounts = $this->getTable()
             ->where(['user_id' => $user->id])
-            ->delete();
+            ->fetchAll();
+
+        $removed = 0;
+        foreach ($userAccounts as $userAccount) {
+            $result = $this->delete($userAccount);
+            if ($result !== true) {
+                Debugger::log("Unable to remove connect account ID [{$userAccount->id}] for user [{$user->id}].", Debugger::ERROR);
+            }
+            $removed++;
+        }
+
+        return $removed;
     }
 
     public function removeAccountForUser(ActiveRow $user, int $id): int
     {
-        return $this->getTable()
+        $userAccount = $this->getTable()
             ->where([
                 'user_id' => $user->id,
                 'id' => $id
             ])
-            ->delete();
+            ->fetch();
+
+        if (!$userAccount) {
+            return 0;
+        }
+
+        return $this->delete($userAccount);
     }
 
     public function connectUser(ActiveRow $user, $type, $externalId, $email, $meta = null)
