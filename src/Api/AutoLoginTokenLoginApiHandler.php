@@ -71,15 +71,16 @@ class AutoLoginTokenLoginApiHandler extends ApiHandler
                 'source' => $source,
             ]);
         } catch (AuthenticationException $e) {
-            $response = new JsonApiResponse(Response::S403_FORBIDDEN, [
+            $responseCode = Response::S401_UNAUTHORIZED;
+            if ($e->getCode() === UserAuthenticator::NOT_APPROVED) {
+                $responseCode = Response::S403_FORBIDDEN;
+            }
+
+            $response = new JsonApiResponse($responseCode, [
                 'status' => 'error',
                 'error' => 'auth_failed',
                 'message' => $e->getMessage()
             ]);
-            if ($e->getCode() === UserAuthenticator::NOT_APPROVED) {
-            } else {
-                $response->setCode(Response::S401_UNAUTHORIZED);
-            }
             return $response;
         }
 
