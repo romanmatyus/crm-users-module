@@ -2,11 +2,9 @@
 
 namespace Crm\UsersModule\Auth\Access;
 
-use Crm\ApplicationModule\Access\AccessManager;
 use Crm\ApplicationModule\Request as CrmRequest;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
-use League\Event\Emitter;
 use Nette\Http\IRequest;
 use Nette\Http\Request;
 use Nette\Http\Response;
@@ -19,24 +17,16 @@ class AccessToken
 
     private $usersRepository;
 
-    private $accessManager;
-
-    private $emitter;
-
     protected $cookieName = 'n_token';
-    
+
     private $sameSiteFlag = 'Lax';
 
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
-        UsersRepository $usersRepository,
-        AccessManager $accessManager,
-        Emitter $emitter
+        UsersRepository $usersRepository
     ) {
         $this->accessTokenRepository = $accessTokensRepository;
         $this->usersRepository = $usersRepository;
-        $this->accessManager = $accessManager;
-        $this->emitter = $emitter;
     }
 
     /**
