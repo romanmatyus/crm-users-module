@@ -395,7 +395,7 @@ Success response:
 
 ---
 
-#### POST `/api/v1/users/email`
+#### POST `/api/v1/users/email` (DEPRECATED: Use `/api/v2/users/email` instead.)
 
 API calls checks whether provided email address is valid and available to use (for possible registration).
 
@@ -414,6 +414,54 @@ user into the system and it also doesn't return any user token, it only verifies
 
 ```shell
 curl -v –X GET http://crm.press/api/v1/users/email \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'Accept: application/json' \
+  --data 'email=admin%40admin.sk'
+```
+
+Response when email is already taken:
+
+```json5
+{
+    "email": "admin@admin.sk", // String; requested email
+    "status": "taken", // String; allowed values ["available", "taken"]
+    "id": 9, // Integer; ID of user if email is taken
+    "password": null // Boolean; set only if password was provided in request
+}
+```
+
+Response when email is available:
+
+```json5
+{
+    "email": "admin@admin.cz",
+    "status": "available",
+    "id": null,
+    "password": null
+}
+```
+
+---
+
+#### POST `/api/v2/users/email`
+
+API calls checks whether provided email address is valid and available to use (for possible registration).
+
+Additionally it checks whether the provided password is valid for given email address or not. It doesn't login the
+user into the system and it also doesn't return any user token, it only verifies the password if it was provided.
+
+##### *Params:*
+
+| Name | Value | Required | Description |
+| --- |---| --- | --- |
+| Email | *String* | yes | Email to verify |
+| Password | *String* | no | Password to verify |
+
+
+##### *Example:*
+
+```shell
+curl -v –X GET http://crm.press/api/v2/users/email \
   -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
   -H 'Accept: application/json' \
   --data 'email=admin%40admin.sk'
