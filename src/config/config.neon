@@ -67,6 +67,9 @@ services:
 		factory: Crm\UsersModule\Auth\SignInRedirectValidator
 
 	userDataLocaleResolver: Crm\UsersModule\Locale\UserDataLocaleResolver
+	translation.userLocaleResolver:
+		setup:
+			- addResolver(@userDataLocaleResolver)
 
 	- Crm\UsersModule\Forms\ChangePasswordFormFactory
 	- Crm\UsersModule\Forms\RequestPasswordFormFactory
