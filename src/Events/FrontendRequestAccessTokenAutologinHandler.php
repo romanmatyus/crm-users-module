@@ -8,7 +8,6 @@ use League\Event\AbstractListener;
 use League\Event\EventInterface;
 use Nette\Http\Request;
 use Nette\Http\Response;
-use Nette\Http\Session;
 use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Authenticator;
@@ -16,24 +15,24 @@ use Nette\Security\User;
 
 class FrontendRequestAccessTokenAutologinHandler extends AbstractListener
 {
-    private Session $session;
     private Translator $translator;
     private User $user;
     private Request $httpRequest;
     private Response $httpResponse;
+    private AccessTokenAuthenticator $accessTokenAuthenticator;
 
     public function __construct(
-        Session $session,
         Translator $translator,
         User $user,
         Request $httpRequest,
-        Response $httpResponse
+        Response $httpResponse,
+        AccessTokenAuthenticator $accessTokenAuthenticator
     ) {
-        $this->session = $session;
         $this->translator = $translator;
         $this->user = $user;
         $this->httpRequest = $httpRequest;
         $this->httpResponse = $httpResponse;
+        $this->accessTokenAuthenticator = $accessTokenAuthenticator;
     }
 
     public function handle(EventInterface $event)
@@ -48,12 +47,9 @@ class FrontendRequestAccessTokenAutologinHandler extends AbstractListener
         if (!$accessToken) {
             return;
         }
-        $authSession = $this->session->getSection('auth');
-        if ($authSession->get(AccessTokenAuthenticator::SESSION_AUTH_DISABLED)) {
-            $event->addFlashMessages(
-                $this->translator->translate('users.authenticator.access_token.autologin_disabled'),
-                'notice'
-            );
+
+        // Check if token is disabled, because otherwise each request attempting log-in will reset SESSION ID
+        if ($this->accessTokenAuthenticator->isDisabledForToken($accessToken)) {
             return;
         }
 

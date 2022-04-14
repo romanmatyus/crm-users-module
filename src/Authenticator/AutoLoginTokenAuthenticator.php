@@ -22,12 +22,11 @@ use Nette\Security\AuthenticationException;
  */
 class AutoLoginTokenAuthenticator extends BaseAuthenticator
 {
-    private $usersRepository;
+    private UsersRepository $usersRepository;
 
-    private $autoLogin;
+    private AutoLogin $autoLogin;
 
-    /** @var string */
-    private $autologinToken = null;
+    private ?string $autologinToken = null;
 
     public function __construct(
         Emitter $emitter,

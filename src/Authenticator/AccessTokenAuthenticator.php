@@ -24,7 +24,7 @@ use Nette\Security\Authenticator;
  */
 class AccessTokenAuthenticator extends BaseAuthenticator
 {
-    public const SESSION_AUTH_DISABLED = 'disabled_tokens';
+    private const SESSION_AUTH_DISABLED_TOKEN_HASH = 'disabled_token_hash';
 
     private AccessTokensRepository $accessTokensRepository;
 
@@ -32,8 +32,7 @@ class AccessTokenAuthenticator extends BaseAuthenticator
 
     private Session $session;
 
-    /** @var string */
-    private $accessToken = null;
+    private ?string $accessToken = null;
 
     public function __construct(
         Emitter $emitter,
@@ -51,12 +50,7 @@ class AccessTokenAuthenticator extends BaseAuthenticator
 
     public function authenticate()
     {
-        $authSession = $this->session->getSection('auth');
-        if ($authSession->get(self::SESSION_AUTH_DISABLED)) {
-            return false;
-        }
-
-        if ($this->accessToken !== null) {
+        if ($this->accessToken !== null && !$this->isDisabledForToken($this->accessToken)) {
             return $this->process();
         }
 
@@ -89,12 +83,32 @@ class AccessTokenAuthenticator extends BaseAuthenticator
             throw new AuthenticationException($this->translator->translate('users.authenticator.access_token.invalid_token'), Authenticator::IDENTITY_NOT_FOUND);
         }
         if ($user->role === UsersRepository::ROLE_ADMIN) {
-            $authSession = $this->session->getSection('auth');
-            $authSession->set(self::SESSION_AUTH_DISABLED, true);
+            $this->setDisabledForToken();
             throw new AuthenticationException($this->translator->translate('users.authenticator.access_token.autologin_disabled'), Authenticator::NOT_APPROVED);
         }
 
         $this->addAttempt($user->email, $user, $this->source, LoginAttemptsRepository::STATUS_ACCESS_TOKEN_OK);
         return $user;
+    }
+
+    private function setDisabledForToken()
+    {
+        $authSession = $this->session->getSection('auth');
+        $authSession->set(self::SESSION_AUTH_DISABLED_TOKEN_HASH, hash('sha256', $this->accessToken));
+    }
+
+    /**
+     * Checks if token has been previously marked (in session) as unable to login,
+     * so system does not have to try again.
+     *
+     * @param string $token
+     *
+     * @return bool
+     */
+    public function isDisabledForToken(string $token): bool
+    {
+        $authSession = $this->session->getSection('auth');
+        $disabledTokenHash = $authSession->get(self::SESSION_AUTH_DISABLED_TOKEN_HASH);
+        return $disabledTokenHash && $disabledTokenHash === hash('sha256', $token);
     }
 }
