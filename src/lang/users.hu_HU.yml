@@ -1,26 +1,26 @@
 menu:
-    stats: Stats
+    stats: Felhasználói statisztikák
     settings: Beállítások
     sign_out: Kijelentkezés
-    people: Felhasználók
+    people: Összes felhasználó
     users: Felhasználók
     groups: Csoportok
     login_attempts: Bejelentkezési kísérletek
     events: Események
-    cheaters: Cheaters
+    cheaters: Csalók
     admin_rights: Admin jogok
-    actions_log: Actions log
+    actions_log: Műveletek naplózása
 
 frontend:
     sign_in:
         title: Bejelentkezés
         username:
             label: 'E-mail cím:'
-            required: Kérjük add meg az e-mail címed
-            placeholder: E-mail cím
+            required: Kérjük, adja meg az e-mail címét
+            placeholder: Például email@email.sk
         password:
             label: 'Jelszó:'
-            required: Kérjük add meg a jelszavad.
+            required: Kérjük, adja meg a jelszavát.
             placeholder: Jelszó
         remember: Maradjon bejelentkezve
         submit: Bejelentkezés
@@ -29,43 +29,45 @@ frontend:
         title: Regisztráció
         username:
             label: 'E-mail cím:'
-            required: Kérjük add meg az e-mail címed
+            required: Kérjük, adja meg a bejelentkezéshez használt e-mail címét
             placeholder: Pl. kiss.jozsef@email.sk
         password:
             label: 'Jelszó:'
-            required: Kérjük add meg a jelszavad.
+            required: Kérjük, adja meg a bejelentkezéshez használt jelszavát.
             placeholder: Jelszó
         toc:
-            required: El kell fogadnia a felhasználói feltételeket.
+            required: A regisztrációhoz el kell fogadnia a felhasználói feltételeket.
         submit: Fiók létrehozása
         error:
-            already_registered: 'E-mail cím foglalt. Kérjük adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>.'
-            invalid_email: Hibás e-mail cím. Kérjük ellenőrizze a megadott e-mail címét.
+            already_registered: 'Ezt az e-mail címet már regisztráltuk. Kérjük, adja meg a jelszavát vagy cserélje le <a href="/users/users/reset-password" style="text-decoration:underline">itt</a>.'
+            invalid_email: Az e-mail cím érvénytelen.
     change_password:
         title: Jelszó módosítás
         submit: Jelszó módosítás
-        submit_with_devices_logout: Jelszó módosítás és más eszközökről való kijelentkezés
+        submit_with_devices_logout: Jelszó módosítás és kijelentkezés más eszközökről
         actual_password:
             label: 'Jelenlegi jelszó:'
-            required: Kérjük add meg a jelenlegi jelszavad
+            required: Kérjük, adja meg a jelenlegi jelszavát
             placeholder: Jelenlegi jelszó
-            description: "Elfelejtetted a jelszavad? Semmi gond, <a href=\"%url%\" class=\"link\"><strong>kattints ide</strong></a> és küldünk egy újat az e-mail címedre."
+            description: "Elfelejtette a jelszavát? Semmi gond, <a href=\"%url%\" class=\"link\"><strong>kattintson ide</strong></a> és küldünk egy újat az e-mail címére."
+            confirm: Valóban vissza szeretné állítani a jelszavát?
         new_password:
             label: 'Új jelszó:'
-            required: Kérjük add meg az új jelszavad
+            required: Kérjük, adja meg az új jelszavát
             placeholder: Új jelszó
-            minlength: Jelszavadak legalább %d karakterből kell állnia
+            minlength: Jelszónak legalább %d karakterből kell állnia
         new_password_confirm:
             label: 'Új jelszó ismét:'
-            required: Kérjük add meg az új jelszavad még egyszer
-            placeholder: Új jelszó ismét
-            description: Kérjük megerősítés céljából add meg az új jelszavad még egyszer
+            required: Kérjük, adja meg az új jelszavát még egyszer
+            placeholder: Új jelszó még egyszer
+            description: Kérjük, megerősítés céljából adja meg az új jelszavát még egyszer
+            not_matching: A jelszavak nem egyeznek
         errors:
-            could_not_authenticate: Sikertelen próbálkozás.
-            invalid_credentials: Hibás jelszó.
-        success: Jelszavad sikeresen módosítottad.
+            could_not_authenticate: Bejelentkezését nem sikerült ellenőrizni.
+            invalid_credentials: Helytelen jelszó.
+        success: Sikeres jelszómódosítás.
         success_with_logout: "Jelszó sikeresen módosítva, kijelentkeztettünk a többi eszközről."
-        reset_success: 'Jelszó sikeresen módosítva és elküldve emailben a %email% címre.'
+        reset_success: 'Jelszó sikeresen módosítva és elküldve e-mailben a %email% címre.'
     address:
         type:
             label: Cím típusa
@@ -82,13 +84,13 @@ frontend:
             label: 'Utca:'
             placeholder: adja meg az utca nevét
         number:
-            label: 'Szám:'
+            label: 'Házszám:'
             placeholder: pl. 14/A
         zip:
             label: 'Irányítószám:'
             placeholder: pl. 08102
         city:
-            label: 'Város:'
+            label: 'Település:'
             placeholder: pl. Trnava
         country:
             label: 'Ország:'
@@ -99,89 +101,91 @@ frontend:
             label: 'Cég azonosító:'
             placeholder: pl. 9238598283
         company_tax_id:
-            label: 'Adó azonosító:'
+            label: 'Adószám:'
             placeholder: pl. 2359023591
         company_vat_id:
             label: 'Áfa azonosító:'
             placeholder: pl. SK2359023591
         submit: Mentés
     request_password:
-        title: Elfelejtetted a jelszavad
-        info: "Az új jelszó igényléséhez kérjük add meg a jelenleg használt jelszavad, majd az újat, amit a továbbiakban használni szeretnél:"
+        title: Bejelentkezéssel kapcsolatos problémák
+        info: "Ha nem emlékszik a jelszavára, az e-mail címre, amellyel regisztrált, elküldjük a jelszóváltoztatáshoz szükséges teendőket."
         login:
-            text: "Ha tudod a jelszavad, "
-            link: "jelentkezz be itt"
+            text: "Ha tudja a jelszavát, "
+            link: "jelentkezzen be itt"
         email:
             label: 'E-mail cím:'
-            required: Kérjük add meg az e-mail címed
-            placeholder: "Az e-mail címed, amellyel regisztráltál"
-        submit: Küldés
-        invalid_email: Hibás e-mail cím
+            required: Kérjük adja meg az e-mail címét
+            placeholder: "Az e-mail cím, amellyel regisztrált"
+        submit: Új jelszó küldése
+        invalid_email: Helytelen e-mail cím
 
         success:
             email: "A jelszóváltoztatási linket elküldtük erre a címre"
-            spam: "Kérjük, ellenőrizd az e-mail postafiókod, valamint a spam mappát is."
+            spam: "Kérjük, ellenőrizze az e-mail postafiókját, valamint a spam mappát is."
+        inactive_user: A fiókját deaktiváltuk. Kérjük, jelentkezzen be más e-mail címmel vagy értesítse az ügyfélszolgálatunkat a %contactEmail% címen.
     reset_password:
-        title: Jelszó módosítás
-        info: Ezen az oldalon módosíthatod a jelszavad.
+        title: Jelszómódosítás
+        info: Ezen az oldalon módosíthatja a jelszavát.
         errors:
-            invalid_password_reset_token: Jelszó módosításhoz használt link érvényessége lejárt. Igényelj új linket.
+            invalid_password_reset_token: A jelszómódosításhoz használt link érvényessége lejárt. Kérjük, igényeljen új linket.
         new_password:
             label: 'Új jelszó:'
-            required: Add meg az új jelszavad
-            placeholder: Új jelszó
-            min_length: Jelszavadnak legalább %count% karakterből kell állnia
+            required: Adja meg az új jelszavát
+            placeholder: új jelszó
+            min_length: A jelszónak legalább %count% karakterből kell állnia
         new_password_confirm:
             label: 'Új jelszó még egyszer:'
-            required: Kérjük add meg az új jelszavad még egyszer
-            not_matching: Jelszavak nem egyeznek
-            placeholder: Új jelszó még egyszer
-            description: Kérjük add meg az új jelszavad még egyszer megerősités céljából
-        submit: Beállítás
-        could_not_set: Jelszó módosítás sikertelen
-        success: Sikeresen módosítottad a jelszavad.
+            required: Kérjük, adja meg az új jelszavát még egyszer
+            not_matching: A jelszavak nem egyeznek
+            placeholder: új jelszó még egyszer
+            description: Kérjük, megerősítés céljából adja meg az új jelszavát még egyszer
+        submit: Jelszómódosítás
+        could_not_set: Sikertelen jelszómódosítás
+        success: Sikeresen módosította a jelszavát.
     email_confirm:
-        title: Email ellenőrzés
-        success: Emailcím ellenőrzés sikeres.
-        fail: "Emailcím ellenőrzés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
-        back: Vissza
+        title: E-mail ellenőrzés
+        success: Az e-mail cím ellenőrzése sikeres volt.
+        fail: "Az e-mail cím ellenőrzése sikertelen volt. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
+        back: Vissza a címlapra
     settings:
-        title: Rendszer beállítások
+        title: Rendszerbeállítások
         personal_data:
-            title: Személyes adatok letöltése
-            info: "Itt tudod letölteni a tárolt személyes adataid."
+            title: Személyes adatok
+            info: "Itt tudja letölteni a tárolt személyes adatait."
             download: Letöltés
         devices_logout:
             title: Eszközkezelés
             logout: Kijelentkeztetés minden más eszközről
-            confirm: "Ki szeretnél jelentkezni minden más eszközről?"
-            success: "Kijelentkeztél minden más eszközről."
+            confirm: "Valóban ki szeretne jelentkezni minden más eszközről?"
+            success: "Kijelentkezett minden más eszközről."
         account_delete:
-            title: Felhasználó törlése
-            info: 'Ha szeretnéd végleg törölni a felhasználói profilodat, kérjük írjd be a jelszad, és kattints a felhasználó törlése gombra. A publikált bejegyzéseid nyilvánosak maradnak a weboldalon. <strong>Ez a múvelet visszafordíthatatlam</strong>.'
+            title: Fiók törlése
+            info: 'Ha szeretné végleg törölni a felhasználói fiókját, kérjük, írja be a jelszavát, és kattintson a "Fiók törlése" gombra. <strong>Ez a művelet visszafordíthatatlan</strong>.'
             password:
                 label: 'Jelszó:'
-                required: Jelszó kötelező
-            submit: Felhasználó törlése
+                required: Jelszó megadása kötelező
+            submit: Fiók törlése
             invalid_password: Hibás jelszó
-            cannot_delete: "Felhasználó nem törölhető automatikusan. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
-            confirm: Felhasználó törlése visszafordíthatatlan. Biztos folytatod?
-            success: Felhasználó sikeresen törölve.
+            cannot_delete: "A fiók nem törölhető. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
+            confirm: A felhasználói fiók törlése visszafordíthatatlan művelet. Biztosan folytatni szeretné?
+            success: Fiók sikeresen törölve.
         linked_accounts:
             title: Csatolt fiókok kezelése
-            connect: Fikók csatolás
+            connect: Fiók csatolása
             connected: Fiók csatolva
-            unlink: megszüntet
-            unlink_success: Fiók csatolás megszüntetve.
+            unlink: csatolás megszüntetése
+            unlink_success: Fiókcsatolás megszüntetve.
+            unlink_disabled_for_admin: Az admin jogokkal rendelkező felhasználó számára biztonsági okokból nincs lehetőség a fiókcsatolás megszüntetésére. Kérjük, vegye fel a kapcsolatot a műszaki támogatással.
     google:
-        fail: "Google bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
-        sign_using_google: Bejelentkezés Google-al
+        fail: "Google bejelentkezés sikertelen. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
+        sign_using_google: Bejelentkezés Google-lal
         or: vagy
-        used_account: "Fiók csatolás sikertelen. Google fiók már csatolva van más felhasználóhoz."
+        used_account: "Fiókcsatolás sikertelen. A Google fiók már csatolva van más fiókhoz."
     apple:
-        fail: "Apple bejelentkezés sikertelen. Kérjük vedd fel a kapcsolatot az ügyfélszolgálattal."
-        sign_using_apple: Bejelentkezés Apple-el
-        used_account: "Fiók csatolás sikertelen. Apple fiók már csatolva van más felhasználóhoz."
+        fail: "Apple bejelentkezés sikertelen. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
+        sign_using_apple: Bejelentkezés Apple-lel
+        used_account: "Fiókcsatolás sikertelen. Az Apple fiók már csatolva van más fiókhoz."
 
 admin:
     actions:
@@ -241,7 +245,7 @@ admin:
         last_login: Utolsó bejelentkezés
         no_login: Nincs bejelentkezési bejegyzés
         personal_info: Személyes adatok
-        anonymize_alert: "Felhasználói fiók anonimizálása visszafordíthatatlan. Felhasználó többé nem tud bejelentkezni és minden személyes adata törlődik. Biztos folytatod?"
+        anonymize_alert: "Felhasználói fiók anonimizálása visszafordíthatatlan. A felhasználó többé nem tud majd bejelentkezni és minden személyes adata törlődik. Biztosan folytatni szeretné?"
         anonymize: Felhasználó anonimizálása
         company_id: Cégnév
         company_tax_id: Adó azonosító
@@ -447,18 +451,19 @@ admin:
         title: Felhasználó statisztikák
 
 authenticator:
-    identity_not_found: Érvénytelen e-mail cím.
+    identity_not_found: Helytelen név.
     invalid_credentials: Érvénytelen jelszó.
-    inactive_account: Fiók inaktív.
-    rate_limit_exceeded: Túl sok sikertelen próbálkozás. Próbálja újra később.
+    inactive_account: A fiók inaktív.
+    rate_limit_exceeded: Túl sok sikertelen bejelentkezési próbálkozás. Próbálja újra később.
 
     access_token:
-        invalid_token: Hibás token
-        autologin_disabled: Automata bejelentkezés kikapcsolva admin felhasználóknak.
+        invalid_token: Érvénytelen token
+        autologin_disabled: Az ön fiókja számára az automatikus bejelentkezés nem engedélyezett, kérjük, jelentkezzen be újra.
 
+    unclaimed_user: Előregisztrált fiók.
 user_source_accesses_component:
     title: Utolsó hozzáférések
-    no_data: Nincs rögzített adat
+    no_data: Egyelőre nem regisztrálunk hozzáférést
 
 detail_widget_component:
     other: Egyéb
@@ -468,8 +473,8 @@ month_users_small_bar_graph_widget:
 
 api:
     users_login_handler:
-        identity_not_found: "Megadott e-mail cím nem egyezik a bejegyzéseinkkel. Kérjük jelentkezzen be, ahogy az Újszó weboldalon tenné."
-        invalid_credentials: "Megadott jelszó nem egyezik meg a bejegyzéseinkkel. Kérjük jelentkezzen be, ahogy az Újszó weboldalon tenné."
+        identity_not_found: "A megadott e-mail cím nem egyezik az általunk nyilvántartott adatokkal. Kérjük, jelentkezzen be, ahogy a Denník N weboldalon tenné."
+        invalid_credentials: "A megadott jelszó nem egyezik az általunk nyilvántartott adatokkal. Kérjük, jelentkezzen be, ahogy a Denník N weboldalon tenné."
 
 form:
     admin_user_group:
@@ -477,28 +482,34 @@ form:
             prompt: Válasszon csoportot
         send: Hozzáadás
         error:
-            insufficient_rights: Nincs joga csoportok szerkesztéséhez
-            no_group: Csoport nem létezik
-            no_user: Felhasználó nem létezik
+            insufficient_rights: Nincs joga az admin csoportok szerkesztéséhez
+            no_group: A csoport nem létezik
+            no_user: A felhasználó nem létezik
     user_group:
         group_id:
             prompt: Válasszon csoportot
         send: Hozzáadás
 
+    register:
+        submit: Küldés
+        email:
+            label: E-mail cím
+            placeholder: Például email@email.sk
+            required: Kérjük, adja meg az e-mail címét
 component:
     user_login_attempts:
-        title: Legutóbbi bejelentkezési próbálkozások
+        title: Legutóbbi bejelentkezések
         today: Mai nap
         no_record_heading: Nincs bejegyzés
         no_record: "Úgy tűnik, ez a felhasználó még nem jelentkezett be a rendszerbe."
-        total_stats: Összes statisztika
+        total_stats: Összesített statisztika
         ip_count: IP címek száma
         browser_count: Böngészők száma
-        web_logins: Web-es bejelentkezések
-        mobile_app_logins: Mobil alkalmazás bejelentkezések
-        last_access_by_source: Forrás szerinti utolsó bejelentkezések
+        web_logins: Webes bejelentkezések
+        mobile_app_logins: Mobiltelefonos bejelentkezések (alkalmazások)
+        last_access_by_source: Forrás szerinti utolsó bejelentkezés
         status: Állapot
-        attempted_at: Próbálkozás ideje
+        attempted_at: Bejelentkezés ideje
         source: Forrás
         message: Üzenet
         ip_address: IP cím
@@ -519,7 +530,7 @@ component:
                 label: Publikus
             submit: Mentés
         no_record: Nincs bejegyzés
-        no_record_description: Nincs bejegyzés lementve ehhez a felhasználóhoz.
+        no_record_description: Nincs saját beállítás mentve ehhez a felhasználóhoz.
         key: Kulcs
         value: Érték
         created_at: Létrehozva
@@ -532,29 +543,32 @@ component:
         no_tokens_description: Nincs token ehhez a felhasználóhoz.
         created: Létrehozva
         code: Token
-        version: Verzió
+        version: Változat
         last_used: Utoljára használva
         ip_agent: IP cím / Böngésző
         actions: Műveletek
         delete_all: Összes törlése
-        delete_single: Token törkése
+        delete_single: Token törlése
 
+        source: Forrás
+        token_deleted: A hozzáférési kód törölve
+        all_tokens_deleted: Az összes hozzáférési kód törölve
     autologin_tokens:
         created: Létrehozva
         from: Érvényesség kezdete
         to: Érvényesség vége
         code: Kód
         used: Felhasználva
-        max: Max count
+        max: Maximális mennyiség
         empty_title: Nincs bejegyzés
-        empty_text: Ennek a felhasználónak nincs bejelentkezési kódja.
+        empty_text: Ennek a felhasználónak jelenleg nincs bejelentkezési kódja.
 
     user_password_changes:
         title: Módosítások
-        title_requests: Módosítások igénylése
+        title_requests: Módosítási kérelmek
         empty_title: Nincs bejegyzés
-        empty_entry_text: "Ez a felhasználó még nem változtatott kódot."
-        empty_request_text: Ez a Felhasználó még nem igényelt jelszó módosítás.
+        empty_entry_text: "Ez a felhasználó még nem változtatott jelszót."
+        empty_request_text: Ez a felhasználó még nem igényelt módosítást.
         type: Típus
         when: Mikor
         expire_at: Érvényesség vége
@@ -565,4 +579,14 @@ config:
     category: Felhasználók
     not_logged_in_route:
         name: 'Nem bejelentkezett felhasználók számára megjelenő oldal'
-        description: 'Nette útvonal, ahová átirányítjuk a csak bejelentkezett felhasználóknak elérhető URL ről (pl. :Users:Sign:in)'
+        description: 'Nette útvonal, ahova a nem bejelentkezett felhasználó érkezik csak bejelentkezett felhasználóknak elérhető oldal megtekintése esetén (pl. :Users:Sign:in)'
+deletion_note:
+    user_deleted_account: A felhasználó törölte magát
+    admin_deleted_account: A felhasználót az adminisztrátor törölte
+model:
+    user_builder:
+        error:
+            email_taken: 'Az alábbi e-mail címet már regisztráltuk: %email%'
+            email_missing: Nincs megadva e-mail cím
+            password_short: A jelszónak legalább  %length% karaktert kell tartalmaznia
+            public_name_missing: Nincs megadva publikus név
