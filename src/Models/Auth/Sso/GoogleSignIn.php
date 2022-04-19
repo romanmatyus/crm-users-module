@@ -87,14 +87,15 @@ class GoogleSignIn
      * If token is successfully verified, user with Google connected account will be created (or matched to an existing user).
      * Note: Access token is not automatically created
      *
-     * @param string      $idToken
+     * @param string $idToken
      * @param string|null $gsiAccessToken
-     *
+     * @param int|null $loggedUserId
+     * @param string|null $source
      * @return ActiveRow|null created/matched user
      * @throws AlreadyLinkedAccountSsoException
      * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null, int $loggedUserId = null): ?ActiveRow
+    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null, int $loggedUserId = null, string $source = null): ?ActiveRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -131,7 +132,7 @@ class GoogleSignIn
 
         $userBuilder = $this->ssoUserManager->createUserBuilder(
             $userEmail,
-            self::USER_SOURCE_GOOGLE_SSO,
+            $source ?? self::USER_SOURCE_GOOGLE_SSO,
             self::USER_GOOGLE_REGISTRATION_CHANNEL
         );
 
