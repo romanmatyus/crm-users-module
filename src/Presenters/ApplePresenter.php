@@ -40,7 +40,10 @@ class ApplePresenter extends FrontendPresenter
         // Final URL destination
         $finalUrl = $this->getParameter('url');
         $referer = $this->getReferer();
-        
+
+        // remove locale from URL; it is already part of final url / referer and it breaks callback URL
+        $this->locale = null;
+
         if ($finalUrl && $this->signInRedirectValidator->isAllowed($finalUrl)) {
             $session->finalUrl = $finalUrl;
         } elseif ($referer && $this->signInRedirectValidator->isAllowed($referer)) {
