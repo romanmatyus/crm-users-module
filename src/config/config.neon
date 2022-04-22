@@ -156,6 +156,7 @@ services:
 	- Crm\UsersModule\User\AddressesUserDataProvider
 	- Crm\UsersModule\User\AdminUserGroupsUserDataProvider
 	- Crm\UsersModule\User\AutoLoginTokensUserDataProvider
+	- Crm\UsersModule\User\LoginAttemptsUserDataProvider
 	- Crm\UsersModule\User\UserMetaUserDataProvider
 	- Crm\UsersModule\User\UserConnectedAccountsDataProvider
 	- Crm\UsersModule\User\ZipBuilder('%tempDir%')

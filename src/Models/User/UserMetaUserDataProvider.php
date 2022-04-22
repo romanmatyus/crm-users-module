@@ -49,6 +49,9 @@ class UserMetaUserDataProvider implements UserDataProviderInterface
 
     public function delete($userId, $protectedData = [])
     {
+        foreach ($this->userMetaRepository->userMetaRows($userId)->where(['is_public' => true]) as $row) {
+            $this->userMetaRepository->delete($row);
+        }
         return false;
     }
 

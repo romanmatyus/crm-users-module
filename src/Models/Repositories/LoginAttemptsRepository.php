@@ -131,4 +131,9 @@ class LoginAttemptsRepository extends Repository
     {
         return $this->getTable()->where(['ip' => $ip])->order('created_at DESC')->limit($count);
     }
+
+    final public function deleteAll($userId)
+    {
+        return $this->getTable()->where('user_id', $userId)->delete();
+    }
 }
