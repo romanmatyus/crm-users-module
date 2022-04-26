@@ -44,7 +44,7 @@ frontend:
     change_password:
         title: Změna hesla
         submit: Změnit heslo
-        submit_with_devices_logout: Změň heslo a odhlás z ostatních zařízení
+        submit_with_devices_logout: Změň heslo a odhlaš z ostatních zařízení
         actual_password:
             label: 'Aktuální heslo:'
             required: Zadejte prosím Vaše aktuální heslo
@@ -66,8 +66,8 @@ frontend:
             could_not_authenticate: Nepodařilo se ověřit Vaše přihlášení.
             invalid_credentials: Nesprávné heslo.
         success: Vaše heslo bylo úspěšně změněno.
-        success_with_logout: "Heslo bylo úspěšně změněno, na ostatních zařízeních jste byli odhlášen."
-        reset_success: 'Heslo jsme změnili a odeslali na váš email %email%.'
+        success_with_logout: "Heslo bylo úspěšně změněno, na ostatních zařízeních jste byli odhlášeni."
+        reset_success: 'Heslo jsme změnili a odeslali na váš e-mail %email%.'
     address:
         type:
             label: Typ adresy
@@ -157,7 +157,7 @@ frontend:
             title: Správa zařízení
             logout: Odhlásit z ostatních zařízení
             confirm: "Opravdu si přejete odhlásit se ze všech zařízení kromě současného?"
-            success: "Byli jste odhlášen z ostatních zařízení."
+            success: "Byli jste odhlášeni z ostatních zařízení."
         account_delete:
             title: Zrušení konta
             info: 'Pokud chcete nenávratně smazat uživatelský účet, zadejte heslo a stiskněte "Odstranit účet". <strong>Tato akce je nevratná</strong>.'
