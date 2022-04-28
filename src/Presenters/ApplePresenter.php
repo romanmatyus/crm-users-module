@@ -33,15 +33,19 @@ class ApplePresenter extends FrontendPresenter
         }
 
         $session = $this->getSession(self::SESSION_SECTION);
-        unset($session->finalUrl);
-        unset($session->referer);
-        unset($session->back);
+        unset(
+            $session->finalUrl,
+            $session->referer,
+            $session->locale,
+            $session->back
+        );
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
         $referer = $this->getReferer();
 
         // remove locale from URL; it is already part of final url / referer and it breaks callback URL
+        $locale = $this->locale;
         $this->locale = null;
 
         if ($finalUrl && $this->signInRedirectValidator->isAllowed($finalUrl)) {
@@ -57,6 +61,9 @@ class ApplePresenter extends FrontendPresenter
         // Save referer
         if ($referer) {
             $session->referer = $referer;
+        }
+        if ($locale) {
+            $session->locale = $locale;
         }
 
         $source = $this->getParameter('n_source');
@@ -80,10 +87,11 @@ class ApplePresenter extends FrontendPresenter
         }
 
         $session = $this->getSession(self::SESSION_SECTION);
-        $referer = $session->referer;
+        $referer = $session->referer ?? null;
+        $locale = $session->locale ?? null;
 
         try {
-            $user = $this->appleSignIn->signInCallback($referer);
+            $user = $this->appleSignIn->signInCallback($referer, $locale);
 
             if (!$this->getUser()->isLoggedIn()) {
                 // AutoLogin will log in user - create access token and set user flag (in session) to authenticated

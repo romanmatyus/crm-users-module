@@ -91,12 +91,18 @@ class GoogleSignIn
      * @param string|null $gsiAccessToken
      * @param int|null $loggedUserId
      * @param string|null $source
+     * @param string|null $locale if user is created, this locale will be set as a default user locale
      * @return ActiveRow|null created/matched user
      * @throws AlreadyLinkedAccountSsoException
      * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInUsingIdToken(string $idToken, string $gsiAccessToken = null, int $loggedUserId = null, string $source = null): ?ActiveRow
-    {
+    public function signInUsingIdToken(
+        string $idToken,
+        string $gsiAccessToken = null,
+        int $loggedUserId = null,
+        string $source = null,
+        ?string $locale = null
+    ): ?ActiveRow {
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
@@ -135,6 +141,10 @@ class GoogleSignIn
             $source ?? self::USER_SOURCE_GOOGLE_SSO,
             self::USER_GOOGLE_REGISTRATION_CHANNEL
         );
+
+        if ($locale) {
+            $userBuilder->setLocale($locale);
+        }
 
         // Match google user to CRM user
         return $this->ssoUserManager->matchOrCreateUser(
@@ -249,13 +259,14 @@ class GoogleSignIn
      *
      * @param string      $redirectUri
      * @param string|null $referer to save with user if user is created
+     * @param string|null $locale
      *
      * @return ActiveRow user row
      * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
-    public function signInCallback(string $redirectUri, string $referer = null): ActiveRow
+    public function signInCallback(string $redirectUri, ?string $referer = null, ?string $locale = null): ActiveRow
     {
         $gsiState = $this->request->getCookie(self::COOKIE_GSI_STATE);
         $gsiUserId = $this->request->getCookie(self::COOKIE_GSI_USER_ID);
@@ -330,6 +341,10 @@ class GoogleSignIn
             self::USER_GOOGLE_REGISTRATION_CHANNEL,
             $referer
         );
+
+        if ($locale) {
+            $userBuilder->setLocale($locale);
+        }
 
         // Match google user to CRM user
         return $this->ssoUserManager->matchOrCreateUser(

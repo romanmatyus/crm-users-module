@@ -159,12 +159,13 @@ class AppleSignIn
      * Note: Access token is not automatically created
      *
      * @param string|null $referer to save with user if user is created
+     * @param string|null $locale
      *
      * @return ActiveRow user row
      * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
      */
-    public function signInCallback(string $referer = null): ActiveRow
+    public function signInCallback(?string $referer = null, ?string $locale = null): ActiveRow
     {
         $asiState = $this->request->getCookie(self::COOKIE_ASI_STATE);
         $asiUserId = $this->request->getCookie(self::COOKIE_ASI_USER_ID);
@@ -225,6 +226,10 @@ class AppleSignIn
             $referer
         );
 
+        if ($locale) {
+            $userBuilder->setLocale($locale);
+        }
+
         return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
             $userEmail,
@@ -242,11 +247,12 @@ class AppleSignIn
      * Note: Access token is not automatically created
      *
      * @param string $idTokenInput
+     * @param string|null $locale if user is created, this locale will be set as a default user locale
      *
      * @return ActiveRow|null created/matched user
      * @throws \Exception
      */
-    public function signInUsingIdToken(string $idTokenInput): ?ActiveRow
+    public function signInUsingIdToken(string $idTokenInput, ?string $locale = null): ?ActiveRow
     {
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
@@ -279,6 +285,10 @@ class AppleSignIn
             self::USER_SOURCE_APPLE_SSO,
             self::USER_APPLE_REGISTRATION_CHANNEL
         );
+
+        if ($locale) {
+            $userBuilder->setLocale($locale);
+        }
 
         return $this->ssoUserManager->matchOrCreateUser(
             $appleUserId,
