@@ -43,19 +43,19 @@ frontend:
             invalid_email: Az e-mail cím érvénytelen.
     change_password:
         title: Jelszó módosítás
-        submit: Jelszó módosítás
-        submit_with_devices_logout: Jelszó módosítás és kijelentkezés más eszközökről
+        submit: Jelszó módosítása
+        submit_with_devices_logout: Jelszó módosítása és kijelentkezés más eszközökről
         actual_password:
-            label: 'Jelenlegi jelszó:'
-            required: Kérjük, adja meg a jelenlegi jelszavát
-            placeholder: Jelenlegi jelszó
+            label: 'Aktuális jelszó:'
+            required: Kérjük, adja meg aktuális jelszavát
+            placeholder: Aktuális jelszó
             description: "Elfelejtette a jelszavát? Semmi gond, <a href=\"%url%\" class=\"link\"><strong>kattintson ide</strong></a> és küldünk egy újat az e-mail címére."
             confirm: Valóban vissza szeretné állítani a jelszavát?
         new_password:
             label: 'Új jelszó:'
             required: Kérjük, adja meg az új jelszavát
-            placeholder: Új jelszó
-            minlength: Jelszónak legalább %d karakterből kell állnia
+            placeholder: új jelszó
+            minlength: A jelszónak legalább %d karakterből kell állnia
         new_password_confirm:
             label: 'Új jelszó ismét:'
             required: Kérjük, adja meg az új jelszavát még egyszer
@@ -98,32 +98,32 @@ frontend:
             label: 'Cégnév:'
             placeholder: 'pl. Cég s.r.o.'
         company_id:
-            label: 'Cég azonosító:'
+            label: 'IČO (statisztikai számjel)'
             placeholder: pl. 9238598283
         company_tax_id:
-            label: 'Adószám:'
+            label: 'DIČ (adószám):'
             placeholder: pl. 2359023591
         company_vat_id:
-            label: 'Áfa azonosító:'
+            label: 'IČ DPH (áfás adószám):'
             placeholder: pl. SK2359023591
         submit: Mentés
     request_password:
-        title: Bejelentkezéssel kapcsolatos problémák
+        title: Probléma a bejelentkezéssel
         info: "Ha nem emlékszik a jelszavára, az e-mail címre, amellyel regisztrált, elküldjük a jelszóváltoztatáshoz szükséges teendőket."
         login:
             text: "Ha tudja a jelszavát, "
-            link: "jelentkezzen be itt"
+            link: "jelentkezzen be itt – kattintson"
         email:
             label: 'E-mail cím:'
             required: Kérjük adja meg az e-mail címét
-            placeholder: "Az e-mail cím, amellyel regisztrált"
+            placeholder: "az e-mail cím, amellyel regisztrált"
         submit: Új jelszó küldése
         invalid_email: Helytelen e-mail cím
 
         success:
-            email: "A jelszóváltoztatási linket elküldtük erre a címre"
+            email: "A jelszóváltoztatási linket elküldtük a következő címre"
             spam: "Kérjük, ellenőrizze az e-mail postafiókját, valamint a spam mappát is."
-        inactive_user: A fiókját deaktiváltuk. Kérjük, jelentkezzen be más e-mail címmel vagy értesítse az ügyfélszolgálatunkat a %contactEmail% címen.
+        inactive_user: A fiókját deaktiváltuk. Kérjük, jelentkezzen be más e-mail címmel vagy értesítse az ügyfélszolgálatunkat a(z) %contactEmail% címen.
     reset_password:
         title: Jelszómódosítás
         info: Ezen az oldalon módosíthatja a jelszavát.
@@ -144,15 +144,15 @@ frontend:
         could_not_set: Sikertelen jelszómódosítás
         success: Sikeresen módosította a jelszavát.
     email_confirm:
-        title: E-mail ellenőrzés
+        title: E-mail ellenőrzése
         success: Az e-mail cím ellenőrzése sikeres volt.
         fail: "Az e-mail cím ellenőrzése sikertelen volt. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
-        back: Vissza a címlapra
+        back: Vissza a főoldalra
     settings:
         title: Rendszerbeállítások
         personal_data:
             title: Személyes adatok
-            info: "Itt tudja letölteni a tárolt személyes adatait."
+            info: "Itt tudja letölteni a rendszerben tárolt személyes adatait."
             download: Letöltés
         devices_logout:
             title: Eszközkezelés
@@ -166,26 +166,26 @@ frontend:
                 label: 'Jelszó:'
                 required: Jelszó megadása kötelező
             submit: Fiók törlése
-            invalid_password: Hibás jelszó
+            invalid_password: Helytelen jelszó
             cannot_delete: "A fiók nem törölhető. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
             confirm: A felhasználói fiók törlése visszafordíthatatlan művelet. Biztosan folytatni szeretné?
             success: Fiók sikeresen törölve.
         linked_accounts:
             title: Csatolt fiókok kezelése
-            connect: Fiók csatolása
-            connected: Fiók csatolva
-            unlink: csatolás megszüntetése
-            unlink_success: Fiókcsatolás megszüntetve.
-            unlink_disabled_for_admin: Az admin jogokkal rendelkező felhasználó számára biztonsági okokból nincs lehetőség a fiókcsatolás megszüntetésére. Kérjük, vegye fel a kapcsolatot a műszaki támogatással.
+            connect: Fiók csatlakoztatása
+            connected: Fiók csatlakoztatva
+            unlink: csatlakoztatás megszüntetése
+            unlink_success: Csatlakoztatás megszüntetve.
+            unlink_disabled_for_admin: Az admin jogokkal rendelkező felhasználó számára biztonsági okokból nincs lehetőség a csatlakoztatás megszüntetésére. Kérjük, vegye fel a kapcsolatot a műszaki támogatással.
     google:
-        fail: "Google bejelentkezés sikertelen. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
+        fail: "Google-bejelentkezés sikertelen. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
         sign_using_google: Bejelentkezés Google-lal
         or: vagy
-        used_account: "Fiókcsatolás sikertelen. A Google fiók már csatolva van más fiókhoz."
+        used_account: "Fiók csatlakoztatása sikertelen. A Google fiók már csatlakoztatva van más fiókhoz."
     apple:
-        fail: "Apple bejelentkezés sikertelen. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
+        fail: "Apple-bejelentkezés sikertelen. Kérjük, vegye fel a kapcsolatot az ügyfélszolgálattal."
         sign_using_apple: Bejelentkezés Apple-lel
-        used_account: "Fiókcsatolás sikertelen. Az Apple fiók már csatolva van más fiókhoz."
+        used_account: "Fiók csatlakoztatása sikertelen. Az Apple-fiók már csatlakoztatva van más fiókhoz."
 
 admin:
     actions:
@@ -209,7 +209,7 @@ admin:
         actions: Műveletek
         invoice: Számla
         institution: Intézmény
-        admin: Admin
+        admin: admin
         no_results: 'Nincs találat. Állítson a szűrőkön'
         export: Exportálás
 
@@ -452,7 +452,7 @@ admin:
 
 authenticator:
     identity_not_found: Helytelen név.
-    invalid_credentials: Érvénytelen jelszó.
+    invalid_credentials: Helytelen jelszó.
     inactive_account: A fiók inaktív.
     rate_limit_exceeded: Túl sok sikertelen bejelentkezési próbálkozás. Próbálja újra később.
 
@@ -473,8 +473,8 @@ month_users_small_bar_graph_widget:
 
 api:
     users_login_handler:
-        identity_not_found: "A megadott e-mail cím nem egyezik az általunk nyilvántartott adatokkal. Kérjük, jelentkezzen be, ahogy a Denník N weboldalon tenné."
-        invalid_credentials: "A megadott jelszó nem egyezik az általunk nyilvántartott adatokkal. Kérjük, jelentkezzen be, ahogy a Denník N weboldalon tenné."
+        identity_not_found: "A megadott e-mail cím nem egyezik az általunk nyilvántartott adatokkal. Kérjük, jelentkezzen be, ahogy a Denník N honlapján tenné."
+        invalid_credentials: "A megadott jelszó nem egyezik az általunk nyilvántartott adatokkal. Kérjük, jelentkezzen be, ahogy a Denník N honlapján tenné."
 
 form:
     admin_user_group:
@@ -499,7 +499,7 @@ form:
 component:
     user_login_attempts:
         title: Legutóbbi bejelentkezések
-        today: Mai nap
+        today: Ma
         no_record_heading: Nincs bejegyzés
         no_record: "Úgy tűnik, ez a felhasználó még nem jelentkezett be a rendszerbe."
         total_stats: Összesített statisztika
@@ -544,7 +544,7 @@ component:
         created: Létrehozva
         code: Token
         version: Változat
-        last_used: Utoljára használva
+        last_used: Utoljára használt
         ip_agent: IP cím / Böngésző
         actions: Műveletek
         delete_all: Összes törlése
@@ -558,7 +558,7 @@ component:
         from: Érvényesség kezdete
         to: Érvényesség vége
         code: Kód
-        used: Felhasználva
+        used: Felhasznált
         max: Maximális mennyiség
         empty_title: Nincs bejegyzés
         empty_text: Ennek a felhasználónak jelenleg nincs bejelentkezési kódja.
