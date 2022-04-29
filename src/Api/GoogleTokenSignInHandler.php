@@ -56,6 +56,7 @@ class GoogleTokenSignInHandler extends ApiHandler
             new PostInputParam('gsi_auth_code'),
             new PostInputParam('is_web'),
             new PostInputParam('source'),
+            new PostInputParam('locale'),
         ];
     }
 
@@ -111,7 +112,7 @@ class GoogleTokenSignInHandler extends ApiHandler
             }
         }
 
-        $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken, null, $params['source'] ?? null);
+        $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken, null, $params['source'] ?? null, $params['locale'] ?? null);
 
         if (!$user) {
             $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [

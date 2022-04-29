@@ -51,7 +51,8 @@ class UsersUpdateHandler extends ApiHandler
             new PostInputParam('email'),
             new PostInputParam('password'),
             new PostInputParam('ext_id'),
-            new PostInputParam('disable_email_validation')
+            new PostInputParam('disable_email_validation'),
+            new PostInputParam('locale'),
         ];
     }
 
@@ -82,6 +83,10 @@ class UsersUpdateHandler extends ApiHandler
 
         if (!empty($params['ext_id'])) {
             $userData['ext_id'] = (int)$params['ext_id'];
+        }
+
+        if (!empty($params['locale'])) {
+            $userData['locale'] = $params['locale'];
         }
 
         $passwordChanged = false;

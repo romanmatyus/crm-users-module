@@ -65,13 +65,13 @@ class UnclaimedUser
     /**
      * @param string|null $email
      * @param string $source
+     * @param string|null $locale
      * @return ActiveRow
      * @throws InvalidEmailException
      * @throws JsonException
      * @throws UserAlreadyExistsException
-     * @throws Exception
      */
-    public function createUnclaimedUser(string $email = null, $source = 'unknown'): ActiveRow
+    public function createUnclaimedUser(string $email = null, string $source = 'unknown', string $locale = null): ActiveRow
     {
         if ($email === null) {
             $email = $this->generateUnclaimedUserEmail();
@@ -86,7 +86,8 @@ class UnclaimedUser
             null,
             false,
             [self::META_KEY => 1],
-            false
+            false,
+            $locale
         );
     }
 
@@ -173,14 +174,15 @@ class UnclaimedUser
         $referer = null,
         $checkEmail = true,
         $password = null,
-        $deviceToken = null
+        $deviceToken = null,
+        $locale = null
     ) {
         $this->dbContext->beginTransaction();
         try {
             $email = $unclaimedUser->email;
             $this->usersRepository->update($unclaimedUser, ['email' => $this->generateUnclaimedUserEmail()]);
 
-            $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password);
+            $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password, true, [], true, $locale);
             $this->claimUser($unclaimedUser, $user, $deviceToken);
         } catch (Exception $exception) {
             $this->dbContext->rollback();

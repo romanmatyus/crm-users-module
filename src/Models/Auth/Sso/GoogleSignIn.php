@@ -133,6 +133,7 @@ class GoogleSignIn
                  'googleUserEmail' => $userEmail,
                  'googleUserId' => $googleUserId,
                  'gsiAccessToken' => $gsiAccessToken,
+                 'locale' => $locale,
              ]);
         }
 
@@ -332,6 +333,7 @@ class GoogleSignIn
                  'googleUserEmail' => $userEmail,
                  'googleUserId' => $googleUserId,
                  'gsiAccessToken' => $client->getAccessToken()['access_token'],
+                 'locale' => $locale,
              ]);
         }
 

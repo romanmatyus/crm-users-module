@@ -3,14 +3,13 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\Sso\AppleSignIn;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Database\Table\ActiveRow;
-use Nette\Http\Response;
+use Nette\Http\IResponse;
+use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
@@ -39,32 +38,22 @@ class AppleTokenSignInHandler extends ApiHandler
     public function params(): array
     {
         return [
-            new InputParam(InputParam::TYPE_POST, 'id_token', InputParam::REQUIRED),
-            new InputParam(InputParam::TYPE_POST, 'create_access_token', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
+            (new PostInputParam('id_token'))->setRequired(),
+            new PostInputParam('create_access_token'),
+            new PostInputParam('device_token'),
+            new PostInputParam('locale'),
         ];
     }
 
     public function handle(array $params): ResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-        $error = $paramsProcessor->hasError();
-        if ($error) {
-            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
-                'status' => 'error',
-                'code' => 'invalid_id_token',
-                'message' => 'Wrong input - ' . $error
-            ]);
-            return $response;
-        }
-        $params = $paramsProcessor->getValues();
         $idToken = $params['id_token'];
         $createAccessToken = filter_var($params['create_access_token'], FILTER_VALIDATE_BOOLEAN) ?? false;
 
         $deviceToken = null;
         if (!empty($params['device_token'])) {
             if (!$createAccessToken) {
-                $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
+                $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
                     'status' => 'error',
                     'code' => 'no_access_token_to_pair_device_token',
                     'message' => 'There is no access token to pair with device token. Set parameter "create_access_token=true" in your request payload.'
@@ -74,7 +63,7 @@ class AppleTokenSignInHandler extends ApiHandler
 
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
             if (!$deviceToken) {
-                $response = new JsonApiResponse(Response::S404_NOT_FOUND, [
+                $response = new JsonApiResponse(IResponse::S404_NOT_FOUND, [
                     'status' => 'error',
                     'message' => 'Device token doesn\'t exist',
                     'code' => 'device_token_doesnt_exist'
@@ -83,10 +72,10 @@ class AppleTokenSignInHandler extends ApiHandler
             }
         }
 
-        $user = $this->appleSignIn->signInUsingIdToken($idToken);
+        $user = $this->appleSignIn->signInUsingIdToken($idToken, $params['locale'] ?? null);
 
         if (!$user) {
-            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, [
+            $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'code' => 'error_verifying_id_token',
                 'message' => 'Unable to verify ID token',
@@ -103,7 +92,7 @@ class AppleTokenSignInHandler extends ApiHandler
         }
 
         $result = $this->formatResponse($user, $accessToken);
-        $response = new JsonApiResponse(Response::S200_OK, $result);
+        $response = new JsonApiResponse(IResponse::S200_OK, $result);
         return $response;
     }
 
