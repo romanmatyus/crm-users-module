@@ -75,7 +75,7 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
         return $this->authorizator->getAuthorizedData();
     }
 
-    public function getAuthorizedUsers()
+    public function getAuthorizedUsers(): array
     {
         if (is_null($this->authorizator)) {
             throw new \Exception('Authorize token first - use `authorized` method.');
@@ -83,10 +83,13 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
         return $this->authorizator->getAuthorizedUsers();
     }
 
-    public function getAccessTokens()
+    public function getAccessTokens(): array
     {
         if (is_null($this->authorizator)) {
             throw new \Exception('Authorize token first - use `authorized` method.');
+        }
+        if (!$this->authorizator instanceof AccessTokensApiAuthorizationInterface) {
+            return [];
         }
         return $this->authorizator->getAccessTokens();
     }
