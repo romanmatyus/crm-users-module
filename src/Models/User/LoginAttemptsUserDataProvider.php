@@ -19,9 +19,9 @@ class LoginAttemptsUserDataProvider implements UserDataProviderInterface
         return 'login_attempts';
     }
 
-    public function data($userId)
+    public function data($userId): ?array
     {
-        return [];
+        return null;
     }
 
     public function download($userId)

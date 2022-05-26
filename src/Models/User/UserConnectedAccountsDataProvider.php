@@ -25,9 +25,9 @@ class UserConnectedAccountsDataProvider implements UserDataProviderInterface
         return 'user_connected_accounts';
     }
 
-    public function data($userId)
+    public function data($userId): ?array
     {
-        return [];
+        return null;
     }
 
     public function download($userId)

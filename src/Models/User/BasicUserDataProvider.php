@@ -21,7 +21,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
         return 'basic';
     }
 
-    public function data($userId)
+    public function data($userId): ?array
     {
         $user = $this->usersRepository->find($userId);
 
