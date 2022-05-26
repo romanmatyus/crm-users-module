@@ -19,7 +19,7 @@ class UserMetaUserDataProvider implements UserDataProviderInterface
         return 'user_meta';
     }
 
-    public function data($userId)
+    public function data($userId): ?array
     {
         $result = [];
         foreach ($this->userMetaRepository->userMetaRows($userId)->where(['is_public' => true]) as $row) {

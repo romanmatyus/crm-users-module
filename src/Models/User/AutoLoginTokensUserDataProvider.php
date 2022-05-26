@@ -19,9 +19,9 @@ class AutoLoginTokensUserDataProvider implements UserDataProviderInterface
         return 'autologin_tokens';
     }
 
-    public function data($userId)
+    public function data($userId): ?array
     {
-        return [];
+        return null;
     }
 
     public function download($userId)
