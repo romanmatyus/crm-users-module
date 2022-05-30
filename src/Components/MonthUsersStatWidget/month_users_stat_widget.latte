@@ -1,2 +1,2 @@
-{_dashboard.users.new.title} <i class="fa fa-question-circle" data-toggle="tooltip" data-original-title="{_dashboard.users.new.tooltip, ['start' =>  date('d.m.Y H:i:s', strtotime('first day of this month 00:00')), 'end' => date('d.m.Y H:i:s')]}."></i>
+{_'dashboard.users.new.title'} <i class="fa fa-question-circle" data-toggle="tooltip" data-original-title="{_'dashboard.users.new.tooltip', ['start' =>  date('d.m.Y H:i:s', strtotime('first day of this month 00:00')), 'end' => date('d.m.Y H:i:s')]}."></i>
 {$thisMonthUsers|diff:$lastMonthUsers|noescape}
