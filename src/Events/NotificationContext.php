@@ -6,6 +6,7 @@ class NotificationContext
 {
     // common context value keys provided as constants
     const HERMES_MESSAGE_TYPE = 'hermes_message_type';
+    const BEFORE_EVENT = 'before_event';
 
     private $context;
 
