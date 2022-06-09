@@ -87,7 +87,8 @@ class UserFormFactory
             ->setHtmlType('email')
             ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.email.placeholder'));
         $password = $form->addPassword('password', $this->translator->translate('users.admin.user_form.password.label'))
-            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.password.placeholder'));
+            ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.password.placeholder'))
+            ->setHtmlAttribute('autocomplete', 'new-password');
         if (!$userId) {
             $password->setRequired($this->translator->translate('users.admin.user_form.password.required'));
         } else {
