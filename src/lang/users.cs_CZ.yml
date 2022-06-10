@@ -250,6 +250,7 @@ admin:
         company_tax_id: DIČ
         company_vat_id: IČDPH
         address: Adresa
+        locale: Jazyk
 
     edit:
         title: Úprava uživatele
@@ -287,6 +288,8 @@ admin:
             label: 'Zdroj'
             required: Zdroj je povinen
         personal_information: Osobní informace
+        locale:
+            label: 'Jazyk:'
         first_name:
             label: 'Jméno:'
             placeholder: křestní jméno

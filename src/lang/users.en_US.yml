@@ -250,6 +250,7 @@ admin:
         company_tax_id: Tax ID
         company_vat_id: VAT ID
         address: Address
+        locale: Display language
 
     edit:
         title: Edit user
@@ -287,6 +288,8 @@ admin:
             label: 'Source'
             required: Source is required
         personal_information: Personal information
+        locale:
+            label: 'Display language:'
         first_name:
             label: 'First name:'
             placeholder: first name
