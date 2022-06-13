@@ -61,7 +61,9 @@ class DashboardPresenter extends AdminPresenter
         $control = $factory->create();
         $control->setGraphTitle($this->translator->translate('dashboard.users.registration.title'))
             ->setGraphHelp($this->translator->translate('dashboard.users.registration.tooltip'))
-            ->addGraphDataItem($graphDataItem);
+            ->addGraphDataItem($graphDataItem)
+            ->setFrom($this->dateFrom)
+            ->setTo($this->dateTo);
 
         return $control;
     }
@@ -81,7 +83,9 @@ class DashboardPresenter extends AdminPresenter
         $control = $factory->create();
         $control->setGraphTitle($this->translator->translate('dashboard.users.disabled.title'))
             ->setGraphHelp($this->translator->translate('dashboard.users.disabled.tooltip'))
-            ->addGraphDataItem($graphDataItem);
+            ->addGraphDataItem($graphDataItem)
+            ->setFrom($this->dateFrom)
+            ->setTo($this->dateTo);
 
         return $control;
     }
@@ -102,7 +106,9 @@ class DashboardPresenter extends AdminPresenter
         $control = $factory->create()
             ->setGraphTitle($this->translator->translate('dashboard.logins.total.title'))
             ->setGraphHelp($this->translator->translate('dashboard.logins.total.tooltip'))
-            ->addGraphDataItem($graphDataItem);
+            ->addGraphDataItem($graphDataItem)
+            ->setFrom($this->dateFrom)
+            ->setTo($this->dateTo);
 
         return $control;
     }
