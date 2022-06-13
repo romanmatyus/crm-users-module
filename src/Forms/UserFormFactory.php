@@ -110,7 +110,7 @@ class UserFormFactory
             'locale',
             $this->translator->translate('users.admin.user_form.locale.label'),
             $localeOptions
-        );
+        )->setDefaultValue($this->translator->getLocale());
         $form->addText('first_name', $this->translator->translate('users.admin.user_form.first_name.label'))
             ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.first_name.placeholder'));
         $form->addText('last_name', $this->translator->translate('users.admin.user_form.last_name.label'))
