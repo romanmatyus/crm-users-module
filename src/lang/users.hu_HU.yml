@@ -251,6 +251,7 @@ admin:
         company_tax_id: Adó azonosító
         company_vat_id: Áfa azonosító
         address: Cím
+        locale: Nyelv
 
     edit:
         back_to_detail: Vissza a részletekhez
@@ -287,6 +288,8 @@ admin:
             label: 'Forrás'
             required: Forrás kötelező
         personal_information: Személyes információk
+        locale:
+            label: 'Nyelv:'
         first_name:
             label: 'Keresztnév:'
             placeholder: keresztnév

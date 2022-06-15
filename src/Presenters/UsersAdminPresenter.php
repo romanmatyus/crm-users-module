@@ -135,6 +135,7 @@ class UsersAdminPresenter extends AdminPresenter
             throw new Nette\Application\BadRequestException();
         }
         $this->template->user = $user;
+        $this->template->translator = $this->translator;
         $this->template->invoiceAddress = $this->addressesRepository->address($user, 'invoice');
         $this->template->printAddresses = array_filter($this->addressesRepository->addresses($user), function ($item) {
             return $item->type != 'invoice';

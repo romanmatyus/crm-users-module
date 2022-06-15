@@ -11,6 +11,7 @@ use Crm\UsersModule\Repository\ChangePasswordsLogsRepository;
 use Crm\UsersModule\Repository\UserAlreadyExistsException;
 use Crm\UsersModule\Repository\UsersRepository;
 use League\Event\Emitter;
+use Locale;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Localization\Translator;
@@ -101,6 +102,15 @@ class UserFormFactory
 
         $form->addGroup($this->translator->translate('users.admin.user_form.personal_information'));
 
+        $localeOptions = [];
+        foreach ($this->translator->getAvailableLocales() as $locale) {
+            $localeOptions[$locale] = Locale::getDisplayLanguage($locale, $this->translator->getLocale());
+        }
+        $form->addSelect(
+            'locale',
+            $this->translator->translate('users.admin.user_form.locale.label'),
+            $localeOptions
+        )->setDefaultValue($this->translator->getLocale());
         $form->addText('first_name', $this->translator->translate('users.admin.user_form.first_name.label'))
             ->setHtmlAttribute('placeholder', $this->translator->translate('users.admin.user_form.first_name.placeholder'));
         $form->addText('last_name', $this->translator->translate('users.admin.user_form.last_name.label'))
