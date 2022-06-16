@@ -47,24 +47,24 @@ frontend:
         submit_with_devices_logout: Ändere Passwort und melde mich auf allen angemeldeten Geräten ab
         actual_password:
             label: 'Aktuelles Passwort:'
-            required: Bitte geben Sie Ihr aktuelles Passwort an.
+            required: Bitte geben Sie Ihr aktuelles Passwort an
             placeholder: Aktuelles Passwort
             description: "Wenn Sie Ihr aktuelles Passwort nicht kennen, dann <a href=\"%url%\" class=\"link\">klicken Sie bitte hier</a> um sich ein neues, temporäres Passwort per E-Mail zuzuschicken."
             confirm: "Wollen Sie Ihr Passwort wirklich zurücksetzen?"
         new_password:
             label: 'Neues Passwort:'
-            required: Bitte geben Sie ein neues Passwort an.
+            required: Bitte geben Sie ein neues Passwort an
             placeholder: Neues Passwort
-            minlength: Das Passwort muss mindestens %d Zeichen lang sein.
+            minlength: Das Passwort muss mindestens %d Zeichen lang sein
         new_password_confirm:
             label: 'Neues Passwort wiederholen:'
-            required: Bitte geben Sie Ihre neues Passwort erneut an.
+            required: Bitte geben Sie Ihre neues Passwort erneut an
             placeholder: Neues Passwort wiederholen
-            description: Bitte geben Sie Ihr neues Passwort zur Überprüfung erneut an.
-            not_matching: "Passwörter stimmen nicht überein."
+            description: Bitte geben Sie Ihr neues Passwort zur Überprüfung erneut an
+            not_matching: "Passwörter stimmen nicht überein"
         errors:
             could_not_authenticate: "Wir konnten Ihre Anmeldedaten nicht überprüfen."
-            invalid_credentials: Falsches Passwort
+            invalid_credentials: Falsches Passwort.
         success: Passwort wurde erfolgreich geändert.
         success_with_logout: "Das Passwort wurde erfolgreich geändert, Sie wurden von allen Geräten abgemeldet."
         reset_success: 'Das Passwort wurde erfolgreich geändert und an %email% geschickt.'
@@ -111,8 +111,8 @@ frontend:
         title: Probleme beim Anmelden
         info: "Wenn Sie sich nicht mehr an Ihr Passwort erinnern, senden wir Ihnen an Ihre E-Mail-Adresse einen Link, um das Passwort zurückzusetzen."
         login:
-            text: "Wenn Sie Ihr Passwort kennen,"
-            link: "melden Sie sich hier an."
+            text: "Wenn Sie Ihr Passwort kennen, "
+            link: "melden Sie sich hier an"
         email:
             label: 'Ihre E-Mail:'
             required: Bitte geben Sie Ihre E-Mail-Adresse an, mit der Sie sich registriert haben
@@ -130,15 +130,15 @@ frontend:
             invalid_password_reset_token: Der Link zum Zurücksetzen des Passworts ist abgelaufen. Bitte fordern Sie einen neuen Link an.
         new_password:
             label: 'Neues Passwort:'
-            required: Bitte geben Sie Ihr neues Passwort an.
+            required: Bitte geben Sie Ihr neues Passwort an
             placeholder: Neues Passwort
-            min_length: Das Passwort muss mindestens %d Zeichen lang sein.
+            min_length: Das Passwort muss mindestens %d Zeichen lang sein
         new_password_confirm:
             label: 'Neues Passwort wiederholen:'
-            required: Bitte geben Sie Ihre neues Passwort erneut an.
-            not_matching: "Passwörter stimmen nicht überein."
+            required: Bitte geben Sie Ihre neues Passwort erneut an
+            not_matching: "Passwörter stimmen nicht überein"
             placeholder: Neues Passwort wiederholen
-            description:  Bitte geben Sie Ihr neues Passwort zur Überprüfung erneut an.
+            description: Bitte geben Sie Ihr neues Passwort zur Überprüfung erneut an
         submit: Passwort ändern
         could_not_set: Das neue Passwort konnte nicht geändert werden
         success: Ihr Passwort wurde erfolgreich geändert.
@@ -163,7 +163,7 @@ frontend:
             info: 'Um Ihr Konto permanent zu löschen, geben Sie Ihr Passwort an und betätigen Sie "Konto löschen". <strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong>.'
             password:
                 label: 'Passwort:'
-                required: Geben Sie Ihr Passwort an.
+                required: Geben Sie Ihr Passwort an
             submit: Konto löschen
             invalid_password: Falsches Passwort
             cannot_delete: Ihr Konto kann nicht automatisch gelöscht werden. Bitte nehmen Sie Kontakt mit dem Nutzer-Support auf.
@@ -209,7 +209,7 @@ admin:
         invoice: Rechnung
         institution: Institution
         admin: Admin
-        no_results: 'Keine Datensätze gefunden. Bitte den Filter ändern.'
+        no_results: 'Keine Datensätze gefunden. Bitte den Filter ändern'
         export: Export
 
     show:
@@ -236,7 +236,7 @@ admin:
         source: Herkunft
         funnel: Registrierungs-Funnel
         referer: Registrierungs-Referer
-        no_print_address: Keine Lieferadresse
+        no_print_address: Keine Lieferadresse.
         invoice_address: Rechnungsadresse
         add_address: Adresse hinzufügen
         address_last_change: Letzte Änderung
@@ -282,7 +282,7 @@ admin:
             label: 'Passwort:'
             placeholder: Das Passwort muss mindestens 6 Zeichen lang sein
             required: Passwort ist erforderlich
-            description: "Eintrag leer lassen, wenn das Passwort nicht geändert werden soll."
+            description: "Eintrag leer lassen, wenn das Passwort nicht geändert werden soll"
         source:
             label: 'Herkunft'
             required: Herkunft ist erforderlich
@@ -302,7 +302,7 @@ admin:
         institution_name:
             label: 'Name der Institution:'
             placeholder: z.B. Stadtbibliothek von Berlin
-            required: 'Wenn Institution ausgewählt ist, muss der der Name der Institution angegeben werden'
+            required: 'Wenn Institution ausgewählt ist, muss der Name der Institution angegeben werden'
         other: Andere
         external_id:
             label: 'Externe ID:'
@@ -353,7 +353,7 @@ admin:
     confirm:
         button: Bestätigen
         confirm: Nutzer wirklich bestätigen?
-        success: Der Nutzer wurde bestätigt.
+        success: Der Nutzer wurde bestätigt
 
     user_note_form:
         note_updated: Notiz wurde geändert
@@ -475,7 +475,7 @@ admin:
         submit: Speichern
 
     abusive:
-        title: Nutzer mit einer Vielzahl aktiver Geräte.
+        title: Nutzer mit einer Vielzahl aktiver Geräte
         subtitle: Die Tabelle zeigt die Anzahl der Unique-Tokens, die während der Anmeldung im gewählten Zeitraum erzeugt wurden.
         date_from: Von-Zeit
         date_to: Bis-Zeit
@@ -507,7 +507,7 @@ authenticator:
 
 user_source_accesses_component:
     title: Letzte Zugriffe
-    no_data: Keine Daten aufgezeichnet.
+    no_data: Keine Daten aufgezeichnet
 
 detail_widget_component:
     other: Andere
@@ -516,8 +516,8 @@ month_users_small_bar_graph_widget:
     title: Nutzer
 
 deletion_note:
-    user_deleted_account: 'Nutzer hat sich gelöscht.'
-    admin_deleted_account: 'Nutzer wurde vom Admin gelöscht.'
+    user_deleted_account: 'Nutzer hat sich gelöscht'
+    admin_deleted_account: 'Nutzer wurde vom Admin gelöscht'
 
 api:
     users_login_handler:
@@ -530,9 +530,9 @@ form:
             prompt: Gruppe auswählen
         send: Hinzufügen
         error:
-            insufficient_rights: Fehlende Rechte um die Gruppe zu bearbeiten.
-            no_group: "Ausgewählte Gruppe existiert nicht."
-            no_user: "Ausgewählter Nutzer existiert nicht."
+            insufficient_rights: Fehlende Rechte um die Gruppe zu bearbeiten
+            no_group: "Ausgewählte Gruppe existiert nicht"
+            no_user: "Ausgewählter Nutzer existiert nicht"
     user_group:
         group_id:
             prompt: Gruppe auswählen
@@ -599,7 +599,7 @@ component:
         delete_all: Alle löschen
         delete_single: Lösche Token
         token_deleted: Token wurde gelöscht
-        all_tokens_deleted: Alle Access-Tokens wurden gelöscht.
+        all_tokens_deleted: Alle Access-Tokens wurden gelöscht
 
     autologin_tokens:
         created: Angelegt am
