@@ -591,5 +591,5 @@ model:
         error:
             email_taken: 'Az alábbi e-mail címet már regisztráltuk: %email%'
             email_missing: Nincs megadva e-mail cím
-            password_short: A jelszónak legalább  %length% karaktert kell tartalmaznia
+            password_short: A jelszónak legalább %length% karaktert kell tartalmaznia
             public_name_missing: Nincs megadva publikus név
