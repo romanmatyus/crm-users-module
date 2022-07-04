@@ -43,6 +43,7 @@ services:
 	userEmailConfirmationsRepository: Crm\UsersModule\Repository\UserEmailConfirmationsRepository
 	adminUserGroupsRepository: Crm\UsersModule\Auth\Repository\AdminUserGroupsRepository
 	userConnectedAccountsRepository: Crm\UsersModule\Repository\UserConnectedAccountsRepository
+	userStatsRepository: Crm\UsersModule\Repository\UserStatsRepository
 
 	# Authentication
 	- Crm\UsersModule\Authenticator\AutoLoginAuthenticator
