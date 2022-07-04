@@ -13,7 +13,7 @@ class CreateUserStatsTable extends AbstractMigration
             ->addColumn('created_at', 'datetime', ['null' => false])
             ->addColumn('updated_at', 'datetime', ['null' => false])
             ->addForeignKey('user_id', 'users', 'id')
-            ->addIndex(['key, value'], ['unique' => true])
+            ->addIndex(['key', 'value'], ['unique' => true])
             ->create();
     }
 }
