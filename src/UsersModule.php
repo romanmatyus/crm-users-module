@@ -33,6 +33,7 @@ use Crm\UsersModule\Scenarios\LocaleCriteria;
 use Crm\UsersModule\Scenarios\UserHasAddressCriteria;
 use Crm\UsersModule\Scenarios\UserSourceCriteria;
 use Crm\UsersModule\Seeders\ConfigsSeeder;
+use Crm\UsersModule\Seeders\MeasurementsSeeder;
 use Crm\UsersModule\Seeders\SegmentsSeeder;
 use Crm\UsersModule\Seeders\SnippetsSeeder;
 use Crm\UsersModule\Seeders\UsersSeeder;
@@ -453,6 +454,7 @@ class UsersModule extends CrmModule
         $seederManager->addSeeder($this->getInstance(UsersSeeder::class));
         $seederManager->addSeeder($this->getInstance(SegmentsSeeder::class));
         $seederManager->addSeeder($this->getInstance(SnippetsSeeder::class));
+        $seederManager->addSeeder($this->getInstance(MeasurementsSeeder::class));
     }
 
     public function registerCleanupFunction(CallbackManagerInterface $cleanUpManager)
