@@ -4,7 +4,6 @@ namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
 use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\Selection;
 use Nette\Utils\DateTime;
 
 class UserStatsRepository extends Repository
@@ -35,11 +34,14 @@ class UserStatsRepository extends Repository
         }
     }
 
-    final public function userStats($user): Selection
+    final public function userStats($user): array
     {
         if ($user instanceof ActiveRow) {
             $user = $user->id;
         }
-        return $this->getTable()->where(['user_id' => $user])->order('key ASC');
+        return $this->getTable()
+            ->where(['user_id' => $user])
+            ->order('key ASC')
+            ->fetchPairs('key', 'value');
     }
 }
