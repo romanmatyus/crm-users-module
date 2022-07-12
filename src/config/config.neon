@@ -120,6 +120,7 @@ services:
 	- Crm\UsersModule\Components\MonthUsersSmallBarGraphWidget
 	- Crm\UsersModule\Components\SsoWidget
 	- Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface
+	- Crm\UsersModule\DataProvider\UniversalSearchDataProvider
 	- Crm\UsersModule\DataProvider\UsersClaimUserDataProvider
 	- Crm\UsersModule\Events\UserLastAccessHandler
 	- Crm\UsersModule\Events\SignEventHandler

@@ -641,3 +641,7 @@ model:
             email_taken: E-Mail %email% ist bereits in Verwendung
             password_short: Passwort muss mindestens %length% Zeichen lang sein
             public_name_missing: Angezeigter Name fehlt
+
+data_provider:
+    universal_search:
+        user_group: Nutzer

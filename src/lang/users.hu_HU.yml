@@ -593,3 +593,7 @@ model:
             email_missing: Nincs megadva e-mail cím
             password_short: A jelszónak legalább %length% karaktert kell tartalmaznia
             public_name_missing: Nincs megadva publikus név
+
+data_provider:
+    universal_search:
+        user_group: Felhasználók
