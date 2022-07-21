@@ -162,7 +162,7 @@ class UsersPresenter extends FrontendPresenter
         $form = $this->resetPasswordFormFactory->create($token);
         $this->resetPasswordFormFactory->onSuccess = function () {
             $this->flashMessage($this->translator->translate('users.frontend.reset_password.success'));
-            $this->redirect(':Users:Sign:In');
+            $this->redirect(':Users:Sign:In', ['url' => $this->link($this->homeRoute)]);
         };
         return $form;
     }
