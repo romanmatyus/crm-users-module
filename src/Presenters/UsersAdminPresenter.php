@@ -121,6 +121,7 @@ class UsersAdminPresenter extends AdminPresenter
         $pnp->setActualItemCount(count($users));
 
         $this->template->users = $users;
+        $this->template->backLink = $this->storeRequest();
     }
 
     /**
@@ -369,7 +370,7 @@ class UsersAdminPresenter extends AdminPresenter
     /**
      * @admin-access-level write
      */
-    public function handleChangeActivation($userId)
+    public function handleChangeActivation($userId, $backLink = null)
     {
         $user = $this->usersRepository->find($userId);
         if (!$user) {
@@ -379,13 +380,16 @@ class UsersAdminPresenter extends AdminPresenter
         $this->usersRepository->toggleActivation($user);
 
         $this->flashMessage($this->translator->translate('users.admin.change_activation.activated'));
+        if ($backLink) {
+            $this->restoreRequest($backLink);
+        }
         $this->redirect('UsersAdmin:Show', $user->id);
     }
 
     /**
      * @admin-access-level write
      */
-    public function handleDeleteUser($id)
+    public function handleDeleteUser($id, $backLink = null)
     {
         $user = $this->usersRepository->find($id);
         if (!$user) {
@@ -401,6 +405,10 @@ class UsersAdminPresenter extends AdminPresenter
             $this->flashMessage($this->translator->translate('users.admin.delete_user.deleted'));
         } else {
             $this->flashMessage("<br/>" . implode("<br/>", $errors), 'error');
+        }
+
+        if ($backLink) {
+            $this->restoreRequest($backLink);
         }
         $this->redirect('UsersAdmin:Show', $user->id);
     }

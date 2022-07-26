@@ -182,7 +182,7 @@
     <div n:if="!$user->deleted_at" class="panel panel-default">
       <div class="panel-heading">{_users.admin.show.personal_info}</div>
       <div class="panel-body">
-        <a n:href="deleteUser! $user->id" class="btn btn-warning" onclick="return confirm({_users.admin.show.anonymize_alert})"><i class="fa fa-trash"></i> {_users.admin.show.anonymize}</a>
+        <a n:href="deleteUser! $user->id" class="btn btn-warning" onclick="return confirm({_users.admin.show.anonymize_alert, ['email' => $user->email]})"><i class="fa fa-trash"></i> {_users.admin.show.anonymize}</a>
       </div>
     </div>
   </div>

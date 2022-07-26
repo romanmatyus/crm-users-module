@@ -230,6 +230,7 @@ admin:
         modified_at: upravený
         active: Aktívny
         deactivate: Deaktivuj
+        deactivate_alert: "Naozaj chcete deaktivovať konto '%email%' ?"
         activate: Aktivuj
         external_id: Externé ID
         source: Zdroj
@@ -243,7 +244,7 @@ admin:
         last_login: Posledné prihlásenie
         no_login: Zatiaľ nebol prihlásený
         personal_info: Osobné údaje
-        anonymize_alert: "Anonymizácia používateľského konta je nezvratná akcia, po ktorej sa používateľ nebude môcť znovu prihlásiť a všetky osobné dáta budú zmazané. Naozaj pokračovať?"
+        anonymize_alert: "Anonymizácia používateľského konta '%email%' je nezvratná akcia, po ktorej sa používateľ nebude môcť znovu prihlásiť a všetky osobné dáta budú zmazané. Naozaj pokračovať?"
         anonymize: Anonymizácia používateľa
         company_id: IČO
         company_tax_id: DIČ

@@ -85,16 +85,20 @@
                 <small n:if="$u->current_sign_in_ip">/ {$u->current_sign_in_ip}</small>
               </span>
             </td>
-            <td>
-              <p class="text-nowrap">
-                <a n:href="show $u->id" class="btn btn-sm btn-info" title="{_users.admin.actions.show}"><i class="fa fa-eye"></i> </a>
-                <a n:href="edit $u->id" class="btn btn-sm btn-primary" title="{_users.admin.actions.edit}"><i class="fa fa-edit"></i> </a>
-            	  {if $u->active}
-            	    <a n:href="ChangeActivation! $u->id" class="btn btn-sm btn-warning" title="{_users.admin.actions.deactivate}"><i class="fa fa-ban"></i> </a>
-            	  {else}
-            	    <a n:href="ChangeActivation! $u->id" class="btn btn-sm btn-success" title="{_users.admin.actions.activate}"><i class="fa fa-check-circle"></i> </a>
-            	  {/if}
-            	</p>
+            <td style="min-width: 120px;">
+              <div class="btn-group btn-group dropup">
+                <a n:href="show $u->id" class="btn btn-sm btn-info" role="button" title="{_users.admin.actions.show}"><i class="fa fa-eye"></i> </a>
+                <a n:href="edit $u->id" class="btn btn-sm btn-primary" role="button" title="{_users.admin.actions.edit}"><i class="fa fa-edit"></i> </a>
+                {if $u->active}
+                  <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ban"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a n:href="changeActivation! userId => $u->id, backLink => $backLink" onclick="return confirm({_users.admin.show.deactivate_alert, ['email' => $u->email]})" title="{_users.admin.actions.deactivate}"><i class="fa fa-ban"></i> {_users.admin.actions.deactivate}</a></li>
+                    <li><a n:href="deleteUser! $u->id, backLink => $backLink" onclick="return confirm({_users.admin.show.anonymize_alert, ['email' => $u->email]})"><i class="fa fa-trash"></i> {_users.admin.show.anonymize}</a></li>
+                  </ul>
+                {else}
+                  <a n:href="ChangeActivation! userId => $u->id, backLink => $backLink" class="btn btn-sm btn-success" role="button" title="{_users.admin.actions.activate}"><i class="fa fa-check-circle"></i> </a>
+                {/if}
+                </div>
             </td>
           </tr>
         </tbody>
