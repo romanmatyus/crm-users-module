@@ -195,7 +195,6 @@ admin:
 
     default:
         title: Users
-        total: Total
         filtered: filtered
         new_user: New user
         email: Email
