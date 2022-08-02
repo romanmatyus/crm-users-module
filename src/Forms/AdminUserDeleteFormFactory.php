@@ -3,7 +3,6 @@
 namespace Crm\UsersModule\Forms;
 
 use Crm\ApplicationModule\User\DeleteUserData;
-use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\UsersModule\Repository\UserActionsLogRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Application\UI\Form;
@@ -22,8 +21,6 @@ class AdminUserDeleteFormFactory
 
     private UserActionsLogRepository $userActionsLogRepository;
 
-    private UserDataRegistrator $userDataRegistrator;
-
     private UsersRepository $usersRepository;
 
     private User $adminUser;
@@ -39,14 +36,12 @@ class AdminUserDeleteFormFactory
     public function __construct(
         DeleteUserData $deleteUserData,
         UserActionsLogRepository $userActionsLogRepository,
-        UserDataRegistrator $userDataRegistrator,
         UsersRepository $usersRepository,
         User $adminUser,
         Translator $translator
     ) {
         $this->deleteUserData = $deleteUserData;
         $this->userActionsLogRepository = $userActionsLogRepository;
-        $this->userDataRegistrator = $userDataRegistrator;
         $this->usersRepository = $usersRepository;
         $this->adminUser = $adminUser;
         $this->translator = $translator;
@@ -121,9 +116,7 @@ class AdminUserDeleteFormFactory
             $this->userActionsLogRepository->add($user->id, self::USER_ACTIONS_LOG_ACTION, ['reason' => $reason, 'admin_id' => $this->adminUser->getIdentity()->id]);
         }
 
-        // TODO: maybe switch this to DeleteUserData->deleteData() (and add flag $force) into deleteData()
-        $this->userDataRegistrator->protect($user->id);
-        $this->userDataRegistrator->delete($user->id);
+        $this->deleteUserData->deleteData($user->id, true);
 
         $user = $this->usersRepository->find($user->id);
         $this->usersRepository->update($user, ['note' => $this->translator->translate('users.deletion_note.admin_deleted_account')]);
