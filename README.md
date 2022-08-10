@@ -265,7 +265,7 @@ the error further.
 
 #### GET `/api/v1/user/info`
 
-API call returns basic user information based on provided user token.
+API call returns basic user information and meta information, based on provided user token.
 
 ##### *Headers:*
 
@@ -293,6 +293,9 @@ Response:
         "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
         "first_name": "Test",
         "last_name": "Admin"
+    },
+    "user_meta": {
+        "newsletter_subscribed": "1"
     }
 }
 ```

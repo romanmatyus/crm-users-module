@@ -35,7 +35,13 @@ class UserInfoHandler extends ApiHandler
                 'last_name' => $user->last_name,
                 'confirmed_at' => $user->confirmed_at ? $user->confirmed_at->format(DATE_RFC3339) : null,
             ],
+            'user_meta' => new \stdClass(),
         ];
+
+        $userMetaData = $user->related('user_meta')->where('is_public', 1);
+        foreach ($userMetaData as $userMeta) {
+            $result['user_meta']->{$userMeta->key} = $userMeta->value;
+        }
 
         // additional custom data added by authorizators for other sources
         if (isset($data['token']->authSource) && !empty($data['token']->authSource) && is_string($data['token']->authSource)) {
