@@ -54,6 +54,11 @@ class NotificationEvent extends AbstractEvent
      */
     private $scheduleAt;
 
+    /**
+     * Locale to use in notification.
+     */
+    private ?string $locale;
+
     public function __construct(
         Emitter $emitter,
         ?ActiveRow $user,
@@ -62,7 +67,8 @@ class NotificationEvent extends AbstractEvent
         string $context = null,
         array $attachments = [],
         \DateTime $scheduleAt = null,
-        NotificationContext $notificationContext = null
+        NotificationContext $notificationContext = null,
+        ?string $locale = null
     ) {
         $this->user         = $user;
         $this->templateCode = $templateCode;
@@ -70,6 +76,7 @@ class NotificationEvent extends AbstractEvent
         $this->context      = $context;
         $this->attachments  = $attachments;
         $this->scheduleAt   = $scheduleAt;
+        $this->locale       = $locale;
         // Let modules modify NotificationEvent parameters
         $emitter->emit(new PreNotificationEvent($this, $notificationContext));
     }
@@ -104,6 +111,11 @@ class NotificationEvent extends AbstractEvent
         return $this->scheduleAt;
     }
 
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
     public function setUser(?ActiveRow $user): void
     {
         $this->user = $user;
@@ -132,5 +144,10 @@ class NotificationEvent extends AbstractEvent
     public function setScheduleAt(\DateTime $scheduleAt): void
     {
         $this->scheduleAt = $scheduleAt;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 }
