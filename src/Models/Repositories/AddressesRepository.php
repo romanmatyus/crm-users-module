@@ -43,6 +43,10 @@ class AddressesRepository extends Repository
         ?string $companyTaxId = null,
         ?string $companyVatId = null
     ) {
+        $companyId = $companyId ? preg_replace('/\s+/', '', $companyId) : null;
+        $companyTaxId = $companyTaxId ? preg_replace('/\s+/', '', $companyTaxId) : null;
+        $companyVatId = $companyVatId ? preg_replace('/\s+/', '', $companyVatId) : null;
+
         return $this->insert([
             'user_id' => $user->id,
             'type' => $type,
@@ -55,9 +59,9 @@ class AddressesRepository extends Repository
             'phone_number' => $phoneNumber,
             'country_id' => $countryId,
             'company_name' => $companyName,
-            'company_id' => str_replace(' ', '', $companyId),
-            'company_tax_id' => str_replace(' ', '', $companyTaxId),
-            'company_vat_id' => str_replace(' ', '', $companyVatId),
+            'company_id' => $companyId,
+            'company_tax_id' => $companyTaxId,
+            'company_vat_id' => $companyVatId,
             'created_at' => new DateTime(),
             'updated_at' => new DateTime(),
         ]);
@@ -101,6 +105,15 @@ class AddressesRepository extends Repository
     final public function update(ActiveRow &$row, $data)
     {
         $data['updated_at'] = new DateTime();
+        if (isset($data['company_id'])) {
+            $data['company_id'] = preg_replace('/\s+/', '', $data['company_id']);
+        }
+        if (isset($data['company_tax_id'])) {
+            $data['company_tax_id'] = preg_replace('/\s+/', '', $data['company_tax_id']);
+        }
+        if (isset($data['company_vat_id'])) {
+            $data['company_vat_id'] = preg_replace('/\s+/', '', $data['company_vat_id']);
+        }
         return parent::update($row, $data);
     }
 

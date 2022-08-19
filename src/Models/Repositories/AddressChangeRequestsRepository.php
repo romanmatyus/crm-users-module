@@ -92,6 +92,10 @@ class AddressChangeRequestsRepository extends Repository
             $type = $parentAddress->type;
         }
 
+        $companyId = $companyId ? preg_replace('/\s+/', '', $companyId) : null;
+        $companyTaxId = $companyTaxId ? preg_replace('/\s+/', '', $companyTaxId) : null;
+        $companyVatId = $companyVatId ? preg_replace('/\s+/', '', $companyVatId) : null;
+
         /** @var ActiveRow $changeRequest */
         $changeRequest = $this->insert([
             'type' => $type,
@@ -108,9 +112,9 @@ class AddressChangeRequestsRepository extends Repository
             'city' => $city,
             'zip' => $zip,
             'country_id' => $countryId,
-            'company_id' => str_replace(' ', '', $companyId),
-            'company_tax_id' => str_replace(' ', '', $companyTaxId),
-            'company_vat_id' => str_replace(' ', '', $companyVatId),
+            'company_id' => $companyId,
+            'company_tax_id' => $companyTaxId,
+            'company_vat_id' => $companyVatId,
             'phone_number' => $phoneNumber,
             'old_first_name' => $parentAddress ? $parentAddress->first_name : null,
             'old_last_name' => $parentAddress ? $parentAddress->last_name : null,
@@ -150,9 +154,9 @@ class AddressChangeRequestsRepository extends Repository
                 'city' => $addressChangeRequest['city'],
                 'zip' => $addressChangeRequest['zip'],
                 'country_id' => $addressChangeRequest['country_id'],
-                'company_id' => str_replace(' ', '', $addressChangeRequest['company_id']),
-                'company_tax_id' => str_replace(' ', '', $addressChangeRequest['company_tax_id']),
-                'company_vat_id' => str_replace(' ', '', $addressChangeRequest['company_vat_id']),
+                'company_id' => $addressChangeRequest['company_id'],
+                'company_tax_id' => $addressChangeRequest['company_tax_id'],
+                'company_vat_id' => $addressChangeRequest['company_vat_id'],
                 'updated_at' => new DateTime(),
             ]);
             $this->emitter->emit(new AddressChangedEvent($address, $asAdmin));
