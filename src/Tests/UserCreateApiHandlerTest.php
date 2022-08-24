@@ -238,9 +238,6 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $email = '0test2@user.site';
         $this->unclaimedUser->createUnclaimedUser($email);
 
-        /** @var AbstractListener $listenerNewUser */
-        $listenerNewUser = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
-        $this->emitter->addListener(NewUserEvent::class, $listenerNewUser);
         /** @var AbstractListener $listenerUserRegistered */
         $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
         $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
