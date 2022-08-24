@@ -3,8 +3,10 @@
 namespace Crm\UsersModule\User;
 
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
+use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Auth\Access\AccessTokenNotFoundException;
 use Crm\UsersModule\Auth\InvalidEmailException;
+use Crm\UsersModule\Auth\PasswordGenerator;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Events\UserClaimedEvent;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -13,8 +15,8 @@ use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Exception;
 use League\Event\Emitter;
-use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
+use Nette\Security\Passwords;
 use Nette\Utils\JsonException;
 use Ramsey\Uuid\Uuid;
 
@@ -40,7 +42,9 @@ class UnclaimedUser
 
     private $userData;
 
-    private Explorer $dbContext;
+    private Passwords $passwords;
+    private PasswordGenerator $passwordGenerator;
+    private AccessToken $accessToken;
 
     public function __construct(
         AccessTokensRepository $accessTokensRepository,
@@ -50,7 +54,9 @@ class UnclaimedUser
         UserMetaRepository $userMetaRepository,
         UsersRepository $usersRepository,
         UserData $userData,
-        Explorer $dbContext
+        Passwords $passwords,
+        PasswordGenerator $passwordGenerator,
+        AccessToken $accessToken
     ) {
         $this->userManager = $userManager;
         $this->userMetaRepository = $userMetaRepository;
@@ -59,7 +65,9 @@ class UnclaimedUser
         $this->emitter = $emitter;
         $this->usersRepository = $usersRepository;
         $this->userData = $userData;
-        $this->dbContext = $dbContext;
+        $this->passwords = $passwords;
+        $this->passwordGenerator = $passwordGenerator;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -167,29 +175,34 @@ class UnclaimedUser
         return $this->usersRepository->find($claimedUserId);
     }
 
+    /**
+     * Use only to register pre-registered users. Pre-registered user has valid email address.
+     */
     public function makeUnclaimedUserRegistered(
-        $unclaimedUser,
+        $user,
         $sendEmail = true,
-        $source = 'unknown',
+        $source = null,
         $referer = null,
-        $checkEmail = true,
-        $password = null,
-        $deviceToken = null,
-        $locale = null
+        $password = null
     ) {
-        $this->dbContext->beginTransaction();
-        try {
-            $email = $unclaimedUser->email;
-            $this->usersRepository->update($unclaimedUser, ['email' => $this->generateUnclaimedUserEmail()]);
 
-            $user = $this->userManager->addNewUser($email, $sendEmail, $source, $referer, $checkEmail, $password, true, [], true, $locale);
-            $this->claimUser($unclaimedUser, $user, $deviceToken);
-        } catch (Exception $exception) {
-            $this->dbContext->rollback();
-            throw $exception;
+        $this->userMetaRepository->removeMeta($user->id, self::META_KEY);
+
+        if ($password) {
+            $originalPassword = $password;
+        } else {
+            $originalPassword = $this->passwordGenerator->generatePassword();
         }
 
-        $this->dbContext->commit();
+        $this->usersRepository->update($user, [
+            'password' => $this->passwords->hash($originalPassword),
+            'referer' => $referer,
+            'source' => $source,
+        ]);
+
+        $this->accessToken->addUserToken($user, null, null, $source);
+
+        $this->usersRepository->emitUserRegisteredEvents($user, $originalPassword, $sendEmail);
 
         return $user;
     }

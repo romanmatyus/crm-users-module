@@ -3,10 +3,8 @@
 namespace Crm\UsersModule\Builder;
 
 use Crm\ApplicationModule\Builder\Builder;
-use Crm\ApplicationModule\Hermes\HermesMessage;
 use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Events\NewUserEvent;
-use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Kdyby\Translation\Translator;
@@ -17,8 +15,6 @@ use Nette\Security\Passwords;
 class UserBuilder extends Builder
 {
     private $emitter;
-
-    private $hermesEmitter;
 
     private $originalPassword;
 
@@ -34,6 +30,8 @@ class UserBuilder extends Builder
 
     private array $passwordLazyParams;
 
+    private UsersRepository $usersRepository;
+
     private UserMetaRepository $userMetaRepository;
 
     private Translator $translator;
@@ -43,19 +41,19 @@ class UserBuilder extends Builder
     public function __construct(
         Explorer $database,
         Emitter $emitter,
-        \Tomaj\Hermes\Emitter $hermesEmitter,
         AccessToken $accessToken,
+        UsersRepository $usersRepository,
         UserMetaRepository $userMetaRepository,
         Translator $translator,
         Passwords $passwords
     ) {
         parent::__construct($database);
         $this->emitter = $emitter;
-        $this->hermesEmitter = $hermesEmitter;
         $this->accessToken = $accessToken;
         $this->userMetaRepository = $userMetaRepository;
         $this->translator = $translator;
         $this->passwords = $passwords;
+        $this->usersRepository = $usersRepository;
     }
 
     public function isValid()
@@ -254,11 +252,7 @@ class UserBuilder extends Builder
         }
 
         if ($this->emitUserRegisteredEvent) {
-            $this->emitter->emit(new UserRegisteredEvent($user, $this->originalPassword, $this->sendEmail));
-            $this->hermesEmitter->emit(new HermesMessage('user-registered', [
-                'user_id' => $user->id,
-                'password' => $this->originalPassword
-            ]), HermesMessage::PRIORITY_HIGH);
+            $this->usersRepository->emitUserRegisteredEvents($user, $this->originalPassword, $this->sendEmail);
         }
 
         if ($this->getOption('add_user_token')) {

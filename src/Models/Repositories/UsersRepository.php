@@ -108,11 +108,7 @@ class UsersRepository extends Repository
 
         $this->emitter->emit(new NewUserEvent($row));
         if (!$preregistration) {
-            $this->emitter->emit(new UserRegisteredEvent($row, $password));
-            $this->hermesEmitter->emit(new HermesMessage('user-registered', [
-                'user_id' => $row->id,
-                'password' => $password
-            ]), HermesMessage::PRIORITY_HIGH);
+            $this->emitUserRegisteredEvents($row, $password);
         }
 
         return $row;
@@ -305,5 +301,14 @@ class UsersRepository extends Repository
         $this->update($user, [
             'email_validated_at' => null,
         ]);
+    }
+
+    final public function emitUserRegisteredEvents($user, $password, $sendEmail = false): void
+    {
+        $this->emitter->emit(new UserRegisteredEvent($user, $password, $sendEmail));
+        $this->hermesEmitter->emit(new HermesMessage('user-registered', [
+            'user_id' => $user->id,
+            'password' => $password
+        ]), HermesMessage::PRIORITY_HIGH);
     }
 }

@@ -150,7 +150,7 @@ class UsersCreateHandler extends ApiHandler
 
         try {
             if ($user) {
-                $user = $this->unclaimedUser->makeUnclaimedUserRegistered($user, $sendEmail, $source, $referer, $checkEmail, $password, $deviceToken, $locale);
+                $user = $this->unclaimedUser->makeUnclaimedUserRegistered($user, $sendEmail, $source, $referer, $password);
             } elseif ($unclaimed) {
                 $user = $this->unclaimedUser->createUnclaimedUser($email, $source, $locale);
             } else {
