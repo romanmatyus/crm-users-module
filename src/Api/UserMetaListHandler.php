@@ -56,7 +56,7 @@ class UserMetaListHandler extends ApiHandler
         }
         $userMetaRows = array_merge([], ...$userMetaRows);
         usort($userMetaRows, function ($a, $b) {
-            return $a['created_at'] < $b['created_at'];
+            return ($a['created_at'] <=> $b['created_at']) * -1;
         });
 
         $meta = array_map(function ($data) {

@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
+use Contributte\Translation\Translator;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Auth\Access\AccessToken;
@@ -12,7 +13,6 @@ use Crm\UsersModule\Repository\LoginAttemptsRepository;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
-use Kdyby\Translation\Translator;
 use Nette\Database\Table\ActiveRow;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Authenticator;

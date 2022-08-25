@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule;
 
+use Contributte\Translation\Translator;
 use Crm\ApiModule\Api\ApiRoutersContainerInterface;
 use Crm\ApiModule\Authorization\BearerTokenAuthorization;
 use Crm\ApiModule\Router\ApiIdentifier;
@@ -38,7 +39,6 @@ use Crm\UsersModule\Seeders\MeasurementsSeeder;
 use Crm\UsersModule\Seeders\SegmentsSeeder;
 use Crm\UsersModule\Seeders\SnippetsSeeder;
 use Crm\UsersModule\Seeders\UsersSeeder;
-use Kdyby\Translation\Translator;
 use League\Event\Emitter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;

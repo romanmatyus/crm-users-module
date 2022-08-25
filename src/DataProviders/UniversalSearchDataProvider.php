@@ -2,9 +2,9 @@
 
 namespace Crm\UsersModule\DataProvider;
 
+use Contributte\Translation\Translator;
 use Crm\AdminModule\Model\UniversalSearchDataProviderInterface;
 use Crm\UsersModule\Repository\UsersRepository;
-use Kdyby\Translation\Translator;
 use Nette\Application\LinkGenerator;
 
 class UniversalSearchDataProvider implements UniversalSearchDataProviderInterface

@@ -2,10 +2,10 @@
 
 namespace Crm\UsersModule\Scenarios;
 
+use Contributte\Translation\Translator;
 use Crm\ApplicationModule\Criteria\ScenarioParams\StringLabeledArrayParam;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
 use Crm\UsersModule\Repository\AddressTypesRepository;
-use Kdyby\Translation\Translator;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 

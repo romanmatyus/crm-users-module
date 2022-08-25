@@ -2,12 +2,12 @@
 
 namespace Crm\UsersModule\Builder;
 
+use Contributte\Translation\Translator;
 use Crm\ApplicationModule\Builder\Builder;
 use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Events\NewUserEvent;
 use Crm\UsersModule\Repository\UserMetaRepository;
 use Crm\UsersModule\Repository\UsersRepository;
-use Kdyby\Translation\Translator;
 use League\Event\Emitter;
 use Nette\Database\Explorer;
 use Nette\Security\Passwords;

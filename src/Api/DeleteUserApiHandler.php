@@ -2,11 +2,11 @@
 
 namespace Crm\UsersModule\Api;
 
+use Contributte\Translation\Translator;
 use Crm\ApiModule\Api\ApiHandler;
 use Crm\ApiModule\Api\EmptyResponse;
 use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\Auth\UsersApiAuthorizationInterface;
-use Kdyby\Translation\Translator;
 use Nette\Http\IResponse;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;

@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Repository;
 
+use Contributte\Translation\Translator;
 use Crm\ApplicationModule\Cache\CacheRepository;
 use Crm\ApplicationModule\Hermes\HermesMessage;
 use Crm\ApplicationModule\Repository;
@@ -10,7 +11,6 @@ use Crm\UsersModule\Events\NewUserEvent;
 use Crm\UsersModule\Events\UserDisabledEvent;
 use Crm\UsersModule\Events\UserRegisteredEvent;
 use Crm\UsersModule\Events\UserUpdatedEvent;
-use Kdyby\Translation\Translator;
 use League\Event\Emitter;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;

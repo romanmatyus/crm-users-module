@@ -2,12 +2,12 @@
 
 namespace Crm\UsersModule\Locale;
 
-use Kdyby\Translation\IUserLocaleResolver;
-use Kdyby\Translation\Translator;
+use Contributte\Translation\LocalesResolvers\ResolverInterface;
+use Contributte\Translation\Translator;
 use Nette\Security\IUserStorage;
 use Nette\Security\SimpleIdentity;
 
-class UserDataLocaleResolver implements IUserLocaleResolver
+class UserDataLocaleResolver implements ResolverInterface
 {
     private IUserStorage $userStorage;
 
@@ -16,7 +16,7 @@ class UserDataLocaleResolver implements IUserLocaleResolver
         $this->userStorage = $userStorage;
     }
 
-    public function resolve(Translator $translator)
+    public function resolve(Translator $translator): ?string
     {
         if ($this->userStorage->isAuthenticated()) {
             $identity = $this->userStorage->getIdentity();

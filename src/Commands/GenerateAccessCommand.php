@@ -6,6 +6,7 @@ use Crm\UsersModule\Auth\Repository\AdminAccessRepository;
 use Crm\UsersModule\Auth\Repository\AdminGroupsAccessRepository;
 use Nette\DI\Container;
 use Nette\DI\MissingServiceException;
+use ReflectionClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -115,8 +116,14 @@ class GenerateAccessCommand extends Command
                 // parse resource & load access level from annotation
                 $action = str_replace($methodPrefix, '', $methodName);
                 $action = lcfirst($action);
-                $accessLevel = \Nette\Reflection\Method::from($presenterClass, $methodName)
-                    ->getAnnotation('admin-access-level');
+
+                $reflectionClass = new ReflectionClass($presenterClass);
+                $method = $reflectionClass->getMethod($methodName);
+                $phpDoc = $method->getDocComment();
+
+                preg_match('/@admin-access-level\s+(\w+)/', $phpDoc, $match);
+                $accessLevel = count($match) == 2 ? $match[1] : null;
+
                 if (!in_array($accessLevel, [null, 'write', 'read'], true)) {
                     $output->writeln(
                         " * <error>ACL resource </error><fg=red;bg=white;options=bold> {$resource}:{$action} </><error>" .
