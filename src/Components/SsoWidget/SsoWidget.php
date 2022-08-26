@@ -2,22 +2,16 @@
 
 namespace Crm\UsersModule\Components;
 
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
 
 /**
  * This widget renders SSO login form
  *
  * @package Crm\UsersModule\Components
  */
-class SsoWidget extends BaseWidget
+class SsoWidget extends BaseLazyWidget
 {
     private $templateName = 'sso_widget.latte';
-
-    public function __construct(WidgetManager $widgetManager)
-    {
-        parent::__construct($widgetManager);
-    }
 
     public function identifier()
     {

@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Components\Widgets;
 
-use Crm\ApplicationModule\Widget\BaseWidget;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
 
 /**
  * This widget fetches all widgets for specific widget namespace
@@ -10,7 +10,7 @@ use Crm\ApplicationModule\Widget\BaseWidget;
  *
  * @package Crm\UsersModule\Components\Widgets
  */
-class DetailWidget extends BaseWidget
+class DetailWidget extends BaseLazyWidget
 {
     private $templateName = 'detail_widget.latte';
 

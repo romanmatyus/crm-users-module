@@ -6,8 +6,8 @@ use Crm\ApplicationModule\Components\Graphs\SmallBarGraphControlFactoryInterface
 use Crm\ApplicationModule\Graphs\Criteria;
 use Crm\ApplicationModule\Graphs\GraphData;
 use Crm\ApplicationModule\Graphs\GraphDataItem;
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
+use Crm\ApplicationModule\Widget\LazyWidgetManager;
 use Nette\Localization\Translator;
 
 /**
@@ -16,7 +16,7 @@ use Nette\Localization\Translator;
  *
  * @package Crm\UsersModule\Components
  */
-class MonthUsersSmallBarGraphWidget extends BaseWidget
+class MonthUsersSmallBarGraphWidget extends BaseLazyWidget
 {
     private $templateName = 'month_users_small_bar_graph_widget.latte';
 
@@ -27,12 +27,12 @@ class MonthUsersSmallBarGraphWidget extends BaseWidget
     private $translator;
 
     public function __construct(
-        WidgetManager $widgetManager,
+        LazyWidgetManager $lazyWidgetManager,
         SmallBarGraphControlFactoryInterface $factory,
         GraphData $graphData,
         Translator $translator
     ) {
-        parent::__construct($widgetManager);
+        parent::__construct($lazyWidgetManager);
         $this->factory = $factory;
         $this->graphData = $graphData;
         $this->translator = $translator;

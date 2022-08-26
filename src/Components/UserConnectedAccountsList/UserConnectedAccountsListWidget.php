@@ -3,13 +3,13 @@
 namespace Crm\UsersModule\Components;
 
 use Crm\ApplicationModule\Config\ApplicationConfig;
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
+use Crm\ApplicationModule\Widget\LazyWidgetManager;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Localization\Translator;
 
-class UserConnectedAccountsListWidget extends BaseWidget
+class UserConnectedAccountsListWidget extends BaseLazyWidget
 {
     private string $templateName = 'user_connected_accounts_list_widget.latte';
 
@@ -22,13 +22,13 @@ class UserConnectedAccountsListWidget extends BaseWidget
     private ApplicationConfig $applicationConfig;
 
     public function __construct(
-        WidgetManager $widgetManager,
+        LazyWidgetManager $lazyWidgetManager,
         UsersRepository $usersRepository,
         UserConnectedAccountsRepository $userConnectedAccountsRepository,
         Translator $translator,
         ApplicationConfig $applicationConfig
     ) {
-        parent::__construct($widgetManager);
+        parent::__construct($lazyWidgetManager);
         $this->usersRepository = $usersRepository;
         $this->userConnectedAccountsRepository = $userConnectedAccountsRepository;
         $this->translator = $translator;

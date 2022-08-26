@@ -2,14 +2,14 @@
 
 namespace Crm\UsersModule\Components;
 
-use Crm\ApplicationModule\Widget\BaseWidget;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
 
 /**
  * This widget renders simple address detail from given address.
  *
  * @package Crm\UsersModule\Components
  */
-class AddressWidget extends BaseWidget
+class AddressWidget extends BaseLazyWidget
 {
     private $templateName = 'address_widget.latte';
 

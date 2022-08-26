@@ -2,8 +2,8 @@
 
 namespace Crm\UsersModule\Components;
 
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
+use Crm\ApplicationModule\Widget\LazyWidgetManager;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Utils\DateTime;
 
@@ -12,15 +12,17 @@ use Nette\Utils\DateTime;
  *
  * @package Crm\UsersModule\Components
  */
-class TodayUsersStatWidget extends BaseWidget
+class TodayUsersStatWidget extends BaseLazyWidget
 {
     private $templateName = 'today_users_stat_widget.latte';
 
     private $usersRepository;
 
-    public function __construct(WidgetManager $widgetManager, UsersRepository $usersRepository)
-    {
-        parent::__construct($widgetManager);
+    public function __construct(
+        LazyWidgetManager $lazyWidgetManager,
+        UsersRepository $usersRepository
+    ) {
+        parent::__construct($lazyWidgetManager);
         $this->usersRepository = $usersRepository;
     }
 

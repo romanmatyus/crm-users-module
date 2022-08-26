@@ -19,7 +19,7 @@ use Crm\ApplicationModule\Menu\MenuContainerInterface;
 use Crm\ApplicationModule\Menu\MenuItem;
 use Crm\ApplicationModule\SeederManager;
 use Crm\ApplicationModule\User\UserDataRegistrator;
-use Crm\ApplicationModule\Widget\WidgetManagerInterface;
+use Crm\ApplicationModule\Widget\LazyWidgetManagerInterface;
 use Crm\UsersModule\Api\EmailValidationApiHandler;
 use Crm\UsersModule\Auth\AutoLogin\Repository\AutoLoginTokensRepository;
 use Crm\UsersModule\Auth\Permissions;
@@ -210,83 +210,83 @@ class UsersModule extends CrmModule
         $commandsContainer->registerCommand($this->getInstance(\Crm\UsersModule\Commands\ReconstructUserDataCommand::class));
     }
 
-    public function registerWidgets(WidgetManagerInterface $widgetManager)
+    public function registerLazyWidgets(LazyWidgetManagerInterface $widgetManager)
     {
         $widgetManager->registerWidget(
             'admin.user.detail.bottom',
-            $this->getInstance(\Crm\UsersModule\Components\UserLoginAttempts::class),
+            \Crm\UsersModule\Components\UserLoginAttempts::class,
             710
         );
         $widgetManager->registerWidget(
             'admin.user.detail.bottom',
-            $this->getInstance(\Crm\UsersModule\Components\UserPasswordChanges::class),
+            \Crm\UsersModule\Components\UserPasswordChanges::class,
             1700
         );
         $widgetManager->registerWidget(
             'admin.user.detail.bottom',
-            $this->getInstance(\Crm\UsersModule\Components\AutologinTokens::class),
+            \Crm\UsersModule\Components\AutologinTokens::class,
             1900
         );
         $widgetManager->registerWidget(
             'admin.user.detail.bottom',
-            $this->getInstance(\Crm\UsersModule\Components\UserMeta::class),
+            \Crm\UsersModule\Components\UserMeta::class,
             960
         );
         $widgetManager->registerWidget(
             'admin.user.detail.bottom',
-            $this->getInstance(\Crm\UsersModule\Components\UserTokens::class),
+            \Crm\UsersModule\Components\UserTokens::class,
             1235
         );
 
         $widgetManager->registerWidget(
             'admin.user.detail.box',
-            $this->getInstance(\Crm\UsersModule\Components\UserSourceAccesses::class),
+            \Crm\UsersModule\Components\UserSourceAccesses::class,
             580
         );
         $widgetManager->registerWidget(
             'admin.user.detail.left',
-            $this->getInstance(\Crm\UsersModule\Components\UserConnectedAccountsListWidget::class),
+            \Crm\UsersModule\Components\UserConnectedAccountsListWidget::class,
             710
         );
         $widgetManager->registerWidget(
             'dashboard.singlestat.totals',
-            $this->getInstance(\Crm\UsersModule\Components\ActiveRegisteredUsersStatWidget::class),
+            \Crm\UsersModule\Components\ActiveRegisteredUsersStatWidget::class,
             500
         );
         $widgetManager->registerWidget(
             'dashboard.singlestat.today',
-            $this->getInstance(\Crm\UsersModule\Components\TodayUsersStatWidget::class),
+            \Crm\UsersModule\Components\TodayUsersStatWidget::class,
             500
         );
         $widgetManager->registerWidget(
             'dashboard.singlestat.month',
-            $this->getInstance(\Crm\UsersModule\Components\MonthUsersStatWidget::class),
+            \Crm\UsersModule\Components\MonthUsersStatWidget::class,
             500
         );
         $widgetManager->registerWidget(
             'dashboard.singlestat.mtd',
-            $this->getInstance(\Crm\UsersModule\Components\MonthToDateUsersStatWidget::class),
+            \Crm\UsersModule\Components\MonthToDateUsersStatWidget::class,
             500
         );
         $widgetManager->registerWidget(
             'admin.users.header',
-            $this->getInstance(\Crm\UsersModule\Components\MonthUsersSmallBarGraphWidget::class),
+            \Crm\UsersModule\Components\MonthUsersSmallBarGraphWidget::class,
             500
         );
 
         $widgetManager->registerWidget(
             'admin.user.address.partial',
-            $this->getInstance(\Crm\UsersModule\Components\AddressWidget::class),
+            \Crm\UsersModule\Components\AddressWidget::class,
             100
         );
         $widgetManager->registerWidget(
             'frontend.user.address.partial',
-            $this->getInstance(\Crm\UsersModule\Components\AddressWidget::class),
+            \Crm\UsersModule\Components\AddressWidget::class,
             100
         );
         $widgetManager->registerWidget(
             'users.sign_in.top',
-            $this->getInstance(\Crm\UsersModule\Components\SsoWidget::class),
+            \Crm\UsersModule\Components\SsoWidget::class,
             100
         );
     }

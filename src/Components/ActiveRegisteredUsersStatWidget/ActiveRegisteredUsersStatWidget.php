@@ -2,8 +2,8 @@
 
 namespace Crm\UsersModule\Components;
 
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
+use Crm\ApplicationModule\Widget\LazyWidgetManager;
 use Crm\SegmentModule\Repository\SegmentsRepository;
 use Crm\SegmentModule\Repository\SegmentsValuesRepository;
 
@@ -12,7 +12,7 @@ use Crm\SegmentModule\Repository\SegmentsValuesRepository;
  *
  * @package Crm\UsersModule\Components
  */
-class ActiveRegisteredUsersStatWidget extends BaseWidget
+class ActiveRegisteredUsersStatWidget extends BaseLazyWidget
 {
     private $templateName = 'active_registered_users_stat_widget.latte';
 
@@ -23,11 +23,11 @@ class ActiveRegisteredUsersStatWidget extends BaseWidget
     private $segmentsValuesRepository;
 
     public function __construct(
-        WidgetManager $widgetManager,
+        LazyWidgetManager $lazyWidgetManager,
         SegmentsRepository $segmentsRepository,
         SegmentsValuesRepository $segmentsValuesRepository
     ) {
-        parent::__construct($widgetManager);
+        parent::__construct($lazyWidgetManager);
 
         $this->segmentsRepository = $segmentsRepository;
         $this->segmentsValuesRepository = $segmentsValuesRepository;

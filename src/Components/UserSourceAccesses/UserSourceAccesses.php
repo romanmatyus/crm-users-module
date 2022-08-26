@@ -3,8 +3,8 @@
 namespace Crm\UsersModule\Components;
 
 use Crm\ApiModule\Repository\UserSourceAccessesRepository;
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
+use Crm\ApplicationModule\Widget\LazyWidgetManager;
 
 /**
  * This widget fetches last user accesses from access repository
@@ -12,17 +12,17 @@ use Crm\ApplicationModule\Widget\WidgetManager;
  *
  * @package Crm\UsersModule\Components
  */
-class UserSourceAccesses extends BaseWidget
+class UserSourceAccesses extends BaseLazyWidget
 {
     private $templateName = 'user_source_accesses.latte';
 
     private $userSourceAccessesRepository;
 
     public function __construct(
-        WidgetManager $widgetManager,
+        LazyWidgetManager $lazyWidgetManager,
         UserSourceAccessesRepository $userSourceAccessesRepository
     ) {
-        parent::__construct($widgetManager);
+        parent::__construct($lazyWidgetManager);
         $this->userSourceAccessesRepository = $userSourceAccessesRepository;
     }
 
