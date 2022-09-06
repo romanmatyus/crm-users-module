@@ -244,8 +244,6 @@ admin:
         last_login: Poslední přihlášení
         no_login: Zatím nebyl přihlášen
         personal_info: Osobní údaje
-        anonymize_alert: "Anonymizace uživatelského účtu '%email%' je nevratná akce, po níž se uživatel nebude moci znovu přihlásit a všechny osobní data budou smazány. Opravdu pokračovat?"
-        anonymize: Anonymizace uživatele
         company_id: IČO
         company_tax_id: DIČ
         company_vat_id: IČDPH
@@ -381,6 +379,12 @@ admin:
         edit_group: Upravit skupinu
         total_users: Celkově uživatelů
         view: zobraz
+
+    delete_user_admin:
+        anonymize_alert: "Anonymizace uživatelského účtu '%email%' je nevratná akce, po níž se uživatel nebude moci znovu přihlásit a všechny osobní data budou smazány. Opravdu pokračovat?"
+        anonymize: Anonymizace uživatele
+        reason: Důvod pro smazání
+        required: 'Pri mazání aktívního uživatele, je potrebné zadat důvod'
 
     group_form:
         name:

@@ -187,6 +187,7 @@ frontend:
         used_account: 'Prepojenie účtu nie je možné. Apple účet %email% už je prepojený s iným kontom.'
 
 admin:
+    forbidden: "Nemáte povolenie na vykonanie akcie alebo zobrazenie stránky. Ak si myslíte, že by ste mali mať prístup, kontaktujte správcu."
     actions:
         deactivate: Deaktivuj
         activate: Aktivuj
@@ -244,8 +245,6 @@ admin:
         last_login: Posledné prihlásenie
         no_login: Zatiaľ nebol prihlásený
         personal_info: Osobné údaje
-        anonymize_alert: "Anonymizácia používateľského konta '%email%' je nezvratná akcia, po ktorej sa používateľ nebude môcť znovu prihlásiť a všetky osobné dáta budú zmazané. Naozaj pokračovať?"
-        anonymize: Anonymizácia používateľa
         company_id: IČO
         company_tax_id: DIČ
         company_vat_id: IČDPH
@@ -383,6 +382,15 @@ admin:
         edit_group: Upraviť skupinu
         total_users: Celkovo používateľov
         view: zobraz
+
+    delete_user_admin_form:
+        anonymize_alert: "Anonymizácia používateľského konta '%email%' je <b><u>nezvratná akcia</u></b>, po ktorej sa používateľ nebude môcť znovu prihlásiť a všetky osobné dáta budú zmazané."
+        anonymize: "Anonymizácia používateľa"
+        button: "Anonymizovať %email%"
+        reason:
+            label: "Dôvod zmazania"
+            required: "Tento používateľ je systémom označený ako aktívny (má nedávnu platbu, aktívne predplatné, atď.). Ochranu je možné obísť. Prosím vyplňte dôvod zmazania."
+        errors.user_not_found: "Používateľa s ID '%user_id%' nie je možné odstrániť. Prosím kontaktujte technickú podporu."
 
     group_form:
         name:

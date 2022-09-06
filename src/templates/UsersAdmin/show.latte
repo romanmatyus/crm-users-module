@@ -29,6 +29,10 @@
   #frm-userNoteForm button { margin-top:10px; }
   #frm-userNoteForm label { display:none }
   #frm-userNoteForm-note { width:100% }
+
+  .modal {
+        text-align: left;
+    }
 </style>
 
 <div class="row">
@@ -182,10 +186,58 @@
     <div n:if="!$user->deleted_at" class="panel panel-default">
       <div class="panel-heading">{_users.admin.show.personal_info}</div>
       <div class="panel-body">
-        <a n:href="deleteUser! $user->id" class="btn btn-warning" onclick="return confirm({_users.admin.show.anonymize_alert, ['email' => $user->email]})"><i class="fa fa-trash"></i> {_users.admin.show.anonymize}</a>
+        <p class="text-center">
+          <a n:href="DeleteUser! $user->id" class="ajax btn btn-warning">
+            <i class="fa fa-trash"></i> {_users.admin.delete_user_admin_form.anonymize}
+          </a>
+          </p>
       </div>
     </div>
   </div>
 </div>
 
 {control detailWidget 'admin.user.detail.bottom', $user->id}
+
+<div class="modal fade modal-ajax" id="admin-user-delete-modal">
+  <div class="modal-dialog modal-lg" style="width: 800px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="close-button">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <h3 id="admin-user-delete-modal-add-title">{_users.admin.delete_user_admin_form.anonymize}</h3>
+      </div>
+      <div class="modal-body" id="reason">
+        {snippet adminUserDeleteFormSnippet}
+          {_users.admin.delete_user_admin_form.anonymize_alert, ['email' => $user->email]|noescape}
+          <br><br>
+          {if $presenter->isAjax()}
+            {control "adminUserDeleteForm"}
+          {/if}
+        {/snippet}
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script>
+  $.nette.ext("modals", {
+    success: function (payload) {
+      if (payload.redirect) {
+        $(".modal-ajax").modal("hide");
+      } else if (payload.isModal) {
+        $('.modal-ajax').modal('show');
+      }
+    }
+  });
+
+  $.nette.ext({
+      error: function(jqXHR, status, error) {
+          if (status === 'error' && error === 'Forbidden') {
+              alert({_users.admin.forbidden});
+          }
+      },
+  })
+
+</script>

@@ -5,7 +5,6 @@ namespace Crm\UsersModule\Presenters;
 use Crm\AdminModule\Presenters\AdminPresenter;
 use Crm\ApplicationModule\Components\PreviousNextPaginator;
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
-use Crm\ApplicationModule\User\DeleteUserData;
 use Crm\UsersModule\AdminFilterFormData;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Components\Widgets\DetailWidgetFactoryInterface;
@@ -13,6 +12,7 @@ use Crm\UsersModule\DataProvider\FilterUsersFormDataProviderInterface;
 use Crm\UsersModule\Events\AddressRemovedEvent;
 use Crm\UsersModule\Events\NotificationEvent;
 use Crm\UsersModule\Forms\AbusiveUsersFilterFormFactory;
+use Crm\UsersModule\Forms\AdminUserDeleteFormFactory;
 use Crm\UsersModule\Forms\AdminUserGroupFormFactory;
 use Crm\UsersModule\Forms\UserFormFactory;
 use Crm\UsersModule\Forms\UserGroupsFormFactory;
@@ -44,11 +44,11 @@ class UsersAdminPresenter extends AdminPresenter
 
     private $adminUserGroupsFormFactory;
 
+    private $adminUserDeleteFormFactory;
+
     private $userNoteFormFactory;
 
     private $addressesRepository;
-
-    private $deleteUserData;
 
     private $dataProviderManager;
 
@@ -71,9 +71,9 @@ class UsersAdminPresenter extends AdminPresenter
         GroupsRepository $groupsRepository,
         UserGroupsFormFactory $userGroupsFormFactory,
         AdminUserGroupFormFactory $adminUserGroupsFormFactory,
+        AdminUserDeleteFormFactory $adminUserDeleteFormFactory,
         UserNoteFormFactory $userNoteFormFactory,
         AddressesRepository $addressesRepository,
-        DeleteUserData $deleteUserData,
         DataProviderManager $dataProviderManager,
         UserManager $userManager,
         ChangePasswordsLogsRepository $changePasswordsLogsRepository,
@@ -87,9 +87,9 @@ class UsersAdminPresenter extends AdminPresenter
         $this->groupsRepository = $groupsRepository;
         $this->userGroupsFormFactory = $userGroupsFormFactory;
         $this->adminUserGroupsFormFactory = $adminUserGroupsFormFactory;
+        $this->adminUserDeleteFormFactory = $adminUserDeleteFormFactory;
         $this->userNoteFormFactory = $userNoteFormFactory;
         $this->addressesRepository = $addressesRepository;
-        $this->deleteUserData = $deleteUserData;
         $this->dataProviderManager = $dataProviderManager;
         $this->userManager = $userManager;
         $this->changePasswordsLogsRepository = $changePasswordsLogsRepository;
@@ -389,28 +389,41 @@ class UsersAdminPresenter extends AdminPresenter
     /**
      * @admin-access-level write
      */
-    public function handleDeleteUser($id, $backLink = null)
+    public function handleDeleteUser($id)
     {
         $user = $this->usersRepository->find($id);
         if (!$user) {
             throw new Nette\Application\BadRequestException();
         }
 
-        // checking if customer can be deleted (e.g. due to active subscription within last three months - customer claim managment)
-        [$canBeDeleted, $errors] = $this->deleteUserData->canBeDeleted($user->id);
-        if ($canBeDeleted) {
-            $this->deleteUserData->deleteData($user->id);
-            $user = $this->usersRepository->find($id);
-            $this->usersRepository->update($user, ['note' => $this->translator->translate('users.deletion_note.admin_deleted_account')]);
-            $this->flashMessage($this->translator->translate('users.admin.delete_user.deleted'));
-        } else {
-            $this->flashMessage("<br/>" . implode("<br/>", $errors), 'error');
+        $this->payload->isModal = true;
+        $this->template->userEmail = $user->email; // this is needed for default view; in modal we know which user to delete after ajax call
+        $this->redrawControl('adminUserDeleteFormSnippet');
+    }
+
+    protected function createComponentAdminUserDeleteForm()
+    {
+        $userId = $this->request->getPost('user_id') ?? $this->getParameter('id');
+
+        $user = $this->usersRepository->find($userId);
+        if ($user === null) {
+            throw new Nette\Application\BadRequestException();
         }
 
-        if ($backLink) {
-            $this->restoreRequest($backLink);
-        }
-        $this->redirect('UsersAdmin:Show', $user->id);
+        $form = $this->adminUserDeleteFormFactory->create($user);
+
+        $this->adminUserDeleteFormFactory->onSubmit = function ($deletedUserId) {
+            $this->flashMessage($this->translator->translate('users.admin.delete_user.deleted'));
+            $this->redirect('this');
+        };
+
+        $this->adminUserDeleteFormFactory->onError = function () {
+            if ($this->isAjax()) {
+                $this->redrawControl('adminUserDeleteFormSnippet');
+            }
+        };
+
+        return $form;
     }
 
     /**
