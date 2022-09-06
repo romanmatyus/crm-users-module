@@ -380,12 +380,6 @@ admin:
         total_users: Celkově uživatelů
         view: zobraz
 
-    delete_user_admin:
-        anonymize_alert: "Anonymizace uživatelského účtu '%email%' je nevratná akce, po níž se uživatel nebude moci znovu přihlásit a všechny osobní data budou smazány. Opravdu pokračovat?"
-        anonymize: Anonymizace uživatele
-        reason: Důvod pro smazání
-        required: 'Pri mazání aktívního uživatele, je potrebné zadat důvod'
-
     group_form:
         name:
             label: Název skupiny

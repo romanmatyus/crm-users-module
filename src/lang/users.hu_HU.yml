@@ -244,8 +244,6 @@ admin:
         last_login: Utolsó bejelentkezés
         no_login: Nincs bejelentkezési bejegyzés
         personal_info: Személyes adatok
-        anonymize_alert: "Felhasználói fiók anonimizálása visszafordíthatatlan. A felhasználó többé nem tud majd bejelentkezni és minden személyes adata törlődik. Biztosan folytatni szeretné?"
-        anonymize: Felhasználó anonimizálása
         company_id: Cégnév
         company_tax_id: Adó azonosító
         company_vat_id: Áfa azonosító

@@ -243,8 +243,6 @@ admin:
         last_login: Letzte Anmeldung
         no_login: Keine Anmeldedaten bisher
         personal_info: Persönliche Informationen
-        anonymize_alert: "Die Anonymisierung des Nutzerkontos '%email%' ist nicht umkehrbar. Der Nutzer kann sich dann nicht mehr anmelden und alle persönlichen Daten werden gelöscht. Wirklich fortfahren?"
-        anonymize: Nutzer anonymisieren
         company_id: Handelsregisternummer
         company_tax_id: Steuernummer
         company_vat_id: Umsatzsteuer-ID
