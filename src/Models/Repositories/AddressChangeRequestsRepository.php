@@ -69,17 +69,17 @@ class AddressChangeRequestsRepository extends Repository
     ) {
         $isDifferent = false;
         if (!$parentAddress || ($firstName != $parentAddress->first_name ||
-            $lastName != $parentAddress->last_name ||
-            $phoneNumber != $parentAddress->phone_number ||
-            $address != $parentAddress->address||
-            $number != $parentAddress->number ||
-            $city != $parentAddress->city ||
-            $zip != $parentAddress->zip ||
-            $countryId != $parentAddress->country_id ||
-            $companyName != $parentAddress->company_name ||
-            $companyId != $parentAddress->company_id ||
-            $companyTaxId != $parentAddress->company_tax_id ||
-            $companyVatId != $parentAddress->company_vat_id)
+            $lastName !== $parentAddress->last_name ||
+            $phoneNumber !== $parentAddress->phone_number ||
+            $address !== $parentAddress->address||
+            $number !== $parentAddress->number ||
+            $city !== $parentAddress->city ||
+            $zip !== $parentAddress->zip ||
+            $countryId !== $parentAddress->country_id ||
+            $companyName !== $parentAddress->company_name ||
+            $companyId !== $parentAddress->company_id ||
+            $companyTaxId !== $parentAddress->company_tax_id ||
+            $companyVatId !== $parentAddress->company_vat_id)
         ) {
             $isDifferent = true;
         }
