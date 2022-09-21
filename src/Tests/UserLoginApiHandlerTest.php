@@ -94,7 +94,7 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     public function testNotExistingUser()
     {
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->handler->handle([]);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(400, $response->getCode());
@@ -112,7 +112,10 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
         $_POST['password'] = self::PASSWORD;
 
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->handler->handle([
+            'email' => self::LOGIN,
+            'password' => self::PASSWORD,
+        ]);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(400, $response->getCode());
@@ -126,19 +129,17 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     {
         $user = $this->getUser();
 
-        $_POST['email'] = self::LOGIN;
-        $_POST['password'] = self::PASSWORD;
-
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->handler->handle([
+            'email' => self::LOGIN,
+            'password' => self::PASSWORD,
+        ]);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertArrayHasKey('user', $payload);
-
-        unset($_POST['email'], $_POST['password']);
     }
 
     public function testPairAccessAndDeviceTokens()
@@ -147,12 +148,12 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
         $deviceToken = $this->deviceTokensRepository->generate('poiqwe123');
 
-        $_POST['email'] = self::LOGIN;
-        $_POST['password'] = self::PASSWORD;
-        $_POST['device_token'] = $deviceToken->token;
-
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->handler->handle([
+            'email' => self::LOGIN,
+            'password' => self::PASSWORD,
+            'device_token' => $deviceToken->token,
+        ]);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());
@@ -169,8 +170,6 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
             ->fetch();
 
         $this->assertNotEmpty($pair);
-
-        unset($_POST['email'], $_POST['password'], $_POST['device_token']);
     }
 
     private function getUser()

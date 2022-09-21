@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
+use Crm\ApiModule\Api\ApiParamsValidatorInterface;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
@@ -14,7 +15,7 @@ use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
-class UsersLoginHandler extends ApiHandler
+class UsersLoginHandler extends ApiHandler implements ApiParamsValidatorInterface
 {
     private UsersRepository $usersRepository;
 
@@ -54,18 +55,14 @@ class UsersLoginHandler extends ApiHandler
 
     public function handle(array $params): ResponseInterface
     {
+        // TODO: This is handled in ApiPresenter. Remove this once tests validate the params before calling the handler.
+        $response = $this->validateParams($params);
+        if ($response) {
+            return $response;
+        }
+
         if (!isset($params['source']) && isset($_GET['source'])) {
             $params['source'] = $_GET['source'];
-        }
-
-        if (!$params['email']) {
-            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'no_email', 'message' => 'No valid email', 'code' => 'invalid_email']);
-            return $response;
-        }
-
-        if (!$params['password']) {
-            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'no_password', 'message' => 'No valid password', 'code' => 'invalid_password']);
-            return $response;
         }
 
         $deviceToken = false;
@@ -83,7 +80,7 @@ class UsersLoginHandler extends ApiHandler
 
         try {
             $source = 'api';
-            if ($params['source'] && $params['source'] != 'api') {
+            if (isset($params['source']) && $params['source'] !== 'api') {
                 $source .= '+' . $params['source'];
             }
             $identity = $this->userAuthenticator->authenticate([
@@ -142,5 +139,20 @@ class UsersLoginHandler extends ApiHandler
 
         $response = new JsonApiResponse(Response::S200_OK, $result);
         return $response;
+    }
+
+    public function validateParams(array $params): ?ResponseInterface
+    {
+        if (!isset($params['email'])) {
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'no_email', 'message' => 'No valid email', 'code' => 'invalid_email']);
+            return $response;
+        }
+
+        if (!isset($params['password'])) {
+            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'error' => 'no_password', 'message' => 'No valid password', 'code' => 'invalid_password']);
+            return $response;
+        }
+
+        return null;
     }
 }
