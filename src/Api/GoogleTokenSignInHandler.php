@@ -25,13 +25,13 @@ use Tracy\ILogger;
  */
 class GoogleTokenSignInHandler extends ApiHandler
 {
-    private $googleSignIn;
+    private GoogleSignIn $googleSignIn;
 
-    private $accessTokensRepository;
+    private AccessTokensRepository $accessTokensRepository;
 
-    private $deviceTokensRepository;
+    private DeviceTokensRepository $deviceTokensRepository;
 
-    private $usersRepository;
+    private UsersRepository $usersRepository;
 
     public function __construct(
         GoogleSignIn $googleSignIn,
@@ -40,6 +40,8 @@ class GoogleTokenSignInHandler extends ApiHandler
         UsersRepository $usersRepository,
         LinkGenerator $linkGenerator
     ) {
+        parent::__construct();
+
         $this->googleSignIn = $googleSignIn;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
@@ -145,13 +147,22 @@ class GoogleTokenSignInHandler extends ApiHandler
                 'id' => $user->id,
                 'email' => $user->email,
                 'created_at' => $user->created_at->format(\DateTimeInterface::RFC3339),
-                'confirmed_at' => $user->confirmed_at ? $user->confirmed_at->format(\DateTimeInterface::RFC3339) : null,
+                'confirmed_at' => $user->confirmed_at?->format(\DateTimeInterface::RFC3339),
             ],
+            'user_meta' => new \stdClass(),
         ];
 
         if ($accessToken) {
             $result['access']['token'] = $accessToken->token;
         }
+
+        $userMetaData = $user->related('user_meta')
+            ->where('is_public', 1)
+            ->fetchPairs('key', 'value');
+        if (count($userMetaData)) {
+            $result['user_meta'] = $userMetaData;
+        }
+
         return $result;
     }
 }

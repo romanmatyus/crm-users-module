@@ -353,6 +353,9 @@ Success response:
         "last_name": "Admin",
         "roles": ["redaktor", "superadmin"] // admin roles
     },
+    "user_meta": {
+        "key": "value" // string
+    },
     "access": {
         "token": "762eec3fe9f20d87cf865cb40cf6458b" // user token
     }
@@ -1388,6 +1391,9 @@ Success response:
         "created_at": "2021-01-01T10:00:00+01:00", // RFC3339 date; user creation date
         "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
     },
+    "user_meta": {
+        "key": "value" // String
+    },
     "access": {
         "token": "762eec3fe9f20d87cf865cb40cf6458c" // user token
     }
@@ -1427,6 +1433,9 @@ Success response:
         "email": "example_user@gmail.com",
         "created_at": "2021-01-01T10:00:00+01:00", // RFC3339 date; user creation date
         "confirmed_at": "2021-01-01T10:00:00+01:00", // RFC3339 date or NULL; user confirmation date
+    },
+    "user_meta": {
+        "key": "value" // String
     },
     "access": {
         "token": "762eec3fe9f20d87cf865cb40cf6458c" // user token

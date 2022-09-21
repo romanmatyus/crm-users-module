@@ -15,13 +15,13 @@ use Tomaj\NetteApi\Response\ResponseInterface;
 
 class AppleTokenSignInHandler extends ApiHandler
 {
-    private $appleSignIn;
+    private AppleSignIn $appleSignIn;
 
-    private $accessTokensRepository;
+    private AccessTokensRepository $accessTokensRepository;
 
-    private $deviceTokensRepository;
+    private DeviceTokensRepository $deviceTokensRepository;
 
-    private $usersRepository;
+    private UsersRepository $usersRepository;
 
     public function __construct(
         AppleSignIn $appleSignIn,
@@ -29,6 +29,8 @@ class AppleTokenSignInHandler extends ApiHandler
         DeviceTokensRepository $deviceTokensRepository,
         UsersRepository $usersRepository
     ) {
+        parent::__construct();
+
         $this->appleSignIn = $appleSignIn;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
@@ -105,13 +107,22 @@ class AppleTokenSignInHandler extends ApiHandler
                 'id' => $user->id,
                 'email' => $user->email,
                 'created_at' => $user->created_at->format(\DateTimeInterface::RFC3339),
-                'confirmed_at' => $user->confirmed_at ? $user->confirmed_at->format(\DateTimeInterface::RFC3339) : null,
+                'confirmed_at' => $user->confirmed_at?->format(\DateTimeInterface::RFC3339),
             ],
+            'user_meta' => new \stdClass(),
         ];
 
         if ($accessToken) {
             $result['access']['token'] = $accessToken->token;
         }
+
+        $userMetaData = $user->related('user_meta')
+            ->where('is_public', 1)
+            ->fetchPairs('key', 'value');
+        if (count($userMetaData)) {
+            $result['user_meta'] = $userMetaData;
+        }
+
         return $result;
     }
 }

@@ -3,33 +3,39 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Http\Response;
 use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
+use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
 class UsersLoginHandler extends ApiHandler
 {
-    private $userAuthenticator;
+    private UsersRepository $usersRepository;
 
-    private $accessTokensRepository;
+    private UserAuthenticator $userAuthenticator;
 
-    private $deviceTokensRepository;
+    private AccessTokensRepository $accessTokensRepository;
 
-    private $translator;
+    private DeviceTokensRepository $deviceTokensRepository;
+
+    private Translator $translator;
 
     public function __construct(
+        UsersRepository $usersRepository,
         UserAuthenticator $userAuthenticator,
         AccessTokensRepository $accessTokensRepository,
         DeviceTokensRepository $deviceTokensRepository,
         Translator $translator
     ) {
+        parent::__construct();
+
+        $this->usersRepository = $usersRepository;
         $this->userAuthenticator = $userAuthenticator;
         $this->accessTokensRepository = $accessTokensRepository;
         $this->deviceTokensRepository = $deviceTokensRepository;
@@ -39,19 +45,15 @@ class UsersLoginHandler extends ApiHandler
     public function params(): array
     {
         return [
-            new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),
-            new InputParam(InputParam::TYPE_POST, 'password', InputParam::REQUIRED),
-            new InputParam(InputParam::TYPE_POST, 'source', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
+            (new PostInputParam('email'))->setRequired(),
+            (new PostInputParam('password'))->setRequired(),
+            (new PostInputParam('source')),
+            (new PostInputParam('device_token')),
         ];
     }
 
     public function handle(array $params): ResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-
-        $params = $paramsProcessor->getValues();
-
         if (!isset($params['source']) && isset($_GET['source'])) {
             $params['source'] = $_GET['source'];
         }
@@ -103,16 +105,26 @@ class UsersLoginHandler extends ApiHandler
             return $response;
         }
 
+        $user = $this->usersRepository->find($identity->getId());
+
         $result = [
             'status' => 'ok',
             'user' => [
-                'id' => $identity->id,
-                'email' => $identity->data['email'],
-                'first_name' => $identity->data['first_name'],
-                'last_name' => $identity->data['last_name'],
-                'confirmed_at' => $identity->data['confirmed_at'] ? $identity->data['confirmed_at']->format(DATE_RFC3339) : null,
+                'id' => $user->id,
+                'email' => $user->email,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'confirmed_at' => $user->confirmed_at?->format(\DateTimeInterface::RFC3339),
             ],
+            'user_meta' => new \stdClass(),
         ];
+
+        $userMetaData = $user->related('user_meta')
+            ->where('is_public', 1)
+            ->fetchPairs('key', 'value');
+        if (count($userMetaData)) {
+            $result['user_meta'] = $userMetaData;
+        }
 
         if ($identity->getRoles()) {
             $result['user']['roles'] = $identity->getRoles();
