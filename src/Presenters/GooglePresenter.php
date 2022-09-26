@@ -66,7 +66,7 @@ class GooglePresenter extends FrontendPresenter
             $session->locale = $locale;
         }
 
-        $source = $this->getParameter('n_source');
+        $source = $this->getParameter('source') ?? $this->getParameter('n_source');
 
         try {
             // redirect URL is your.crm.url/users/google/callback
