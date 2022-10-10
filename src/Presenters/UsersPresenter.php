@@ -207,7 +207,10 @@ class UsersPresenter extends FrontendPresenter
         $zip->close();
         clearstatcache();
 
-        $this->sendResponse(new FileResponse($fileName, 'data.zip', 'application/zip', true));
+        $response = new FileResponse($fileName, 'data.zip', 'application/zip', true);
+        // Nette appends Content-Range header even when no Range header is present, Varnish doesn't like that
+        $response->resuming = false;
+        $this->sendResponse($response);
     }
 
     public function handleDevicesLogout()
