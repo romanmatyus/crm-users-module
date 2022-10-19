@@ -291,7 +291,7 @@ class GoogleSignIn
         // Check internal state
         if (empty($_GET['state']) || ($_GET['state'] !== $gsiState)) {
             // State is invalid, possible CSRF attack in progress
-            throw new SsoException('Google SignIn error: invalid state');
+            throw new SsoException("Google SignIn error: invalid state (current state: [{$_GET['state']}], cookie state: [{$gsiState}]).");
         }
 
         // Check user state
