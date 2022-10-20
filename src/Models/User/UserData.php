@@ -4,28 +4,24 @@ namespace Crm\UsersModule\User;
 
 use Crm\ApplicationModule\User\UserDataRegistrator;
 use Crm\ApplicationModule\User\UserDataStorageInterface;
+use Crm\UsersModule\Auth\Access\AccessToken;
 use Crm\UsersModule\Repository\AccessTokensRepository;
+use Nette\Http\IRequest;
 use Nette\Utils\Json;
 
 class UserData
 {
-    private $userDataRegistrator;
-
-    private $userDataStorage;
-
-    private $accessTokensRepository;
+    private array $tokenDataCache = [];
 
     public function __construct(
-        UserDataRegistrator $userDataRegistrator,
-        UserDataStorageInterface $userDataStorage,
-        AccessTokensRepository $accessTokensRepository
+        private UserDataRegistrator $userDataRegistrator,
+        private UserDataStorageInterface $userDataStorage,
+        private AccessTokensRepository $accessTokensRepository,
+        private AccessToken $accessToken
     ) {
-        $this->userDataRegistrator = $userDataRegistrator;
-        $this->userDataStorage = $userDataStorage;
-        $this->accessTokensRepository = $accessTokensRepository;
     }
 
-    public function refreshUserTokens($userId)
+    public function refreshUserTokens($userId): void
     {
         $userDataContent = $this->userDataRegistrator->generate($userId);
         $tokens = $this->accessTokensRepository->allUserTokens($userId);
@@ -37,16 +33,36 @@ class UserData
         $this->userDataStorage->multiStore($tokensString, Json::encode($userDataContent));
     }
 
-    public function getUserToken($token)
+    public function getCurrentUserData(IRequest $request, bool $ignoreCache = false): ?object
+    {
+        $token = $this->accessToken->getToken($request);
+        if (!$token) {
+            return null;
+        }
+
+        if (!$ignoreCache && array_key_exists($token, $this->tokenDataCache)) {
+            return $this->tokenDataCache[$token];
+        }
+
+        $userDataJson = $this->userDataStorage->load($token);
+        if ($userDataJson) {
+            $userData = Json::decode($userDataJson);
+            $this->tokenDataCache[$token] = $userData;
+            return $userData;
+        }
+        return null;
+    }
+
+    public function getUserToken($token): ?object
     {
         $data = $this->userDataStorage->load($token);
         if ($data) {
             return Json::decode($data);
         }
-        return false;
+        return null;
     }
 
-    public function getUserTokens(array $tokens)
+    public function getUserTokens(array $tokens): array
     {
         $data = $this->userDataStorage->multiLoad($tokens);
         $result = [];

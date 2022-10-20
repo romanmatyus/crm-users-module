@@ -4,26 +4,22 @@ namespace Crm\UsersModule\Locale;
 
 use Contributte\Translation\LocalesResolvers\ResolverInterface;
 use Contributte\Translation\Translator;
-use Nette\Security\IUserStorage;
-use Nette\Security\SimpleIdentity;
+use Crm\UsersModule\User\UserData;
+use Nette\Http\IRequest;
 
 class UserDataLocaleResolver implements ResolverInterface
 {
-    private IUserStorage $userStorage;
-
-    public function __construct(IUserStorage $userStorage)
-    {
-        $this->userStorage = $userStorage;
+    public function __construct(
+        private UserData $userData,
+        private IRequest $request
+    ) {
     }
 
     public function resolve(Translator $translator): ?string
     {
-        if ($this->userStorage->isAuthenticated()) {
-            $identity = $this->userStorage->getIdentity();
-            if ($identity && $identity instanceof SimpleIdentity) {
-                $data = $identity->getData();
-                return $data['locale'] ?? null;
-            }
+        $userData = $this->userData->getCurrentUserData($this->request);
+        if ($userData) {
+            return $userData->basic->locale ?? null;
         }
 
         return null;
