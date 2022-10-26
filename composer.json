@@ -9,7 +9,7 @@
     "mobiledetect/mobiledetectlib": "^2.8",
     "sinergi/browser-detector": "^6.1",
     "google/apiclient": "^2.9",
-    "firebase/php-jwt": "^5.3"
+    "firebase/php-jwt": "^v6.3.0"
   },
   "minimum-stability": "dev",
   "autoload": {

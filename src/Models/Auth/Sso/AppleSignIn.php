@@ -304,7 +304,8 @@ class AppleSignIn
         $response = $client->get('https://appleid.apple.com/auth/keys');
         $response = Json::decode($response->getBody()->getContents(), Json::FORCE_ARRAY);
 
-        return JWT::decode($idToken, JWK::parseKeySet($response), ['RS256']);
+        // RS256 = openssl + SHA256
+        return JWT::decode($idToken, JWK::parseKeySet($response, 'RS256'));
     }
 
     private function isIdTokenValid($idToken, $nonce = null): bool
