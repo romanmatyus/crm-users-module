@@ -98,8 +98,8 @@ class AppleSignIn
             'user_id' => $userId ?? null,
         ])));
 
-        // expiration max 5 minutes
-        $this->redis()->expire($this->redisKey($state), 5*60);
+        // expiration max 10 minutes
+        $this->redis()->expire($this->redisKey($state), 10*60);
 
         return $url->getAbsoluteUrl();
     }
