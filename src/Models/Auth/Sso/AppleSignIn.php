@@ -101,6 +101,8 @@ class AppleSignIn
         // expiration max 10 minutes
         $this->redis()->expire($this->redisKey($state), 10*60);
 
+        $this->setSessionCookieForCallback($redirectUri);
+
         return $url->getAbsoluteUrl();
     }
 
@@ -283,6 +285,35 @@ class AppleSignIn
         }
 
         return true;
+    }
+
+    /**
+     * Sets short-lived session cookie having `SameSite: None` flag and callback URI path .
+     *
+     * This is required for session cookie to be sent along with callback (POST) request from Apple after successful SSO login.
+     * Normal session cookie has `SameSite: Lax` flag and therefore is not sent along with POST (cross-origin) requests.
+     *
+     * Session is required to check if user that triggered OAuth flow is the same that we check against in the callback (see `user_id`).
+     *
+     * @param string $redirectUri
+     *
+     * @return void
+     */
+    private function setSessionCookieForCallback(string $redirectUri): void
+    {
+        $url = new Url($redirectUri);
+
+        $cookie = session_get_cookie_params();
+        $this->response->setCookie(
+            $this->session->getName(),
+            $this->session->getId(),
+            strtotime('+10 minutes'), // this is short-lived session cookie
+            $url->getPath(), // valid only for callback path
+            $cookie['domain'],
+            true, // "SameSite: None" requires secure to be set to "true"
+            $cookie['httponly'],
+            'None'
+        );
     }
 
     private function isCodeValid($code, $idToken): bool
