@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
+use Crm\ApplicationModule\Router\RedirectValidator;
 use Crm\UsersModule\Auth\SignInRedirectValidator;
 use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\GoogleSignIn;
@@ -13,17 +14,13 @@ class GooglePresenter extends FrontendPresenter
 {
     private const SESSION_SECTION = 'google_presenter';
 
-    private $googleSignIn;
-
-    private $signInRedirectValidator;
-
     public function __construct(
-        GoogleSignIn $googleSignIn,
-        SignInRedirectValidator $signInRedirectValidator
+        private GoogleSignIn $googleSignIn,
+        private RedirectValidator $redirectValidator,
+        // temporary injection to make @deprecated SignInRedirectValidator work, will be removed
+        private SignInRedirectValidator $signInRedirectValidator,
     ) {
         parent::__construct();
-        $this->googleSignIn = $googleSignIn;
-        $this->signInRedirectValidator = $signInRedirectValidator;
     }
 
     public function actionSign()
@@ -48,9 +45,9 @@ class GooglePresenter extends FrontendPresenter
         $locale = $this->locale;
         $this->locale = null;
 
-        if ($finalUrl && $this->signInRedirectValidator->isAllowed($finalUrl)) {
+        if ($finalUrl && $this->redirectValidator->isAllowed($finalUrl)) {
             $session->finalUrl = $finalUrl;
-        } elseif ($referer && $this->signInRedirectValidator->isAllowed($referer)) {
+        } elseif ($referer && $this->redirectValidator->isAllowed($referer)) {
             // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
             $session->finalUrl = $referer;
         }

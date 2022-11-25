@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
+use Crm\ApplicationModule\Router\RedirectValidator;
 use Crm\UsersModule\Auth\SignInRedirectValidator;
 use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\AppleSignIn;
@@ -13,17 +14,13 @@ class ApplePresenter extends FrontendPresenter
 {
     private const SESSION_SECTION = 'apple_presenter';
 
-    private $appleSignIn;
-
-    private $signInRedirectValidator;
-
     public function __construct(
-        AppleSignIn $appleSignIn,
-        SignInRedirectValidator $signInRedirectValidator
+        private AppleSignIn $appleSignIn,
+        private RedirectValidator $redirectValidator,
+        // temporary injection to make @deprecated SignInRedirectValidator work, will be removed
+        private SignInRedirectValidator $signInRedirectValidator
     ) {
         parent::__construct();
-        $this->appleSignIn = $appleSignIn;
-        $this->signInRedirectValidator = $signInRedirectValidator;
     }
 
     public function actionSign()
@@ -48,9 +45,9 @@ class ApplePresenter extends FrontendPresenter
         $locale = $this->locale;
         $this->locale = null;
 
-        if ($finalUrl && $this->signInRedirectValidator->isAllowed($finalUrl)) {
+        if ($finalUrl && $this->redirectValidator->isAllowed($finalUrl)) {
             $session->finalUrl = $finalUrl;
-        } elseif ($referer && $this->signInRedirectValidator->isAllowed($referer)) {
+        } elseif ($referer && $this->redirectValidator->isAllowed($referer)) {
             // Redirect backup to Referer (if provided 'url' parameter is invalid or manipulated)
             $session->finalUrl = $referer;
         }

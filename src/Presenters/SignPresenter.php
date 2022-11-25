@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Presenters;
 
 use Crm\ApplicationModule\Presenters\FrontendPresenter;
+use Crm\ApplicationModule\Router\RedirectValidator;
 use Crm\ApplicationModule\Snippet\SnippetRenderer;
 use Crm\UsersModule\Auth\Authorizator;
 use Crm\UsersModule\Auth\InvalidEmailException;
@@ -20,29 +21,19 @@ class SignPresenter extends FrontendPresenter
     /** @persistent */
     public $back;
 
-    private $authorizator;
-
-    private $userManager;
-
-    private $snippetRenderer;
-
-    private $referer;
+    private string $referer;
 
     private $signInRedirect;
 
-    private $signInRedirectValidator;
-
     public function __construct(
-        Authorizator $authorizator,
-        UserManager $userManager,
-        SnippetRenderer $snippetRenderer,
-        SignInRedirectValidator $signInRedirectValidator
+        private Authorizator $authorizator,
+        private UserManager $userManager,
+        private SnippetRenderer $snippetRenderer,
+        private RedirectValidator $redirectValidator,
+        // temporary injection to make @deprecated SignInRedirectValidator work, will be removed
+        private SignInRedirectValidator $signInRedirectValidator
     ) {
         parent::__construct();
-        $this->authorizator = $authorizator;
-        $this->userManager = $userManager;
-        $this->snippetRenderer = $snippetRenderer;
-        $this->signInRedirectValidator = $signInRedirectValidator;
     }
 
     public function startup()
@@ -65,7 +56,7 @@ class SignPresenter extends FrontendPresenter
      * Sign-in form factory.
      * @return Form
      */
-    protected function createComponentSignInForm()
+    protected function createComponentSignInForm(): Form
     {
         $form = new Form();
         $form->setRenderer(new BootstrapRenderer());
@@ -170,7 +161,6 @@ class SignPresenter extends FrontendPresenter
             $password->setOption('class', 'hidden');
         }
 
-
         $snippet = $this->snippetRenderer->render('terms-of-use-form');
         if ($snippet) {
             $form->addCheckbox('toc', Html::el()->setHtml($snippet))
@@ -221,7 +211,7 @@ class SignPresenter extends FrontendPresenter
 
     public function actionSignInCallback($redirectUrl = null)
     {
-        if ($redirectUrl && $this->signInRedirectValidator->isAllowed($redirectUrl)) {
+        if ($redirectUrl && $this->redirectValidator->isAllowed($redirectUrl)) {
             $this->redirectUrl($redirectUrl);
         } else {
             $this->redirect($this->homeRoute);
