@@ -2,21 +2,18 @@
 
 namespace Crm\UsersModule\Events;
 
-use Crm\UsersModule\Auth\UserAuthenticator;
+use Crm\ApplicationModule\Presenters\BasePresenter;
 use League\Event\AbstractListener;
 use League\Event\EventInterface;
+use Nette\Http\Session;
 use Nette\Security\User;
 
 class UserUpdatedHandler extends AbstractListener
 {
-    private $user;
-
-    private $userAuthenticator;
-
-    public function __construct(User $user, UserAuthenticator $userAuthenticator)
-    {
-        $this->user = $user;
-        $this->userAuthenticator = $userAuthenticator;
+    public function __construct(
+        private User $user,
+        private Session $session
+    ) {
     }
 
     public function handle(EventInterface $event)
@@ -24,12 +21,13 @@ class UserUpdatedHandler extends AbstractListener
         if (!($event instanceof UserUpdatedEvent)) {
             throw new \Exception('cannot handle event, invalid instance received: ' . gettype($event));
         }
-
         $updatedUser = $event->getUser();
 
-        // If updated user is currently logged user, update his/her session data
+        // If updated user is currently logged user, flag him for reload in session
+        // Actual reload happens in BasePresenter, because saving user identity in session might regenerate session ID.
+        // This might break scenario when multiple-ajax requests rely on the same Session ID - e.g. ajax forms with CSRF protection.
         if ($this->user->isLoggedIn() && $updatedUser->id == $this->user->getId()) {
-            $this->user->getStorage()->saveAuthentication($this->userAuthenticator->getIdentity($updatedUser));
+            $this->session->getSection('auth')->set(BasePresenter::SESSION_RELOAD_USER, true);
         }
     }
 }
