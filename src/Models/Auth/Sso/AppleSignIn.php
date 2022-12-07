@@ -3,8 +3,6 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
-use Crm\ApplicationModule\RedisClientFactory;
-use Crm\ApplicationModule\RedisClientTrait;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
@@ -19,13 +17,14 @@ use Nette\Utils\Json;
 
 class AppleSignIn
 {
-    use RedisClientTrait;
-
     public const ACCESS_TOKEN_SOURCE_WEB_APPLE_SSO = 'web+apple_sso';
     public const USER_SOURCE_APPLE_SSO = "apple_sso";
     public const USER_APPLE_REGISTRATION_CHANNEL = "apple";
 
-    private const REDIS_ASI_KEY = 'asi_data';
+    private const COOKIE_ASI_STATE = 'asi_state';
+    private const COOKIE_ASI_SOURCE = 'asi_source';
+    private const COOKIE_ASI_USER_ID = 'asi_user_id';
+    private const COOKIE_ASI_NONCE = 'asi_nonce';
 
     private ?string $clientId;
     private array $trustedClientIds = [];
@@ -39,7 +38,6 @@ class AppleSignIn
         private Response $response,
         private Request $request,
         private Session $session,
-        RedisClientFactory $redisClientFactory
     ) {
         $this->clientId = $clientId;
 
@@ -49,12 +47,35 @@ class AppleSignIn
         foreach (array_filter($trustedClientIds) as $trustedClientId) {
             $this->trustedClientIds[$trustedClientId] = true;
         }
-        $this->redisClientFactory = $redisClientFactory;
     }
 
     public function isEnabled(): bool
     {
         return (boolean)($this->configsRepository->loadByName('apple_sign_in_enabled')->value ?? false);
+    }
+
+    private function setLoginCookie(string $key, $value)
+    {
+        $this->response->setCookie(
+            $key,
+            $value,
+            strtotime('+1 hour'),
+            '/',
+            null,
+            true, // "SameSite: None" has to have "Secure: true"
+            true,
+            'None' // Lax cannot be used with POST request (response from Apple is POST)
+        );
+    }
+
+    // Function to delete cookie(s) has to match cookie-domain set in `setLoginCookie()`,
+    // otherwise cookie will not be deleted.
+    private function deleteLoginCookies(string...$keys): void
+    {
+        foreach ($keys as $key) {
+            // Deleting "SameSite: None" cookie has to have "Secure: true" as well
+            $this->response->deleteCookie($key, '/', null, true);
+        }
     }
 
     /**
@@ -73,7 +94,6 @@ class AppleSignIn
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        // State is generated in a similar way as in GoogleSignIn
         $state = bin2hex(random_bytes(128 / 8));
         $nonce = bin2hex(random_bytes(128 / 8));
 
@@ -88,19 +108,21 @@ class AppleSignIn
             'nonce' => $nonce
         ]);
 
+        //save cookie for later verification
+        $this->setLoginCookie(self::COOKIE_ASI_STATE, $state);
+        if ($source) {
+            $this->setLoginCookie(self::COOKIE_ASI_SOURCE, $source);
+        } else {
+            $this->deleteLoginCookies(self::COOKIE_ASI_SOURCE);
+        }
+        $this->setLoginCookie(self::COOKIE_ASI_NONCE, $nonce);
+
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-
-        // Each state has a separate Redis key to use expiration feature
-        // Redis does not support expiration on individual hash fields
-        $this->redis()->hset($this->redisKey($state), 'json', Json::encode(array_filter([
-            'nonce' => $nonce,
-            'source' => $source ?? null,
-            'user_id' => $userId ?? null,
-        ])));
-
-        // expiration max 10 minutes
-        $this->redis()->expire($this->redisKey($state), 10*60);
-
+        if ($userId) {
+            $this->setLoginCookie(self::COOKIE_ASI_USER_ID, $userId);
+        } else {
+            $this->deleteLoginCookies(self::COOKIE_ASI_USER_ID);
+        }
         $this->setSessionCookieForCallback($redirectUri);
 
         return $url->getAbsoluteUrl();
@@ -121,51 +143,49 @@ class AppleSignIn
      */
     public function signInCallback(?string $referer = null, ?string $locale = null): ActiveRow
     {
+        $asiState = $this->request->getCookie(self::COOKIE_ASI_STATE);
+        $asiUserId = $this->request->getCookie(self::COOKIE_ASI_USER_ID);
+        $asiSource = $this->request->getCookie(self::COOKIE_ASI_SOURCE);
+        $asiNonce = $this->request->getCookie(self::COOKIE_ASI_NONCE);
+
+        $this->deleteLoginCookies(self::COOKIE_ASI_STATE, self::COOKIE_ASI_USER_ID, self::COOKIE_ASI_SOURCE, self::COOKIE_ASI_NONCE);
 
         if (!$this->isEnabled()) {
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (!empty($this->request->getPost('error'))) {
+        if (!empty($_POST['error'])) {
             // Got an error, probably user denied access
-            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($this->request->getPost('error')));
+            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($_POST['error']));
         }
 
-        // Check state validity (to avoid CSRF attack)
-        if (empty($this->request->getPost('state'))) {
-            throw new SsoException("Apple SignIn error: missing state variable");
+        // Check internal state
+        if ($_POST['state'] !== $asiState) {
+            // State is invalid, possible CSRF attack in progress
+            throw new SsoException('Apple SignIn error: invalid state');
         }
-        $state = $this->request->getPost('state');
-        $savedStateString = $this->redis()->hget($this->redisKey($state), 'json');
-        $this->redis()->hdel($this->redisKey($state), ['json']);
-        if (!$savedStateString) {
-            throw new SsoException("Apple SignIn error: invalid state '$state'");
-        }
-        $savedState = Json::decode($savedStateString, Json::FORCE_ARRAY);
 
-        // Check that same user triggered login as is currently signed-in
+        // Check user state
         $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        $savedStateUserId = $savedState['user_id'] ?? null;
-
-        if ($savedStateUserId !== $loggedUserId) {
+        if ((string) $loggedUserId !== (string) $asiUserId) {
             // State is invalid, possible user change between login request and callback
-            throw new SsoException('Apple SignIn error: invalid user state (current userId: '. $loggedUserId . ', state userId: ' . $savedStateUserId . ')');
+            throw new SsoException("Apple SignIn error: invalid user state (current userId: {$loggedUserId}, cookie userId: {$asiUserId})");
         }
 
         try {
-            $idToken = $this->decodeIdToken($this->request->getPost('id_token'));
+            $idToken = $this->decodeIdToken($_POST['id_token']);
         } catch (\Exception $exception) {
             throw new SsoException('Apple SignIn error: unable to verify id token');
         }
 
         // Check id token
-        if (!$this->isIdTokenValid($idToken, $savedState['nonce'] ?? null)) {
+        if (!$this->isIdTokenValid($idToken, $asiNonce)) {
             // Id token is invalid
             throw new SsoException('Apple SignIn error: invalid id token');
         }
 
         // Check code
-        if (!$this->isCodeValid($this->request->getPost('code'), $idToken)) {
+        if (!$this->isCodeValid($_POST['code'], $idToken)) {
             // Code is invalid
             throw new SsoException('Apple SignIn error: invalid code');
         }
@@ -177,7 +197,7 @@ class AppleSignIn
 
         $userBuilder = $this->ssoUserManager->createUserBuilder(
             $userEmail,
-            $savedState['source'] ?? self::USER_SOURCE_APPLE_SSO,
+            $asiSource ?? self::USER_SOURCE_APPLE_SSO,
             self::USER_APPLE_REGISTRATION_CHANNEL,
             $referer
         );
@@ -293,7 +313,7 @@ class AppleSignIn
      * This is required for session cookie to be sent along with callback (POST) request from Apple after successful SSO login.
      * Normal session cookie has `SameSite: Lax` flag and therefore is not sent along with POST (cross-origin) requests.
      *
-     * Session is required to check if user that triggered OAuth flow is the same that we check against in the callback (see `user_id`).
+     * Session is required to check if user that triggered OAuth flow is the same that we check against in the callback (see `COOKIE_ASI_USER_ID`).
      *
      * @param string $redirectUri
      *
@@ -307,7 +327,7 @@ class AppleSignIn
         $this->response->setCookie(
             $this->session->getName(),
             $this->session->getId(),
-            strtotime('+10 minutes'), // this is short-lived session cookie
+            strtotime('+5 minutes'), // this is short-lived session cookie
             $url->getPath(), // valid only for callback path
             $cookie['domain'],
             true, // "SameSite: None" requires secure to be set to "true"
@@ -322,10 +342,5 @@ class AppleSignIn
         $firstHalfHash = substr($hash, 0, strlen($hash) / 2);
 
         return JWT::urlsafeB64Encode($firstHalfHash) === $idToken->c_hash;
-    }
-
-    private function redisKey(string $state): string
-    {
-        return self::REDIS_ASI_KEY . '_' . $state;
     }
 }

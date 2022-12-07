@@ -3,10 +3,7 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
-use Crm\ApplicationModule\DataProvider\DataProviderException;
 use Crm\ApplicationModule\DataProvider\DataProviderManager;
-use Crm\ApplicationModule\RedisClientFactory;
-use Crm\ApplicationModule\RedisClientTrait;
 use Crm\UsersModule\DataProvider\GoogleSignInDataProviderInterface;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Google\Client;
@@ -15,17 +12,16 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Http\Request;
 use Nette\Http\Response;
 use Nette\Security\User;
-use Nette\Utils\Json;
 
 class GoogleSignIn
 {
-    use RedisClientTrait;
-
     public const ACCESS_TOKEN_SOURCE_WEB_GOOGLE_SSO = 'web+google_sso';
     public const USER_SOURCE_GOOGLE_SSO = "google_sso";
     public const USER_GOOGLE_REGISTRATION_CHANNEL = "google";
 
-    private const REDIS_GSI_KEY = 'gsi_data';
+    private const COOKIE_GSI_STATE = 'gsi_state';
+    private const COOKIE_GSI_SOURCE = 'gsi_source';
+    private const COOKIE_GSI_USER_ID = 'gsi_user_id';
 
     // Default scopes MUST be included for OpenID Connect.
     private const DEFAULT_SCOPES =  [
@@ -45,11 +41,9 @@ class GoogleSignIn
         private DataProviderManager $dataProviderManager,
         private Response $response,
         private Request $request,
-        RedisClientFactory $redisClientFactory
     ) {
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->redisClientFactory = $redisClientFactory;
     }
 
     public function isEnabled(): bool
@@ -76,7 +70,7 @@ class GoogleSignIn
      * @param string|null $locale if user is created, this locale will be set as a default user locale
      * @return ActiveRow|null created/matched user
      * @throws AlreadyLinkedAccountSsoException
-     * @throws DataProviderException
+     * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
     public function signInUsingIdToken(
         string $idToken,
@@ -110,13 +104,13 @@ class GoogleSignIn
         /** @var GoogleSignInDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
-             $provider->provide([
-                 'matchedUser' => $matchedUser,
-                 'googleUserEmail' => $userEmail,
-                 'googleUserId' => $googleUserId,
-                 'gsiAccessToken' => $gsiAccessToken,
-                 'locale' => $locale,
-             ]);
+            $provider->provide([
+                'matchedUser' => $matchedUser,
+                'googleUserEmail' => $userEmail,
+                'googleUserId' => $googleUserId,
+                'gsiAccessToken' => $gsiAccessToken,
+                'locale' => $locale,
+            ]);
         }
 
         $userBuilder = $this->ssoUserManager->createUserBuilder(
@@ -158,7 +152,31 @@ class GoogleSignIn
      */
     public function exchangeAuthCode(string $gsiAuthCode, string $redirectUri): array
     {
-        return $this->getClient($redirectUri)->fetchAccessTokenWithAuthCode($gsiAuthCode);
+        $client = $this->getClient($redirectUri);
+        return $client->fetchAccessTokenWithAuthCode($gsiAuthCode);
+    }
+
+    private function setLoginCookie(string $key, $value): void
+    {
+        $this->response->setCookie(
+            $key,
+            $value,
+            strtotime('+1 hour'),
+            '/',
+            null,
+            null,
+            true,
+            'Lax'
+        );
+    }
+
+    // Function to delete cookie(s) has to match cookie-domain set in `setLoginCookie()`,
+    // otherwise cookie will not be deleted.
+    private function deleteLoginCookies(string...$keys): void
+    {
+        foreach ($keys as $key) {
+            $this->response->deleteCookie($key, '/');
+        }
     }
 
     /**
@@ -177,7 +195,7 @@ class GoogleSignIn
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (!empty($this->request->getQuery('code'))) {
+        if (isset($_GET['code'])) {
             throw new SsoException("Invalid call, 'code' GET parameter should be passed to redirect URI link");
         }
 
@@ -193,17 +211,19 @@ class GoogleSignIn
         $state = bin2hex(random_bytes(128/8));
         $client->setState($state);
 
+        //save cookie for later verification (or delete to remove any stale cookies)
+        $this->setLoginCookie(self::COOKIE_GSI_STATE, $state);
+        if ($source) {
+            $this->setLoginCookie(self::COOKIE_GSI_SOURCE, $source);
+        } else {
+            $this->deleteLoginCookies(self::COOKIE_GSI_SOURCE);
+        }
         $userId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-
-        // Each state has a separate Redis key to use expiration feature
-        // Redis does not support expiration on individual hash fields
-        $this->redis()->hset($this->redisKey($state), 'json', Json::encode(array_filter([
-            'source' => $source ?? null,
-            'user_id' => $userId ?? null,
-        ])));
-
-        // expiration max 10 minutes
-        $this->redis()->expire($this->redisKey($state), 10*60);
+        if ($userId) {
+            $this->setLoginCookie(self::COOKIE_GSI_USER_ID, $userId);
+        } else {
+            $this->deleteLoginCookies(self::COOKIE_GSI_USER_ID);
+        }
 
         return $client->createAuthUrl();
     }
@@ -221,47 +241,45 @@ class GoogleSignIn
      * @return ActiveRow user row
      * @throws AlreadyLinkedAccountSsoException if connected account is used
      * @throws SsoException if authentication fails
-     * @throws DataProviderException
+     * @throws \Crm\ApplicationModule\DataProvider\DataProviderException
      */
     public function signInCallback(string $redirectUri, ?string $referer = null, ?string $locale = null): ActiveRow
     {
+        $gsiState = $this->request->getCookie(self::COOKIE_GSI_STATE);
+        $gsiUserId = $this->request->getCookie(self::COOKIE_GSI_USER_ID);
+        $gsiSource = $this->request->getCookie(self::COOKIE_GSI_SOURCE);
+
+        $this->deleteLoginCookies(self::COOKIE_GSI_STATE, self::COOKIE_GSI_USER_ID, self::COOKIE_GSI_SOURCE);
+
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (!empty($this->request->getQuery('error'))) {
+        if (!empty($_GET['error'])) {
             // Got an error, probably user denied access
-            throw new SsoException('Google SignIn error: ' . htmlspecialchars($this->request->getQuery('error')));
+            throw new SsoException('Google SignIn error: ' . htmlspecialchars($_GET['error']));
         }
 
-        if (empty($this->request->getQuery('code'))) {
+        if (empty($_GET['code'])) {
             throw new SsoException('Google SignIn error: missing code');
         }
 
-        // Check state validity (to avoid CSRF attack)
-        if (empty($this->request->getQuery('state'))) {
-            throw new SsoException("Google SignIn error: missing state variable");
+        // Check internal state
+        if (empty($_GET['state']) || ($_GET['state'] !== $gsiState)) {
+            // State is invalid, possible CSRF attack in progress
+            throw new SsoException("Google SignIn error: invalid state (current state: [{$_GET['state']}], cookie state: [{$gsiState}]).");
         }
-        $state = $this->request->getQuery('state');
-        $savedStateString = $this->redis()->hget($this->redisKey($state), 'json');
-        $this->redis()->hdel($this->redisKey($state), ['json']);
-        if (!$savedStateString) {
-            throw new SsoException("Google SignIn error: invalid state '$state'");
-        }
-        $savedState = Json::decode($savedStateString, Json::FORCE_ARRAY);
 
-        // Check that same user triggered login as is currently signed-in
+        // Check user state
         $loggedUserId = $this->user->isLoggedIn() ? $this->user->getId() : null;
-        $savedStateUserId = $savedState['user_id'] ?? null;
-
-        if ($savedStateUserId !== $loggedUserId) {
+        if ((string) $loggedUserId !== (string) $gsiUserId) {
             // State is invalid, possible user change between login request and callback
-            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', state userId: ' . $savedStateUserId . ')');
+            throw new SsoException('Google SignIn error: invalid user state (current userId: '. $loggedUserId . ', cookie userId: ' . $gsiUserId . ')');
         }
 
         // Get OAuth access token
         $client = $this->getClient($redirectUri);
-        $client->fetchAccessTokenWithAuthCode($this->request->getQuery('code'));
+        $client->fetchAccessTokenWithAuthCode($_GET['code']);
 
         // Get user details using access token
         $service = new Oauth2($client);
@@ -286,18 +304,18 @@ class GoogleSignIn
         /** @var GoogleSignInDataProviderInterface[] $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_sign_in', GoogleSignInDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
-             $provider->provide([
-                 'matchedUser' => $matchedUser,
-                 'googleUserEmail' => $userEmail,
-                 'googleUserId' => $googleUserId,
-                 'gsiAccessToken' => $client->getAccessToken()['access_token'],
-                 'locale' => $locale,
-             ]);
+            $provider->provide([
+                'matchedUser' => $matchedUser,
+                'googleUserEmail' => $userEmail,
+                'googleUserId' => $googleUserId,
+                'gsiAccessToken' => $client->getAccessToken()['access_token'],
+                'locale' => $locale,
+            ]);
         }
 
         $userBuilder = $this->ssoUserManager->createUserBuilder(
             $userEmail,
-            $savedState['source'] ?? self::USER_SOURCE_GOOGLE_SSO,
+            $gsiSource ?? self::USER_SOURCE_GOOGLE_SSO,
             self::USER_GOOGLE_REGISTRATION_CHANNEL,
             $referer
         );
@@ -335,10 +353,5 @@ class GoogleSignIn
             $googleClient->setRedirectUri($redirectUri);
         }
         return $googleClient;
-    }
-
-    private function redisKey(string $state): string
-    {
-        return self::REDIS_GSI_KEY . '_' . $state;
     }
 }
