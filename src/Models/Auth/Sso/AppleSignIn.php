@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Auth\Sso;
 
 use Crm\ApplicationModule\Config\Repository\ConfigsRepository;
+use Crm\ApplicationModule\Request as CrmRequest;
 use Crm\UsersModule\Repository\UserConnectedAccountsRepository;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
@@ -334,6 +335,24 @@ class AppleSignIn
             $cookie['httponly'],
             'None'
         );
+
+        // If n_token was missing, user would be logged out.
+        // Therefore, we need to set it too.
+        $cookieToken = $this->request->getCookie('n_token');
+
+        // Domain same as when setting 'n_token' in AccessToken
+        if ($cookieToken) {
+            $this->response->setCookie(
+                'n_token',
+                $cookieToken,
+                strtotime('+5 minutes'), // this is short-lived cookie
+                $url->getPath(), // valid only for callback path
+                CrmRequest::getDomain(),
+                true, // "SameSite: None" requires secure to be set to "true"
+                $cookie['httponly'],
+                'None'
+            );
+        }
     }
 
     private function isCodeValid($code, $idToken): bool
