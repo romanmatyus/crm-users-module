@@ -161,7 +161,7 @@ class GoogleSignIn
         $this->response->setCookie(
             $key,
             $value,
-            strtotime('+1 hour'),
+            strtotime('+10 minutes'),
             '/',
             null,
             null,
@@ -249,7 +249,8 @@ class GoogleSignIn
         $gsiUserId = $this->request->getCookie(self::COOKIE_GSI_USER_ID);
         $gsiSource = $this->request->getCookie(self::COOKIE_GSI_SOURCE);
 
-        $this->deleteLoginCookies(self::COOKIE_GSI_STATE, self::COOKIE_GSI_USER_ID, self::COOKIE_GSI_SOURCE);
+        // Currently OAUTH variables are not deleted right after sign-in, but let to expire in 10 minutes
+        //$this->deleteLoginCookies(self::COOKIE_GSI_STATE, self::COOKIE_GSI_USER_ID, self::COOKIE_GSI_SOURCE);
 
         if (!$this->isEnabled()) {
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');

@@ -59,7 +59,7 @@ class AppleSignIn
         $this->response->setCookie(
             $key,
             $value,
-            strtotime('+1 hour'),
+            strtotime('+10 minutes'),
             '/',
             null,
             true, // "SameSite: None" has to have "Secure: true"
