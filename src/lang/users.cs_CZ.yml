@@ -102,10 +102,10 @@ frontend:
             placeholder: například 92385982
         company_tax_id:
             label: 'DIČ:'
-            placeholder: například CZ2359023591
+            placeholder: například CZ92385982
         company_vat_id:
             label: 'IČDPH:'
-            placeholder: například CZ2359023591
+            placeholder: například CZ92385982
         submit: Ulož
     request_password:
         title: Problém s přihlášením
