@@ -4,14 +4,15 @@ namespace Crm\UsersModule\Repository;
 
 use Crm\ApplicationModule\Repository;
 use Nette\Database\Explorer;
+use Nette\Database\Table\ActiveRow;
 
 class CountriesRepository extends Repository
 {
     protected $tableName = 'countries';
 
-    private $defaultCountry;
+    private ActiveRow $defaultCountry;
 
-    private $defaultCountryISO;
+    private string $defaultCountryISO;
 
     public function __construct(
         $defaultCountryISO,
@@ -21,21 +22,25 @@ class CountriesRepository extends Repository
         $this->setDefaultCountry($defaultCountryISO);
     }
 
-    private function setDefaultCountry($defaultCountryISO)
+    private function setDefaultCountry(string $defaultCountryISO)
     {
-        if (!isset($defaultCountryISO)) {
-            throw new \Exception("Missing environment variable `CRM_DEFAULT_COUNTRY_ISO`");
+        if (empty(trim($defaultCountryISO))) {
+            throw new \Exception("Unable to load default country from empty string.");
         }
         $this->defaultCountryISO = $defaultCountryISO;
     }
 
-    final public function defaultCountry()
+    final public function defaultCountry(): ActiveRow
     {
-        if (!$this->defaultCountryISO) {
-            throw new \Exception("Unable to load default country from provided ISO code `{$this->defaultCountryISO}`");
+        if (!isset($this->defaultCountryISO)) {
+            throw new \Exception("Unable to load default country. Use `setDefaultCountry()`.");
         }
-        if (!$this->defaultCountry) {
-            $this->defaultCountry = $this->findBy('iso_code', $this->defaultCountryISO);
+        if (!isset($this->defaultCountry)) {
+            $defaultCountry = $this->findByIsoCode($this->defaultCountryISO);
+            if ($defaultCountry === null) {
+                throw new \Exception("Unable to load default country from provided ISO code [{$this->defaultCountryISO}].");
+            }
+            $this->defaultCountry = $defaultCountry;
         }
         return $this->defaultCountry;
     }
