@@ -3,7 +3,9 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
+use Crm\ApplicationModule\DataProvider\DataProviderManager;
 use Crm\UsersModule\Auth\Sso\GoogleSignIn;
+use Crm\UsersModule\DataProvider\GoogleTokenSignInDataProviderInterface;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -18,34 +20,22 @@ use Tracy\Debugger;
 use Tracy\ILogger;
 
 /**
- * Implements validation of Google Token ID
- * see: https://developers.google.com/identity/sign-in/web/backend-auth
+ * Implements validation of Google ID Token
+ * see https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
  *
  * @package Crm\UsersModule\Api
  */
 class GoogleTokenSignInHandler extends ApiHandler
 {
-    private GoogleSignIn $googleSignIn;
-
-    private AccessTokensRepository $accessTokensRepository;
-
-    private DeviceTokensRepository $deviceTokensRepository;
-
-    private UsersRepository $usersRepository;
-
     public function __construct(
-        GoogleSignIn $googleSignIn,
-        AccessTokensRepository $accessTokensRepository,
-        DeviceTokensRepository $deviceTokensRepository,
-        UsersRepository $usersRepository,
+        private GoogleSignIn $googleSignIn,
+        private AccessTokensRepository $accessTokensRepository,
+        private DeviceTokensRepository $deviceTokensRepository,
+        private UsersRepository $usersRepository,
+        private DataProviderManager $dataProviderManager,
         LinkGenerator $linkGenerator
     ) {
         parent::__construct();
-
-        $this->googleSignIn = $googleSignIn;
-        $this->accessTokensRepository = $accessTokensRepository;
-        $this->deviceTokensRepository = $deviceTokensRepository;
-        $this->usersRepository = $usersRepository;
         $this->linkGenerator = $linkGenerator;
     }
 
@@ -117,12 +107,11 @@ class GoogleTokenSignInHandler extends ApiHandler
         $user = $this->googleSignIn->signInUsingIdToken($idToken, $gsiAccessToken, null, $params['source'] ?? null, $params['locale'] ?? null);
 
         if (!$user) {
-            $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
+            return new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
                 'status' => 'error',
                 'code' => 'error_verifying_id_token',
                 'message' => 'Unable to verify ID token',
             ]);
-            return $response;
         }
 
         $accessToken = null;
@@ -133,9 +122,7 @@ class GoogleTokenSignInHandler extends ApiHandler
             }
         }
 
-        $result = $this->formatResponse($user, $accessToken);
-        $response = new JsonApiResponse(IResponse::S200_OK, $result);
-        return $response;
+        return new JsonApiResponse(IResponse::S200_OK, $this->formatResponse($user, $accessToken));
     }
 
     private function formatResponse(ActiveRow $user, ?ActiveRow $accessToken): array
@@ -159,10 +146,19 @@ class GoogleTokenSignInHandler extends ApiHandler
         $userMetaData = $user->related('user_meta')
             ->where('is_public', 1)
             ->fetchPairs('key', 'value');
+
         if (count($userMetaData)) {
             $result['user_meta'] = $userMetaData;
         }
 
-        return $result;
+        /** @var GoogleTokenSignInDataProviderInterface[] $providers */
+        $providers = $this->dataProviderManager->getProviders('users.dataprovider.google_token_sign_in', GoogleTokenSignInDataProviderInterface::class);
+        $toMerge = [];
+        foreach ($providers as $s => $provider) {
+            $toMerge[] = $provider->provide([
+                'user' => $user
+            ]);
+        }
+        return array_merge($result, ...$toMerge);
     }
 }

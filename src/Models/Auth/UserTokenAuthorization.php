@@ -14,20 +14,11 @@ class UserTokenAuthorization implements UsersApiAuthorizationInterface, AccessTo
     /** @var UsersApiAuthorizationInterface[] */
     protected $authorizators = [];
 
-    protected DefaultUserTokenAuthorization $defaultUserTokenAuthorization;
-
-    protected DeviceTokenAuthorization $deviceTokenAuthorization;
-
-    protected Emitter $emitter;
-
     public function __construct(
-        DefaultUserTokenAuthorization $defaultUserTokenAuthorization,
-        DeviceTokenAuthorization $deviceTokenAuthorization,
-        Emitter $emitter
+        protected DefaultUserTokenAuthorization $defaultUserTokenAuthorization,
+        protected DeviceTokenAuthorization $deviceTokenAuthorization,
+        protected Emitter $emitter
     ) {
-        $this->defaultUserTokenAuthorization = $defaultUserTokenAuthorization;
-        $this->deviceTokenAuthorization = $deviceTokenAuthorization;
-        $this->emitter = $emitter;
     }
 
     public function registerAuthorizator(string $source, ApiAuthorizationInterface $authorizator, bool $useAlways = false)
