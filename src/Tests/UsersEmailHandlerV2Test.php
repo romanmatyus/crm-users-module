@@ -17,6 +17,7 @@ use Crm\UsersModule\Seeders\UsersSeeder;
 use Crm\UsersModule\User\UnclaimedUser;
 use League\Event\Emitter;
 use Nette\Http\IResponse;
+use Nette\Utils\Random;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UsersEmailHandlerV2Test extends DatabaseTestCase
@@ -227,6 +228,19 @@ class UsersEmailHandlerV2Test extends DatabaseTestCase
         $this->assertNull($payload['id']);
         $this->assertNull($payload['password']);
         $this->assertEquals(LoginAttemptsRepository::STATUS_UNCLAIMED_USER, $lastAttempt->status);
+    }
+
+    public function testEmailTooLong()
+    {
+        $email = Random::generate('255') . '@example.com';
+
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->handler->handle([
+            'email' => $email,
+        ]);
+
+        $this->assertEquals(JsonApiResponse::class, get_class($response));
+        $this->assertEquals(IResponse::S422_UNPROCESSABLE_ENTITY, $response->getCode());
     }
 
 

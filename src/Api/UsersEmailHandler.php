@@ -48,6 +48,17 @@ class UsersEmailHandler extends ApiHandler implements ApiParamsValidatorInterfac
 
     public function handle(array $params): ResponseInterface
     {
+        if (strlen($params['email']) > 255) {
+            return new JsonApiResponse(
+                IResponse::S422_UNPROCESSABLE_ENTITY,
+                [
+                    'status' => 'error',
+                    'message' => 'Invalid email format',
+                    'code' => 'invalid_email'
+                ]
+            );
+        }
+
         $passwordStatus = null;
         $user = $this->userManager->loadUserByEmail($params['email']);
         try {
