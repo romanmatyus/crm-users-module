@@ -195,7 +195,8 @@ class GoogleSignIn
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (isset($_GET['code'])) {
+        $code = $this->request->getQuery('code');
+        if ($code !== null) {
             throw new SsoException("Invalid call, 'code' GET parameter should be passed to redirect URI link");
         }
 
@@ -256,19 +257,22 @@ class GoogleSignIn
             throw new \Exception('Google Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (!empty($_GET['error'])) {
+        $error = $this->request->getQuery('error');
+        if (!empty($error)) {
             // Got an error, probably user denied access
-            throw new SsoException('Google SignIn error: ' . htmlspecialchars($_GET['error']));
+            throw new SsoException('Google SignIn error: ' . htmlspecialchars($error));
         }
 
-        if (empty($_GET['code'])) {
+        $code = $this->request->getQuery('code');
+        if (empty($code)) {
             throw new SsoException('Google SignIn error: missing code');
         }
 
         // Check internal state
-        if (empty($_GET['state']) || ($_GET['state'] !== $gsiState)) {
+        $requestState = $this->request->getQuery('state');
+        if (empty($requestState) || ($requestState !== $gsiState)) {
             // State is invalid, possible CSRF attack in progress
-            throw new SsoException("Google SignIn error: invalid state (current state: [{$_GET['state']}], cookie state: [{$gsiState}]).");
+            throw new SsoException("Google SignIn error: invalid state (current state: [{$requestState}], cookie state: [{$gsiState}]).");
         }
 
         // Check user state
@@ -280,7 +284,7 @@ class GoogleSignIn
 
         // Get OAuth access token
         $client = $this->getClient($redirectUri);
-        $client->fetchAccessTokenWithAuthCode($_GET['code']);
+        $client->fetchAccessTokenWithAuthCode($code);
 
         // Get user details using access token
         $service = new Oauth2($client);

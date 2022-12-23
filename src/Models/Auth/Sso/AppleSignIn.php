@@ -155,13 +155,15 @@ class AppleSignIn
             throw new \Exception('Apple Sign In is not enabled, please see authentication configuration in your admin panel.');
         }
 
-        if (!empty($_POST['error'])) {
+        $error = $this->request->getPost('error');
+        if (!empty($error)) {
             // Got an error, probably user denied access
-            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($_POST['error']));
+            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($error));
         }
 
         // Check internal state
-        if ($_POST['state'] !== $asiState) {
+        $requestState = $this->request->getPost('state');
+        if ($requestState !== $asiState) {
             // State is invalid, possible CSRF attack in progress
             throw new SsoException('Apple SignIn error: invalid state');
         }
@@ -173,8 +175,13 @@ class AppleSignIn
             throw new SsoException("Apple SignIn error: invalid user state (current userId: {$loggedUserId}, cookie userId: {$asiUserId})");
         }
 
+        $encodedIdToken = $this->request->getPost('id_token');
+        if (empty($encodedIdToken)) {
+            throw new SsoException('Apple SignIn error: id token is not present, possibly bogus request');
+        }
+
         try {
-            $idToken = $this->decodeIdToken($_POST['id_token']);
+            $idToken = $this->decodeIdToken($encodedIdToken);
         } catch (\Exception $exception) {
             throw new SsoException('Apple SignIn error: unable to verify id token');
         }
@@ -186,7 +193,7 @@ class AppleSignIn
         }
 
         // Check code
-        if (!$this->isCodeValid($_POST['code'], $idToken)) {
+        if (!$this->isCodeValid($this->request->getPost('code'), $idToken)) {
             // Code is invalid
             throw new SsoException('Apple SignIn error: invalid code');
         }
