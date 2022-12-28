@@ -3,39 +3,31 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UnclaimedUser;
 use Nette\Http\IResponse;
 use Nette\Http\Request;
 use Nette\Utils\Validators;
+use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
 class EmailValidationApiHandler extends ApiHandler
 {
-    private $request;
-
-    private $usersRepository;
-
     private $action = 'validate';
-    private UnclaimedUser $unclaimedUser;
 
     public function __construct(
-        Request $request,
-        UsersRepository $usersRepository,
-        UnclaimedUser $unclaimedUser
+        private Request $request,
+        private UsersRepository $usersRepository,
+        private UnclaimedUser $unclaimedUser
     ) {
-        $this->request = $request;
-        $this->usersRepository = $usersRepository;
-        $this->unclaimedUser = $unclaimedUser;
+        parent::__construct();
     }
 
     public function params(): array
     {
         return [
-            new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),
+            (new PostInputParam('email'))->setRequired(),
         ];
     }
 
@@ -47,19 +39,6 @@ class EmailValidationApiHandler extends ApiHandler
 
     public function handle(array $params): ResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-
-        $error = $paramsProcessor->hasError();
-        if ($error) {
-            $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
-                'status' => 'error',
-                'message' => $error,
-                'code' => 'invalid_request',
-            ]);
-            return $response;
-        }
-
-        $params = $paramsProcessor->getValues();
         if (!Validators::isEmail($params['email'])) {
             $response = new JsonApiResponse(IResponse::S400_BAD_REQUEST, [
                 'status' => 'error',

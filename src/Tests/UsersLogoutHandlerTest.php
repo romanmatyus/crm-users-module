@@ -2,6 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\GetDeviceTokenApiHandler;
 use Crm\UsersModule\Api\UsersLogoutHandler;
@@ -16,20 +17,13 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UsersLogoutHandlerTest extends DatabaseTestCase
 {
-    /** @var UsersLogoutHandler */
-    private $logoutHandler;
+    use ApiTestTrait;
 
-    /** @var GetDeviceTokenApiHandler */
-    private $getDeviceTokenApiHandler;
-
-    /** @var AccessTokensRepository */
-    private $accessTokenRepository;
-
-    /** @var DeviceTokensRepository */
-    private $deviceTokensRepository;
-
-    /** @var UserManager */
-    private $userManager;
+    private UsersLogoutHandler $logoutHandler;
+    private GetDeviceTokenApiHandler $getDeviceTokenApiHandler;
+    private AccessTokensRepository $accessTokenRepository;
+    private DeviceTokensRepository $deviceTokensRepository;
+    private UserManager $userManager;
 
     protected function requiredSeeders(): array
     {
@@ -64,7 +58,7 @@ class UsersLogoutHandlerTest extends DatabaseTestCase
         $this->assertEquals(2, $this->accessTokenRepository->all()->count());
 
         $this->logoutHandler->setAuthorization(new TestUserTokenAuthorization($accessToken1, $user1));
-        $response = $this->logoutHandler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->logoutHandler);
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
 
@@ -93,7 +87,7 @@ class UsersLogoutHandlerTest extends DatabaseTestCase
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $deviceToken->token;
         $this->logoutHandler->setAuthorization($this->getUserTokenAuthorization());
-        $response = $this->logoutHandler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->logoutHandler);
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
 

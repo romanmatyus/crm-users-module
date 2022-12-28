@@ -3,80 +3,55 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AddressChangeRequestsRepository;
 use Crm\UsersModule\Repository\AddressTypesRepository;
 use Crm\UsersModule\Repository\AddressesRepository;
 use Crm\UsersModule\Repository\CountriesRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
 class CreateAddressChangeRequestHandler extends ApiHandler
 {
-    private $addressChangeRequestsRepository;
-
-    private $addressTypesRepository;
-
-    private $userManager;
-
-    private $addressesRepository;
-
-    private $countriesRepository;
-
     public function __construct(
-        AddressChangeRequestsRepository $addressChangeRequestsRepository,
-        AddressTypesRepository $addressTypesRepository,
-        UserManager $userManager,
-        AddressesRepository $addressesRepository,
-        CountriesRepository $countriesRepository
+        private AddressChangeRequestsRepository $addressChangeRequestsRepository,
+        private AddressTypesRepository $addressTypesRepository,
+        private UserManager $userManager,
+        private AddressesRepository $addressesRepository,
+        private CountriesRepository $countriesRepository
     ) {
-        $this->addressChangeRequestsRepository = $addressChangeRequestsRepository;
-        $this->addressTypesRepository = $addressTypesRepository;
-        $this->userManager = $userManager;
-        $this->addressesRepository = $addressesRepository;
-        $this->countriesRepository = $countriesRepository;
+        parent::__construct();
     }
 
     public function params(): array
     {
         return [
-            new InputParam(InputParam::TYPE_POST, 'email', InputParam::REQUIRED),
-            new InputParam(InputParam::TYPE_POST, 'type', InputParam::REQUIRED),
+            (new PostInputParam('email'))->setRequired(),
+            (new PostInputParam('type'))->setRequired(),
 
-            new InputParam(InputParam::TYPE_POST, 'first_name', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'last_name', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'company_name', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'address', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'number', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'zip', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'city', InputParam::OPTIONAL),
+            (new PostInputParam('first_name')),
+            (new PostInputParam('last_name')),
+            (new PostInputParam('company_name')),
+            (new PostInputParam('address')),
+            (new PostInputParam('number')),
+            (new PostInputParam('zip')),
+            (new PostInputParam('city')),
 
             // **Deprecated** and will be removed. Replaced with `country_iso`.
-            new InputParam(InputParam::TYPE_POST, 'country_id', InputParam::OPTIONAL),
+            (new PostInputParam('country_id')),
 
-            new InputParam(InputParam::TYPE_POST, 'country_iso', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'phone_number', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'company_id', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'company_tax_id', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'company_vat_id', InputParam::OPTIONAL),
+            (new PostInputParam('country_iso')),
+            (new PostInputParam('phone_number')),
+            (new PostInputParam('company_id')),
+            (new PostInputParam('company_tax_id')),
+            (new PostInputParam('company_vat_id')),
         ];
     }
 
     public function handle(array $params): ResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-
-        $error = $paramsProcessor->hasError();
-        if ($error) {
-            $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => $error]);
-            return $response;
-        }
-
-        $params = $paramsProcessor->getValues();
-
         $user = $this->userManager->loadUserByEmail($params['email']);
         if (!$user) {
             $response = new JsonApiResponse(Response::S404_NOT_FOUND, ['status' => 'error', 'message' => 'User not found']);

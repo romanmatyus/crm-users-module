@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Events\NewUserEvent;
@@ -20,23 +21,14 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UserCreateApiHandlerTest extends DatabaseTestCase
 {
-    /** @var DeviceTokensRepository */
-    private $deviceTokensRepository;
+    use ApiTestTrait;
 
-    /** @var UsersRepository */
-    private $usersRepository;
-
-    /** @var UsersCreateHandler */
-    private $handler;
-
-    /** @var AccessTokensRepository */
-    private $accessTokensRepository;
-
-    /** @var UnclaimedUser */
-    private $unclaimedUser;
-
-    /** @var Emitter */
-    private $emitter;
+    private DeviceTokensRepository $deviceTokensRepository;
+    private UsersRepository $usersRepository;
+    private UsersCreateHandler $handler;
+    private AccessTokensRepository $accessTokensRepository;
+    private UnclaimedUser $unclaimedUser;
+    private Emitter $emitter;
 
     protected function setUp(): void
     {
@@ -76,10 +68,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
     public function testCreateUserEmailError()
     {
-        // TODO: Fix tests of missing required parameters (remp/crm#2319)
-        $this->markTestSkipped('Skipped until remp/crm#2319 is resolved');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(404, $response->getCode());
@@ -97,10 +86,11 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
         $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => '0test@user.site',
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
@@ -126,11 +116,12 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
         $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => '0test2@user.site',
             'device_token' => $deviceToken->token,
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
@@ -154,11 +145,12 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
     public function testCreateUserNotExistingDeviceToken()
     {
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => '0test2@user.site',
             'device_token' => 'devtok_sd8a907sas987du',
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -177,11 +169,12 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->never()->getMock();
         $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => '0test2@user.site',
             'unclaimed' => true,
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
@@ -201,11 +194,12 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $email = '0test2@user.site';
         $this->unclaimedUser->createUnclaimedUser($email);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
             'unclaimed' => true,
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -220,10 +214,11 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $email = '0test2@user.site';
         $this->usersRepository->add($email, '123456');
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -242,10 +237,11 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $listenerUserRegistered = \Mockery::mock(AbstractListener::class)->shouldReceive('handle')->once()->getMock();
         $this->emitter->addListener(UserRegisteredEvent::class, $listenerUserRegistered);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
-        ]);
+        ];
+        $this->handler->setAuthorization(new NoAuthorization());
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());

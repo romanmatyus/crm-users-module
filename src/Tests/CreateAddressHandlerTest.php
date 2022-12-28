@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Seeders\CountriesSeeder;
 use Crm\UsersModule\Api\CreateAddressHandler;
 use Crm\UsersModule\Repository\AddressTypesRepository;
@@ -15,11 +15,10 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 // */
 class CreateAddressHandlerTest extends BaseTestCase
 {
-    /** @var CreateAddressHandler */
-    private $handler;
+    use ApiTestTrait;
 
-    /** @var AddressTypesRepository */
-    private $addressTypesRepository;
+    private CreateAddressHandler $handler;
+    private AddressTypesRepository $addressTypesRepository;
 
     protected function requiredSeeders(): array
     {
@@ -43,8 +42,7 @@ class CreateAddressHandlerTest extends BaseTestCase
 
     public function testRequiredMissing()
     {
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -58,8 +56,7 @@ class CreateAddressHandlerTest extends BaseTestCase
         $_POST['email'] = '0test@user.site';
         $_POST['type'] = 'test';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -74,8 +71,7 @@ class CreateAddressHandlerTest extends BaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = '@test';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -92,8 +88,7 @@ class CreateAddressHandlerTest extends BaseTestCase
 
         $_POST['country_iso'] = 'QQQ';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -113,8 +108,7 @@ class CreateAddressHandlerTest extends BaseTestCase
         $_POST['zip'] = '98745';
         $_POST['country_iso'] = 'AU';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());

@@ -3,6 +3,8 @@
 namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Api\EmptyResponse;
+use Crm\ApiModule\Tests\ApiTestTrait;
+use Crm\ApplicationModule\ActiveRow;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\ApplicationModule\User\UserDataProviderInterface;
 use Crm\ApplicationModule\User\UserDataRegistrator;
@@ -13,21 +15,15 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class DeleteUserApiHandlerTest extends DatabaseTestCase
 {
+    use ApiTestTrait;
+
     const EMAIL = 'testdeleteuser@example.com';
 
-    /** @var AccessTokensRepository */
-    private $accessTokensRepository;
-
-    /** @var UsersRepository */
-    private $usersRepository;
-
-    /** @var UserDataRegistrator */
-    private $userDataRegistrator;
-
-    /** @var DeleteUserApiHandler */
-    private $handler;
-
-    private $user;
+    private AccessTokensRepository $accessTokensRepository;
+    private UsersRepository $usersRepository;
+    private UserDataRegistrator $userDataRegistrator;
+    private DeleteUserApiHandler $handler;
+    private ActiveRow $user;
 
     protected function requiredRepositories(): array
     {
@@ -64,7 +60,7 @@ class DeleteUserApiHandlerTest extends DatabaseTestCase
 
         $this->userDataRegistrator->addUserDataProvider($userDataProviderMock, 10);
         $this->handler->setAuthorization(new TestUserTokenAuthorization($accessToken, $user));
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(EmptyResponse::class, get_class($response));
         $this->assertEquals(204, $response->getCode());
@@ -83,7 +79,7 @@ class DeleteUserApiHandlerTest extends DatabaseTestCase
         $this->userDataRegistrator->addUserDataProvider($userDataProviderMock, 20);
 
         $this->handler->setAuthorization(new TestUserTokenAuthorization($accessToken, $user));
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(403, $response->getCode());

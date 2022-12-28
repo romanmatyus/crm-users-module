@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\ListUsersHandler;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -12,11 +12,10 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class ListUsersHandlerTest extends DatabaseTestCase
 {
-    /** @var ListUsersHandler */
-    private $handler;
+    use ApiTestTrait;
 
-    /** @var UsersRepository */
-    private $usersRepository;
+    private ListUsersHandler $handler;
+    private UsersRepository $usersRepository;
 
     protected function requiredSeeders(): array
     {
@@ -48,8 +47,7 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $_POST['user_ids'] = Json::encode([$activated->getPrimary(),$deactivated->getPrimary()]);
         $_POST['page'] = 1;
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());
@@ -79,8 +77,7 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $_POST['page'] = 1;
         $_POST['include_deactivated'] = true;
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());

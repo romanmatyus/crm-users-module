@@ -3,41 +3,32 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\AddressesRepository;
 use Nette\Http\Response;
+use Tomaj\NetteApi\Params\GetInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
 class AddressesHandler extends ApiHandler
 {
-    private $userManager;
-
-    private $addressesRepository;
-
     public function __construct(
-        UserManager $userManager,
-        AddressesRepository $addressesRepository
+        private UserManager $userManager,
+        private AddressesRepository $addressesRepository
     ) {
-        $this->userManager = $userManager;
-        $this->addressesRepository = $addressesRepository;
+        parent::__construct();
     }
 
     public function params(): array
     {
         return [
-            new InputParam(InputParam::TYPE_GET, 'email', InputParam::REQUIRED),
-            new InputParam(InputParam::TYPE_GET, 'type', InputParam::OPTIONAL),
+            (new GetInputParam('email'))->setRequired(),
+            (new GetInputParam('type')),
         ];
     }
 
     public function handle(array $params): ResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-        $params = $paramsProcessor->getValues();
-
         $user = $this->userManager->loadUserByEmail($params['email']);
         if (!$user) {
             $response = new JsonApiResponse(Response::S400_BAD_REQUEST, ['status' => 'error', 'message' => "user doesn't exist: {$params['email']}"]);

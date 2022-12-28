@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\EmailValidationApiHandler;
 use Crm\UsersModule\Repository\UserMetaRepository;
@@ -13,14 +13,11 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class EmailValidationApiHandlerTest extends DatabaseTestCase
 {
-    /** @var UsersRepository */
-    private $usersRepository;
+    use ApiTestTrait;
 
-    /** @var EmailValidationApiHandler */
-    private $handler;
-
-    /** @var UnclaimedUser */
-    private $unclaimedUser;
+    private UsersRepository $usersRepository;
+    private EmailValidationApiHandler $handler;
+    private UnclaimedUser $unclaimedUser;
 
     protected function requiredSeeders(): array
     {
@@ -52,8 +49,7 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'test@example.com';
 
         $this->handler->setAction('validate');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertInstanceOf(JsonApiResponse::class, $response);
         $this->assertEquals($response->getCode(), 200);
@@ -64,8 +60,7 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         // invalidate right away, sunny day scenario
 
         $this->handler->setAction('invalidate');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertInstanceOf(JsonApiResponse::class, $response);
         $this->assertEquals($response->getCode(), 200);
@@ -79,8 +74,7 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'foo@bar.baz';
 
         $this->handler->setAction('validate');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertInstanceOf(JsonApiResponse::class, $response);
         $this->assertEquals($response->getCode(), 404);
@@ -90,12 +84,11 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
     public function testSetEmailValidatedNoEmail()
     {
         $this->handler->setAction('validate');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertInstanceOf(JsonApiResponse::class, $response);
         $this->assertEquals($response->getCode(), 400);
-        $this->assertEquals('invalid_request', $response->getPayload()['code']);
+        $this->assertEquals('invalid_input', $response->getPayload()['code']);
     }
 
     public function testSetEmailValidatedInvalidEmail()
@@ -103,8 +96,7 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'non_email';
 
         $this->handler->setAction('validate');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertInstanceOf(JsonApiResponse::class, $response);
         $this->assertEquals($response->getCode(), 400);
@@ -118,8 +110,7 @@ class EmailValidationApiHandlerTest extends DatabaseTestCase
         $_POST['email'] = $email;
 
         $this->handler->setAction('validate');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertInstanceOf(JsonApiResponse::class, $response);
         $this->assertEquals($response->getCode(), 404);

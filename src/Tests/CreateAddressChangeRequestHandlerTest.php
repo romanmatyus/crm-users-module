@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Seeders\CountriesSeeder;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\CreateAddressChangeRequestHandler;
@@ -16,17 +16,12 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 {
-    /** @var AddressesRepository */
-    private $addressesRepository;
+    use ApiTestTrait;
 
-    /** @var CreateAddressChangeRequestHandler */
-    private $handler;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var AddressTypesRepository */
-    private $addressTypesRepository;
+    private AddressesRepository $addressesRepository;
+    private UserManager $userManager;
+    private AddressTypesRepository $addressTypesRepository;
+    private CreateAddressChangeRequestHandler $apiHandler;
 
     protected function requiredSeeders(): array
     {
@@ -49,20 +44,17 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
     {
         parent::setUp();
 
-        $this->handler = $this->inject(CreateAddressChangeRequestHandler::class);
+        $this->apiHandler = $this->inject(CreateAddressChangeRequestHandler::class);
         $this->addressesRepository = $this->getRepository(AddressesRepository::class);
         $this->userManager = $this->inject(UserManager::class);
         $this->addressTypesRepository = $this->getRepository(AddressTypesRepository::class);
 
         $this->addressTypesRepository->add('test', 'Test');
-
-        unset($_POST);
     }
 
     public function testRequiredMissing()
     {
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -76,8 +68,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = '0test@user.site';
         $_POST['type'] = 'test';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -92,8 +83,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = '@test';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -110,8 +100,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 
         $_POST['country_iso'] = 'QQQ';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -126,8 +115,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = 'test';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -150,8 +138,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $user = $this->userManager->loadUserByEmail($_POST['email']);
         $this->addressesRepository->add($user, $_POST['type'], null, null, $_POST['address'], null, $_POST['city'], $_POST['zip'], null, null);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());

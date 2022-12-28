@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersConfirmApiHandler;
 use Crm\UsersModule\Repository\UsersRepository;
@@ -12,8 +12,9 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UsersConfirmApiHandlerTest extends DatabaseTestCase
 {
-    /** @var UsersConfirmApiHandler */
-    private $handler;
+    use ApiTestTrait;
+
+    private UsersConfirmApiHandler $handler;
 
     protected function requiredSeeders(): array
     {
@@ -38,8 +39,7 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
 
     public function testConfirmUserNoEmail()
     {
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -52,8 +52,7 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = '0test@user.site';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -67,8 +66,7 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = 'admin@admin.sk';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());

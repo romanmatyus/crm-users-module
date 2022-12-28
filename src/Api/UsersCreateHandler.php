@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
+use Crm\ApiModule\Api\ApiParamsValidatorInterface;
 use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApplicationModule\Request;
 use Crm\UsersModule\Auth\InvalidEmailException;
@@ -21,32 +22,18 @@ use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 
-class UsersCreateHandler extends ApiHandler
+class UsersCreateHandler extends ApiHandler implements ApiParamsValidatorInterface
 {
-    private UserManager $userManager;
-    private AccessTokensRepository $accessTokensRepository;
-    private DeviceTokensRepository $deviceTokensRepository;
-    private UsersRepository $usersRepository;
-    private UnclaimedUser $unclaimedUser;
-    private RegistrationIpRateLimit $registrationIpRateLimit;
-    private RegistrationAttemptsRepository $registrationAttemptsRepository;
-
     public function __construct(
-        UserManager $userManager,
-        AccessTokensRepository $accessTokensRepository,
-        DeviceTokensRepository $deviceTokensRepository,
-        UsersRepository $usersRepository,
-        UnclaimedUser $unclaimedUser,
-        RegistrationIpRateLimit $registrationIpRateLimit,
-        RegistrationAttemptsRepository $registrationAttemptsRepository
+        private UserManager $userManager,
+        private AccessTokensRepository $accessTokensRepository,
+        private DeviceTokensRepository $deviceTokensRepository,
+        private UsersRepository $usersRepository,
+        private UnclaimedUser $unclaimedUser,
+        private RegistrationIpRateLimit $registrationIpRateLimit,
+        private RegistrationAttemptsRepository $registrationAttemptsRepository
     ) {
-        $this->userManager = $userManager;
-        $this->accessTokensRepository = $accessTokensRepository;
-        $this->deviceTokensRepository = $deviceTokensRepository;
-        $this->usersRepository = $usersRepository;
-        $this->unclaimedUser = $unclaimedUser;
-        $this->registrationIpRateLimit = $registrationIpRateLimit;
-        $this->registrationAttemptsRepository = $registrationAttemptsRepository;
+        parent::__construct();
     }
 
     public function params(): array
@@ -71,12 +58,11 @@ class UsersCreateHandler extends ApiHandler
 
     public function handle(array $params): ResponseInterface
     {
-        $authorization = $this->getAuthorization();
-
         if (!isset($params['source']) && isset($_GET['source'])) {
             $params['source'] = $_GET['source'];
         }
 
+        $authorization = $this->getAuthorization();
         if ($authorization instanceof NoAuthorization) {
             if ($this->registrationIpRateLimit->reachLimit(Request::getIp())) {
                 $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_RATE_LIMIT_EXCEEDED);
@@ -86,19 +72,9 @@ class UsersCreateHandler extends ApiHandler
             }
         }
 
-        $email = $params['email'];
-        if (!$email) {
-            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
-            $response = new JsonApiResponse(IResponse::S404_NOT_FOUND, ['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
-            return $response;
-        }
-        if (!Validators::isEmail($email)) {
-            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
-            $response = new JsonApiResponse(IResponse::S404_NOT_FOUND, ['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
-            return $response;
-        }
-
         $unclaimed = filter_var($params['unclaimed'] ?? null, FILTER_VALIDATE_BOOLEAN);
+
+        $email = $params['email'];
         $user = $this->userManager->loadUserByEmail($email) ?: null;
 
         // if user found allow only unclaimed user to get registered
@@ -241,5 +217,23 @@ class UsersCreateHandler extends ApiHandler
         return array_filter([
             'newsletters_subscribe' => $newslettersSubscribe
         ]);
+    }
+
+    public function validateParams(array $params): ?ResponseInterface
+    {
+        if (!isset($params['source']) && isset($_GET['source'])) {
+            $params['source'] = $_GET['source'];
+        }
+
+        $email = $params['email'];
+        if (!$email) {
+            return new JsonApiResponse(IResponse::S404_NOT_FOUND, ['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
+        }
+        if (!Validators::isEmail($email)) {
+            $this->addAttempt($params['email'], null, $params['source'], RegistrationAttemptsRepository::STATUS_INVALID_EMAIL);
+            return new JsonApiResponse(IResponse::S404_NOT_FOUND, ['status' => 'error', 'message' => 'Invalid email', 'code' => 'invalid_email']);
+        }
+
+        return null;
     }
 }

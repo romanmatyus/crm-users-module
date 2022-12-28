@@ -2,7 +2,7 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\UsersModule\Api\UsersEmailHandler;
@@ -22,22 +22,14 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UsersEmailHandlerTest extends DatabaseTestCase
 {
-    /** @var UsersEmailHandler */
-    private $handler;
+    use ApiTestTrait;
 
-    /** @var AuthenticatorManagerInterface */
-    private $authenticatorManager;
-
-    /** @var LoginAttemptsRepository */
-    private $loginAttemptsRepository;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var UnclaimedUser */
-    private $unclaimedUser;
-
-    private $emitter;
+    private UsersEmailHandler $handler;
+    private AuthenticatorManagerInterface $authenticatorManager;
+    private LoginAttemptsRepository $loginAttemptsRepository;
+    private UserManager $userManager;
+    private UnclaimedUser $unclaimedUser;
+    private Emitter $emitter;
 
     protected function requiredSeeders(): array
     {
@@ -86,10 +78,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
 
     public function testNoEmail()
     {
-        // TODO: Fix tests of missing required parameters (remp/crm#2319)
-        $this->markTestSkipped('Skipped until remp/crm#2319 is resolved');
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]); // TODO: fix params
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getCode());
@@ -101,10 +90,10 @@ class UsersEmailHandlerTest extends DatabaseTestCase
 
     public function testInvalidEmail()
     {
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' =>'0test@user',
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getCode());
@@ -118,10 +107,10 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     {
         $email = 'example@example.com';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -139,10 +128,10 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     {
         $email = 'user@user.sk';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -162,11 +151,11 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     {
         $email = 'user@user.sk';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
             'password' => 'invalid',
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -186,11 +175,11 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     {
         $email = 'user@user.sk';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
             'password' => 'password',
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -211,10 +200,10 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $email = 'unclaimed@unclaimed.sk';
         $this->unclaimedUser->createUnclaimedUser($email);
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -234,10 +223,10 @@ class UsersEmailHandlerTest extends DatabaseTestCase
     {
         $email = Random::generate('255') . '@example.com';
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => $email,
-        ]);
+        ];
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S422_UNPROCESSABLE_ENTITY, $response->getCode());

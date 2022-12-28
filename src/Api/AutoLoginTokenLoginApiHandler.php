@@ -3,13 +3,12 @@
 namespace Crm\UsersModule\Api;
 
 use Crm\ApiModule\Api\ApiHandler;
-use Crm\ApiModule\Params\InputParam;
-use Crm\ApiModule\Params\ParamsProcessor;
 use Crm\UsersModule\Auth\UserAuthenticator;
 use Crm\UsersModule\Repositories\DeviceTokensRepository;
 use Crm\UsersModule\Repository\AccessTokensRepository;
 use Nette\Http\Response;
 use Nette\Security\AuthenticationException;
+use Tomaj\NetteApi\Params\PostInputParam;
 use Tomaj\NetteApi\Response\JsonApiResponse;
 use Tomaj\NetteApi\Response\ResponseInterface;
 use Tracy\Debugger;
@@ -17,37 +16,26 @@ use Tracy\ILogger;
 
 class AutoLoginTokenLoginApiHandler extends ApiHandler
 {
-    private $userAuthenticator;
-
-    private $accessTokensRepository;
-
-    private $deviceTokensRepository;
-
     public function __construct(
-        AccessTokensRepository $accessTokensRepository,
-        UserAuthenticator $userAuthenticator,
-        DeviceTokensRepository $deviceTokensRepository
+        private AccessTokensRepository $accessTokensRepository,
+        private UserAuthenticator $userAuthenticator,
+        private DeviceTokensRepository $deviceTokensRepository
     ) {
-        $this->accessTokensRepository = $accessTokensRepository;
-        $this->userAuthenticator = $userAuthenticator;
-        $this->deviceTokensRepository = $deviceTokensRepository;
+        parent::__construct();
     }
 
     public function params(): array
     {
         return [
-            new InputParam(InputParam::TYPE_POST, 'autologin_token', InputParam::REQUIRED),
-            new InputParam(InputParam::TYPE_POST, 'device_token', InputParam::OPTIONAL),
-            new InputParam(InputParam::TYPE_POST, 'source', InputParam::OPTIONAL),
+            (new PostInputParam('autologin_token'))->setRequired(),
+            (new PostInputParam('device_token')),
+            (new PostInputParam('source')),
         ];
     }
 
 
     public function handle(array $params): ResponseInterface
     {
-        $paramsProcessor = new ParamsProcessor($this->params());
-        $params = $paramsProcessor->getValues();
-
         $deviceToken = null;
         if (isset($params['device_token'])) {
             $deviceToken = $this->deviceTokensRepository->findByToken($params['device_token']);
