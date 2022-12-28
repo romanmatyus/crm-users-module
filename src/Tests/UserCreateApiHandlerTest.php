@@ -82,7 +82,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
         $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
-        $this->assertEquals(404, $response->getHttpCode());
+        $this->assertEquals(404, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);

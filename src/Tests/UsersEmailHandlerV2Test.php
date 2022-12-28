@@ -92,7 +92,7 @@ class UsersEmailHandlerV2Test extends DatabaseTestCase
         $response = $this->handler->handle([]); // TODO: fix params
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
-        $this->assertEquals(IResponse::S200_OK, $response->getHttpCode());
+        $this->assertEquals(IResponse::S400_BAD_REQUEST, $response->getCode());
 
         $payload = $response->getPayload();
         $this->assertEquals('error', $payload['status']);
