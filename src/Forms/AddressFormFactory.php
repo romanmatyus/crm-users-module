@@ -126,6 +126,15 @@ class AddressFormFactory
             ->setNullable()
             ->setHtmlAttribute('placeholder', 'users.frontend.address.company_vat_id.placeholder');
 
+        if ($userId) {
+            $form->addHidden('user_id', $userId);
+        }
+        if ($addressId) {
+            $form->addHidden('id', $addressId);
+        }
+
+        $form->setDefaults($defaults);
+
         /** @var AddressFormDataProviderInterface $providers */
         $providers = $this->dataProviderManager->getProviders('users.dataprovider.address_form', AddressFormDataProviderInterface::class);
         foreach ($providers as $sorting => $provider) {
@@ -136,15 +145,6 @@ class AddressFormFactory
             ->getControlPrototype()
             ->setName('button')
             ->setHtml('<i class="fa fa-save"></i> ' . $this->translator->translate('users.frontend.address.submit'));
-
-        if ($userId) {
-            $form->addHidden('user_id', $userId);
-        }
-        if ($addressId) {
-            $form->addHidden('id', $addressId);
-        }
-
-        $form->setDefaults($defaults);
 
         $form->onSuccess[] = [$this, 'formSucceeded'];
         return $form;
