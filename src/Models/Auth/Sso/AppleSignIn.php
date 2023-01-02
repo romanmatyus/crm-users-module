@@ -157,8 +157,12 @@ class AppleSignIn
 
         $error = $this->request->getPost('error');
         if (!empty($error)) {
+            $code = match ($error) {
+                'user_cancelled_authorize' => SsoException::CODE_CANCELLED,
+                default => 0,
+            };
             // Got an error, probably user denied access
-            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($error));
+            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($error), $code);
         }
 
         // Check internal state

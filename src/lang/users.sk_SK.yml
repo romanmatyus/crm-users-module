@@ -183,6 +183,7 @@ frontend:
         used_account: 'Prepojenie účtu nie je možné. Účet Googlu %email% už je prepojený s iným kontom.'
     apple:
         fail: 'Chyba prihlasovania pomocou prihlásenia cez Apple; prosím, obráťte sa na našu podporu.'
+        cancel: 'Prihlásenie cez Apple bolo prerušené.'
         sign_using_apple: Prihlásiť cez Apple
         used_account: 'Prepojenie účtu nie je možné. Apple účet %email% už je prepojený s iným kontom.'
 

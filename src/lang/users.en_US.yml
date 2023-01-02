@@ -183,6 +183,7 @@ frontend:
         used_account: "Unable to link accounts. Google account %email% was already linked with another account."
     apple:
         fail: "Unable to log in using Apple Sign-in, please contact our support."
+        cancel: 'Apple Sign-in was cancelled.'
         sign_using_apple: Sign in using Apple
         used_account: "Unable to link accounts. Apple account %email% was already linked with another account."
 

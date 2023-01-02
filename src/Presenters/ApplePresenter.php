@@ -99,6 +99,11 @@ class ApplePresenter extends FrontendPresenter
                 ]);
             }
         } catch (SsoException $e) {
+            if ($e->getCode() === SsoException::CODE_CANCELLED) {
+                $this->flashMessage($this->translator->translate('users.frontend.apple.cancel'), 'danger');
+                $this->redirect('Users:settings');
+            }
+
             Debugger::log($e, Debugger::WARNING);
             $this->flashMessage($this->translator->translate('users.frontend.apple.fail'), 'danger');
             $this->redirect('Users:settings');
