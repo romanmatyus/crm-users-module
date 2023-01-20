@@ -202,6 +202,10 @@ class AppleSignIn
             throw new SsoException('Apple SignIn error: invalid code');
         }
 
+        if (!isset($idToken->email)) {
+            throw new SsoException('Apple SignIn error: missing email in ID token; idToken: ' . $encodedIdToken);
+        }
+
         $userEmail = $idToken->email;
         // 'sub' represents Apple ID in id_token
         // Note: Use 'sub' to identify users, email can change or be private
