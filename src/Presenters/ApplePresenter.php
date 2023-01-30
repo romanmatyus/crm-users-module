@@ -108,7 +108,7 @@ class ApplePresenter extends FrontendPresenter
             $this->flashMessage($this->translator->translate('users.frontend.apple.fail'), 'danger');
             $this->redirect('Users:settings');
         } catch (AlreadyLinkedAccountSsoException $e) {
-            $this->flashMessage($this->translator->translate('users.frontend.apple.used_account'), 'danger');
+            $this->flashMessage($this->translator->translate('users.frontend.apple.used_account', ['email' => $e->getEmail()]), 'danger');
             $this->redirect('Users:settings');
         }
 
