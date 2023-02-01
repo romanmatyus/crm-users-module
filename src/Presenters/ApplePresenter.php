@@ -8,6 +8,9 @@ use Crm\UsersModule\Auth\SignInRedirectValidator;
 use Crm\UsersModule\Auth\Sso\AlreadyLinkedAccountSsoException;
 use Crm\UsersModule\Auth\Sso\AppleSignIn;
 use Crm\UsersModule\Auth\Sso\SsoException;
+use Nette\Application\BadRequestException;
+use Nette\Http\IResponse;
+use Nette\Utils\Json;
 use Tracy\Debugger;
 
 class ApplePresenter extends FrontendPresenter
@@ -39,6 +42,12 @@ class ApplePresenter extends FrontendPresenter
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
+        if (!is_string($finalUrl)) {
+            throw new BadRequestException(
+                "Invalid value of 'url' parameter: " . Json::encode($finalUrl),
+                IResponse::S400_BAD_REQUEST,
+            );
+        }
         $referer = $this->getReferer();
 
         // remove locale from URL; it is already part of final url / referer and it breaks callback URL
