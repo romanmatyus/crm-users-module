@@ -42,7 +42,7 @@ class GooglePresenter extends FrontendPresenter
 
         // Final URL destination
         $finalUrl = $this->getParameter('url');
-        if (!is_string($finalUrl)) {
+        if ($finalUrl !== null && !is_string($finalUrl)) {
             throw new BadRequestException(
                 "Invalid value of 'url' parameter: " . Json::encode($finalUrl),
                 IResponse::S400_BAD_REQUEST,
