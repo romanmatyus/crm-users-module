@@ -65,17 +65,6 @@ class AccessToken
                 false,
                 $this->sameSiteFlag
             );
-
-            $response->setCookie(
-                'n_version',
-                $this->version,
-                strtotime('+10 years'),
-                '/',
-                CrmRequest::getDomain(),
-                null,
-                false,
-                $this->sameSiteFlag
-            );
         }
 
         return $userRow;
