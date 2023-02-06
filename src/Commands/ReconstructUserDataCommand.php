@@ -74,6 +74,8 @@ class ReconstructUserDataCommand extends Command
             $usersQuery->where('users.id IN (?)', $userIds);
         }
 
+        $usersQuery->group('users.id');
+
         $totalUsers = (clone $usersQuery)->count('*');
         $progress = new ProgressBar($output, $totalUsers);
         $progress->setFormat('debug');
