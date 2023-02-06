@@ -2,8 +2,10 @@
 
 namespace Crm\UsersModule\Commands;
 
+use Crm\SegmentModule\SegmentFactory;
 use Crm\UsersModule\Repository\UsersRepository;
 use Crm\UsersModule\User\UserData;
+use Nette\UnexpectedValueException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,17 +14,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ReconstructUserDataCommand extends Command
 {
-    private $usersRepository;
-
-    private $userData;
-
     public function __construct(
-        UsersRepository $usersRepository,
-        UserData $userData
+        private UsersRepository $usersRepository,
+        private UserData $userData,
+        private SegmentFactory $segmentFactory
     ) {
         parent::__construct();
-        $this->usersRepository = $usersRepository;
-        $this->userData = $userData;
     }
 
     protected function configure()
@@ -33,7 +30,13 @@ class ReconstructUserDataCommand extends Command
                 'user_ids',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'User IDs to refresh. If not provided, all users are refreshed.'
+                'User IDs to refresh. If not provided, all users are refreshed (if segment is not provided).'
+            )
+            ->addOption(
+                'segment',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                'Code of users segment to refresh.',
             )
         ;
     }
@@ -48,9 +51,27 @@ class ReconstructUserDataCommand extends Command
             ->where(':access_tokens.id IS NOT NULL')
             ->order('id ASC');
 
-        $userIdsFilter = $input->getOption('user_ids');
-        if (count($userIdsFilter)) {
-            $usersQuery->where('users.id IN (?)', $userIdsFilter);
+        $segmentCode = $input->getOption('segment');
+        if ($segmentCode) {
+            try {
+                $segment = $this->segmentFactory->buildSegment($segmentCode);
+            } catch (UnexpectedValueException $exception) {
+                $output->writeln($exception->getMessage());
+                return Command::FAILURE;
+            }
+
+            $userIds = $segment->getIds();
+            if (count($userIds) === 0) {
+                $output->writeln('Empty segment.');
+                return Command::FAILURE;
+            }
+
+            $usersQuery->where('users.id IN (?)', $userIds);
+        }
+
+        $userIds = $input->getOption('user_ids');
+        if ($userIds && count($userIds)) {
+            $usersQuery->where('users.id IN (?)', $userIds);
         }
 
         $totalUsers = (clone $usersQuery)->count('*');
