@@ -3,6 +3,7 @@
 namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
+use Nette\Database\Table\ActiveRow;
 
 /**
  * UserRegisteredEvent is emitted when new user is registered during standard registration flow.
@@ -10,32 +11,26 @@ use League\Event\AbstractEvent;
  *
  * States the user can go through: new - REGISTERED (this) - disabled - deleted.
  */
-class UserRegisteredEvent extends AbstractEvent
+class UserRegisteredEvent extends AbstractEvent implements UserEventInterface
 {
-    private $user;
-
-    private $originalPassword;
-
-    private $sendEmail;
-
-    public function __construct($user, $originalPassword, $sendEmail = false)
-    {
-        $this->user = $user;
-        $this->originalPassword = $originalPassword;
-        $this->sendEmail = $sendEmail;
+    public function __construct(
+        private ActiveRow $user,
+        private string $originalPassword,
+        private bool $sendEmail = false
+    ) {
     }
 
-    public function getUser()
+    public function getUser(): ActiveRow
     {
         return $this->user;
     }
 
-    public function sendEmail()
+    public function sendEmail(): bool
     {
         return $this->sendEmail;
     }
 
-    public function getOriginalPassword()
+    public function getOriginalPassword(): string
     {
         return $this->originalPassword;
     }

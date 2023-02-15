@@ -17,6 +17,10 @@ class NewAccessTokenHandler extends AbstractListener
 
     public function handle(EventInterface $event)
     {
+        if (!$event instanceof NewAccessTokenEvent) {
+            throw new \Exception("Invalid type of event received, 'NewAccessTokenEvent' expected: " . get_class($event));
+        }
+
         $userId = $event->getUserId();
         $this->userData->refreshUserTokens($userId);
     }
