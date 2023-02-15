@@ -3,9 +3,9 @@
 namespace Crm\UsersModule\Tests;
 
 use Crm\ApiModule\Authorization\NoAuthorization;
+use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
-use Crm\UsersModule\Api\UsersCreateHandler;
 use Crm\UsersModule\Api\UsersLoginHandler;
 use Crm\UsersModule\Authenticator\UsersAuthenticator;
 use Crm\UsersModule\Events\SignEventHandler;
@@ -20,28 +20,18 @@ use Tomaj\NetteApi\Response\JsonApiResponse;
 
 class UserLoginApiHandlerTest extends DatabaseTestCase
 {
+    use ApiTestTrait;
+
     const LOGIN = '1test@user.st';
     const PASSWORD = 'password';
 
-    /** @var DeviceTokensRepository */
-    private $deviceTokensRepository;
-
-    /** @var UsersRepository */
-    private $usersRepository;
-
-    /** @var UsersCreateHandler */
-    private $handler;
-
-    /** @var AccessTokensRepository */
-    private $accessTokensRepository;
-
-    /** @var AuthenticatorManagerInterface */
-    private $authenticatorManager;
-
-    /** @var UnclaimedUser */
-    private $unclaimedUser;
-
-    private $emitter;
+    private DeviceTokensRepository $deviceTokensRepository;
+    private UsersRepository $usersRepository;
+    private UsersLoginHandler $handler;
+    private AccessTokensRepository $accessTokensRepository;
+    private AuthenticatorManagerInterface $authenticatorManager;
+    private UnclaimedUser $unclaimedUser;
+    private Emitter $emitter;
 
     private $user;
 
@@ -93,8 +83,7 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
     public function testNotExistingUser()
     {
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([]);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(400, $response->getCode());
@@ -108,14 +97,11 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     {
         $this->unclaimedUser->createUnclaimedUser(self::LOGIN);
 
-        $_POST['email'] = self::LOGIN;
-        $_POST['password'] = self::PASSWORD;
-
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => self::LOGIN,
             'password' => self::PASSWORD,
-        ]);
+        ];
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(400, $response->getCode());
@@ -129,11 +115,11 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
     {
         $user = $this->getUser();
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => self::LOGIN,
             'password' => self::PASSWORD,
-        ]);
+        ];
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());
@@ -148,12 +134,12 @@ class UserLoginApiHandlerTest extends DatabaseTestCase
 
         $deviceToken = $this->deviceTokensRepository->generate('poiqwe123');
 
-        $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->handler->handle([
+        $_POST = [
             'email' => self::LOGIN,
             'password' => self::PASSWORD,
             'device_token' => $deviceToken->token,
-        ]);
+        ];
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());

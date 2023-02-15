@@ -68,7 +68,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
 
     public function testCreateUserEmailError()
     {
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(404, $response->getCode());
@@ -90,7 +90,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'email' => '0test@user.site',
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
@@ -121,7 +121,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'device_token' => $deviceToken->token,
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
@@ -150,7 +150,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'device_token' => 'devtok_sd8a907sas987du',
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -174,7 +174,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'unclaimed' => true,
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
@@ -199,7 +199,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'unclaimed' => true,
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -218,7 +218,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'email' => $email,
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -241,7 +241,7 @@ class UserCreateApiHandlerTest extends DatabaseTestCase
             'email' => $email,
         ];
         $this->handler->setAuthorization(new NoAuthorization());
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());

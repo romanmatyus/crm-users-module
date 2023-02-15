@@ -54,7 +54,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 
     public function testRequiredMissing()
     {
-        $response = $this->runApi($this->apiHandler);
+        $response = $this->runJsonApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -68,7 +68,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = '0test@user.site';
         $_POST['type'] = 'test';
 
-        $response = $this->runApi($this->apiHandler);
+        $response = $this->runJsonApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -83,7 +83,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = '@test';
 
-        $response = $this->runApi($this->apiHandler);
+        $response = $this->runJsonApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -100,7 +100,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
 
         $_POST['country_iso'] = 'QQQ';
 
-        $response = $this->runApi($this->apiHandler);
+        $response = $this->runJsonApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -115,7 +115,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $_POST['email'] = 'admin@admin.sk';
         $_POST['type'] = 'test';
 
-        $response = $this->runApi($this->apiHandler);
+        $response = $this->runJsonApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -138,7 +138,7 @@ class CreateAddressChangeRequestHandlerTest extends DatabaseTestCase
         $user = $this->userManager->loadUserByEmail($_POST['email']);
         $this->addressesRepository->add($user, $_POST['type'], null, null, $_POST['address'], null, $_POST['city'], $_POST['zip'], null, null);
 
-        $response = $this->runApi($this->apiHandler);
+        $response = $this->runJsonApi($this->apiHandler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());

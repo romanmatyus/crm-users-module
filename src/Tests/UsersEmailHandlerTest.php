@@ -78,7 +78,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
 
     public function testNoEmail()
     {
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getCode());
@@ -93,7 +93,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST = [
             'email' =>'0test@user',
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S200_OK, $response->getCode());
@@ -110,7 +110,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST = [
             'email' => $email,
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -131,7 +131,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST = [
             'email' => $email,
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -155,7 +155,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
             'email' => $email,
             'password' => 'invalid',
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -179,7 +179,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
             'email' => $email,
             'password' => 'password',
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -203,7 +203,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST = [
             'email' => $email,
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
         $lastAttempt = $this->lastLoginAttempt();
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
@@ -226,7 +226,7 @@ class UsersEmailHandlerTest extends DatabaseTestCase
         $_POST = [
             'email' => $email,
         ];
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(IResponse::S422_UNPROCESSABLE_ENTITY, $response->getCode());

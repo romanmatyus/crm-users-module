@@ -47,7 +47,7 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $_POST['user_ids'] = Json::encode([$activated->getPrimary(),$deactivated->getPrimary()]);
         $_POST['page'] = 1;
 
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());
@@ -77,7 +77,7 @@ class ListUsersHandlerTest extends DatabaseTestCase
         $_POST['page'] = 1;
         $_POST['include_deactivated'] = true;
 
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(200, $response->getCode());

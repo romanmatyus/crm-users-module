@@ -39,7 +39,7 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
 
     public function testConfirmUserNoEmail()
     {
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S400_BAD_REQUEST, $response->getCode());
@@ -52,7 +52,7 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = '0test@user.site';
 
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S404_NOT_FOUND, $response->getCode());
@@ -66,7 +66,7 @@ class UsersConfirmApiHandlerTest extends DatabaseTestCase
     {
         $_POST['email'] = 'admin@admin.sk';
 
-        $response = $this->runApi($this->handler);
+        $response = $this->runJsonApi($this->handler);
 
         $this->assertEquals(JsonApiResponse::class, get_class($response));
         $this->assertEquals(Response::S200_OK, $response->getCode());
