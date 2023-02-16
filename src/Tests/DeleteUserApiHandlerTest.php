@@ -60,7 +60,7 @@ class DeleteUserApiHandlerTest extends DatabaseTestCase
 
         $this->userDataRegistrator->addUserDataProvider($userDataProviderMock, 10);
         $this->handler->setAuthorization(new TestUserTokenAuthorization($accessToken, $user));
-        $response = $this->runJsonApi($this->handler);
+        $response = $this->runApi($this->handler);
 
         $this->assertEquals(EmptyResponse::class, get_class($response));
         $this->assertEquals(204, $response->getCode());

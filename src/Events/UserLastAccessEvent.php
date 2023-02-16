@@ -6,22 +6,14 @@ use DateTime;
 use League\Event\AbstractEvent;
 use Nette\Database\Table\ActiveRow;
 
-class UserLastAccessEvent extends AbstractEvent
+class UserLastAccessEvent extends AbstractEvent implements UserEventInterface
 {
-    private $user;
-
-    private $source;
-
-    private $userAgent;
-
-    private $dateTime;
-
-    public function __construct(ActiveRow $user, DateTime $dateTime, $source, $userAgent)
-    {
-        $this->user = $user;
-        $this->source = $source;
-        $this->userAgent = $userAgent;
-        $this->dateTime = $dateTime;
+    public function __construct(
+        private ActiveRow $user,
+        private DateTime $dateTime,
+        private $source,
+        private $userAgent
+    ) {
     }
 
     public function getUser(): ActiveRow

@@ -16,13 +16,10 @@ use Nette\Database\Table\ActiveRow;
  *
  * Unless you're really sure you want this, you probably want to use Crm\UsersModule\Events\UserRegisteredEvent instead.
  */
-class NewUserEvent extends AbstractEvent
+class NewUserEvent extends AbstractEvent implements UserEventInterface
 {
-    private ActiveRow $user;
-
-    public function __construct($user)
+    public function __construct(private ActiveRow $user)
     {
-        $this->user = $user;
     }
 
     public function getUser(): ActiveRow

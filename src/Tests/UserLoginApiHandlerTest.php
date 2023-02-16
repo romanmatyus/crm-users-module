@@ -2,7 +2,6 @@
 
 namespace Crm\UsersModule\Tests;
 
-use Crm\ApiModule\Authorization\NoAuthorization;
 use Crm\ApiModule\Tests\ApiTestTrait;
 use Crm\ApplicationModule\Authenticator\AuthenticatorManagerInterface;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;

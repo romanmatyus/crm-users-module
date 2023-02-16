@@ -3,33 +3,28 @@
 namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
+use Nette\Database\Table\ActiveRow;
 
-class UserChangePasswordEvent extends AbstractEvent
+class UserChangePasswordEvent extends AbstractEvent implements UserEventInterface
 {
-    private $user;
-
-    private $newPassword;
-
-    private $notify;
-
-    public function __construct($user, $newPassword, $notify = true)
-    {
-        $this->user = $user;
-        $this->newPassword = $newPassword;
-        $this->notify = $notify;
+    public function __construct(
+        private ActiveRow $user,
+        private string $newPassword,
+        private bool $notify = true
+    ) {
     }
 
-    public function getUser()
+    public function getUser(): ActiveRow
     {
         return $this->user;
     }
 
-    public function shouldNotify()
+    public function shouldNotify(): bool
     {
         return $this->notify;
     }
 
-    public function getNewPassword()
+    public function getNewPassword(): string
     {
         return $this->newPassword;
     }

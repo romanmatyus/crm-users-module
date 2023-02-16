@@ -3,17 +3,15 @@
 namespace Crm\UsersModule\Events;
 
 use League\Event\AbstractEvent;
+use Nette\Database\Table\ActiveRow;
 
-class UserDisabledEvent extends AbstractEvent
+class UserDisabledEvent extends AbstractEvent implements UserEventInterface
 {
-    private $user;
-
-    public function __construct($user)
+    public function __construct(private ActiveRow $user)
     {
-        $this->user = $user;
     }
 
-    public function getUser()
+    public function getUser(): ActiveRow
     {
         return $this->user;
     }
