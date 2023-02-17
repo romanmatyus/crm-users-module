@@ -17,12 +17,12 @@ class AutoLogin
         $this->autoLoginTokensRepository = $autoLoginTokensRepository;
     }
 
-    public function getToken($token): ActiveRow
+    public function getToken($token): ?ActiveRow
     {
         return $this->autoLoginTokensRepository->findBy('token', $token);
     }
 
-    public function getValidToken($token)
+    public function getValidToken($token): ?ActiveRow
     {
         return $this->autoLoginTokensRepository->getTable()->where([
             'token' => $token,
