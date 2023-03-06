@@ -41,8 +41,8 @@ class UsersPopulator extends AbstractPopulator
                 'modified_at' => $this->faker->dateTimeBetween('-4 months'),
                 'last_sign_in_ip' => $this->faker->boolean(5) ? null : $this->faker->ipv4,
                 'current_sign_in_ip' => $this->faker->boolean(5) ? null : $this->faker->ipv4,
-                'invoice' => rand(1, 4) == 3 ? true : false,
-                'note' => rand(1, 4) == 3 ? $this->faker->sentence : null,
+                'invoice' => random_int(1, 4) == 3 ? true : false,
+                'note' => random_int(1, 4) == 3 ? $this->faker->sentence : null,
             ];
             if ($this->faker->boolean(10)) {
                 $data['is_institution'] = true;
@@ -82,7 +82,7 @@ class UsersPopulator extends AbstractPopulator
         return $table->insert([
             'user_id' => $user->id,
             'created_at' => new \DateTime(),
-            'type' => rand(1, 2) == 1 ? ChangePasswordsLogsRepository::TYPE_CHANGE : ChangePasswordsLogsRepository::TYPE_RESET,
+            'type' => random_int(1, 2) == 1 ? ChangePasswordsLogsRepository::TYPE_CHANGE : ChangePasswordsLogsRepository::TYPE_RESET,
             'from_password' => $this->faker->md5,
             'to_password' => $this->faker->md5,
         ]);
@@ -95,6 +95,6 @@ class UsersPopulator extends AbstractPopulator
             LoginAttemptsRepository::STATUS_NOT_FOUND_EMAIL,
             LoginAttemptsRepository::STATUS_WRONG_PASS,
         ];
-        return $statuses[rand(0, count($statuses) - 1)];
+        return $statuses[random_int(0, count($statuses) - 1)];
     }
 }

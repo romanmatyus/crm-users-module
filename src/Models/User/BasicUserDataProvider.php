@@ -6,6 +6,7 @@ use Crm\ApplicationModule\User\UserDataProviderInterface;
 use Crm\UsersModule\Auth\UserManager;
 use Crm\UsersModule\Repository\UsersRepository;
 use Nette\Utils\DateTime;
+use Nette\Utils\Random;
 
 class BasicUserDataProvider implements UserDataProviderInterface
 {
@@ -72,7 +73,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
         $now = new DateTime();
         $GDPRTemplateUser = [
             // anonymize
-            'email' => 'GDPR_removal@' . $now->getTimestamp() . mt_rand(),
+            'email' => 'GDPR_removal@' . $now->getTimestamp() . Random::generate(),
             'first_name' => 'GDPR Removal',
             'last_name' => 'GDPR Removal',
             'public_name' => 'GDPR Removal',

@@ -20,7 +20,7 @@ class AutologinPopulator extends AbstractPopulator
                 'created_at' => $this->faker->dateTimeBetween('-2 years'),
                 'valid_from' => $this->faker->dateTimeBetween('-2 years'),
                 'valid_to' => $this->faker->dateTimeBetween('-2 years'),
-                'used_count' => rand(1, $maxUsed),
+                'used_count' => random_int(1, $maxUsed),
                 'max_count' => $maxUsed,
             ]);
             $progressBar->advance();

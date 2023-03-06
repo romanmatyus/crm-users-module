@@ -29,7 +29,7 @@ class GroupsPopulator extends AbstractPopulator
         $usersGroups = $this->database->table('user_groups');
         $users = $this->database->table('users');
 
-        $randomUsers = $users->order('RAND()')->limit(rand(0, 20));
+        $randomUsers = $users->order('RAND()')->limit(random_int(0, 20));
         foreach ($randomUsers as $user) {
             $usersGroups->insert([
                 'user_id' => $user->id,

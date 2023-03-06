@@ -8,7 +8,7 @@ class GravatarHelper
 {
     public function process($email, $size = 40)
     {
-        $hash = md5($email);
+        $hash = md5($email); // @phpstan-ignore-line
         $gravatarPath = 'avatar/' . $hash . '?s=' . $size . '&d=identicon';
         $data = [
             'class' => 'avatar',

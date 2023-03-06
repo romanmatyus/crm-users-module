@@ -15,7 +15,7 @@ class PasswordResetTokensRepository extends Repository
     {
         return $this->insert([
             'user_id' => $user->id,
-            'token' => sha1(Uuid::uuid4()),
+            'token' => hash('sha256', Uuid::uuid4()),
             'source' => $source,
             'created_at' => new DateTime(),
             'expire_at' => DateTime::from(strtotime($expire)),
