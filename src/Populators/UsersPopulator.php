@@ -27,8 +27,13 @@ class UsersPopulator extends AbstractPopulator
         $loginAttempts = $this->database->table('login_attempts');
         $changePasswordsLog = $this->database->table('change_passwords_logs');
         for ($i = 0; $i < $this->count; $i++) {
+            $email = $this->faker->email;
             $data = [
-                'email' => $this->faker->email,
+                'email' => $email,
+                'public_name' => $email,
+                'locale' => $this->faker->locale,
+                'registration_channel' => $this->faker->randomElement(['crm', 'google', 'apple']),
+                'source' => $this->faker->randomElement(['follow', 'friend_lock', 'funnel']),
                 'password' => $this->passwords->hash($this->faker->userName),
                 'first_name' => $this->faker->firstName,
                 'last_name' => $this->faker->lastName,
@@ -74,6 +79,7 @@ class UsersPopulator extends AbstractPopulator
             'status' => $this->randomAttemptStatus(),
             'ip' => $this->faker->ipv4,
             'user_agent' => $this->faker->userAgent,
+            'source' => $this->faker->randomElement(['web', 'api']),
         ]);
     }
 

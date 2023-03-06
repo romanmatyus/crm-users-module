@@ -17,6 +17,7 @@ class GroupsPopulator extends AbstractPopulator
                 'name' => $this->faker->word,
                 'sorting' => $i * 10,
                 'created_at' => $this->faker->dateTimeBetween('-2 years'),
+                'updated_at' => $this->faker->dateTimeBetween('-2 years'),
             ];
             $group = $groups->insert($data);
             $this->insertUsers($group);
