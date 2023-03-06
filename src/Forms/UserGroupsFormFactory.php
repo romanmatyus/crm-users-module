@@ -37,7 +37,6 @@ class UserGroupsFormFactory
     }
 
     /**
-     * @param @userId
      * @return Form
      * @throws BadRequestException
      */

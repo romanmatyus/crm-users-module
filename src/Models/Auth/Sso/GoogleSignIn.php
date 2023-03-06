@@ -260,7 +260,7 @@ class GoogleSignIn
         $error = $this->request->getQuery('error');
         if (!empty($error)) {
             // Got an error, probably user denied access
-            throw new SsoException('Google SignIn error: ' . htmlspecialchars($error));
+            throw new SsoException('Google SignIn error: ' . htmlspecialchars($error, ENT_QUOTES));
         }
 
         $code = $this->request->getQuery('code');

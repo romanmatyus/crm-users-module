@@ -71,7 +71,7 @@ class UserManager
     }
 
     /**
-     * @return @var ActiveRow|bool $user
+     * @return ActiveRow|bool
      * @throws InvalidEmailException
      * @throws UserAlreadyExistsException
      * @throws \Nette\Utils\JsonException

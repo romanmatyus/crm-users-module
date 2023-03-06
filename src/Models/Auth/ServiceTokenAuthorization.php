@@ -60,7 +60,6 @@ class ServiceTokenAuthorization implements UsersApiAuthorizationInterface
     }
 
     /**
-     * @return mixed
      * @throws \Exception
      */
     public function getErrorMessage(): ?string

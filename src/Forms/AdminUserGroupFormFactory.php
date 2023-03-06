@@ -35,7 +35,6 @@ class AdminUserGroupFormFactory
     }
 
     /**
-     * @param @userId
      * @return Form
      * @throws BadRequestException
      */

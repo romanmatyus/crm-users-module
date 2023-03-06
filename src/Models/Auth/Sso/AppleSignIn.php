@@ -162,7 +162,7 @@ class AppleSignIn
                 default => 0,
             };
             // Got an error, probably user denied access
-            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($error), $code);
+            throw new SsoException('Apple SignIn error: ' . htmlspecialchars($error, ENT_QUOTES), $code);
         }
 
         // Check internal state
@@ -290,7 +290,7 @@ class AppleSignIn
         );
     }
 
-    private function decodeIdToken($idToken)
+    private function decodeIdToken($idToken): \stdClass
     {
         $client = new Client();
         $response = $client->get('https://appleid.apple.com/auth/keys');

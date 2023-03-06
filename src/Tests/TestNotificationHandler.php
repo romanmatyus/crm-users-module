@@ -8,7 +8,7 @@ use League\Event\EventInterface;
 
 class TestNotificationHandler extends AbstractListener
 {
-    /** @var []NotificationEvent  */
+    /** @var NotificationEvent[][]  */
     private $notifications = [];
 
     public function handle(EventInterface $event)
