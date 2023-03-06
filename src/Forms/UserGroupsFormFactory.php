@@ -78,7 +78,7 @@ class UserGroupsFormFactory
 
         $groupsArray = [];
         foreach ($groups as $groupId => $groupName) {
-            if (!in_array($groupId, $userGroupsIds)) {
+            if (!in_array($groupId, $userGroupsIds, true)) {
                 $groupsArray[$groupId] = $groupName;
             }
         }

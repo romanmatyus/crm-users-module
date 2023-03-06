@@ -62,7 +62,7 @@ class LoginAttemptsRepository extends Repository
 
     final public function okStatus($status): bool
     {
-        return in_array($status, $this->okStatuses());
+        return in_array($status, $this->okStatuses(), true);
     }
 
     final public function insertAttempt($email, $userId, $source, $status, $ip, $userAgent, $dateTime, $message = null)

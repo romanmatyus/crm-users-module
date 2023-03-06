@@ -27,7 +27,7 @@ class StaticDomainFileValidator implements ValidatorInterface
 
     private function isBlockedDomain($domain)
     {
-        return in_array($domain, $this->domains());
+        return in_array($domain, $this->domains(), true);
     }
 
     private function domains()

@@ -71,10 +71,10 @@ class GenerateAccessCommand extends Command
             $generatedResources = array_keys($generatedACL);
             foreach ($storedResources as $storedResource) {
                 // is resource *Module*:*Presenter* still present?
-                if (in_array($storedResource['resource'], $generatedResources)) {
+                if (in_array($storedResource['resource'], $generatedResources, true)) {
                     // is *Module*:*Presenter*:*Action* still present?
                     $generatedActions = array_values($generatedACL[$storedResource['resource']]);
-                    if (in_array($storedResource['action'], $generatedActions)) {
+                    if (in_array($storedResource['action'], $generatedActions, true)) {
                         continue;
                     }
                 }
