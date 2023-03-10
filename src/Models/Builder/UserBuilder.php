@@ -14,11 +14,7 @@ use Nette\Security\Passwords;
 
 class UserBuilder extends Builder
 {
-    private $emitter;
-
     private $originalPassword;
-
-    private $accessToken;
 
     protected $tableName = 'users';
 
@@ -30,30 +26,16 @@ class UserBuilder extends Builder
 
     private array $passwordLazyParams;
 
-    private UsersRepository $usersRepository;
-
-    private UserMetaRepository $userMetaRepository;
-
-    private Translator $translator;
-
-    private $passwords;
-
     public function __construct(
         Explorer $database,
-        Emitter $emitter,
-        AccessToken $accessToken,
-        UsersRepository $usersRepository,
-        UserMetaRepository $userMetaRepository,
-        Translator $translator,
-        Passwords $passwords
+        private Emitter $emitter,
+        private AccessToken $accessToken,
+        private UsersRepository $usersRepository,
+        private UserMetaRepository $userMetaRepository,
+        private Translator $translator,
+        private Passwords $passwords
     ) {
         parent::__construct($database);
-        $this->emitter = $emitter;
-        $this->accessToken = $accessToken;
-        $this->userMetaRepository = $userMetaRepository;
-        $this->translator = $translator;
-        $this->passwords = $passwords;
-        $this->usersRepository = $usersRepository;
     }
 
     public function isValid()
