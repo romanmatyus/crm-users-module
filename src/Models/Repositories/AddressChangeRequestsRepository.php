@@ -226,6 +226,7 @@ class AddressChangeRequestsRepository extends Repository
         foreach ($this->userRequests($userId) as $addressChange) {
             $this->addressesMetaRepository->deleteByAddressChangeRequestId($addressChange->id);
             $this->delete($addressChange);
+            $this->markAuditLogsForDelete($addressChange->getSignature());
         }
     }
 

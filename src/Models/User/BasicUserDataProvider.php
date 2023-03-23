@@ -90,6 +90,7 @@ class BasicUserDataProvider implements UserDataProviderInterface
         ];
 
         $this->usersRepository->update($user, $GDPRTemplateUser);
+        $this->usersRepository->markAuditLogsForDelete($user->getSignature());
     }
 
     public function canBeDeleted($userId): array

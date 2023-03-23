@@ -117,6 +117,7 @@ class AddressesUserDataProvider implements UserDataProviderInterface
         $gdprRemovalTemplate = self::gdprRemovalTemplate($this->getNow());
         foreach ($addresses as $address) {
             $this->addressesRepository->update($address, $gdprRemovalTemplate);
+            $this->addressesRepository->markAuditLogsForDelete($address->getSignature());
         }
     }
 

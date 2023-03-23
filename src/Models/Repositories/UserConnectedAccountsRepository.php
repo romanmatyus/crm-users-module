@@ -72,6 +72,7 @@ class UserConnectedAccountsRepository extends Repository
             if ($result !== true) {
                 Debugger::log("Unable to remove connect account ID [{$userAccount->id}] for user [{$user->id}].", Debugger::ERROR);
             }
+            $this->markAuditLogsForDelete($userAccount->getSignature());
             $removed++;
         }
 
